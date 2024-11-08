@@ -27,6 +27,8 @@ const Settings = () => {
     saveSenderInfo(senderInfo, ortRechnungssteller, signature);
   };
 
+  const currentDate = new Date().toISOString().split('T')[0];
+
   return (
     <div className="container py-8">
       <div className="flex items-center justify-between mb-8">
@@ -49,6 +51,13 @@ const Settings = () => {
               onChange={(e) => setSenderInfo(e.target.value)}
               className="min-h-[200px] font-mono"
             />
+            <Button onClick={handleSaveSettings}>Save Settings</Button>
+          </div>
+        </Card>
+
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold mb-4">Ort & Datum</h2>
+          <div className="space-y-4">
             <div className="space-y-2">
               <label htmlFor="ortRechnungssteller" className="block text-sm font-medium text-gray-700">
                 Ort Rechnungsstellerin
@@ -58,6 +67,18 @@ const Settings = () => {
                 value={ortRechnungssteller}
                 onChange={(e) => setOrtRechnungssteller(e.target.value)}
                 placeholder="Kanton Zug"
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="currentDate" className="block text-sm font-medium text-gray-700">
+                Aktuelles Datum
+              </label>
+              <Input
+                id="currentDate"
+                type="date"
+                value={currentDate}
+                disabled
+                className="bg-gray-50"
               />
             </div>
             <Button onClick={handleSaveSettings}>Save Settings</Button>
