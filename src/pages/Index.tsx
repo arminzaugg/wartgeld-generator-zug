@@ -64,13 +64,13 @@ const Index = () => {
               variant="outline" 
               size="icon"
               className={cn(
-                "relative transition-all duration-300",
-                !isSettingsConfigured && "ring-2 ring-red-500 ring-offset-2 animate-pulse hover:ring-red-600"
+                "relative",
+                !isSettingsConfigured && "ring-1 ring-red-400 hover:ring-red-500"
               )}
             >
               <Settings className={cn(
-                "h-4 w-4 transition-colors",
-                !isSettingsConfigured && "text-red-500"
+                "h-4 w-4",
+                !isSettingsConfigured && "text-red-400"
               )} />
             </Button>
           </Link>
