@@ -75,13 +75,7 @@ const Settings = () => {
           <h2 className="text-xl font-semibold mb-4">Rechnungsstellerin</h2>
           <div className="space-y-4">
             <Textarea
-              placeholder="Martina Mustermann
-Bahnhofstrasse 23
-6300 Zug
-info@hebamme.ch
-+41 79 345 45 45
-IBAN CH33 0033 0033 0033 0033 3
-QR IBAN CH44 0044 0044 0044 0044 4"
+              placeholder={`Martina Mustermann\nBahnhofstrasse 23\n6300 Zug\ninfo@hebamme.ch\n+41 79 345 45 45\nIBAN CH33 0033 0033 0033 0033 3\nQR IBAN CH44 0044 0044 0044 0044 4`}
               value={senderInfo}
               onChange={(e) => setSenderInfo(e.target.value)}
               className="min-h-[200px] font-mono"
