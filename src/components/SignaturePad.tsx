@@ -3,6 +3,7 @@ import SignatureCanvas from 'react-signature-canvas';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { useToast } from './ui/use-toast';
+import { Card } from './ui/card';
 
 interface SignaturePadProps {
   onSave: (signature: string) => void;
@@ -12,6 +13,7 @@ interface SignaturePadProps {
 export const SignaturePad = ({ onSave, initialSignature }: SignaturePadProps) => {
   const signaturePad = useRef<SignatureCanvas>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(initialSignature || null);
+  const [isDrawing, setIsDrawing] = useState(false);
   const { toast } = useToast();
 
   const clear = () => {
@@ -48,20 +50,49 @@ export const SignaturePad = ({ onSave, initialSignature }: SignaturePadProps) =>
 
   return (
     <div className="space-y-4">
-      <div className="border rounded-lg p-4">
-        <SignatureCanvas
-          ref={signaturePad}
-          canvasProps={{
-            className: "w-full h-40 border rounded cursor-crosshair",
-            style: { background: 'white' }
-          }}
-        />
-      </div>
-      
-      <div className="flex gap-2">
-        <Button onClick={clear} variant="outline">Löschen</Button>
-        <Button onClick={save}>Speichern</Button>
-      </div>
+      <Card className="p-4 bg-gray-50">
+        <div 
+          className={`border-2 rounded-lg overflow-hidden transition-all ${
+            isDrawing ? 'border-blue-500 shadow-lg' : 'border-gray-200'
+          }`}
+          onMouseDown={() => setIsDrawing(true)}
+          onMouseUp={() => setIsDrawing(false)}
+          onMouseLeave={() => setIsDrawing(false)}
+        >
+          <SignatureCanvas
+            ref={signaturePad}
+            canvasProps={{
+              className: "w-full h-40 bg-white cursor-crosshair",
+              style: { 
+                touchAction: 'none',
+              }
+            }}
+            dotSize={1}
+            minWidth={1}
+            maxWidth={2.5}
+            throttle={16}
+            velocityFilterWeight={0.7}
+          />
+        </div>
+        
+        <div className="flex justify-between items-center mt-4">
+          <Button 
+            onClick={clear} 
+            variant="outline" 
+            size="sm"
+            className="text-sm"
+          >
+            Löschen
+          </Button>
+          <Button 
+            onClick={save}
+            size="sm"
+            className="text-sm"
+          >
+            Speichern
+          </Button>
+        </div>
+      </Card>
 
       <div className="space-y-2">
         <p className="text-sm text-muted-foreground">Oder laden Sie eine PNG-Datei hoch:</p>
@@ -69,18 +100,21 @@ export const SignaturePad = ({ onSave, initialSignature }: SignaturePadProps) =>
           type="file"
           accept="image/png"
           onChange={handleFileUpload}
+          className="text-sm"
         />
       </div>
 
       {imagePreview && (
-        <div className="mt-4">
-          <p className="text-sm font-medium mb-2">Aktuelle Unterschrift:</p>
-          <img 
-            src={imagePreview} 
-            alt="Signature Preview" 
-            className="max-h-20 border rounded p-2"
-          />
-        </div>
+        <Card className="p-4 bg-white">
+          <p className="text-sm font-medium mb-2 text-muted-foreground">Aktuelle Unterschrift:</p>
+          <div className="border rounded p-4 bg-white">
+            <img 
+              src={imagePreview} 
+              alt="Signature Preview" 
+              className="max-h-20 w-auto mx-auto"
+            />
+          </div>
+        </Card>
       )}
     </div>
   );
