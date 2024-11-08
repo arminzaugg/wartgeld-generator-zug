@@ -1,6 +1,5 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface FormFieldsProps {
@@ -12,7 +11,6 @@ interface FormFieldsProps {
     ort: string;
     geburtsdatum: string;
     gemeinde: string;
-    additionalNotes: string;
   };
   onChange: (field: string, value: string) => void;
 }
@@ -107,16 +105,6 @@ export const FormFields = ({ values, onChange }: FormFieldsProps) => {
             ))}
           </SelectContent>
         </Select>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="additionalNotes">Zusätzliche Bemerkungen</Label>
-        <Textarea
-          id="additionalNotes"
-          value={values.additionalNotes}
-          onChange={(e) => onChange("additionalNotes", e.target.value)}
-          rows={4}
-        />
       </div>
     </div>
   );

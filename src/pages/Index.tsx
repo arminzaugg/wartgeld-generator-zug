@@ -17,7 +17,6 @@ const Index = () => {
     ort: "",
     geburtsdatum: "",
     gemeinde: "",
-    additionalNotes: "",
   });
   
   const [pdfUrl, setPdfUrl] = useState("");
