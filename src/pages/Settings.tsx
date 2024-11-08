@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
 import { saveSenderInfo, getSettings } from "@/lib/presetStorage";
+import { SignaturePad } from "@/components/SignaturePad";
 
 const Settings = () => {
   const settings = getSettings();
@@ -15,11 +16,15 @@ const Settings = () => {
   const { toast } = useToast();
 
   const handleSaveSettings = () => {
-    saveSenderInfo(senderInfo, ortRechnungssteller);
+    saveSenderInfo(senderInfo, ortRechnungssteller, settings.signature);
     toast({
       title: "Success",
       description: "Settings saved successfully",
     });
+  };
+
+  const handleSaveSignature = (signature: string) => {
+    saveSenderInfo(senderInfo, ortRechnungssteller, signature);
   };
 
   return (
@@ -31,7 +36,7 @@ const Settings = () => {
           </Button>
         </Link>
         <h1 className="text-3xl font-bold">Einstellungen</h1>
-        <div className="w-10"></div> {/* Spacer to center the title */}
+        <div className="w-10"></div>
       </div>
       
       <div className="max-w-2xl space-y-8">
@@ -57,6 +62,14 @@ const Settings = () => {
             </div>
             <Button onClick={handleSaveSettings}>Save Settings</Button>
           </div>
+        </Card>
+
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold mb-4">Unterschrift</h2>
+          <SignaturePad 
+            onSave={handleSaveSignature}
+            initialSignature={settings.signature}
+          />
         </Card>
       </div>
     </div>

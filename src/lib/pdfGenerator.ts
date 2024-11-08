@@ -82,11 +82,16 @@ export const generatePDF = (data: FormData): string => {
   doc.text("Die Unterzeichnende bescheinigt die Richtigkeit obiger Angaben", 20, 220);
   doc.text("Mit freundlichen Grüssen", 20, 230);
   
-  // Add signature line
+  // Add signature line and place/date
   const currentDate = new Date().toLocaleDateString('de-CH');
   doc.text("Ort / Datum", 20, 240);
   doc.text(`${settings.ortRechnungssteller}, ${currentDate}`, 20, 250);
   doc.text("Unterschrift Hebamme", 120, 240);
+
+  // Add signature if available
+  if (settings.signature) {
+    doc.addImage(settings.signature, 'PNG', 120, 245, 40, 20);
+  }
   
   // Add payment terms
   doc.setFontSize(8);
