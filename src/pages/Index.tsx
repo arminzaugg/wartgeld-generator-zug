@@ -67,7 +67,7 @@ const Index = () => {
           {!isSettingsConfigured && (
             <Badge 
               variant="destructive" 
-              className="absolute -top-2 -right-2 h-3 w-3 p-0 rounded-full"
+              className="absolute -top-1 -right-1 h-2 w-2 p-0 rounded-full"
             />
           )}
         </div>
