@@ -56,11 +56,11 @@ export const generatePDF = (data: FormData): string => {
   // Calculate total
   let total = 0;
   
-  // Add service table with new checkbox symbols
+  // Add service table with text-based checkbox symbols
   doc.setFontSize(11);
   doc.text("Betreuung der Gebärenden zuhause", 20, 150);
-  doc.text(data.betreuungGeburt ? "✅": "[ ]", 140, 150);
-  doc.text(data.betreuungGeburt ? "[ ]" : "✅", 160, 150);
+  doc.text(data.betreuungGeburt ? "[X]" : "[ ]", 140, 150);
+  doc.text(data.betreuungGeburt ? "[ ]" : "[X]", 160, 150);
   doc.text(data.betreuungGeburt ? "CHF 1000" : "CHF 0", 180, 150);
   if (data.betreuungGeburt) total += 1000;
   
