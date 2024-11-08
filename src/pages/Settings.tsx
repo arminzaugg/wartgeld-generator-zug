@@ -13,6 +13,7 @@ const Settings = () => {
   const settings = getSettings();
   const [senderInfo, setSenderInfo] = useState(settings.senderInfo);
   const [ortRechnungssteller, setOrtRechnungssteller] = useState(settings.ortRechnungssteller);
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const { toast } = useToast();
 
   const handleSaveSettings = () => {
@@ -26,8 +27,6 @@ const Settings = () => {
   const handleSaveSignature = (signature: string) => {
     saveSenderInfo(senderInfo, ortRechnungssteller, signature);
   };
-
-  const currentDate = new Date().toISOString().split('T')[0];
 
   return (
     <div className="container py-8">
@@ -76,9 +75,10 @@ const Settings = () => {
               <Input
                 id="currentDate"
                 type="date"
-                value={currentDate}
-                disabled
-                className="bg-gray-50"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                placeholder="heute"
+                className="bg-background"
               />
             </div>
             <Button onClick={handleSaveSettings}>Speichern</Button>
