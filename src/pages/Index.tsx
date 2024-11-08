@@ -84,7 +84,7 @@ const Index = () => {
               <div className="text-gray-500 flex flex-col items-center space-y-1">
                 <p>Füllen Sie das Formular aus</p>
                 <p>und klicken Sie auf "Rechnung Generieren"</p>
-                <p>um eine Vorschau zu sehen</p>
+                <p>um eine Vorschau zu sehen.</p>
               </div>
             </div>
           )}
