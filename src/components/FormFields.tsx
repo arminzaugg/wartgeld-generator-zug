@@ -2,7 +2,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AddressLookup } from "./AddressLookup";
 
 interface FormFieldsProps {
   values: {
@@ -16,12 +15,6 @@ interface FormFieldsProps {
     additionalNotes: string;
   };
   onChange: (field: string, value: string) => void;
-  onAddressSelect: (address: {
-    address: string;
-    city: string;
-    state: string;
-    zipCode: string;
-  }) => void;
 }
 
 const municipalities = [
@@ -38,11 +31,7 @@ const municipalities = [
   "Walchwil"
 ];
 
-export const FormFields = ({ values, onChange, onAddressSelect }: FormFieldsProps) => {
-  const handleAddressSelect = (address: { address: string; city: string; state: string; zipCode: string }) => {
-    onAddressSelect(address);
-  };
-
+export const FormFields = ({ values, onChange }: FormFieldsProps) => {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
@@ -63,11 +52,6 @@ export const FormFields = ({ values, onChange, onAddressSelect }: FormFieldsProp
             onChange={(e) => onChange("nachname", e.target.value)}
           />
         </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label>Adresse Suchen</Label>
-        <AddressLookup onSelect={handleAddressSelect} />
       </div>
 
       <div className="space-y-2">

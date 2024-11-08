@@ -30,20 +30,6 @@ const Index = () => {
     }));
   };
 
-  const handleAddressSelect = (address: {
-    address: string;
-    city: string;
-    state: string;
-    zipCode: string;
-  }) => {
-    setFormData((prev) => ({
-      ...prev,
-      address: address.address,
-      ort: address.city,
-      plz: address.zipCode,
-    }));
-  };
-
   const handleGeneratePDF = () => {
     if (!formData.vorname || !formData.nachname || !formData.address) {
       toast({
@@ -87,7 +73,6 @@ const Index = () => {
           <FormFields
             values={formData}
             onChange={handleFieldChange}
-            onAddressSelect={handleAddressSelect}
           />
           
           <div className="mt-6">
