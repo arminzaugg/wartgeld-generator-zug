@@ -76,7 +76,7 @@ const Index = () => {
         </Card>
 
         <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-4">PDF Vorschau</h2>
+          <h2 className="text-xl font-semibold mb-4">Vorschau</h2>
           {pdfUrl ? (
             <PDFPreview pdfUrl={pdfUrl} />
           ) : (
