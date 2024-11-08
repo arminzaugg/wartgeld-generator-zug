@@ -31,7 +31,7 @@ export const generatePDF = (data: FormData): string => {
   doc.text("IBAN CH97 0078 7785 4071 5467 3", 20, 45);
   doc.text("QR IBAN CH22 3078 7785 4071 5467 3", 20, 50);
   
-  // Add recipient information (administration) - moved lower for envelope window
+  // Add recipient information (administration)
   doc.text(administration.title, 120, 45);
   if (administration.name) {
     doc.text(administration.name, 120, 52);
@@ -44,7 +44,7 @@ export const generatePDF = (data: FormData): string => {
   doc.setFont("helvetica", "bold");
   doc.text("Rechnung: Hebammenwartgeld", 20, 90);
   
-  // Add legal basis in bold with reduced spacing
+  // Add legal basis in bold
   doc.setFontSize(10);
   doc.setFont("helvetica", "bold");
   doc.text("gestützt auf § 53 des Gesundheitsgesetzes vom 30. Oktober 2008, und § 53 der", 20, 105);
@@ -52,11 +52,11 @@ export const generatePDF = (data: FormData): string => {
   
   // Reset font to normal and increase size for patient information
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(12);
+  doc.setFontSize(14); // Increased from 12 to 14
   doc.text("Betreuung von", 20, 130);
-  doc.text(`${data.vorname} ${data.nachname}`, 20, 135);
-  doc.text(`${data.address}, ${data.plz} ${data.ort}`, 20, 140);
-  doc.text(new Date().toLocaleDateString('de-CH'), 20, 145);
+  doc.text(`${data.vorname} ${data.nachname}`, 20, 133); // Reduced spacing from 135 to 133
+  doc.text(`${data.address}, ${data.plz} ${data.ort}`, 20, 136); // Reduced spacing from 140 to 136
+  doc.text(new Date().toLocaleDateString('de-CH'), 20, 139); // Reduced spacing from 145 to 139
   
   // Add service table
   doc.setFontSize(11);
