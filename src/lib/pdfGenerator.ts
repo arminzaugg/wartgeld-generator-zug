@@ -48,16 +48,18 @@ export const generatePDF = (data: FormData): string => {
   doc.setFontSize(10);
   doc.setFont("helvetica", "bold");
   doc.text("gestützt auf § 53 des Gesundheitsgesetzes vom 30. Oktober 2008, und § 53 der", 20, 105);
-  doc.text("Gesundheitsverordnung vom 30. Juni 2009", 20, 110); // Changed from 112 to 110 to reduce spacing
+  doc.text("Gesundheitsverordnung vom 30. Juni 2009", 20, 110);
   
-  // Reset font to normal for the rest of the document
+  // Reset font to normal and increase size for patient information
   doc.setFont("helvetica", "normal");
+  doc.setFontSize(12);
   doc.text("Betreuung von", 20, 130);
-  doc.text(`${data.vorname} ${data.nachname}`, 20, 140);
-  doc.text(`${data.address}, ${data.plz} ${data.ort}`, 20, 147);
-  doc.text(new Date().toLocaleDateString('de-CH'), 20, 154);
+  doc.text(`${data.vorname} ${data.nachname}`, 20, 135);
+  doc.text(`${data.address}, ${data.plz} ${data.ort}`, 20, 140);
+  doc.text(new Date().toLocaleDateString('de-CH'), 20, 145);
   
   // Add service table
+  doc.setFontSize(11);
   doc.text("Betreuung der Gebärenden zuhause", 20, 180);
   doc.text("□ ja", 140, 180);
   doc.text("□ nein", 160, 180);
