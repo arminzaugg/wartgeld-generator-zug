@@ -47,8 +47,8 @@ export const generatePDF = (data: FormData): string => {
   // Add legal basis in bold with reduced spacing
   doc.setFontSize(10);
   doc.setFont("helvetica", "bold");
-  doc.text("gestützt auf § 53 des Gesundheitsgesetzes vom 30. Oktober 2008, und § 53 der", 20, 70);
-  doc.text("Gesundheitsverordnung vom 30. Juni 2009", 20, 75); // Changed Y-coordinates to 70 and 75
+  doc.text("gestützt auf § 53 des Gesundheitsgesetzes vom 30. Oktober 2008, und § 53 der", 20, 105);
+  doc.text("Gesundheitsverordnung vom 30. Juni 2009", 20, 110); // Changed from 112 to 110 to reduce spacing
   
   // Reset font to normal for the rest of the document
   doc.setFont("helvetica", "normal");
