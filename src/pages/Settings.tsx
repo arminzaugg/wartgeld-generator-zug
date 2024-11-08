@@ -68,11 +68,11 @@ const Settings = () => {
 
   return (
     <div className="container py-8">
-      <h1 className="text-3xl font-bold mb-8">Settings</h1>
+      <h1 className="text-3xl font-bold mb-8">Einstellungen</h1>
       
       <div className="max-w-2xl space-y-8">
         <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Sender Information</h2>
+          <h2 className="text-xl font-semibold mb-4">Rechnungsstellerin</h2>
           <div className="space-y-4">
             <Textarea
               placeholder="Enter sender information"
@@ -82,7 +82,7 @@ const Settings = () => {
             />
             <div className="space-y-2">
               <label htmlFor="ortRechnungssteller" className="block text-sm font-medium text-gray-700">
-                Ort Rechnungssteller
+                Ort Rechnungsstellerin
               </label>
               <Input
                 id="ortRechnungssteller"
