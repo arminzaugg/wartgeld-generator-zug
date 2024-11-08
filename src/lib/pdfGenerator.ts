@@ -1,32 +1,37 @@
 import jsPDF from 'jspdf';
+import { administrationData } from './administrationData';
 
 interface FormData {
-  companyName: string;
+  vorname: string;
+  nachname: string;
   address: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  additionalNotes?: string;
+  plz: string;
+  ort: string;
+  geburtsdatum: string;
+  gemeinde: string;
 }
 
 export const generatePDF = (data: FormData): string => {
   const doc = new jsPDF();
+  const administration = administrationData[data.gemeinde];
   
-  // Add company header
-  doc.setFontSize(20);
-  doc.text(data.companyName, 20, 20);
-  
-  // Add address block
+  // Add sender information
   doc.setFontSize(12);
-  doc.text(data.address, 20, 40);
-  doc.text(`${data.city}, ${data.state} ${data.zipCode}`, 20, 50);
+  doc.text(`${data.vorname} ${data.nachname}`, 20, 20);
+  doc.text(data.address, 20, 30);
+  doc.text(`${data.plz} ${data.ort}`, 20, 40);
   
-  // Add additional notes if present
-  if (data.additionalNotes) {
-    doc.text('Additional Notes:', 20, 70);
-    doc.setFontSize(10);
-    doc.text(data.additionalNotes, 20, 80);
+  // Add recipient information (administration)
+  doc.text(administration.title, 20, 70);
+  if (administration.name) {
+    doc.text(administration.name, 20, 80);
   }
+  doc.text(administration.address, 20, administration.name ? 90 : 80);
+  doc.text(administration.city, 20, administration.name ? 100 : 90);
+  
+  // Add date
+  const currentDate = new Date().toLocaleDateString('de-CH');
+  doc.text(currentDate, 150, 40);
   
   // Generate PDF as base64 string
   return doc.output('datauristring');

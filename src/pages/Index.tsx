@@ -30,7 +30,7 @@ const Index = () => {
   };
 
   const handleGeneratePDF = () => {
-    if (!formData.vorname || !formData.nachname || !formData.address) {
+    if (!formData.vorname || !formData.nachname || !formData.gemeinde) {
       toast({
         title: "Fehler",
         description: "Bitte füllen Sie alle erforderlichen Felder aus",
@@ -39,15 +39,7 @@ const Index = () => {
       return;
     }
 
-    const pdfData = {
-      ...formData,
-      city: formData.ort,
-      zipCode: formData.plz,
-      state: "Zug",
-      companyName: "",
-    };
-
-    const pdfUrl = generatePDF(pdfData);
+    const pdfUrl = generatePDF(formData);
     setPdfUrl(pdfUrl);
     
     toast({
