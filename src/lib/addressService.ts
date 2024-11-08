@@ -7,27 +7,49 @@ interface AddressResult {
 }
 
 export const searchAddresses = async (query: string): Promise<AddressResult[]> => {
-  // Simulated API call - in real app, replace with actual API
+  // Simulated API call delay
   await new Promise(resolve => setTimeout(resolve, 500));
   
   const mockAddresses: AddressResult[] = [
     {
       id: "1",
-      address: "123 Main St",
-      city: "San Francisco",
-      state: "CA",
-      zipCode: "94105"
+      address: "Bahnhofstrasse 1",
+      city: "Zug",
+      state: "Zug",
+      zipCode: "6300"
     },
     {
       id: "2",
-      address: "456 Market St",
-      city: "San Francisco",
-      state: "CA",
-      zipCode: "94103"
+      address: "Bundesplatz 15",
+      city: "Zug",
+      state: "Zug",
+      zipCode: "6300"
+    },
+    {
+      id: "3",
+      address: "Industriestrasse 25",
+      city: "Cham",
+      state: "Zug",
+      zipCode: "6330"
+    },
+    {
+      id: "4",
+      address: "Dorfstrasse 8",
+      city: "Hünenberg",
+      state: "Zug",
+      zipCode: "6331"
+    },
+    {
+      id: "5",
+      address: "Zugerstrasse 50",
+      city: "Baar",
+      state: "Zug",
+      zipCode: "6340"
     }
   ].filter(addr => 
     addr.address.toLowerCase().includes(query.toLowerCase()) ||
-    addr.city.toLowerCase().includes(query.toLowerCase())
+    addr.city.toLowerCase().includes(query.toLowerCase()) ||
+    addr.zipCode.includes(query)
   );
 
   return mockAddresses;

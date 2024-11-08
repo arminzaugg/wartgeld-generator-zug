@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { searchAddresses } from '@/lib/addressService';
 import { useToast } from "@/components/ui/use-toast";
+import { Loader2 } from "lucide-react";
 
 interface AddressLookupProps {
   onSelect: (address: {
@@ -29,7 +30,7 @@ export const AddressLookup = ({ onSelect }: AddressLookupProps) => {
         } catch (error) {
           toast({
             title: "Error",
-            description: "Failed to search addresses",
+            description: "Fehler beim Suchen der Adresse",
             variant: "destructive",
           });
         } finally {
@@ -44,27 +45,28 @@ export const AddressLookup = ({ onSelect }: AddressLookupProps) => {
   }, [query, toast]);
 
   return (
-    <div className="relative">
-      <Input
-        type="text"
-        placeholder="Search address..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        className="w-full"
-      />
-      
-      {isLoading && (
-        <div className="absolute right-3 top-3">
-          <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full" />
-        </div>
-      )}
+    <div className="relative w-full">
+      <div className="relative">
+        <Input
+          type="text"
+          placeholder="Geben Sie eine Adresse ein..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="w-full pr-10"
+        />
+        {isLoading && (
+          <div className="absolute right-3 top-3">
+            <Loader2 className="h-4 w-4 animate-spin" />
+          </div>
+        )}
+      </div>
       
       {results.length > 0 && (
-        <div className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg">
-          {results.map((result) => (
+        <div className="absolute z-10 w-full mt-1 bg-background border rounded-md shadow-lg max-h-60 overflow-auto">
+          {results.map((result, index) => (
             <button
-              key={result.id}
-              className="w-full px-4 py-2 text-left hover:bg-gray-100 transition-colors"
+              key={index}
+              className="w-full px-4 py-2 text-left hover:bg-accent hover:text-accent-foreground transition-colors"
               onClick={() => {
                 onSelect(result);
                 setQuery('');
