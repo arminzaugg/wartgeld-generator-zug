@@ -30,6 +30,23 @@ const Info = () => {
             <li>Laden Sie die erstellte PDF-Datei herunter</li>
           </ol>
         </section>
+
+        <section>
+          <h2 className="text-2xl font-semibold mb-4">Datenschutz</h2>
+          <p className="text-gray-700 leading-relaxed">
+            Diese Anwendung verarbeitet alle Daten ausschliesslich lokal in Ihrem Browser. Es werden keine Daten an externe Server gesendet. 
+            Die einzigen gespeicherten Informationen sind Ihre Einstellungen, die im lokalen Speicher (Local Storage) Ihres Browsers gespeichert werden. 
+            Es werden keine Cookies verwendet.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-2xl font-semibold mb-4">Impressum</h2>
+          <p className="text-gray-700 leading-relaxed">
+            Entwickelt von:<br />
+            Armin Zaugg
+          </p>
+        </section>
       </div>
     </div>
   );
