@@ -1,16 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
-import { Preset, savePreset, getPresets, deletePreset, saveSenderInfo, getSenderInfo } from "@/lib/presetStorage";
+import { Preset, savePreset, getPresets, deletePreset, saveSenderInfo, getSettings } from "@/lib/presetStorage";
 import { Trash2 } from "lucide-react";
 
 const Settings = () => {
   const [presetName, setPresetName] = useState("");
   const [presets, setPresets] = useState<Preset[]>(getPresets());
-  const [senderInfo, setSenderInfo] = useState(getSenderInfo());
+  const settings = getSettings();
+  const [senderInfo, setSenderInfo] = useState(settings.senderInfo);
+  const [ortRechnungssteller, setOrtRechnungssteller] = useState(settings.ortRechnungssteller);
   const { toast } = useToast();
 
   const handleSavePreset = () => {
@@ -56,11 +58,11 @@ const Settings = () => {
     });
   };
 
-  const handleSaveSenderInfo = () => {
-    saveSenderInfo(senderInfo);
+  const handleSaveSettings = () => {
+    saveSenderInfo(senderInfo, ortRechnungssteller);
     toast({
       title: "Success",
-      description: "Sender information saved successfully",
+      description: "Settings saved successfully",
     });
   };
 
@@ -78,7 +80,18 @@ const Settings = () => {
               onChange={(e) => setSenderInfo(e.target.value)}
               className="min-h-[200px] font-mono"
             />
-            <Button onClick={handleSaveSenderInfo}>Save Sender Info</Button>
+            <div className="space-y-2">
+              <label htmlFor="ortRechnungssteller" className="block text-sm font-medium text-gray-700">
+                Ort Rechnungssteller
+              </label>
+              <Input
+                id="ortRechnungssteller"
+                value={ortRechnungssteller}
+                onChange={(e) => setOrtRechnungssteller(e.target.value)}
+                placeholder="Kanton Zug"
+              />
+            </div>
+            <Button onClick={handleSaveSettings}>Save Settings</Button>
           </div>
         </Card>
         

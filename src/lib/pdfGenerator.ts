@@ -1,6 +1,6 @@
 import jsPDF from 'jspdf';
 import { administrationData } from './administrationData';
-import { getSenderInfo } from './presetStorage';
+import { getSettings } from './presetStorage';
 
 interface FormData {
   vorname: string;
@@ -17,7 +17,8 @@ interface FormData {
 export const generatePDF = (data: FormData): string => {
   const doc = new jsPDF();
   const administration = administrationData[data.gemeinde];
-  const senderInfo = getSenderInfo().split('\n');
+  const settings = getSettings();
+  const senderInfo = settings.senderInfo.split('\n');
   
   // Add sender information (top left)
   doc.setFontSize(11);
@@ -82,7 +83,8 @@ export const generatePDF = (data: FormData): string => {
   doc.text("Mit freundlichen Grüssen", 20, 230);
   
   // Add signature line
-  doc.text("Ort / Datum", 20, 240);
+  const currentDate = new Date().toLocaleDateString('de-CH');
+  doc.text(`${settings.ortRechnungssteller}, ${currentDate}`, 20, 240);
   doc.text("Unterschrift Hebamme", 120, 240);
   
   // Draw horizontal lines instead of diagonal ones

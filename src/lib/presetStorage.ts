@@ -13,6 +13,7 @@ export interface Preset {
 
 export interface Settings {
   senderInfo: string;
+  ortRechnungssteller: string;
 }
 
 const STORAGE_KEY = 'form-presets';
@@ -42,13 +43,16 @@ export const deletePreset = (id: string): void => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(presets));
 };
 
-export const saveSenderInfo = (info: string): void => {
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify({ senderInfo: info }));
+export const saveSenderInfo = (info: string, ortRechnungssteller: string): void => {
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify({ senderInfo: info, ortRechnungssteller }));
 };
 
-export const getSenderInfo = (): string => {
+export const getSettings = (): Settings => {
   const stored = localStorage.getItem(SETTINGS_KEY);
-  if (!stored) return DEFAULT_SENDER_INFO;
+  if (!stored) return { senderInfo: DEFAULT_SENDER_INFO, ortRechnungssteller: 'Kanton Zug' };
   const settings: Settings = JSON.parse(stored);
-  return settings.senderInfo || DEFAULT_SENDER_INFO;
+  return {
+    senderInfo: settings.senderInfo || DEFAULT_SENDER_INFO,
+    ortRechnungssteller: settings.ortRechnungssteller || 'Kanton Zug'
+  };
 };
