@@ -64,18 +64,20 @@ const Index = () => {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Hebammenwartgeld Kanton Zug</h1>
         <div className="flex gap-2">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <Info className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Hier können Sie eine Rechnung für das Hebammenwartgeld erstellen.</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Link to="/info">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="outline" size="icon">
+                    <Info className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Hier können Sie eine Rechnung für das Hebammenwartgeld erstellen.</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </Link>
           <Link to="/settings">
             <Button 
               variant="outline" 
