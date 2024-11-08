@@ -61,17 +61,18 @@ export const generatePDF = (data: FormData): string => {
   // Add service table
   doc.setFontSize(11);
   doc.text("Betreuung der Gebärenden zuhause", 20, 150);
-  doc.text("□ ja", 140, 150);
-  doc.text("□ nein", 160, 150);
+  doc.text("[ ] ja", 140, 150);
+  doc.text("[ ] nein", 160, 150);
   doc.text("CHF", 180, 150);
   
   doc.text("Pflege der Wöchnerin zuhause", 20, 160);
-  doc.text("□ ja", 140, 160);
-  doc.text("□ nein", 160, 160);
+  doc.text("[ ] ja", 140, 160);
+  doc.text("[ ] nein", 160, 160);
   doc.text("CHF", 180, 160);
   
-  doc.text("Total Rechnungsbetrag", 20, 180);
-  doc.text("CHF =========", 180, 180);
+  doc.setFont("helvetica", "bold");
+  doc.text("Total Rechnungsbetrag", 20, 170);
+  doc.text("CHF", 180, 170);
   
   // Add footer text
   doc.setFontSize(9);
