@@ -25,7 +25,6 @@ const Index = () => {
   const [pdfUrl, setPdfUrl] = useState("");
   const { toast } = useToast();
 
-  // Check if settings are configured
   const isSettingsConfigured = localStorage.getItem("rechnungsstellerin");
 
   const handleFieldChange = (field: string, value: string | boolean) => {
@@ -49,8 +48,8 @@ const Index = () => {
     setPdfUrl(pdfUrl);
     
     toast({
-      title: "Erfolg",
-      description: "PDF wurde erfolgreich generiert",
+      title: "Erfolgreich",
+      description: "PDF wurde erfolgreich erstellt",
     });
   };
 
@@ -98,7 +97,7 @@ const Index = () => {
           ) : (
             <div className="h-[600px] flex items-center justify-center bg-gray-50 rounded-lg">
               <div className="text-gray-500 flex flex-col items-center space-y-1">
-                <p>Füllen Sie das Formular aus</p>
+                <p>Bitte füllen Sie das Formular aus</p>
                 <p>und klicken Sie auf "Rechnung Generieren"</p>
                 <p>um eine Vorschau zu sehen.</p>
               </div>
