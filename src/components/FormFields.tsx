@@ -18,8 +18,9 @@ interface FormFieldsProps {
   onChange: (field: string, value: string) => void;
   onAddressSelect: (address: {
     address: string;
-    ort: string;
-    plz: string;
+    city: string;
+    state: string;
+    zipCode: string;
   }) => void;
 }
 
@@ -38,6 +39,10 @@ const municipalities = [
 ];
 
 export const FormFields = ({ values, onChange, onAddressSelect }: FormFieldsProps) => {
+  const handleAddressSelect = (address: { address: string; city: string; state: string; zipCode: string }) => {
+    onAddressSelect(address);
+  };
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
@@ -62,7 +67,7 @@ export const FormFields = ({ values, onChange, onAddressSelect }: FormFieldsProp
 
       <div className="space-y-2">
         <Label>Adresse Suchen</Label>
-        <AddressLookup onSelect={onAddressSelect} />
+        <AddressLookup onSelect={handleAddressSelect} />
       </div>
 
       <div className="space-y-2">

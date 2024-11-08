@@ -32,14 +32,15 @@ const Index = () => {
 
   const handleAddressSelect = (address: {
     address: string;
-    ort: string;
-    plz: string;
+    city: string;
+    state: string;
+    zipCode: string;
   }) => {
     setFormData((prev) => ({
       ...prev,
       address: address.address,
-      ort: address.ort,
-      plz: address.plz,
+      ort: address.city,
+      plz: address.zipCode,
     }));
   };
 
@@ -53,7 +54,15 @@ const Index = () => {
       return;
     }
 
-    const pdfUrl = generatePDF(formData);
+    const pdfData = {
+      ...formData,
+      city: formData.ort,
+      zipCode: formData.plz,
+      state: "Zug",
+      companyName: "",
+    };
+
+    const pdfUrl = generatePDF(pdfData);
     setPdfUrl(pdfUrl);
     
     toast({
