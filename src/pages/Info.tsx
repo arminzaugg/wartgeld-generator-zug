@@ -6,16 +6,16 @@ const Info = () => {
   return (
     <div className="container py-8">
       <div className="flex items-center justify-between mb-8">
-        <Link to="/" className="flex items-center gap-2">
-          <Button variant="outline" size="icon">
+        <Link to="/">
+          <Button variant="ghost" size="icon" className="text-muted-foreground">
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <span className="text-sm text-gray-600">Zurück</span>
         </Link>
         <h1 className="text-3xl font-bold">Informationen</h1>
         <div className="w-16"></div> {/* Spacer to center the title */}
       </div>
       
+      {/* ... keep existing code (prose section with information) */}
       <div className="prose prose-slate max-w-2xl space-y-6">
         <section>
           <h2 className="text-2xl font-semibold mb-4">Über diese Anwendung</h2>
