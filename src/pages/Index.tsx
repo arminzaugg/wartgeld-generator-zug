@@ -70,7 +70,7 @@ const Index = () => {
           
           <div className="mt-6">
             <Button onClick={handleGeneratePDF} className="w-full">
-              PDF Generieren
+              Rechnung Generieren
             </Button>
           </div>
         </Card>
@@ -83,7 +83,7 @@ const Index = () => {
             <div className="h-[600px] flex items-center justify-center bg-gray-50 rounded-lg">
               <div className="text-gray-500 flex flex-col items-center space-y-1">
                 <p>Füllen Sie das Formular aus</p>
-                <p>und klicken Sie auf "PDF Generieren"</p>
+                <p>und klicken Sie auf "Rechnung Generieren"</p>
                 <p>um eine Vorschau zu sehen</p>
               </div>
             </div>
