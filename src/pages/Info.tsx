@@ -41,7 +41,7 @@ const Info = () => {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold mb-4">Kontakt und Infos</h2>
+          <h2 className="text-2xl font-semibold mb-4">Kontakt</h2>
           <p className="text-gray-700 leading-relaxed">
             Armin Zaugg<br />
             <a href="mailto:armin.zaugg@traintown.solutions" className="text-blue-600 hover:underline inline-flex items-center gap-1">
