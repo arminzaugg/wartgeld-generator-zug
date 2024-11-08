@@ -41,10 +41,13 @@ const Info = () => {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold mb-4">Impressum</h2>
+          <h2 className="text-2xl font-semibold mb-4">Kontakt</h2>
           <p className="text-gray-700 leading-relaxed">
             Entwickelt von:<br />
-            Armin Zaugg
+            Armin Zaugg<br />
+            <a href="mailto:armin.zaugg@traintown.solutions" className="text-blue-600 hover:underline">
+              armin.zaugg@traintown.solutions
+            </a>
           </p>
         </section>
       </div>
