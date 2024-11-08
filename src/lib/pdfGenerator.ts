@@ -79,19 +79,19 @@ export const generatePDF = (data: FormData): string => {
   doc.setFont("helvetica", "normal");
   doc.text("Zutreffendes ankreuzen, Formular vollständig und in Blockschrift ausfüllen", 20, 190);
   
-  doc.text("Die Unterzeichnende bescheinigt die Richtigkeit obiger Angaben", 20, 250);
-  doc.text("Mit freundlichen Grüssen", 20, 260);
+  doc.text("Die Unterzeichnende bescheinigt die Richtigkeit obiger Angaben", 20, 220);
+  doc.text("Mit freundlichen Grüssen", 20, 230);
   
   // Add signature line
-  doc.text("Ort / Datum", 20, 280);
-  doc.text("Unterschrift Hebamme", 120, 280);
-  doc.line(20, 290, 80, 290); // Line for place/date
-  doc.line(120, 290, 180, 290); // Line for signature
+  doc.text("Ort / Datum", 20, 240);
+  doc.text("Unterschrift Hebamme", 120, 240);
+  doc.line(20, 290, 80, 250); // Line for place/date
+  doc.line(120, 290, 180, 250); // Line for signature
   
   // Add payment terms
   doc.setFontSize(8);
-  doc.text("Zahlbar innert 30 Tagen", 20, 300);
-  doc.text("Die Rechnungsstellung erfolgt bis spätestens 2 Monate nach der Geburt", 20, 305);
+  doc.text("Zahlbar innert 30 Tagen", 20, 270);
+  doc.text("Die Rechnungsstellung erfolgt bis spätestens 2 Monate nach der Geburt", 20, 275);
   
   // Generate PDF as base64 string
   return doc.output('datauristring');
