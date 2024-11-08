@@ -61,18 +61,17 @@ export const generatePDF = (data: FormData): string => {
   // Add service table
   doc.setFontSize(11);
   doc.text("Betreuung der Gebärenden zuhause", 20, 150);
-  doc.text("[ ] ja", 140, 150);
-  doc.text("[ ] nein", 160, 150);
+  doc.text("□ ja", 140, 150);
+  doc.text("□ nein", 160, 150);
   doc.text("CHF", 180, 150);
   
   doc.text("Pflege der Wöchnerin zuhause", 20, 160);
-  doc.text("[ ] ja", 140, 160);
-  doc.text("[ ] nein", 160, 160);
+  doc.text("□ ja", 140, 160);
+  doc.text("□ nein", 160, 160);
   doc.text("CHF", 180, 160);
   
-  doc.setFont("helvetica", "bold");
-  doc.text("Total Rechnungsbetrag", 20, 170);
-  doc.text("CHF", 180, 180);
+  doc.text("Total Rechnungsbetrag", 20, 180);
+  doc.text("CHF =========", 180, 180);
   
   // Add footer text
   doc.setFontSize(9);
@@ -85,8 +84,10 @@ export const generatePDF = (data: FormData): string => {
   // Add signature line
   doc.text("Ort / Datum", 20, 240);
   doc.text("Unterschrift Hebamme", 120, 240);
-  doc.line(20, 290, 80, 250); // Line for place/date
-  doc.line(120, 290, 180, 250); // Line for signature
+  
+  // Draw horizontal lines instead of diagonal ones
+  doc.line(20, 250, 80, 250); // Line for place/date
+  doc.line(120, 250, 180, 250); // Line for signature
   
   // Add payment terms
   doc.setFontSize(8);
