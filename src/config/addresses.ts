@@ -8,14 +8,14 @@ interface Administration {
 export const municipalities = [
   "Zug",
   "Cham",
-  "Huenenberg",
+  "Hünenberg",
   "Risch",
   "Steinhausen",
   "Baar",
   "Neuheim",
   "Menzingen",
-  "Unteraegeri",
-  "Oberaegeri",
+  "Unterägeri",
+  "Oberägeri",
   "Walchwil"
 ] as const;
 
@@ -32,7 +32,7 @@ export const administrationData: Record<string, Administration> = {
     address: "Mandelhof",
     city: "6330 Cham"
   },
-  "Huenenberg": {
+  "Hünenberg": {
     title: "Gemeindeverwaltung",
     name: "",
     address: "Postfach 261",
@@ -68,13 +68,13 @@ export const administrationData: Record<string, Administration> = {
     address: "Postfach 99",
     city: "6313 Menzingen"
   },
-  "Unteraegeri": {
+  "Unterägeri": {
     title: "Einwohnergemeinde Unterägeri",
     name: "Abteilung Soziales/Gesundheit",
     address: "Postfach 79",
     city: "6314 Unterägeri"
   },
-  "Oberaegeri": {
+  "Oberägeri": {
     title: "Abteilung Soziales",
     name: "Einwohnergemeinde",
     address: "Alosenstrasse 2",
