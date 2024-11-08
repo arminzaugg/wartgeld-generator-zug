@@ -88,10 +88,6 @@ export const generatePDF = (data: FormData): string => {
   doc.text(`${settings.ortRechnungssteller}, ${currentDate}`, 20, 250);
   doc.text("Unterschrift Hebamme", 120, 240);
   
-  // Draw horizontal lines
-  doc.line(20, 260, 80, 260); // Line for place/date
-  doc.line(120, 250, 180, 250); // Line for signature
-  
   // Add payment terms
   doc.setFontSize(8);
   doc.text("Zahlbar innert 30 Tagen", 20, 270);
