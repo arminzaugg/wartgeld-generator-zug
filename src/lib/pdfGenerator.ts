@@ -15,23 +15,79 @@ export const generatePDF = (data: FormData): string => {
   const doc = new jsPDF();
   const administration = administrationData[data.gemeinde];
   
-  // Add sender information
-  doc.setFontSize(12);
-  doc.text(`${data.vorname} ${data.nachname}`, 20, 20);
-  doc.text(data.address, 20, 30);
-  doc.text(`${data.plz} ${data.ort}`, 20, 40);
+  // Add sender information (top left)
+  doc.setFontSize(11);
+  doc.text("Aline Lusser", 20, 20);
+  doc.text("Im Rank 109", 20, 27);
+  doc.text("6300 Zug", 20, 34);
   
-  // Add recipient information (administration)
-  doc.text(administration.title, 20, 70);
+  // Add contact information
+  doc.setTextColor(0, 0, 255); // Blue color for email
+  doc.text("info@hebalu.ch", 20, 45);
+  doc.setTextColor(0, 0, 0); // Reset to black
+  doc.text("079 326 61 67", 20, 52);
+  
+  // Add IBAN information
+  doc.text("IBAN CH97 0078 7785 4071 5467 3", 20, 59);
+  doc.text("QR IBAN CH22 3078 7785 4071 5467 3", 20, 66);
+  
+  // Add recipient information (administration) - top right
+  doc.text(administration.title, 120, 20);
   if (administration.name) {
-    doc.text(administration.name, 20, 80);
+    doc.text(administration.name, 120, 27);
   }
-  doc.text(administration.address, 20, administration.name ? 90 : 80);
-  doc.text(administration.city, 20, administration.name ? 100 : 90);
+  doc.text(administration.address, 120, administration.name ? 34 : 27);
+  doc.text(administration.city, 120, administration.name ? 41 : 34);
   
-  // Add date
-  const currentDate = new Date().toLocaleDateString('de-CH');
-  doc.text(currentDate, 150, 40);
+  // Add invoice title
+  doc.setFontSize(14);
+  doc.text("Rechnung: Hebammenwartgeld", 20, 90);
+  
+  // Add legal basis
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "italic");
+  doc.text("gestützt auf § 53 des Gesundheitsgesetzes vom 30. Oktober 2008, und § 53 der", 20, 105);
+  doc.text("Gesundheitsverordnung vom 30. Juni 2009", 20, 112);
+  
+  // Add patient information
+  doc.setFont("helvetica", "normal");
+  doc.text("Betreuung von", 20, 130);
+  doc.text(`${data.vorname} ${data.nachname}`, 20, 140);
+  doc.text(`${data.address}, ${data.plz} ${data.ort}`, 20, 147);
+  doc.text(new Date().toLocaleDateString('de-CH'), 20, 154);
+  
+  // Add service table
+  doc.text("Betreuung der Gebärenden zuhause", 20, 180);
+  doc.text("□ ja", 140, 180);
+  doc.text("□ nein", 160, 180);
+  doc.text("CHF", 180, 180);
+  
+  doc.text("Pflege der Wöchnerin zuhause", 20, 190);
+  doc.text("□ ja", 140, 190);
+  doc.text("□ nein", 160, 190);
+  doc.text("CHF", 180, 190);
+  
+  // Add total
+  doc.text("Total Rechnungsbetrag", 20, 210);
+  doc.text("CHF =========", 180, 210);
+  
+  // Add footer text
+  doc.setFontSize(9);
+  doc.text("Zutreffendes ankreuzen, Formular vollständig und in Blockschrift ausfüllen", 20, 230);
+  
+  doc.text("Die Unterzeichnende bescheinigt die Richtigkeit obiger Angaben", 20, 250);
+  doc.text("Mit freundlichen Grüssen", 20, 260);
+  
+  // Add signature line
+  doc.text("Ort / Datum", 20, 280);
+  doc.text("Unterschrift Hebamme", 120, 280);
+  doc.line(20, 290, 80, 290); // Line for place/date
+  doc.line(120, 290, 180, 290); // Line for signature
+  
+  // Add payment terms
+  doc.setFontSize(8);
+  doc.text("Zahlbar innert 30 Tagen", 20, 300);
+  doc.text("Die Rechnungsstellung erfolgt bis spätestens 2 Monate nach der Geburt", 20, 305);
   
   // Generate PDF as base64 string
   return doc.output('datauristring');
