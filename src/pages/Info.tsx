@@ -15,7 +15,6 @@ const Info = () => {
         <div className="w-16"></div> {/* Spacer to center the title */}
       </div>
       
-      {/* ... keep existing code (prose section with information) */}
       <div className="prose prose-slate max-w-2xl space-y-6">
         <section>
           <h2 className="text-2xl font-semibold mb-4">Über diese Anwendung</h2>
@@ -48,8 +47,7 @@ const Info = () => {
           <h2 className="text-2xl font-semibold mb-4">Datenschutz</h2>
           <p className="text-gray-700 leading-relaxed">
             Diese Anwendung verarbeitet alle Daten ausschliesslich lokal in Ihrem Browser. Es werden keine Daten an externe Server gesendet. 
-            Die einzigen gespeicherten Informationen sind Ihre Einstellungen, die im lokalen Speicher (Local Storage) Ihres Browsers gespeichert werden. 
-            Es werden keine Cookies verwendet.
+            Die einzigen gespeicherten Informationen sind Ihre Einstellungen, die im lokalen Speicher (Local Storage) Ihres Browsers gespeichert werden.
           </p>
         </section>
 
