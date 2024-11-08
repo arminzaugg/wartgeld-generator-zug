@@ -51,7 +51,7 @@ const Settings = () => {
               onChange={(e) => setSenderInfo(e.target.value)}
               className="min-h-[200px] font-mono"
             />
-            <Button onClick={handleSaveSettings}>Save Settings</Button>
+            <Button onClick={handleSaveSettings}>Speichern</Button>
           </div>
         </Card>
 
@@ -81,7 +81,7 @@ const Settings = () => {
                 className="bg-gray-50"
               />
             </div>
-            <Button onClick={handleSaveSettings}>Save Settings</Button>
+            <Button onClick={handleSaveSettings}>Speichern</Button>
           </div>
         </Card>
 
