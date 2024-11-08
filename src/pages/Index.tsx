@@ -7,6 +7,7 @@ import { PDFPreview } from "@/components/PDFPreview";
 import { generatePDF } from "@/lib/pdfGenerator";
 import { useToast } from "@/components/ui/use-toast";
 import { Settings } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const Index = () => {
   const [formData, setFormData] = useState({
@@ -23,6 +24,9 @@ const Index = () => {
   
   const [pdfUrl, setPdfUrl] = useState("");
   const { toast } = useToast();
+
+  // Check if settings are configured
+  const isSettingsConfigured = localStorage.getItem("rechnungsstellerin");
 
   const handleFieldChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({
@@ -54,11 +58,19 @@ const Index = () => {
     <div className="container py-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Hebammenwartgeld Kanton Zug</h1>
-        <Link to="/settings">
-          <Button variant="outline" size="icon">
-            <Settings className="h-4 w-4" />
-          </Button>
-        </Link>
+        <div className="relative">
+          <Link to="/settings">
+            <Button variant="outline" size="icon">
+              <Settings className="h-4 w-4" />
+            </Button>
+          </Link>
+          {!isSettingsConfigured && (
+            <Badge 
+              variant="destructive" 
+              className="absolute -top-2 -right-2 h-3 w-3 p-0 rounded-full"
+            />
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
