@@ -6,8 +6,14 @@ import { FormFields } from "@/components/FormFields";
 import { PDFPreview } from "@/components/PDFPreview";
 import { generatePDF } from "@/lib/pdfGenerator";
 import { useToast } from "@/components/ui/use-toast";
-import { Settings } from "lucide-react";
+import { Settings, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const Index = () => {
   const [formData, setFormData] = useState({
@@ -57,7 +63,19 @@ const Index = () => {
     <div className="container py-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Hebammenwartgeld Kanton Zug</h1>
-        <div className="relative">
+        <div className="flex gap-2">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <Info className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Hier können Sie eine Rechnung für das Hebammenwartgeld erstellen.</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <Link to="/settings">
             <Button 
               variant="outline" 
