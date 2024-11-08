@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import { useState } from "react";
 import { saveSenderInfo, getSettings } from "@/lib/presetStorage";
 
 const Settings = () => {
@@ -22,7 +24,15 @@ const Settings = () => {
 
   return (
     <div className="container py-8">
-      <h1 className="text-3xl font-bold mb-8">Einstellungen</h1>
+      <div className="flex items-center justify-between mb-8">
+        <Link to="/">
+          <Button variant="ghost" size="icon" className="text-muted-foreground">
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+        </Link>
+        <h1 className="text-3xl font-bold">Einstellungen</h1>
+        <div className="w-10"></div> {/* Spacer to center the title */}
+      </div>
       
       <div className="max-w-2xl space-y-8">
         <Card className="p-6">
