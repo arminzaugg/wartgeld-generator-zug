@@ -39,17 +39,18 @@ export const generatePDF = (data: FormData): string => {
   doc.text(administration.address, 120, administration.name ? 59 : 52);
   doc.text(administration.city, 120, administration.name ? 66 : 59);
   
-  // Add invoice title
-  doc.setFontSize(14);
+  // Add invoice title with larger font and bold
+  doc.setFontSize(16);
+  doc.setFont("helvetica", "bold");
   doc.text("Rechnung: Hebammenwartgeld", 20, 90);
   
-  // Add legal basis
+  // Add legal basis in bold
   doc.setFontSize(10);
-  doc.setFont("helvetica", "italic");
+  doc.setFont("helvetica", "bold");
   doc.text("gestützt auf § 53 des Gesundheitsgesetzes vom 30. Oktober 2008, und § 53 der", 20, 105);
   doc.text("Gesundheitsverordnung vom 30. Juni 2009", 20, 112);
   
-  // Add patient information
+  // Reset font to normal for the rest of the document
   doc.setFont("helvetica", "normal");
   doc.text("Betreuung von", 20, 130);
   doc.text(`${data.vorname} ${data.nachname}`, 20, 140);
