@@ -53,10 +53,10 @@ export const generatePDF = (data: FormData): string => {
   // Reset font to normal and increase size for patient information
   doc.setFont("helvetica", "normal");
   doc.setFontSize(12);
-  doc.text("Betreuung von", 20, 130);
-  doc.text(`${data.vorname} ${data.nachname}`, 20, 135);
-  doc.text(`${data.address}, ${data.plz} ${data.ort}`, 20, 140);
-  doc.text(new Date().toLocaleDateString('de-CH'), 20, 145);
+  doc.text("Betreuung von", 20, 120);
+  doc.text(`${data.vorname} ${data.nachname}`, 20, 125);
+  doc.text(`${data.address}, ${data.plz} ${data.ort}`, 20, 130);
+  doc.text(new Date().toLocaleDateString('de-CH'), 20, 135);
   
   // Add service table
   doc.setFontSize(11);
