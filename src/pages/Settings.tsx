@@ -81,7 +81,7 @@ Bahnhofstrasse 23
 info@hebamme.ch
 +41 79 345 45 45
 IBAN CH33 0033 0033 0033 0033 3
-QR IBAN"
+QR IBAN CH44 0044 0044 0044 0044 4"
               value={senderInfo}
               onChange={(e) => setSenderInfo(e.target.value)}
               className="min-h-[200px] font-mono"
