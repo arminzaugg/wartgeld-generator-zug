@@ -77,18 +77,18 @@ export const generatePDF = (data: FormData): string => {
   // Add footer text
   doc.setFontSize(9);
   doc.setFont("helvetica", "normal");
-  doc.text("Zutreffendes ankreuzen, Formular vollständig und in Blockschrift ausfüllen", 20, 190);
+  doc.text("Zutreffendes ankreuzen, Formular vollständig und in Blockschrift ausfüllen", 20, 180);
   
-  doc.text("Die Unterzeichnende bescheinigt die Richtigkeit obiger Angaben", 20, 220);
-  doc.text("Mit freundlichen Grüssen", 20, 230);
+  doc.text("Die Unterzeichnende bescheinigt die Richtigkeit obiger Angaben", 20, 200);
+  doc.text("Mit freundlichen Grüssen", 20, 210);
   
   // Add signature line
-  doc.text("Ort / Datum", 20, 240);
-  doc.text("Unterschrift Hebamme", 120, 240);
+  doc.text("Ort / Datum", 20, 220);
+  doc.text("Unterschrift Hebamme", 120, 220);
   
   // Draw horizontal lines instead of diagonal ones
-  doc.line(20, 250, 80, 250); // Line for place/date
-  doc.line(120, 250, 180, 250); // Line for signature
+  doc.line(20, 230, 80, 230); // Line for place/date
+  doc.line(120, 230, 180, 230); // Line for signature
   
   // Add payment terms
   doc.setFontSize(8);
