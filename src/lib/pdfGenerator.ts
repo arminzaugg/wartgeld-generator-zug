@@ -31,13 +31,13 @@ export const generatePDF = (data: FormData): string => {
   doc.text("IBAN CH97 0078 7785 4071 5467 3", 20, 59);
   doc.text("QR IBAN CH22 3078 7785 4071 5467 3", 20, 66);
   
-  // Add recipient information (administration) - top right
-  doc.text(administration.title, 120, 20);
+  // Add recipient information (administration) - moved lower for envelope window
+  doc.text(administration.title, 120, 45);
   if (administration.name) {
-    doc.text(administration.name, 120, 27);
+    doc.text(administration.name, 120, 52);
   }
-  doc.text(administration.address, 120, administration.name ? 34 : 27);
-  doc.text(administration.city, 120, administration.name ? 41 : 34);
+  doc.text(administration.address, 120, administration.name ? 59 : 52);
+  doc.text(administration.city, 120, administration.name ? 66 : 59);
   
   // Add invoice title
   doc.setFontSize(14);
