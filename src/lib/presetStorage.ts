@@ -11,7 +11,20 @@ export interface Preset {
   };
 }
 
+export interface Settings {
+  senderInfo: string;
+}
+
 const STORAGE_KEY = 'form-presets';
+const SETTINGS_KEY = 'form-settings';
+
+const DEFAULT_SENDER_INFO = `Martina Mustermann
+Strasse
+PLZ Ort
+Email
+Mobile
+IBAN
+QR IBAN`;
 
 export const savePreset = (preset: Preset): void => {
   const presets = getPresets();
@@ -27,4 +40,15 @@ export const getPresets = (): Preset[] => {
 export const deletePreset = (id: string): void => {
   const presets = getPresets().filter(p => p.id !== id);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(presets));
+};
+
+export const saveSenderInfo = (info: string): void => {
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify({ senderInfo: info }));
+};
+
+export const getSenderInfo = (): string => {
+  const stored = localStorage.getItem(SETTINGS_KEY);
+  if (!stored) return DEFAULT_SENDER_INFO;
+  const settings: Settings = JSON.parse(stored);
+  return settings.senderInfo || DEFAULT_SENDER_INFO;
 };

@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
-import { Preset, savePreset, getPresets, deletePreset } from "@/lib/presetStorage";
+import { Preset, savePreset, getPresets, deletePreset, saveSenderInfo, getSenderInfo } from "@/lib/presetStorage";
 import { Trash2 } from "lucide-react";
 
 const Settings = () => {
   const [presetName, setPresetName] = useState("");
   const [presets, setPresets] = useState<Preset[]>(getPresets());
+  const [senderInfo, setSenderInfo] = useState(getSenderInfo());
   const { toast } = useToast();
 
   const handleSavePreset = () => {
@@ -54,11 +56,32 @@ const Settings = () => {
     });
   };
 
+  const handleSaveSenderInfo = () => {
+    saveSenderInfo(senderInfo);
+    toast({
+      title: "Success",
+      description: "Sender information saved successfully",
+    });
+  };
+
   return (
     <div className="container py-8">
       <h1 className="text-3xl font-bold mb-8">Settings</h1>
       
-      <div className="max-w-2xl">
+      <div className="max-w-2xl space-y-8">
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold mb-4">Sender Information</h2>
+          <div className="space-y-4">
+            <Textarea
+              placeholder="Enter sender information"
+              value={senderInfo}
+              onChange={(e) => setSenderInfo(e.target.value)}
+              className="min-h-[200px] font-mono"
+            />
+            <Button onClick={handleSaveSenderInfo}>Save Sender Info</Button>
+          </div>
+        </Card>
+        
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Manage Presets</h2>
           

@@ -1,5 +1,6 @@
 import jsPDF from 'jspdf';
 import { administrationData } from './administrationData';
+import { getSenderInfo } from './presetStorage';
 
 interface FormData {
   vorname: string;
@@ -16,24 +17,15 @@ interface FormData {
 export const generatePDF = (data: FormData): string => {
   const doc = new jsPDF();
   const administration = administrationData[data.gemeinde];
+  const senderInfo = getSenderInfo().split('\n');
   
-  // Add sender information (top left) - more compact spacing
+  // Add sender information (top left)
   doc.setFontSize(11);
-  doc.text("Aline Lusser", 20, 20);
-  doc.text("Im Rank 109", 20, 25);
-  doc.text("6300 Zug", 20, 30);
+  senderInfo.forEach((line, index) => {
+    doc.text(line, 20, 20 + (index * 5));
+  });
   
-  // Add contact information
-  doc.setTextColor(0, 0, 255); // Blue color for email
-  doc.text("info@hebalu.ch", 20, 35);
-  doc.setTextColor(0, 0, 0); // Reset to black
-  doc.text("079 326 61 67", 20, 40);
-  
-  // Add IBAN information
-  doc.text("IBAN CH97 0078 7785 4071 5467 3", 20, 45);
-  doc.text("QR IBAN CH22 3078 7785 4071 5467 3", 20, 50);
-  
-  // Add recipient information (administration) - moved lower for envelope window
+  // Add recipient information (administration)
   doc.text(administration.title, 120, 45);
   if (administration.name) {
     doc.text(administration.name, 120, 52);
