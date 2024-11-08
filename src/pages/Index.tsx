@@ -81,9 +81,11 @@ const Index = () => {
             <PDFPreview pdfUrl={pdfUrl} />
           ) : (
             <div className="h-[600px] flex items-center justify-center bg-gray-50 rounded-lg">
-              <p className="text-gray-500">
-                Füllen Sie das Formular aus und klicken Sie auf "PDF Generieren" um eine Vorschau zu sehen
-              </p>
+              <div className="text-gray-500 flex flex-col items-center space-y-1">
+                <p>Füllen Sie das Formular aus</p>
+                <p>und klicken Sie auf "PDF Generieren"</p>
+                <p>um eine Vorschau zu sehen</p>
+              </div>
             </div>
           )}
         </Card>
