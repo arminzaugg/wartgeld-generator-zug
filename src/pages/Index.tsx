@@ -53,7 +53,7 @@ const Index = () => {
   return (
     <div className="container py-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Wartgeld Generator Kanton Zug</h1>
+        <h1 className="text-3xl font-bold">Hebammenwartgeld Kanton Zug</h1>
         <Link to="/settings">
           <Button variant="outline" size="icon">
             <Settings className="h-4 w-4" />
