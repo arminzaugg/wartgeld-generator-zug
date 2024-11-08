@@ -71,7 +71,7 @@ const Settings = () => {
             </div>
             <div className="space-y-2">
               <label htmlFor="currentDate" className="block text-sm font-medium text-gray-700">
-                Aktuelles Datum
+                Datum
               </label>
               <Input
                 id="currentDate"
