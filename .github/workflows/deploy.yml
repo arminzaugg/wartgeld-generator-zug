@@ -27,9 +27,9 @@ jobs:
         run: npm ci
 
       - name: Build project
-        run: npm run build
+        run: npm run build -- --base=/hebammenwartgeld-kanton-zug/
         env:
-          PUBLIC_URL: '.'
+          PUBLIC_URL: '/hebammenwartgeld-kanton-zug'
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
