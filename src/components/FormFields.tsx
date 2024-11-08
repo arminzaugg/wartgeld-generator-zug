@@ -1,45 +1,72 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AddressLookup } from "./AddressLookup";
 
 interface FormFieldsProps {
   values: {
-    companyName: string;
+    vorname: string;
+    nachname: string;
     address: string;
-    city: string;
-    state: string;
-    zipCode: string;
+    plz: string;
+    ort: string;
+    geburtsdatum: string;
+    gemeinde: string;
     additionalNotes: string;
   };
   onChange: (field: string, value: string) => void;
   onAddressSelect: (address: {
     address: string;
-    city: string;
-    state: string;
-    zipCode: string;
+    ort: string;
+    plz: string;
   }) => void;
 }
+
+const municipalities = [
+  "Zug",
+  "Cham",
+  "Huenenberg",
+  "Risch",
+  "Steinhausen",
+  "Baar",
+  "Neuheim",
+  "Menzingen",
+  "Unteraegeri",
+  "Oberaegeri",
+  "Walchwil"
+];
 
 export const FormFields = ({ values, onChange, onAddressSelect }: FormFieldsProps) => {
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <Label htmlFor="companyName">Company Name</Label>
-        <Input
-          id="companyName"
-          value={values.companyName}
-          onChange={(e) => onChange("companyName", e.target.value)}
-        />
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="vorname">Vorname</Label>
+          <Input
+            id="vorname"
+            value={values.vorname}
+            onChange={(e) => onChange("vorname", e.target.value)}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="nachname">Nachname</Label>
+          <Input
+            id="nachname"
+            value={values.nachname}
+            onChange={(e) => onChange("nachname", e.target.value)}
+          />
+        </div>
       </div>
 
       <div className="space-y-2">
-        <Label>Address Lookup</Label>
+        <Label>Adresse Suchen</Label>
         <AddressLookup onSelect={onAddressSelect} />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="address">Street Address</Label>
+        <Label htmlFor="address">Strasse</Label>
         <Input
           id="address"
           value={values.address}
@@ -49,35 +76,52 @@ export const FormFields = ({ values, onChange, onAddressSelect }: FormFieldsProp
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="city">City</Label>
+          <Label htmlFor="plz">Postleitzahl</Label>
           <Input
-            id="city"
-            value={values.city}
-            onChange={(e) => onChange("city", e.target.value)}
+            id="plz"
+            value={values.plz}
+            onChange={(e) => onChange("plz", e.target.value)}
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="state">State</Label>
+          <Label htmlFor="ort">Ort</Label>
           <Input
-            id="state"
-            value={values.state}
-            onChange={(e) => onChange("state", e.target.value)}
+            id="ort"
+            value={values.ort}
+            onChange={(e) => onChange("ort", e.target.value)}
           />
         </div>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="zipCode">ZIP Code</Label>
+        <Label htmlFor="geburtsdatum">Datum der Geburt</Label>
         <Input
-          id="zipCode"
-          value={values.zipCode}
-          onChange={(e) => onChange("zipCode", e.target.value)}
+          id="geburtsdatum"
+          type="date"
+          value={values.geburtsdatum}
+          onChange={(e) => onChange("geburtsdatum", e.target.value)}
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="additionalNotes">Additional Notes</Label>
+        <Label htmlFor="gemeinde">Wahl der Gemeinde</Label>
+        <Select value={values.gemeinde} onValueChange={(value) => onChange("gemeinde", value)}>
+          <SelectTrigger>
+            <SelectValue placeholder="Wählen Sie eine Gemeinde" />
+          </SelectTrigger>
+          <SelectContent>
+            {municipalities.map((municipality) => (
+              <SelectItem key={municipality} value={municipality}>
+                {municipality}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="additionalNotes">Zusätzliche Bemerkungen</Label>
         <Textarea
           id="additionalNotes"
           value={values.additionalNotes}

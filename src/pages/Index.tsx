@@ -10,11 +10,13 @@ import { Settings } from "lucide-react";
 
 const Index = () => {
   const [formData, setFormData] = useState({
-    companyName: "",
+    vorname: "",
+    nachname: "",
     address: "",
-    city: "",
-    state: "",
-    zipCode: "",
+    plz: "",
+    ort: "",
+    geburtsdatum: "",
+    gemeinde: "",
     additionalNotes: "",
   });
   
@@ -30,21 +32,22 @@ const Index = () => {
 
   const handleAddressSelect = (address: {
     address: string;
-    city: string;
-    state: string;
-    zipCode: string;
+    ort: string;
+    plz: string;
   }) => {
     setFormData((prev) => ({
       ...prev,
-      ...address,
+      address: address.address,
+      ort: address.ort,
+      plz: address.plz,
     }));
   };
 
   const handleGeneratePDF = () => {
-    if (!formData.companyName || !formData.address) {
+    if (!formData.vorname || !formData.nachname || !formData.address) {
       toast({
-        title: "Error",
-        description: "Please fill in all required fields",
+        title: "Fehler",
+        description: "Bitte füllen Sie alle erforderlichen Felder aus",
         variant: "destructive",
       });
       return;
@@ -54,15 +57,15 @@ const Index = () => {
     setPdfUrl(pdfUrl);
     
     toast({
-      title: "Success",
-      description: "PDF generated successfully",
+      title: "Erfolg",
+      description: "PDF wurde erfolgreich generiert",
     });
   };
 
   return (
     <div className="container py-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Form to PDF</h1>
+        <h1 className="text-3xl font-bold">Formular zu PDF</h1>
         <Link to="/settings">
           <Button variant="outline" size="icon">
             <Settings className="h-4 w-4" />
@@ -80,19 +83,19 @@ const Index = () => {
           
           <div className="mt-6">
             <Button onClick={handleGeneratePDF} className="w-full">
-              Generate PDF
+              PDF Generieren
             </Button>
           </div>
         </Card>
 
         <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-4">PDF Preview</h2>
+          <h2 className="text-xl font-semibold mb-4">PDF Vorschau</h2>
           {pdfUrl ? (
             <PDFPreview pdfUrl={pdfUrl} />
           ) : (
             <div className="h-[600px] flex items-center justify-center bg-gray-50 rounded-lg">
               <p className="text-gray-500">
-                Fill the form and click "Generate PDF" to see the preview
+                Füllen Sie das Formular aus und klicken Sie auf "PDF Generieren" um eine Vorschau zu sehen
               </p>
             </div>
           )}
