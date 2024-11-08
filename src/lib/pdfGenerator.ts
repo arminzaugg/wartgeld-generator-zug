@@ -9,6 +9,8 @@ interface FormData {
   ort: string;
   geburtsdatum: string;
   gemeinde: string;
+  betreuungGeburt: boolean;
+  betreuungWochenbett: boolean;
 }
 
 export const generatePDF = (data: FormData): string => {
@@ -58,37 +60,42 @@ export const generatePDF = (data: FormData): string => {
   doc.text(`${data.address}, ${data.plz} ${data.ort}`, 20, 130);
   doc.text(new Date().toLocaleDateString('de-CH'), 20, 135);
   
+  // Calculate total
+  let total = 0;
+  
   // Add service table
   doc.setFontSize(11);
   doc.text("Betreuung der Gebärenden zuhause", 20, 150);
-  doc.text("[ ] ja", 140, 150);
-  doc.text("[ ] nein", 160, 150);
-  doc.text("CHF", 180, 150);
+  doc.text(data.betreuungGeburt ? "☒ ja" : "☐ ja", 140, 150);
+  doc.text(data.betreuungGeburt ? "☐ nein" : "☒ nein", 160, 150);
+  doc.text(data.betreuungGeburt ? "CHF 1000" : "CHF 0", 180, 150);
+  if (data.betreuungGeburt) total += 1000;
   
   doc.text("Pflege der Wöchnerin zuhause", 20, 160);
-  doc.text("[ ] ja", 140, 160);
-  doc.text("[ ] nein", 160, 160);
-  doc.text("CHF", 180, 160);
+  doc.text(data.betreuungWochenbett ? "☒ ja" : "☐ ja", 140, 160);
+  doc.text(data.betreuungWochenbett ? "☐ nein" : "☒ nein", 160, 160);
+  doc.text(data.betreuungWochenbett ? "CHF 400" : "CHF 0", 180, 160);
+  if (data.betreuungWochenbett) total += 400;
   
   doc.setFont("helvetica", "bold");
-  doc.text("Total Rechnungsbetrag", 20, 170);
-  doc.text("CHF", 180, 170);
+  doc.text("Total Rechnungsbetrag", 20, 180);
+  doc.text(`CHF ${total}`, 180, 180);
   
   // Add footer text
   doc.setFontSize(9);
   doc.setFont("helvetica", "normal");
-  doc.text("Zutreffendes ankreuzen, Formular vollständig und in Blockschrift ausfüllen", 20, 180);
+  doc.text("Zutreffendes ankreuzen, Formular vollständig und in Blockschrift ausfüllen", 20, 200);
   
-  doc.text("Die Unterzeichnende bescheinigt die Richtigkeit obiger Angaben", 20, 200);
-  doc.text("Mit freundlichen Grüssen", 20, 210);
+  doc.text("Die Unterzeichnende bescheinigt die Richtigkeit obiger Angaben", 20, 220);
+  doc.text("Mit freundlichen Grüssen", 20, 230);
   
   // Add signature line
-  doc.text("Ort / Datum", 20, 220);
-  doc.text("Unterschrift Hebamme", 120, 220);
+  doc.text("Ort / Datum", 20, 240);
+  doc.text("Unterschrift Hebamme", 120, 240);
   
   // Draw horizontal lines instead of diagonal ones
-  doc.line(20, 230, 80, 230); // Line for place/date
-  doc.line(120, 230, 180, 230); // Line for signature
+  doc.line(20, 250, 80, 250); // Line for place/date
+  doc.line(120, 250, 180, 250); // Line for signature
   
   // Add payment terms
   doc.setFontSize(8);

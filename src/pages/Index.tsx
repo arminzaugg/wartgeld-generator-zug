@@ -17,12 +17,14 @@ const Index = () => {
     ort: "",
     geburtsdatum: "",
     gemeinde: "",
+    betreuungGeburt: false,
+    betreuungWochenbett: false,
   });
   
   const [pdfUrl, setPdfUrl] = useState("");
   const { toast } = useToast();
 
-  const handleFieldChange = (field: string, value: string) => {
+  const handleFieldChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
