@@ -7,7 +7,7 @@ import { PDFPreview } from "@/components/PDFPreview";
 import { generatePDF } from "@/lib/pdfGenerator";
 import { useToast } from "@/components/ui/use-toast";
 import { Settings } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 const Index = () => {
   const [formData, setFormData] = useState({
@@ -60,16 +60,20 @@ const Index = () => {
         <h1 className="text-3xl font-bold">Hebammenwartgeld Kanton Zug</h1>
         <div className="relative">
           <Link to="/settings">
-            <Button variant="outline" size="icon">
-              <Settings className="h-4 w-4" />
+            <Button 
+              variant="outline" 
+              size="icon"
+              className={cn(
+                "relative transition-all duration-300",
+                !isSettingsConfigured && "ring-2 ring-red-500 ring-offset-2 animate-pulse hover:ring-red-600"
+              )}
+            >
+              <Settings className={cn(
+                "h-4 w-4 transition-colors",
+                !isSettingsConfigured && "text-red-500"
+              )} />
             </Button>
           </Link>
-          {!isSettingsConfigured && (
-            <Badge 
-              variant="destructive" 
-              className="absolute -top-1 -right-1 h-2 w-2 p-0 rounded-full"
-            />
-          )}
         </div>
       </div>
 
