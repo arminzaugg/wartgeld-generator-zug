@@ -2,6 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { municipalities } from "@/config/addresses";
 
 interface FormFieldsProps {
   values: {
@@ -17,20 +18,6 @@ interface FormFieldsProps {
   };
   onChange: (field: string, value: string | boolean) => void;
 }
-
-const municipalities = [
-  "Zug",
-  "Cham",
-  "Huenenberg",
-  "Risch",
-  "Steinhausen",
-  "Baar",
-  "Neuheim",
-  "Menzingen",
-  "Unteraegeri",
-  "Oberaegeri",
-  "Walchwil"
-];
 
 export const FormFields = ({ values, onChange }: FormFieldsProps) => {
   return (
