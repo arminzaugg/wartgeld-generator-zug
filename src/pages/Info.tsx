@@ -52,6 +52,14 @@ const Info = () => {
         </section>
 
         <section>
+          <h2 className="text-2xl font-semibold mb-4">Service-Disclaimer</h2>
+          <p className="text-gray-700 leading-relaxed">
+            Dieser Service wird auf Best-Effort-Basis bereitgestellt. Der Anbieter garantiert keine ununterbrochene Verfügbarkeit, 
+            Fehlerfreiheit oder vollständige Funktionalität der Anwendung. Die Nutzung erfolgt auf eigenes Risiko.
+          </p>
+        </section>
+
+        <section>
           <h2 className="text-2xl font-semibold mb-4">Kontakt</h2>
           <p className="text-gray-700 leading-relaxed">
             Armin Zaugg<br />
