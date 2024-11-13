@@ -63,18 +63,11 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   doc.text("Betreuung der Gebärenden zuhause", 20, 150);
   
   // @ts-ignore - CheckBox is available in jsPDF
-  const checkBox1Yes = new doc.AcroForm.CheckBox();
-  checkBox1Yes.fieldName = "betreuungGeburtYes";
-  checkBox1Yes.Rect = [140, 145, 10, 10];
-  checkBox1Yes.value = data.betreuungGeburt ? 'Yes' : 'Off';
-  doc.addField(checkBox1Yes);
-  
-  // @ts-ignore - CheckBox is available in jsPDF
-  const checkBox1No = new doc.AcroForm.CheckBox();
-  checkBox1No.fieldName = "betreuungGeburtNo";
-  checkBox1No.Rect = [160, 145, 10, 10];
-  checkBox1No.value = !data.betreuungGeburt ? 'Yes' : 'Off';
-  doc.addField(checkBox1No);
+  const checkBox1 = new doc.AcroForm.CheckBox();
+  checkBox1.fieldName = "betreuungGeburt";
+  checkBox1.Rect = [140, 145, 10, 10];
+  checkBox1.value = data.betreuungGeburt ? 'Yes' : 'Off';
+  doc.addField(checkBox1);
   
   doc.text(data.betreuungGeburt ? "CHF 1000" : "CHF 0", 180, 150);
   if (data.betreuungGeburt) total += 1000;
@@ -83,18 +76,11 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   doc.text("Pflege der Wöchnerin zuhause", 20, 160);
   
   // @ts-ignore - CheckBox is available in jsPDF
-  const checkBox2Yes = new doc.AcroForm.CheckBox();
-  checkBox2Yes.fieldName = "betreuungWochenbettYes";
-  checkBox2Yes.Rect = [140, 155, 10, 10];
-  checkBox2Yes.value = data.betreuungWochenbett ? 'Yes' : 'Off';
-  doc.addField(checkBox2Yes);
-  
-  // @ts-ignore - CheckBox is available in jsPDF
-  const checkBox2No = new doc.AcroForm.CheckBox();
-  checkBox2No.fieldName = "betreuungWochenbettNo";
-  checkBox2No.Rect = [160, 155, 10, 10];
-  checkBox2No.value = !data.betreuungWochenbett ? 'Yes' : 'Off';
-  doc.addField(checkBox2No);
+  const checkBox2 = new doc.AcroForm.CheckBox();
+  checkBox2.fieldName = "betreuungWochenbett";
+  checkBox2.Rect = [140, 155, 10, 10];
+  checkBox2.value = data.betreuungWochenbett ? 'Yes' : 'Off';
+  doc.addField(checkBox2);
   
   doc.text(data.betreuungWochenbett ? "CHF 400" : "CHF 0", 180, 160);
   if (data.betreuungWochenbett) total += 400;
