@@ -36,15 +36,15 @@ export const generatePDF = (data: FormData): string => {
   doc.text(administration.city, 120, administration.name ? 66 : 59);
   
   // Add invoice title with larger font and bold
-  doc.setFontSize(16);
+  doc.setFontSize(20);
   doc.setFont("helvetica", "bold");
   doc.text("Rechnung: Hebammenwartgeld", 20, 90);
   
   // Add legal basis in bold with reduced spacing
-  doc.setFontSize(10);
+  doc.setFontSize(12);
   doc.setFont("helvetica", "bold");
-  doc.text("gestützt auf § 53 des Gesundheitsgesetzes vom 30. Oktober 2008, und § 53 der", 20, 105);
-  doc.text("Gesundheitsverordnung vom 30. Juni 2009", 20, 110);
+  doc.text("gestützt auf § 53 des Gesundheitsgesetzes vom 30. Oktober 2008, und § 53 der", 20, 100);
+  doc.text("Gesundheitsverordnung vom 30. Juni 2009.", 20, 105);
   
   // Reset font to normal and increase size for patient information
   doc.setFont("helvetica", "normal");
@@ -60,44 +60,38 @@ export const generatePDF = (data: FormData): string => {
   // Add service table with text-based checkbox symbols
   doc.setFontSize(11);
   doc.text("Betreuung der Gebärenden zuhause", 20, 150);
-  doc.text(data.betreuungGeburt ? "[X]" : "[ ]", 140, 150);
-  doc.text(data.betreuungGeburt ? "[ ]" : "[X]", 160, 150);
-  doc.text(data.betreuungGeburt ? "CHF 1000" : "CHF 0", 180, 150);
+  doc.text(data.betreuungGeburt ? "[X] Ja" : "[  ] Ja", 140, 150);
+  doc.text(data.betreuungGeburt ? "[  ] Nein" : "[X] Nein", 160, 150);
+  doc.text(data.betreuungGeburt ? "CHF 1000" : "CHF  0", 180, 150);
   if (data.betreuungGeburt) total += 1000;
   
   doc.text("Pflege der Wöchnerin zuhause", 20, 160);
-  doc.text(data.betreuungWochenbett ? "[X]" : "[ ]", 140, 160);
-  doc.text(data.betreuungWochenbett ? "[ ]" : "[X]", 160, 160);
-  doc.text(data.betreuungWochenbett ? "CHF 400" : "CHF 0", 180, 160);
+  doc.text(data.betreuungWochenbett ? "[X] Ja" : "[  ] Ja", 140, 160);
+  doc.text(data.betreuungWochenbett ? "[  ] Nein" : "[X] Nein", 160, 160);
+  doc.text(data.betreuungWochenbett ? "CHF  400" : "CHF  0", 180, 160);
   if (data.betreuungWochenbett) total += 400;
   
   doc.setFont("helvetica", "bold");
-  doc.text("Total Rechnungsbetrag", 20, 180);
-  doc.text(`CHF ${total}`, 180, 180);
-  
-  // Add footer text
-  doc.setFontSize(9);
-  doc.setFont("helvetica", "normal");
-  doc.text("Zutreffendes ankreuzen, Formular vollständig und in Blockschrift ausfüllen", 20, 200);
+  doc.text("Total Rechnungsbetrag", 20, 170);
+  doc.text(`CHF  ${total}`, 180, 170);
   
   doc.text("Die Unterzeichnende bescheinigt die Richtigkeit obiger Angaben", 20, 220);
-  doc.text("Mit freundlichen Grüssen", 20, 230);
+  doc.setFont("helvetica", "normal")
+  doc.text("Freundliche Grüsse", 20, 230);
   
   // Add signature line and place/date
   const currentDate = new Date().toLocaleDateString('de-CH');
-  doc.text("Ort / Datum", 20, 240);
-  doc.text(`${settings.ortRechnungssteller}, ${currentDate}`, 20, 250);
-  doc.text("Unterschrift Hebamme", 120, 240);
+  doc.text(`${settings.ortRechnungssteller}, ${currentDate}`, 20, 265);
 
   // Add signature if available
   if (settings.signature) {
-    doc.addImage(settings.signature, 'PNG', 120, 245, 40, 20);
+    doc.addImage(settings.signature, 'PNG', 20, 240, 40, 20);
   }
   
   // Add payment terms
   doc.setFontSize(8);
-  doc.text("Zahlbar innert 30 Tagen", 20, 270);
-  doc.text("Die Rechnungsstellung erfolgt bis spätestens 2 Monate nach der Geburt", 20, 275);
+  doc.text("Zahlbar innert 30 Tagen", 20, 280);
+  doc.text("Die Rechnungsstellung erfolgt bis spätestens 2 Monate nach der Geburt", 20, 285);
   
   // Generate PDF as base64 string
   return doc.output('datauristring');
