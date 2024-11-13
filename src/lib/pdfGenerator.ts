@@ -34,9 +34,9 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   // Load and add custom font
   const fontBase64 = await loadFont();
   if (fontBase64) {
-    doc.addFileToVFS('Roboto-Regular.ttf', fontBase64);
-    doc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
-    doc.setFont('Roboto');
+    doc.addFileToVFS('Manrope-Medium.ttf', fontBase64);
+    doc.addFont('Manrope-Medium.ttf', 'Manrope', 'normal');
+    doc.setFont('Manrope');
   }
   
   // Add sender information (top left)
@@ -55,17 +55,17 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   
   // Add invoice title with larger font and bold
   doc.setFontSize(16);
-  doc.setFont('Roboto', 'bold');
+  doc.setFont('Manrope', 'bold');
   doc.text("Rechnung: Hebammenwartgeld", 20, 90);
   
   // Add legal basis in bold with reduced spacing
   doc.setFontSize(10);
-  doc.setFont('Roboto', 'bold');
+  doc.setFont('Manrope', 'bold');
   doc.text("gestützt auf § 53 des Gesundheitsgesetzes vom 30. Oktober 2008, und § 53 der", 20, 105);
   doc.text("Gesundheitsverordnung vom 30. Juni 2009", 20, 110);
   
   // Reset font to normal and increase size for patient information
-  doc.setFont('Roboto', 'normal');
+  doc.setFont('Manrope', 'normal');
   doc.setFontSize(12);
   doc.text("Betreuung von", 20, 120);
   doc.text(`${data.vorname} ${data.nachname}`, 20, 125);
@@ -88,13 +88,13 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   doc.text(data.betreuungWochenbett ? "CHF 400" : "CHF 0", 180, 160);
   if (data.betreuungWochenbett) total += 400;
   
-  doc.setFont('Roboto', 'bold');
+  doc.setFont('Manrope', 'bold');
   doc.text("Total Rechnungsbetrag", 20, 180);
   doc.text(`CHF ${total}`, 180, 180);
   
   // Add footer text
   doc.setFontSize(9);
-  doc.setFont('Roboto', 'normal');
+  doc.setFont('Manrope', 'normal');
   doc.text("Zutreffendes ankreuzen, Formular vollständig und in Blockschrift ausfüllen", 20, 200);
   
   doc.text("Die Unterzeichnende bescheinigt die Richtigkeit obiger Angaben", 20, 220);
