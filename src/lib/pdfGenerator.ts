@@ -63,16 +63,18 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   doc.text("Betreuung der Gebärenden zuhause", 20, 150);
   
   // Radio buttons for first service
-  const radioGroup1 = new doc.AcroForm.RadioButton();
+  const radioGroup1 = doc.AcroForm.RadioButton();
+  radioGroup1.value = data.betreuungGeburt ? "Ja" : "Nein";
+  radioGroup1.Subtype = "Form";
   radioGroup1.fieldName = "betreuungGeburt";
   
   const radioYes1 = radioGroup1.createOption("Ja");
   radioYes1.Rect = [140, 145, 10, 10];
-  radioYes1.appearanceState = data.betreuungGeburt ? "Ja" : "Off";
+  radioYes1.AS = "/Ja";
   
   const radioNo1 = radioGroup1.createOption("Nein");
   radioNo1.Rect = [160, 145, 10, 10];
-  radioNo1.appearanceState = !data.betreuungGeburt ? "Nein" : "Off";
+  radioNo1.AS = "/Nein";
   
   doc.addField(radioGroup1);
   
@@ -83,16 +85,18 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   doc.text("Pflege der Wöchnerin zuhause", 20, 160);
   
   // Radio buttons for second service
-  const radioGroup2 = new doc.AcroForm.RadioButton();
+  const radioGroup2 = doc.AcroForm.RadioButton();
+  radioGroup2.value = data.betreuungWochenbett ? "Ja" : "Nein";
+  radioGroup2.Subtype = "Form";
   radioGroup2.fieldName = "betreuungWochenbett";
   
   const radioYes2 = radioGroup2.createOption("Ja");
   radioYes2.Rect = [140, 155, 10, 10];
-  radioYes2.appearanceState = data.betreuungWochenbett ? "Ja" : "Off";
+  radioYes2.AS = "/Ja";
   
   const radioNo2 = radioGroup2.createOption("Nein");
   radioNo2.Rect = [160, 155, 10, 10];
-  radioNo2.appearanceState = !data.betreuungWochenbett ? "Nein" : "Off";
+  radioNo2.AS = "/Nein";
   
   doc.addField(radioGroup2);
   
