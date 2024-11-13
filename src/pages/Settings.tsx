@@ -18,6 +18,7 @@ const Settings = () => {
 
   const handleSaveSettings = () => {
     saveSenderInfo(senderInfo, ortRechnungssteller, settings.signature);
+    localStorage.setItem("settings-viewed", "true");
     toast({
       title: "Success",
       description: "Settings saved successfully",
@@ -26,6 +27,7 @@ const Settings = () => {
 
   const handleSaveSignature = (signature: string) => {
     saveSenderInfo(senderInfo, ortRechnungssteller, signature);
+    localStorage.setItem("settings-viewed", "true");
   };
 
   return (

@@ -7,7 +7,6 @@ import { PDFPreview } from "@/components/PDFPreview";
 import { generatePDF } from "@/lib/pdfGenerator";
 import { useToast } from "@/components/ui/use-toast";
 import { Settings, Info } from "lucide-react";
-import { cn } from "@/lib/utils";
 import {
   Tooltip,
   TooltipContent,
@@ -31,7 +30,7 @@ const Index = () => {
   const [pdfUrl, setPdfUrl] = useState("");
   const { toast } = useToast();
 
-  const isSettingsConfigured = localStorage.getItem("rechnungsstellerin");
+  const hasViewedSettings = localStorage.getItem("settings-viewed") === "true";
 
   const handleFieldChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({
@@ -85,7 +84,7 @@ const Index = () => {
               className="relative"
             >
               <Settings className="h-4 w-4" />
-              {!isSettingsConfigured && (
+              {!hasViewedSettings && (
                 <span className="absolute -top-1 -right-1 h-2 w-2 bg-red-500 rounded-full" />
               )}
             </Button>
