@@ -16,7 +16,7 @@ interface FormData {
 
 const loadFont = async (): Promise<string> => {
   try {
-    const response = await fetch('/src/assets/fonts/Manrope-Medium.ttf');
+    const response = await fetch('/src/assets/fonts/Roboto-Regular.ttf');
     const fontBuffer = await response.arrayBuffer();
     return Buffer.from(fontBuffer).toString('base64');
   } catch (error) {
@@ -34,9 +34,9 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   // Load and add custom font
   const fontBase64 = await loadFont();
   if (fontBase64) {
-    doc.addFileToVFS('Manrope-Medium.ttf', fontBase64);
-    doc.addFont('Manrope-Medium.ttf', 'Manrope', 'normal');
-    doc.setFont('Manrope');
+    doc.addFileToVFS('Roboto-Regular.ttf', fontBase64);
+    doc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
+    doc.setFont('Roboto');
   }
   
   // Add sender information (top left)
@@ -55,17 +55,17 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   
   // Add invoice title with larger font and bold
   doc.setFontSize(16);
-  doc.setFont('Manrope', 'bold');
+  doc.setFont('Roboto', 'bold');
   doc.text("Rechnung: Hebammenwartgeld", 20, 90);
   
   // Add legal basis in bold with reduced spacing
   doc.setFontSize(10);
-  doc.setFont('Manrope', 'bold');
+  doc.setFont('Roboto', 'bold');
   doc.text("gestützt auf § 53 des Gesundheitsgesetzes vom 30. Oktober 2008, und § 53 der", 20, 105);
   doc.text("Gesundheitsverordnung vom 30. Juni 2009", 20, 110);
   
   // Reset font to normal and increase size for patient information
-  doc.setFont('Manrope', 'normal');
+  doc.setFont('Roboto', 'normal');
   doc.setFontSize(12);
   doc.text("Betreuung von", 20, 120);
   doc.text(`${data.vorname} ${data.nachname}`, 20, 125);
@@ -75,27 +75,26 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   // Calculate total and add service table
   let total = 0;
   
-  // Use simple ASCII characters for checkboxes instead of UTF-8
   doc.setFontSize(11);
   doc.text("Betreuung der Gebärenden zuhause", 20, 150);
-  doc.text(data.betreuungGeburt ? "X" : " ", 140, 150);
-  doc.text(data.betreuungGeburt ? " " : "X", 160, 150);
+  doc.text(data.betreuungGeburt ? "☒" : "☐", 140, 150);
+  doc.text(data.betreuungGeburt ? "☐" : "☒", 160, 150);
   doc.text(data.betreuungGeburt ? "CHF 1000" : "CHF 0", 180, 150);
   if (data.betreuungGeburt) total += 1000;
   
   doc.text("Pflege der Wöchnerin zuhause", 20, 160);
-  doc.text(data.betreuungWochenbett ? "X" : " ", 140, 160);
-  doc.text(data.betreuungWochenbett ? " " : "X", 160, 160);
+  doc.text(data.betreuungWochenbett ? "☒" : "☐", 140, 160);
+  doc.text(data.betreuungWochenbett ? "☐" : "☒", 160, 160);
   doc.text(data.betreuungWochenbett ? "CHF 400" : "CHF 0", 180, 160);
   if (data.betreuungWochenbett) total += 400;
   
-  doc.setFont('Manrope', 'bold');
+  doc.setFont('Roboto', 'bold');
   doc.text("Total Rechnungsbetrag", 20, 180);
   doc.text(`CHF ${total}`, 180, 180);
   
   // Add footer text
   doc.setFontSize(9);
-  doc.setFont('Manrope', 'normal');
+  doc.setFont('Roboto', 'normal');
   doc.text("Zutreffendes ankreuzen, Formular vollständig und in Blockschrift ausfüllen", 20, 200);
   
   doc.text("Die Unterzeichnende bescheinigt die Richtigkeit obiger Angaben", 20, 220);
