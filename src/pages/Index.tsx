@@ -39,7 +39,7 @@ const Index = () => {
     }));
   };
 
-  const handleGeneratePDF = async () => {
+  const handleGeneratePDF = () => {
     if (!formData.vorname || !formData.nachname || !formData.gemeinde) {
       toast({
         title: "Fehler",
@@ -49,21 +49,13 @@ const Index = () => {
       return;
     }
 
-    try {
-      const pdfUrl = await generatePDF(formData);
-      setPdfUrl(pdfUrl);
-      
-      toast({
-        title: "Erfolgreich",
-        description: "PDF wurde erfolgreich erstellt",
-      });
-    } catch (error) {
-      toast({
-        title: "Fehler",
-        description: "PDF konnte nicht erstellt werden",
-        variant: "destructive",
-      });
-    }
+    const pdfUrl = generatePDF(formData);
+    setPdfUrl(pdfUrl);
+    
+    toast({
+      title: "Erfolgreich",
+      description: "PDF wurde erfolgreich erstellt",
+    });
   };
 
   return (

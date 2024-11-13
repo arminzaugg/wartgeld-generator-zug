@@ -1,4 +1,6 @@
-import { jsPDF } from 'jspdf';
+import jsPDF from 'jspdf';
+import { administrationData } from './administrationData';
+import { getSettings } from './presetStorage';
 
 interface FormData {
   vorname: string;
@@ -12,111 +14,90 @@ interface FormData {
   betreuungWochenbett: boolean;
 }
 
-export const generatePDF = async (data: FormData): Promise<string> => {
+export const generatePDF = (data: FormData): string => {
   const doc = new jsPDF();
+  const administration = administrationData[data.gemeinde];
+  const settings = getSettings();
+  const senderInfo = settings.senderInfo.split('\n');
   
-  // Set font
-  doc.setFont("helvetica");
-  
-  // Add sender info
-  doc.setFontSize(10);
-  const settings = JSON.parse(localStorage.getItem('settings') || '{}');
-  const senderInfo = settings.senderInfo || '';
-  const senderLines = senderInfo.split('\n');
-  senderLines.forEach((line: string, index: number) => {
+  // Add sender information (top left)
+  doc.setFontSize(11);
+  senderInfo.forEach((line, index) => {
     doc.text(line, 20, 20 + (index * 5));
   });
-
-  // Add recipient info (from administration data)
-  const administrationData = {
-    Zug: { title: 'Gemeinde Zug', name: '', address: 'Gubelstrasse 22', city: '6300 Zug' },
-    Cham: { title: 'Gemeinde Cham', name: '', address: 'Mandelhof', city: '6330 Cham' },
-    Huenenberg: { title: 'Gemeinde Hünenberg', name: '', address: 'Chamerstrasse 11', city: '6331 Hünenberg' },
-    Risch: { title: 'Gemeinde Risch', name: '', address: 'Zentrum 1', city: '6343 Rotkreuz' },
-    Steinhausen: { title: 'Gemeinde Steinhausen', name: '', address: 'Bahnhofstrasse 3', city: '6312 Steinhausen' },
-    Baar: { title: 'Gemeinde Baar', name: '', address: 'Rathausstrasse 6', city: '6340 Baar' },
-    Neuheim: { title: 'Gemeinde Neuheim', name: '', address: 'Dorfplatz 5', city: '6345 Neuheim' },
-    Menzingen: { title: 'Gemeinde Menzingen', name: '', address: 'Rathaus', city: '6313 Menzingen' },
-    Unteraegeri: { title: 'Gemeinde Unterägeri', name: '', address: 'Seestrasse 2', city: '6314 Unterägeri' },
-    Oberaegeri: { title: 'Gemeinde Oberägeri', name: '', address: 'Hauptstrasse 78', city: '6315 Oberägeri' },
-    Walchwil: { title: 'Gemeinde Walchwil', name: '', address: 'Bahnhofstrasse 5', city: '6318 Walchwil' }
-  };
   
-  const administration = administrationData[data.gemeinde as keyof typeof administrationData];
-  doc.text([
-    administration.title,
-    administration.name,
-    administration.address,
-    administration.city
-  ], 120, 45);
-
-  // Add title
-  doc.setFontSize(14);
-  doc.text('Rechnung: Hebammenwartgeld', 20, 90);
-
-  // Add legal basis
+  // Add recipient information (administration)
+  doc.text(administration.title, 120, 45);
+  if (administration.name) {
+    doc.text(administration.name, 120, 52);
+  }
+  doc.text(administration.address, 120, administration.name ? 59 : 52);
+  doc.text(administration.city, 120, administration.name ? 66 : 59);
+  
+  // Add invoice title with larger font and bold
+  doc.setFontSize(16);
+  doc.setFont("helvetica", "bold");
+  doc.text("Rechnung: Hebammenwartgeld", 20, 90);
+  
+  // Add legal basis in bold with reduced spacing
   doc.setFontSize(10);
-  doc.text('gestützt auf § 53 des Gesundheitsgesetzes vom 30. Oktober 2008, und § 53 der', 20, 105);
-  doc.text('Gesundheitsverordnung vom 30. Juni 2009', 20, 110);
-
-  // Add patient info
-  doc.text([
-    'Betreuung von',
-    `${data.vorname} ${data.nachname}`,
-    `${data.address}, ${data.plz} ${data.ort}`,
-    new Date().toLocaleDateString('de-CH')
-  ], 20, 120);
-
-  // Add services
+  doc.setFont("helvetica", "bold");
+  doc.text("gestützt auf § 53 des Gesundheitsgesetzes vom 30. Oktober 2008, und § 53 der", 20, 105);
+  doc.text("Gesundheitsverordnung vom 30. Juni 2009", 20, 110);
+  
+  // Reset font to normal and increase size for patient information
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(12);
+  doc.text("Betreuung von", 20, 120);
+  doc.text(`${data.vorname} ${data.nachname}`, 20, 125);
+  doc.text(`${data.address}, ${data.plz} ${data.ort}`, 20, 130);
+  doc.text(new Date().toLocaleDateString('de-CH'), 20, 135);
+  
+  // Calculate total
   let total = 0;
-  const services = [];
-
-  if (data.betreuungGeburt) {
-    services.push(['[X]', 'Betreuung der Gebärenden zuhause', 'CHF 1000']);
-    total += 1000;
-  } else {
-    services.push(['[ ]', 'Betreuung der Gebärenden zuhause', 'CHF 0']);
-  }
-
-  if (data.betreuungWochenbett) {
-    services.push(['[X]', 'Pflege der Wöchnerin zuhause', 'CHF 400']);
-    total += 400;
-  } else {
-    services.push(['[ ]', 'Pflege der Wöchnerin zuhause', 'CHF 0']);
-  }
-
-  services.forEach((service, index) => {
-    doc.text(service[0], 20, 150 + (index * 10));
-    doc.text(service[1], 30, 150 + (index * 10));
-    doc.text(service[2], 180, 150 + (index * 10));
-  });
-
-  // Add total
-  doc.text(`Total Rechnungsbetrag: CHF ${total}`, 20, 180);
-
-  // Add footer
-  doc.text([
-    'Zutreffendes ankreuzen, Formular vollständig und in Blockschrift ausfüllen',
-    'Die Unterzeichnende bescheinigt die Richtigkeit obiger Angaben',
-    'Mit freundlichen Grüssen'
-  ], 20, 200);
-
-  // Add place and date
-  const ortRechnungssteller = settings.ortRechnungssteller || '';
-  doc.text(`${ortRechnungssteller}, ${new Date().toLocaleDateString('de-CH')}`, 20, 250);
+  
+  // Add service table with text-based checkbox symbols
+  doc.setFontSize(11);
+  doc.text("Betreuung der Gebärenden zuhause", 20, 150);
+  doc.text(data.betreuungGeburt ? "[X]" : "[ ]", 140, 150);
+  doc.text(data.betreuungGeburt ? "[ ]" : "[X]", 160, 150);
+  doc.text(data.betreuungGeburt ? "CHF 1000" : "CHF 0", 180, 150);
+  if (data.betreuungGeburt) total += 1000;
+  
+  doc.text("Pflege der Wöchnerin zuhause", 20, 160);
+  doc.text(data.betreuungWochenbett ? "[X]" : "[ ]", 140, 160);
+  doc.text(data.betreuungWochenbett ? "[ ]" : "[X]", 160, 160);
+  doc.text(data.betreuungWochenbett ? "CHF 400" : "CHF 0", 180, 160);
+  if (data.betreuungWochenbett) total += 400;
+  
+  doc.setFont("helvetica", "bold");
+  doc.text("Total Rechnungsbetrag", 20, 180);
+  doc.text(`CHF ${total}`, 180, 180);
+  
+  // Add footer text
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "normal");
+  doc.text("Zutreffendes ankreuzen, Formular vollständig und in Blockschrift ausfüllen", 20, 200);
+  
+  doc.text("Die Unterzeichnende bescheinigt die Richtigkeit obiger Angaben", 20, 220);
+  doc.text("Mit freundlichen Grüssen", 20, 230);
+  
+  // Add signature line and place/date
+  const currentDate = new Date().toLocaleDateString('de-CH');
+  doc.text("Ort / Datum", 20, 240);
+  doc.text(`${settings.ortRechnungssteller}, ${currentDate}`, 20, 250);
+  doc.text("Unterschrift Hebamme", 120, 240);
 
   // Add signature if available
   if (settings.signature) {
-    const img = new Image();
-    img.src = settings.signature;
-    doc.addImage(img, 'PNG', 120, 245, 40, 20);
+    doc.addImage(settings.signature, 'PNG', 120, 245, 40, 20);
   }
-
+  
   // Add payment terms
-  doc.text([
-    'Zahlbar innert 30 Tagen',
-    'Die Rechnungsstellung erfolgt bis spätestens 2 Monate nach der Geburt'
-  ], 20, 270);
-
+  doc.setFontSize(8);
+  doc.text("Zahlbar innert 30 Tagen", 20, 270);
+  doc.text("Die Rechnungsstellung erfolgt bis spätestens 2 Monate nach der Geburt", 20, 275);
+  
+  // Generate PDF as base64 string
   return doc.output('datauristring');
 };
