@@ -56,19 +56,46 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   doc.text(`${data.address}, ${data.plz} ${data.ort}`, 20, 130);
   doc.text(new Date().toLocaleDateString('de-CH'), 20, 135);
   
-  // Calculate total and add service table
+  // Calculate total and add service table with checkboxes
   let total = 0;
   
-  doc.setFontSize(11);
+  // Service 1: Betreuung der Gebärenden
   doc.text("Betreuung der Gebärenden zuhause", 20, 150);
-  doc.text(data.betreuungGeburt ? "✅" : "⬜", 140, 150);
-  doc.text(data.betreuungGeburt ? "⬜" : "✅", 160, 150);
+  
+  // @ts-ignore - CheckBox is available in jsPDF
+  const checkBox1Yes = new doc.AcroForm.CheckBox();
+  checkBox1Yes.fieldName = "betreuungGeburtYes";
+  checkBox1Yes.Rect = [140, 145, 10, 10];
+  checkBox1Yes.value = data.betreuungGeburt ? 'Yes' : 'Off';
+  doc.addField(checkBox1Yes);
+  
+  // @ts-ignore - CheckBox is available in jsPDF
+  const checkBox1No = new doc.AcroForm.CheckBox();
+  checkBox1No.fieldName = "betreuungGeburtNo";
+  checkBox1No.Rect = [160, 145, 10, 10];
+  checkBox1No.value = !data.betreuungGeburt ? 'Yes' : 'Off';
+  doc.addField(checkBox1No);
+  
   doc.text(data.betreuungGeburt ? "CHF 1000" : "CHF 0", 180, 150);
   if (data.betreuungGeburt) total += 1000;
   
+  // Service 2: Pflege der Wöchnerin
   doc.text("Pflege der Wöchnerin zuhause", 20, 160);
-  doc.text(data.betreuungWochenbett ? "✅" : "⬜", 140, 160);
-  doc.text(data.betreuungWochenbett ? "⬜" : "✅", 160, 160);
+  
+  // @ts-ignore - CheckBox is available in jsPDF
+  const checkBox2Yes = new doc.AcroForm.CheckBox();
+  checkBox2Yes.fieldName = "betreuungWochenbettYes";
+  checkBox2Yes.Rect = [140, 155, 10, 10];
+  checkBox2Yes.value = data.betreuungWochenbett ? 'Yes' : 'Off';
+  doc.addField(checkBox2Yes);
+  
+  // @ts-ignore - CheckBox is available in jsPDF
+  const checkBox2No = new doc.AcroForm.CheckBox();
+  checkBox2No.fieldName = "betreuungWochenbettNo";
+  checkBox2No.Rect = [160, 155, 10, 10];
+  checkBox2No.value = !data.betreuungWochenbett ? 'Yes' : 'Off';
+  doc.addField(checkBox2No);
+  
   doc.text(data.betreuungWochenbett ? "CHF 400" : "CHF 0", 180, 160);
   if (data.betreuungWochenbett) total += 400;
   
