@@ -82,15 +82,12 @@ const Index = () => {
             <Button 
               variant="outline" 
               size="icon"
-              className={cn(
-                "relative transition-all duration-1000",
-                !isSettingsConfigured && "ring-[0.5px] ring-yellow-200 hover:ring-yellow-300 animate-[pulse_4s_ease-in-out_infinite]"
-              )}
+              className="relative"
             >
-              <Settings className={cn(
-                "h-4 w-4",
-                !isSettingsConfigured && "text-yellow-300"
-              )} />
+              <Settings className="h-4 w-4" />
+              {!isSettingsConfigured && (
+                <span className="absolute -top-1 -right-1 h-2 w-2 bg-red-500 rounded-full" />
+              )}
             </Button>
           </Link>
         </div>
