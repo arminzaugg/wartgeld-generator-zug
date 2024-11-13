@@ -16,7 +16,7 @@ interface FormData {
 
 const loadFont = async (): Promise<string> => {
   try {
-    const response = await fetch('/src/assets/fonts/Roboto-Regular.ttf');
+    const response = await fetch('/src/assets/fonts/Manrope-Medium.ttf');
     const fontBuffer = await response.arrayBuffer();
     return Buffer.from(fontBuffer).toString('base64');
   } catch (error) {
