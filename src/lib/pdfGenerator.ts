@@ -1,6 +1,4 @@
-import { Template, generate } from '@pdfme/generator';
-import { administrationData } from './administrationData';
-import { getSettings } from './presetStorage';
+import { jsPDF } from 'jspdf';
 
 interface FormData {
   vorname: string;
@@ -15,69 +13,110 @@ interface FormData {
 }
 
 export const generatePDF = async (data: FormData): Promise<string> => {
-  const administration = administrationData[data.gemeinde];
-  const settings = getSettings();
-  const senderInfo = settings.senderInfo.split('\n');
+  const doc = new jsPDF();
+  
+  // Set font
+  doc.setFont("helvetica");
+  
+  // Add sender info
+  doc.setFontSize(10);
+  const settings = JSON.parse(localStorage.getItem('settings') || '{}');
+  const senderInfo = settings.senderInfo || '';
+  const senderLines = senderInfo.split('\n');
+  senderLines.forEach((line: string, index: number) => {
+    doc.text(line, 20, 20 + (index * 5));
+  });
 
-  const template: Template = {
-    basePdf: new Uint8Array([]), // Empty base PDF
-    schemas: [
-      {
-        senderInfo: { type: 'text', position: { x: 20, y: 20 }, width: 100, height: 50 },
-        recipientInfo: { type: 'text', position: { x: 120, y: 45 }, width: 100, height: 50 },
-        title: { type: 'text', position: { x: 20, y: 90 }, width: 200, height: 10 },
-        legalBasis1: { type: 'text', position: { x: 20, y: 105 }, width: 400, height: 10 },
-        legalBasis2: { type: 'text', position: { x: 20, y: 110 }, width: 400, height: 10 },
-        patientInfo: { type: 'text', position: { x: 20, y: 120 }, width: 200, height: 40 },
-        service1: { type: 'text', position: { x: 20, y: 150 }, width: 150, height: 10 },
-        service1Amount: { type: 'text', position: { x: 180, y: 150 }, width: 50, height: 10 },
-        service1Radio: { type: 'radio', position: { x: 140, y: 150 }, width: 30, height: 10 },
-        service2: { type: 'text', position: { x: 20, y: 160 }, width: 150, height: 10 },
-        service2Amount: { type: 'text', position: { x: 180, y: 160 }, width: 50, height: 10 },
-        service2Radio: { type: 'radio', position: { x: 140, y: 160 }, width: 30, height: 10 },
-        total: { type: 'text', position: { x: 20, y: 180 }, width: 150, height: 10 },
-        totalAmount: { type: 'text', position: { x: 180, y: 180 }, width: 50, height: 10 },
-        footer1: { type: 'text', position: { x: 20, y: 200 }, width: 400, height: 10 },
-        footer2: { type: 'text', position: { x: 20, y: 220 }, width: 400, height: 10 },
-        footer3: { type: 'text', position: { x: 20, y: 230 }, width: 400, height: 10 },
-        placeDate: { type: 'text', position: { x: 20, y: 250 }, width: 200, height: 10 },
-        signature: { type: 'image', position: { x: 120, y: 245 }, width: 40, height: 20 },
-        paymentTerms1: { type: 'text', position: { x: 20, y: 270 }, width: 400, height: 10 },
-        paymentTerms2: { type: 'text', position: { x: 20, y: 275 }, width: 400, height: 10 },
-      },
-    ],
+  // Add recipient info (from administration data)
+  const administrationData = {
+    Zug: { title: 'Gemeinde Zug', name: '', address: 'Gubelstrasse 22', city: '6300 Zug' },
+    Cham: { title: 'Gemeinde Cham', name: '', address: 'Mandelhof', city: '6330 Cham' },
+    Huenenberg: { title: 'Gemeinde Hünenberg', name: '', address: 'Chamerstrasse 11', city: '6331 Hünenberg' },
+    Risch: { title: 'Gemeinde Risch', name: '', address: 'Zentrum 1', city: '6343 Rotkreuz' },
+    Steinhausen: { title: 'Gemeinde Steinhausen', name: '', address: 'Bahnhofstrasse 3', city: '6312 Steinhausen' },
+    Baar: { title: 'Gemeinde Baar', name: '', address: 'Rathausstrasse 6', city: '6340 Baar' },
+    Neuheim: { title: 'Gemeinde Neuheim', name: '', address: 'Dorfplatz 5', city: '6345 Neuheim' },
+    Menzingen: { title: 'Gemeinde Menzingen', name: '', address: 'Rathaus', city: '6313 Menzingen' },
+    Unteraegeri: { title: 'Gemeinde Unterägeri', name: '', address: 'Seestrasse 2', city: '6314 Unterägeri' },
+    Oberaegeri: { title: 'Gemeinde Oberägeri', name: '', address: 'Hauptstrasse 78', city: '6315 Oberägeri' },
+    Walchwil: { title: 'Gemeinde Walchwil', name: '', address: 'Bahnhofstrasse 5', city: '6318 Walchwil' }
   };
+  
+  const administration = administrationData[data.gemeinde as keyof typeof administrationData];
+  doc.text([
+    administration.title,
+    administration.name,
+    administration.address,
+    administration.city
+  ], 120, 45);
 
+  // Add title
+  doc.setFontSize(14);
+  doc.text('Rechnung: Hebammenwartgeld', 20, 90);
+
+  // Add legal basis
+  doc.setFontSize(10);
+  doc.text('gestützt auf § 53 des Gesundheitsgesetzes vom 30. Oktober 2008, und § 53 der', 20, 105);
+  doc.text('Gesundheitsverordnung vom 30. Juni 2009', 20, 110);
+
+  // Add patient info
+  doc.text([
+    'Betreuung von',
+    `${data.vorname} ${data.nachname}`,
+    `${data.address}, ${data.plz} ${data.ort}`,
+    new Date().toLocaleDateString('de-CH')
+  ], 20, 120);
+
+  // Add services
   let total = 0;
-  if (data.betreuungGeburt) total += 1000;
-  if (data.betreuungWochenbett) total += 400;
+  const services = [];
 
-  const inputs = [
-    {
-      senderInfo: senderInfo.join('\n'),
-      recipientInfo: `${administration.title}\n${administration.name || ''}\n${administration.address}\n${administration.city}`,
-      title: 'Rechnung: Hebammenwartgeld',
-      legalBasis1: 'gestützt auf § 53 des Gesundheitsgesetzes vom 30. Oktober 2008, und § 53 der',
-      legalBasis2: 'Gesundheitsverordnung vom 30. Juni 2009',
-      patientInfo: `Betreuung von\n${data.vorname} ${data.nachname}\n${data.address}, ${data.plz} ${data.ort}\n${new Date().toLocaleDateString('de-CH')}`,
-      service1: 'Betreuung der Gebärenden zuhause',
-      service1Amount: data.betreuungGeburt ? 'CHF 1000' : 'CHF 0',
-      service1Radio: data.betreuungGeburt ? 'On' : 'Off',
-      service2: 'Pflege der Wöchnerin zuhause',
-      service2Amount: data.betreuungWochenbett ? 'CHF 400' : 'CHF 0',
-      service2Radio: data.betreuungWochenbett ? 'On' : 'Off',
-      total: 'Total Rechnungsbetrag',
-      totalAmount: `CHF ${total}`,
-      footer1: 'Zutreffendes ankreuzen, Formular vollständig und in Blockschrift ausfüllen',
-      footer2: 'Die Unterzeichnende bescheinigt die Richtigkeit obiger Angaben',
-      footer3: 'Mit freundlichen Grüssen',
-      placeDate: `${settings.ortRechnungssteller}, ${new Date().toLocaleDateString('de-CH')}`,
-      signature: settings.signature || '',
-      paymentTerms1: 'Zahlbar innert 30 Tagen',
-      paymentTerms2: 'Die Rechnungsstellung erfolgt bis spätestens 2 Monate nach der Geburt',
-    },
-  ];
+  if (data.betreuungGeburt) {
+    services.push(['[X]', 'Betreuung der Gebärenden zuhause', 'CHF 1000']);
+    total += 1000;
+  } else {
+    services.push(['[ ]', 'Betreuung der Gebärenden zuhause', 'CHF 0']);
+  }
 
-  const pdf = await generate({ template, inputs });
-  return `data:application/pdf;base64,${Buffer.from(pdf).toString('base64')}`;
+  if (data.betreuungWochenbett) {
+    services.push(['[X]', 'Pflege der Wöchnerin zuhause', 'CHF 400']);
+    total += 400;
+  } else {
+    services.push(['[ ]', 'Pflege der Wöchnerin zuhause', 'CHF 0']);
+  }
+
+  services.forEach((service, index) => {
+    doc.text(service[0], 20, 150 + (index * 10));
+    doc.text(service[1], 30, 150 + (index * 10));
+    doc.text(service[2], 180, 150 + (index * 10));
+  });
+
+  // Add total
+  doc.text(`Total Rechnungsbetrag: CHF ${total}`, 20, 180);
+
+  // Add footer
+  doc.text([
+    'Zutreffendes ankreuzen, Formular vollständig und in Blockschrift ausfüllen',
+    'Die Unterzeichnende bescheinigt die Richtigkeit obiger Angaben',
+    'Mit freundlichen Grüssen'
+  ], 20, 200);
+
+  // Add place and date
+  const ortRechnungssteller = settings.ortRechnungssteller || '';
+  doc.text(`${ortRechnungssteller}, ${new Date().toLocaleDateString('de-CH')}`, 20, 250);
+
+  // Add signature if available
+  if (settings.signature) {
+    const img = new Image();
+    img.src = settings.signature;
+    doc.addImage(img, 'PNG', 120, 245, 40, 20);
+  }
+
+  // Add payment terms
+  doc.text([
+    'Zahlbar innert 30 Tagen',
+    'Die Rechnungsstellung erfolgt bis spätestens 2 Monate nach der Geburt'
+  ], 20, 270);
+
+  return doc.output('datauristring');
 };
