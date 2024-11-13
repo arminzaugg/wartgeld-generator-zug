@@ -66,7 +66,7 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   const checkBox1 = new doc.AcroForm.CheckBox();
   checkBox1.fieldName = "betreuungGeburt";
   checkBox1.Rect = [140, 145, 10, 10];
-  checkBox1.value = data.betreuungGeburt ? 'Yes' : 'Off';
+  checkBox1.value = data.betreuungGeburt ? 'Yes' : 'No';
   doc.addField(checkBox1);
   
   doc.text(data.betreuungGeburt ? "CHF 1000" : "CHF 0", 180, 150);
@@ -79,7 +79,7 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   const checkBox2 = new doc.AcroForm.CheckBox();
   checkBox2.fieldName = "betreuungWochenbett";
   checkBox2.Rect = [140, 155, 10, 10];
-  checkBox2.value = data.betreuungWochenbett ? 'Yes' : 'Off';
+  checkBox2.value = data.betreuungWochenbett ? 'Yes' : 'No';
   doc.addField(checkBox2);
   
   doc.text(data.betreuungWochenbett ? "CHF 400" : "CHF 0", 180, 160);
