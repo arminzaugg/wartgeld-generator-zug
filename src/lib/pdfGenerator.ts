@@ -59,16 +59,53 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   // Calculate total and add service table
   let total = 0;
   
+  // Add checkboxes using form fields
+  const checkBox1 = new Object();
+  Object.assign(checkBox1, {
+    fieldName: "BetreuungGeburt",
+    Rect: [140, 147, 3, 3],
+    value: data.betreuungGeburt ? "Yes" : "Off",
+    readOnly: true,
+    AS: "/Yes"
+  });
+  doc.addField(checkBox1);
+
+  const checkBox2 = new Object();
+  Object.assign(checkBox2, {
+    fieldName: "BetreuungGeburtNo",
+    Rect: [160, 147, 3, 3],
+    value: !data.betreuungGeburt ? "Yes" : "Off",
+    readOnly: true,
+    AS: "/Yes"
+  });
+  doc.addField(checkBox2);
+
+  const checkBox3 = new Object();
+  Object.assign(checkBox3, {
+    fieldName: "BetreuungWochenbett",
+    Rect: [140, 157, 3, 3],
+    value: data.betreuungWochenbett ? "Yes" : "Off",
+    readOnly: true,
+    AS: "/Yes"
+  });
+  doc.addField(checkBox3);
+
+  const checkBox4 = new Object();
+  Object.assign(checkBox4, {
+    fieldName: "BetreuungWochenbettNo",
+    Rect: [160, 157, 3, 3],
+    value: !data.betreuungWochenbett ? "Yes" : "Off",
+    readOnly: true,
+    AS: "/Yes"
+  });
+  doc.addField(checkBox4);
+
   doc.setFontSize(11);
   doc.text("Betreuung der Gebärenden zuhause", 20, 150);
-  doc.text(data.betreuungGeburt ? "✅" : "⬜", 140, 150);
-  doc.text(data.betreuungGeburt ? "⬜" : "✅", 160, 150);
   doc.text(data.betreuungGeburt ? "CHF 1000" : "CHF 0", 180, 150);
   if (data.betreuungGeburt) total += 1000;
   
   doc.text("Pflege der Wöchnerin zuhause", 20, 160);
-  doc.text(data.betreuungWochenbett ? "✅" : "⬜", 140, 160);
-  doc.text(data.betreuungWochenbett ? "⬜" : "✅", 160, 160);
   doc.text(data.betreuungWochenbett ? "CHF 400" : "CHF 0", 180, 160);
   if (data.betreuungWochenbett) total += 400;
   
