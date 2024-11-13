@@ -56,18 +56,25 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   doc.text(`${data.address}, ${data.plz} ${data.ort}`, 20, 130);
   doc.text(new Date().toLocaleDateString('de-CH'), 20, 135);
   
-  // Calculate total and add service table with checkboxes
+  // Calculate total and add service table with radio buttons
   let total = 0;
   
   // Service 1: Betreuung der Gebärenden
   doc.text("Betreuung der Gebärenden zuhause", 20, 150);
   
-  // @ts-ignore - CheckBox is available in jsPDF
-  const checkBox1 = new doc.AcroForm.CheckBox();
-  checkBox1.fieldName = "betreuungGeburt";
-  checkBox1.Rect = [140, 145, 10, 10];
-  checkBox1.appearanceState = data.betreuungGeburt ? 'On' : 'Off';
-  doc.addField(checkBox1);
+  // Radio buttons for first service
+  const radioGroup1 = new doc.AcroForm.RadioButton();
+  radioGroup1.fieldName = "betreuungGeburt";
+  
+  const radioYes1 = radioGroup1.createOption("Ja");
+  radioYes1.Rect = [140, 145, 10, 10];
+  radioYes1.appearanceState = data.betreuungGeburt ? "Ja" : "Off";
+  
+  const radioNo1 = radioGroup1.createOption("Nein");
+  radioNo1.Rect = [160, 145, 10, 10];
+  radioNo1.appearanceState = !data.betreuungGeburt ? "Nein" : "Off";
+  
+  doc.addField(radioGroup1);
   
   doc.text(data.betreuungGeburt ? "CHF 1000" : "CHF 0", 180, 150);
   if (data.betreuungGeburt) total += 1000;
@@ -75,12 +82,19 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   // Service 2: Pflege der Wöchnerin
   doc.text("Pflege der Wöchnerin zuhause", 20, 160);
   
-  // @ts-ignore - CheckBox is available in jsPDF
-  const checkBox2 = new doc.AcroForm.CheckBox();
-  checkBox2.fieldName = "betreuungWochenbett";
-  checkBox2.Rect = [140, 155, 10, 10];
-  checkBox2.appearanceState = data.betreuungWochenbett ? 'On' : 'Off';
-  doc.addField(checkBox2);
+  // Radio buttons for second service
+  const radioGroup2 = new doc.AcroForm.RadioButton();
+  radioGroup2.fieldName = "betreuungWochenbett";
+  
+  const radioYes2 = radioGroup2.createOption("Ja");
+  radioYes2.Rect = [140, 155, 10, 10];
+  radioYes2.appearanceState = data.betreuungWochenbett ? "Ja" : "Off";
+  
+  const radioNo2 = radioGroup2.createOption("Nein");
+  radioNo2.Rect = [160, 155, 10, 10];
+  radioNo2.appearanceState = !data.betreuungWochenbett ? "Nein" : "Off";
+  
+  doc.addField(radioGroup2);
   
   doc.text(data.betreuungWochenbett ? "CHF 400" : "CHF 0", 180, 160);
   if (data.betreuungWochenbett) total += 400;
