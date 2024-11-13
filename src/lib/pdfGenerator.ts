@@ -65,16 +65,13 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   // Radio buttons for first service
   const radioGroup1 = doc.AcroForm.RadioButton();
   radioGroup1.value = data.betreuungGeburt ? "Ja" : "Nein";
-  radioGroup1.Subtype = "Form";
   radioGroup1.fieldName = "betreuungGeburt";
   
   const radioYes1 = radioGroup1.createOption("Ja");
-  radioYes1.Rect = [140, 145, 10, 10];
-  radioYes1.AS = "/Ja";
+  radioYes1.appearanceState = "Ja";
   
   const radioNo1 = radioGroup1.createOption("Nein");
-  radioNo1.Rect = [160, 145, 10, 10];
-  radioNo1.AS = "/Nein";
+  radioNo1.appearanceState = "Nein";
   
   doc.addField(radioGroup1);
   
@@ -87,16 +84,13 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   // Radio buttons for second service
   const radioGroup2 = doc.AcroForm.RadioButton();
   radioGroup2.value = data.betreuungWochenbett ? "Ja" : "Nein";
-  radioGroup2.Subtype = "Form";
   radioGroup2.fieldName = "betreuungWochenbett";
   
   const radioYes2 = radioGroup2.createOption("Ja");
-  radioYes2.Rect = [140, 155, 10, 10];
-  radioYes2.AS = "/Ja";
+  radioYes2.appearanceState = "Ja";
   
   const radioNo2 = radioGroup2.createOption("Nein");
-  radioNo2.Rect = [160, 155, 10, 10];
-  radioNo2.AS = "/Nein";
+  radioNo2.appearanceState = "Nein";
   
   doc.addField(radioGroup2);
   
