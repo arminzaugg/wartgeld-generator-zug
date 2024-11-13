@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/f9410406-bc69-4824-86c4-ecc236597275/deploy-status)](https://app.netlify.com/sites/wartgeld-generator-zug/deploys)
+
 # Welcome to your GPT Engineer project
 
 ## Project info
