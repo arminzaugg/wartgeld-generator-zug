@@ -39,7 +39,7 @@ export const useZipAutocomplete = () => {
   return {
     search,
     setSearch,
-    suggestions: suggestions || [],
+    suggestions,
     isLoading,
   };
 };

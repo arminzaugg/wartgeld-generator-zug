@@ -31,6 +31,9 @@ export const ZipCityLookup = ({ plz, ort, onChange }: ZipCityLookupProps) => {
     setSearch(value);
   };
 
+  // Ensure suggestions is always an array
+  const safeSuggestions = Array.isArray(suggestions) ? suggestions : [];
+
   return (
     <div className="space-y-2">
       <Label htmlFor="plz">Postleitzahl & Ort</Label>
@@ -55,7 +58,7 @@ export const ZipCityLookup = ({ plz, ort, onChange }: ZipCityLookupProps) => {
             />
             <CommandEmpty>Keine Ergebnisse gefunden.</CommandEmpty>
             <CommandGroup>
-              {Array.isArray(suggestions) && suggestions.map((item: ZipSuggestion) => (
+              {safeSuggestions.map((item: ZipSuggestion) => (
                 <CommandItem
                   key={item.zip}
                   value={`${item.zip} ${item.city18}`}
