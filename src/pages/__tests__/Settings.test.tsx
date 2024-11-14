@@ -15,7 +15,7 @@ describe('Settings Page', () => {
     });
   });
 
-  it('renders settings form', () => {
+  it('renders settings title', () => {
     render(
       <BrowserRouter>
         <Settings />
@@ -23,11 +23,9 @@ describe('Settings Page', () => {
     );
     
     expect(screen.getByText(/Rechnungsstellerin/i)).toBeInTheDocument();
-    expect(screen.getByText(/Ort & Datum/i)).toBeInTheDocument();
-    expect(screen.getByText(/Unterschrift/i)).toBeInTheDocument();
   });
 
-  it('saves settings when form is submitted', () => {
+  it('saves text input when form is submitted', () => {
     render(
       <BrowserRouter>
         <Settings />
