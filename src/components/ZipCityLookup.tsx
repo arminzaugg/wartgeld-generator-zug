@@ -18,7 +18,30 @@ export const ZipCityLookup = ({ plz, ort, onChange }: ZipCityLookupProps) => {
   const [open, setOpen] = useState(false);
   const { search, setSearch, suggestions = [], isLoading } = useZipAutocomplete();
 
-  console.log('ZipCityLookup suggestions:', suggestions);
+  // Safe handling of window messaging
+  const handleMessage = (event: MessageEvent) => {
+    // Only accept messages from the same origin
+    if (event.origin !== window.location.origin) {
+      console.warn('Received message from unexpected origin:', event.origin);
+      return;
+    }
+    
+    try {
+      const data = event.data;
+      console.log('Received message:', data);
+      // Handle the message data here if needed
+    } catch (error) {
+      console.error('Error processing message:', error);
+    }
+  };
+
+  // Add message listener when component mounts
+  useState(() => {
+    window.addEventListener('message', handleMessage);
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
+  });
 
   const handleZipSelect = (zip: string, city: string) => {
     console.log('Selected:', { zip, city });
