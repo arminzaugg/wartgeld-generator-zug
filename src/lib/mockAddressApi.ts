@@ -15,16 +15,18 @@ const mockZipData: ZipSummary[] = [
   { zip: "6318", city18: "Walchwil", city27: "Walchwil", city39: "Walchwil" },
 ];
 
-export const searchZip = async (query: string): Promise<ZipSearchSummary> => {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 300));
+export const mockAddressApi = {
+  searchZip: async (query: string): Promise<ZipSearchSummary> => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 300));
 
-  const results = mockZipData.filter(item => 
-    item.zip.startsWith(query) || 
-    item.city18.toLowerCase().includes(query.toLowerCase())
-  );
+    const results = mockZipData.filter(item => 
+      item.zip.startsWith(query) || 
+      item.city18.toLowerCase().includes(query.toLowerCase())
+    );
 
-  return {
-    zips: results
-  };
+    return {
+      zips: results
+    };
+  }
 };
