@@ -16,11 +16,19 @@ interface ZipCityLookupProps {
 
 export const ZipCityLookup = ({ plz, ort, onChange }: ZipCityLookupProps) => {
   const [open, setOpen] = useState(false);
-  const { search, setSearch, suggestions = [], isLoading } = useZipAutocomplete();
+  const { search, setSearch, suggestions, isLoading } = useZipAutocomplete();
+
+  console.log('Current suggestions:', suggestions);
 
   const handleZipSelect = (zip: string, city: string) => {
+    console.log('Selected:', { zip, city });
     onChange(zip, city);
     setOpen(false);
+  };
+
+  const handleSearchChange = (value: string) => {
+    console.log('Search changed:', value);
+    setSearch(value);
   };
 
   return (
@@ -43,11 +51,11 @@ export const ZipCityLookup = ({ plz, ort, onChange }: ZipCityLookupProps) => {
             <CommandInput 
               placeholder="PLZ oder Ort suchen..." 
               value={search}
-              onValueChange={setSearch}
+              onValueChange={handleSearchChange}
             />
             <CommandEmpty>Keine Ergebnisse gefunden.</CommandEmpty>
             <CommandGroup>
-              {suggestions.map((item: ZipSuggestion) => (
+              {Array.isArray(suggestions) && suggestions.map((item: ZipSuggestion) => (
                 <CommandItem
                   key={item.zip}
                   value={`${item.zip} ${item.city18}`}

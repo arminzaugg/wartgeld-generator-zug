@@ -13,14 +13,16 @@ export const useZipAutocomplete = () => {
 
   useEffect(() => {
     const fetchSuggestions = async () => {
-      if (!search) {
+      if (!search || search.length < 2) {
         setSuggestions([]);
         return;
       }
 
       setIsLoading(true);
       try {
+        console.log('Fetching suggestions for:', search);
         const results = await mockAddressApi.searchZip(search);
+        console.log('Received results:', results);
         setSuggestions(results?.zips || []);
       } catch (error) {
         console.error('Error fetching suggestions:', error);
@@ -37,7 +39,7 @@ export const useZipAutocomplete = () => {
   return {
     search,
     setSearch,
-    suggestions,
+    suggestions: suggestions || [],
     isLoading,
   };
 };
