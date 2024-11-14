@@ -3,13 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { municipalities } from "@/config/addresses";
-import { useZipAutocomplete } from "@/hooks/useZipAutocomplete";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { ZipCityLookup } from "@/components/ZipCityLookup";
 
 interface FormFieldsProps {
   values: {
@@ -27,13 +21,9 @@ interface FormFieldsProps {
 }
 
 export const FormFields = ({ values, onChange }: FormFieldsProps) => {
-  const { search, setSearch, suggestions, isLoading } = useZipAutocomplete();
-  const [open, setOpen] = useState(false);
-
-  const handleZipSelect = (zip: string, city: string) => {
-    onChange("plz", zip);
-    onChange("ort", city);
-    setOpen(false);
+  const handleZipCityChange = (plz: string, ort: string) => {
+    onChange("plz", plz);
+    onChange("ort", ort);
   };
 
   return (
@@ -70,49 +60,11 @@ export const FormFields = ({ values, onChange }: FormFieldsProps) => {
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="plz">Postleitzahl & Ort</Label>
-            <Popover open={open} onOpenChange={setOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={open}
-                  className="w-full justify-between"
-                >
-                  {values.plz ? `${values.plz} ${values.ort}` : "PLZ oder Ort eingeben..."}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-[400px] p-0">
-                <Command>
-                  <CommandInput 
-                    placeholder="PLZ oder Ort suchen..." 
-                    value={search}
-                    onValueChange={setSearch}
-                  />
-                  <CommandEmpty>Keine Ergebnisse gefunden.</CommandEmpty>
-                  <CommandGroup>
-                    {suggestions.map((item) => (
-                      <CommandItem
-                        key={item.zip}
-                        value={`${item.zip} ${item.city18}`}
-                        onSelect={() => handleZipSelect(item.zip, item.city18)}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            values.plz === item.zip ? "opacity-100" : "opacity-0"
-                          )}
-                        />
-                        {item.zip} {item.city18}
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </Command>
-              </PopoverContent>
-            </Popover>
-          </div>
+          <ZipCityLookup 
+            plz={values.plz}
+            ort={values.ort}
+            onChange={handleZipCityChange}
+          />
         </div>
 
         <div className="space-y-2">
