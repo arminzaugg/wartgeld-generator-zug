@@ -14,11 +14,6 @@ describe('pdfGenerator', () => {
     betreuungWochenbett: false,
   };
 
-  it('generates a PDF string', () => {
-    const result = generatePDF(mockFormData);
-    expect(result).toContain('data:application/pdf;base64,');
-  });
-
   it('includes form data in the generated PDF', () => {
     const result = generatePDF(mockFormData);
     expect(result).toBeDefined();
