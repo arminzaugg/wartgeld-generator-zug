@@ -26,6 +26,12 @@ export const FormFields = ({ values, onChange }: FormFieldsProps) => {
     onChange("ort", ort);
   };
 
+  const handleInputChange = (field: string, value: string) => {
+    // Allow alphanumeric characters and spaces
+    const sanitizedValue = value.replace(/[^a-zA-Z0-9\s]/g, '');
+    onChange(field, sanitizedValue);
+  };
+
   return (
     <>
       <h2 className="text-xl font-semibold mb-4">Angaben</h2>
@@ -36,7 +42,9 @@ export const FormFields = ({ values, onChange }: FormFieldsProps) => {
             <Input
               id="vorname"
               value={values.vorname}
-              onChange={(e) => onChange("vorname", e.target.value)}
+              onChange={(e) => handleInputChange("vorname", e.target.value)}
+              pattern="[a-zA-Z0-9\s]*"
+              title="Nur Buchstaben und Zahlen sind erlaubt"
             />
           </div>
 
@@ -45,7 +53,9 @@ export const FormFields = ({ values, onChange }: FormFieldsProps) => {
             <Input
               id="nachname"
               value={values.nachname}
-              onChange={(e) => onChange("nachname", e.target.value)}
+              onChange={(e) => handleInputChange("nachname", e.target.value)}
+              pattern="[a-zA-Z0-9\s]*"
+              title="Nur Buchstaben und Zahlen sind erlaubt"
             />
           </div>
         </div>
@@ -55,7 +65,9 @@ export const FormFields = ({ values, onChange }: FormFieldsProps) => {
           <Input
             id="address"
             value={values.address}
-            onChange={(e) => onChange("address", e.target.value)}
+            onChange={(e) => handleInputChange("address", e.target.value)}
+            pattern="[a-zA-Z0-9\s]*"
+            title="Nur Buchstaben und Zahlen sind erlaubt"
           />
         </div>
 
