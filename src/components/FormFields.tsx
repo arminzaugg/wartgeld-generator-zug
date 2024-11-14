@@ -93,7 +93,7 @@ export const FormFields = ({ values, onChange }: FormFieldsProps) => {
                   />
                   <CommandEmpty>Keine Ergebnisse gefunden.</CommandEmpty>
                   <CommandGroup>
-                    {suggestions.map((item) => (
+                    {suggestions?.map((item) => (
                       <CommandItem
                         key={item.zip}
                         value={`${item.zip} ${item.city18}`}
