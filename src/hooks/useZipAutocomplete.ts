@@ -23,11 +23,9 @@ export const useZipAutocomplete = () => {
         console.log('Fetching suggestions for:', search);
         const results = await mockAddressApi.searchZip(search);
         console.log('Received results:', results);
-        // Ensure we always set an array, even if results.zips is undefined
-        setSuggestions(results?.zips || []);
+        setSuggestions(Array.isArray(results.zips) ? results.zips : []);
       } catch (error) {
         console.error('Error fetching suggestions:', error);
-        // Set empty array instead of undefined on error
         setSuggestions([]);
       } finally {
         setIsLoading(false);

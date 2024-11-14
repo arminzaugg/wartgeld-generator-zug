@@ -18,7 +18,7 @@ export const ZipCityLookup = ({ plz, ort, onChange }: ZipCityLookupProps) => {
   const [open, setOpen] = useState(false);
   const { search, setSearch, suggestions, isLoading } = useZipAutocomplete();
 
-  console.log('Current suggestions:', suggestions);
+  console.log('ZipCityLookup suggestions:', suggestions);
 
   const handleZipSelect = (zip: string, city: string) => {
     console.log('Selected:', { zip, city });
@@ -30,9 +30,6 @@ export const ZipCityLookup = ({ plz, ort, onChange }: ZipCityLookupProps) => {
     console.log('Search changed:', value);
     setSearch(value);
   };
-
-  // Ensure suggestions is always an array
-  const safeSuggestions = Array.isArray(suggestions) ? suggestions : [];
 
   return (
     <div className="space-y-2">
@@ -58,7 +55,7 @@ export const ZipCityLookup = ({ plz, ort, onChange }: ZipCityLookupProps) => {
             />
             <CommandEmpty>Keine Ergebnisse gefunden.</CommandEmpty>
             <CommandGroup>
-              {safeSuggestions.map((item: ZipSuggestion) => (
+              {(suggestions || []).map((item: ZipSuggestion) => (
                 <CommandItem
                   key={item.zip}
                   value={`${item.zip} ${item.city18}`}

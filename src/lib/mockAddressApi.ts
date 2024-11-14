@@ -17,16 +17,27 @@ const mockZipData: ZipSummary[] = [
 
 export const mockAddressApi = {
   searchZip: async (query: string): Promise<ZipSearchSummary> => {
+    console.log('Mock API searching for:', query);
+    
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 300));
 
-    const results = mockZipData.filter(item => 
-      item.zip.startsWith(query) || 
-      item.city18.toLowerCase().includes(query.toLowerCase())
-    );
+    try {
+      const results = mockZipData.filter(item => 
+        item.zip.startsWith(query) || 
+        item.city18.toLowerCase().includes(query.toLowerCase())
+      );
 
-    return {
-      zips: results
-    };
+      console.log('Mock API found results:', results);
+
+      return {
+        zips: results
+      };
+    } catch (error) {
+      console.error('Mock API error:', error);
+      return {
+        zips: []
+      };
+    }
   }
 };
