@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { mockAddressApi } from '@/lib/mockAddressApi';
 
-interface ZipSuggestion {
+export interface ZipSuggestion {
   zip: string;
   city18: string;
 }
