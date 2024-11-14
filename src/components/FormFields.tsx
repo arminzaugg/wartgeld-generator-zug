@@ -27,7 +27,7 @@ interface FormFieldsProps {
 }
 
 export const FormFields = ({ values, onChange }: FormFieldsProps) => {
-  const { search, setSearch, suggestions = [], isLoading } = useZipAutocomplete();
+  const { search, setSearch, suggestions, isLoading } = useZipAutocomplete();
   const [open, setOpen] = useState(false);
 
   const handleZipSelect = (zip: string, city: string) => {
@@ -93,7 +93,7 @@ export const FormFields = ({ values, onChange }: FormFieldsProps) => {
                   />
                   <CommandEmpty>Keine Ergebnisse gefunden.</CommandEmpty>
                   <CommandGroup>
-                    {suggestions.map((item) => (
+                    {(suggestions || []).map((item) => (
                       <CommandItem
                         key={item.zip}
                         value={`${item.zip} ${item.city18}`}

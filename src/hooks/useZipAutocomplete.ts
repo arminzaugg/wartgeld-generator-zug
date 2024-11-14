@@ -1,9 +1,14 @@
 import { useState, useEffect } from 'react';
 import { mockAddressApi } from '@/lib/mockAddressApi';
 
+interface ZipSuggestion {
+  zip: string;
+  city18: string;
+}
+
 export const useZipAutocomplete = () => {
   const [search, setSearch] = useState('');
-  const [suggestions, setSuggestions] = useState<Array<{ zip: string; city18: string }>>([]);
+  const [suggestions, setSuggestions] = useState<ZipSuggestion[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
