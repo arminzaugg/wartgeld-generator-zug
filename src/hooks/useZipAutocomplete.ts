@@ -21,7 +21,7 @@ export const useZipAutocomplete = () => {
       setIsLoading(true);
       try {
         const results = await mockAddressApi.searchZip(search);
-        setSuggestions(results.zips || []);
+        setSuggestions(results?.zips || []);
       } catch (error) {
         console.error('Error fetching suggestions:', error);
         setSuggestions([]);
@@ -37,7 +37,7 @@ export const useZipAutocomplete = () => {
   return {
     search,
     setSearch,
-    suggestions,
+    suggestions: suggestions || [],
     isLoading,
   };
 };

@@ -16,7 +16,7 @@ interface ZipCityLookupProps {
 
 export const ZipCityLookup = ({ plz, ort, onChange }: ZipCityLookupProps) => {
   const [open, setOpen] = useState(false);
-  const { search, setSearch, suggestions } = useZipAutocomplete();
+  const { search, setSearch, suggestions, isLoading } = useZipAutocomplete();
 
   const handleZipSelect = (zip: string, city: string) => {
     onChange(zip, city);
@@ -24,48 +24,50 @@ export const ZipCityLookup = ({ plz, ort, onChange }: ZipCityLookupProps) => {
   };
 
   return (
-    <div className="space-y-2">
-      <Label htmlFor="plz">Postleitzahl & Ort</Label>
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className="w-full justify-between"
-          >
-            {plz ? `${plz} ${ort}` : "PLZ oder Ort eingeben..."}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-[400px] p-0">
-          <Command>
-            <CommandInput 
-              placeholder="PLZ oder Ort suchen..." 
-              value={search}
-              onValueChange={setSearch}
-            />
-            <CommandEmpty>Keine Ergebnisse gefunden.</CommandEmpty>
-            <CommandGroup>
-              {suggestions?.map((item: ZipSuggestion) => (
-                <CommandItem
-                  key={item.zip}
-                  value={`${item.zip} ${item.city18}`}
-                  onSelect={() => handleZipSelect(item.zip, item.city18)}
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      plz === item.zip ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  {item.zip} {item.city18}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </Command>
-        </PopoverContent>
-      </Popover>
-    </div>
+    <>
+      <div className="space-y-2">
+        <Label htmlFor="plz">Postleitzahl & Ort</Label>
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              className="w-full justify-between"
+            >
+              {plz ? `${plz} ${ort}` : "PLZ oder Ort eingeben..."}
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[400px] p-0">
+            <Command>
+              <CommandInput 
+                placeholder="PLZ oder Ort suchen..." 
+                value={search}
+                onValueChange={setSearch}
+              />
+              <CommandEmpty>Keine Ergebnisse gefunden.</CommandEmpty>
+              <CommandGroup>
+                {(suggestions || []).map((item: ZipSuggestion) => (
+                  <CommandItem
+                    key={item.zip}
+                    value={`${item.zip} ${item.city18}`}
+                    onSelect={() => handleZipSelect(item.zip, item.city18)}
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        plz === item.zip ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                    {item.zip} {item.city18}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </Command>
+          </PopoverContent>
+        </Popover>
+      </div>
+    </>
   );
 };
