@@ -38,9 +38,9 @@ export const FormFields = ({ values, onChange }: FormFieldsProps) => {
       <div className="space-y-6">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="vorname">Vorname</Label>
+            <Label htmlFor="form-vorname">Vorname</Label>
             <Input
-              id="vorname"
+              id="form-vorname"
               value={values.vorname}
               onChange={(e) => handleInputChange("vorname", e.target.value)}
               pattern="[a-zA-Z0-9\s]*"
@@ -49,9 +49,9 @@ export const FormFields = ({ values, onChange }: FormFieldsProps) => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="nachname">Nachname</Label>
+            <Label htmlFor="form-nachname">Nachname</Label>
             <Input
-              id="nachname"
+              id="form-nachname"
               value={values.nachname}
               onChange={(e) => handleInputChange("nachname", e.target.value)}
               pattern="[a-zA-Z0-9\s]*"
@@ -61,9 +61,9 @@ export const FormFields = ({ values, onChange }: FormFieldsProps) => {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="address">Strasse</Label>
+          <Label htmlFor="form-address">Strasse</Label>
           <Input
-            id="address"
+            id="form-address"
             value={values.address}
             onChange={(e) => handleInputChange("address", e.target.value)}
             pattern="[a-zA-Z0-9\s]*"
@@ -80,9 +80,9 @@ export const FormFields = ({ values, onChange }: FormFieldsProps) => {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="geburtsdatum">Datum der Geburt</Label>
+          <Label htmlFor="form-geburtsdatum">Datum der Geburt</Label>
           <Input
-            id="geburtsdatum"
+            id="form-geburtsdatum"
             type="date"
             value={values.geburtsdatum}
             onChange={(e) => onChange("geburtsdatum", e.target.value)}
@@ -90,9 +90,9 @@ export const FormFields = ({ values, onChange }: FormFieldsProps) => {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="gemeinde">Wahl der Gemeinde</Label>
+          <Label htmlFor="form-gemeinde">Wahl der Gemeinde</Label>
           <Select value={values.gemeinde} onValueChange={(value) => onChange("gemeinde", value)}>
-            <SelectTrigger>
+            <SelectTrigger id="form-gemeinde">
               <SelectValue placeholder="Wählen Sie eine Gemeinde" />
             </SelectTrigger>
             <SelectContent>
@@ -109,19 +109,19 @@ export const FormFields = ({ values, onChange }: FormFieldsProps) => {
           <Label>Dienstleistungen</Label>
           <div className="flex items-center space-x-2">
             <Checkbox 
-              id="betreuungGeburt" 
+              id="form-betreuungGeburt" 
               checked={values.betreuungGeburt}
               onCheckedChange={(checked) => onChange("betreuungGeburt", checked === true)}
             />
-            <Label htmlFor="betreuungGeburt">Betreuung der Gebärenden zuhause (CHF 1000)</Label>
+            <Label htmlFor="form-betreuungGeburt">Betreuung der Gebärenden zuhause (CHF 1000)</Label>
           </div>
           <div className="flex items-center space-x-2">
             <Checkbox 
-              id="betreuungWochenbett" 
+              id="form-betreuungWochenbett" 
               checked={values.betreuungWochenbett}
               onCheckedChange={(checked) => onChange("betreuungWochenbett", checked === true)}
             />
-            <Label htmlFor="betreuungWochenbett">Pflege der Wöchnerin zuhause (CHF 400)</Label>
+            <Label htmlFor="form-betreuungWochenbett">Pflege der Wöchnerin zuhause (CHF 400)</Label>
           </div>
         </div>
       </div>
