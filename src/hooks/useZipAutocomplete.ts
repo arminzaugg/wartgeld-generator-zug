@@ -1,30 +1,41 @@
 import { useState, useEffect } from 'react';
 import { mockAddressApi } from '@/lib/mockAddressApi';
+import type { ZipSummary } from '@/types/address';
 
-export interface ZipSuggestion {
-  zip: string;
-  city18: string;
+export interface ZipAutocompleteResult {
+  suggestions: ZipSummary[];
+  isLoading: boolean;
+  error: Error | null;
 }
 
-export const useZipAutocomplete = (searchTerm: string) => {
-  const [suggestions, setSuggestions] = useState<ZipSuggestion[]>([]);
+export const useZipAutocomplete = (searchTerm: string): ZipAutocompleteResult => {
+  const [suggestions, setSuggestions] = useState<ZipSummary[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     const fetchSuggestions = async () => {
       if (!searchTerm || searchTerm.length < 2) {
         setSuggestions([]);
+        setError(null);
         return;
       }
 
       setIsLoading(true);
+      setError(null);
+
       try {
         console.log('Fetching suggestions for:', searchTerm);
-        const results = await mockAddressApi.searchZip(searchTerm);
+        const results = await mockAddressApi.searchZip({
+          zipCity: searchTerm,
+          type: 'DOMICILE',
+          limit: 10
+        });
         console.log('Received results:', results);
-        setSuggestions(Array.isArray(results.zips) ? results.zips : []);
+        setSuggestions(results.zips || []);
       } catch (error) {
         console.error('Error fetching suggestions:', error);
+        setError(error instanceof Error ? error : new Error('Failed to fetch suggestions'));
         setSuggestions([]);
       } finally {
         setIsLoading(false);
@@ -38,5 +49,6 @@ export const useZipAutocomplete = (searchTerm: string) => {
   return {
     suggestions,
     isLoading,
+    error
   };
 };
