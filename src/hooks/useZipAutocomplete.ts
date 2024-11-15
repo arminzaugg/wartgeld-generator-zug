@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { mockAddressApi } from '@/lib/mockAddressApi';
 import type { ZipSummary } from '@/types/address';
 
+export type ZipSuggestion = ZipSummary;
+
 export interface ZipAutocompleteResult {
   suggestions: ZipSummary[];
   isLoading: boolean;
