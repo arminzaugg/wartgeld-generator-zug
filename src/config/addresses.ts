@@ -27,8 +27,8 @@ export const administrationData: Record<string, Administration> = {
     city: "6301 Zug"
   },
   "Cham": {
-    title: "Sozialdienst Cham",
-    name: "",
+    title: "Einwohnergemeinde Cham",
+    name: "Sozialdienst",
     address: "Mandelhof",
     city: "6330 Cham"
   },
@@ -46,14 +46,14 @@ export const administrationData: Record<string, Administration> = {
   },
   "Steinhausen": {
     title: "Sozialdienst Steinhausen",
-    name: "",
-    address: "Rathaus",
+    name: "Rathaus",
+    address: "",
     city: "6312 Steinhausen"
   },
   "Baar": {
     title: "Einwohnergemeinde Baar",
-    name: "Fachstelle Gesundheit/Alter Barbara Hotz",
-    address: "Postfach",
+    name: "Fachstelle Gesundheit/Alter",
+    address: "Rathausgasse 6 Postfach",
     city: "6341 Baar"
   },
   "Neuheim": {
@@ -64,8 +64,8 @@ export const administrationData: Record<string, Administration> = {
   },
   "Menzingen": {
     title: "Gemeindeverwaltung",
-    name: "",
-    address: "Postfach 99",
+    name: "Soziales und Gesundheit",
+    address: "Postfach",
     city: "6313 Menzingen"
   },
   "Unterägeri": {
@@ -75,8 +75,8 @@ export const administrationData: Record<string, Administration> = {
     city: "6314 Unterägeri"
   },
   "Oberägeri": {
-    title: "Abteilung Soziales",
-    name: "Einwohnergemeinde",
+    title: "Sozialdienst Oberägeri",
+    name: "",
     address: "Alosenstrasse 2",
     city: "6315 Oberägeri"
   },
