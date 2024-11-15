@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useZipAutocomplete } from "@/hooks/useZipAutocomplete";
 import type { ZipSuggestion } from "@/hooks/useZipAutocomplete";
+import { Loader2 } from "lucide-react";
 
 interface ZipCityLookupProps {
   plz: string;
@@ -17,7 +17,6 @@ export const ZipCityLookup = ({ plz, ort, onChange }: ZipCityLookupProps) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const { suggestions = [], isLoading } = useZipAutocomplete(searchTerm);
 
-  // Handle click outside to close suggestions
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
@@ -31,13 +30,11 @@ export const ZipCityLookup = ({ plz, ort, onChange }: ZipCityLookupProps) => {
   }, []);
 
   const handleInputChange = (value: string) => {
-    console.log("Search input changed:", value);
     setSearchTerm(value);
     setShowSuggestions(true);
   };
 
   const handleSuggestionClick = (suggestion: ZipSuggestion) => {
-    console.log("Selected suggestion:", suggestion);
     onChange(suggestion.zip, suggestion.city18);
     setSearchTerm(`${suggestion.zip} ${suggestion.city18}`);
     setShowSuggestions(false);
@@ -46,38 +43,44 @@ export const ZipCityLookup = ({ plz, ort, onChange }: ZipCityLookupProps) => {
   return (
     <div className="space-y-2 relative zip-city-lookup">
       <Label htmlFor="plz-ort">Postleitzahl & Ort</Label>
-      <Input
-        id="plz-ort"
-        type="text"
-        value={searchTerm || (plz && ort ? `${plz} ${ort}` : "")}
-        onChange={(e) => handleInputChange(e.target.value)}
-        placeholder="PLZ oder Ort eingeben..."
-        className="w-full"
-        autoComplete="off"
-      />
+      <div className="relative">
+        <Input
+          id="plz-ort"
+          type="text"
+          value={searchTerm || (plz && ort ? `${plz} ${ort}` : "")}
+          onChange={(e) => handleInputChange(e.target.value)}
+          placeholder="PLZ oder Ort eingeben..."
+          className="w-full pr-8"
+          autoComplete="off"
+        />
+        {isLoading && (
+          <div className="absolute right-2 top-1/2 -translate-y-1/2">
+            <Loader2 className="h-4 w-4 animate-spin text-gray-500" />
+          </div>
+        )}
+      </div>
 
       {showSuggestions && searchTerm.length >= 2 && (
         <div className="absolute z-50 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto">
-          {isLoading ? (
-            <div className="p-2 text-sm text-gray-500">Suche...</div>
-          ) : suggestions.length > 0 ? (
+          {suggestions.length > 0 ? (
             <ul className="py-1">
               {suggestions.map((suggestion) => (
                 <li
                   key={suggestion.zip}
                   className={cn(
-                    "px-3 py-2 text-sm cursor-pointer hover:bg-gray-100",
+                    "px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 flex items-center justify-between",
                     plz === suggestion.zip ? "bg-gray-50" : ""
                   )}
                   onClick={() => handleSuggestionClick(suggestion)}
                 >
-                  {suggestion.zip} {suggestion.city18}
+                  <span className="font-medium">{suggestion.zip}</span>
+                  <span className="text-gray-600">{suggestion.city18}</span>
                 </li>
               ))}
             </ul>
           ) : (
-            <div className="p-2 text-sm text-gray-500">
-              Keine Ergebnisse gefunden
+            <div className="p-2 text-sm text-gray-500 text-center">
+              {isLoading ? "Suche..." : "Keine Ergebnisse gefunden"}
             </div>
           )}
         </div>
