@@ -6,22 +6,21 @@ export interface ZipSuggestion {
   city18: string;
 }
 
-export const useZipAutocomplete = () => {
-  const [search, setSearch] = useState('');
+export const useZipAutocomplete = (searchTerm: string) => {
   const [suggestions, setSuggestions] = useState<ZipSuggestion[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchSuggestions = async () => {
-      if (!search || search.length < 2) {
+      if (!searchTerm || searchTerm.length < 2) {
         setSuggestions([]);
         return;
       }
 
       setIsLoading(true);
       try {
-        console.log('Fetching suggestions for:', search);
-        const results = await mockAddressApi.searchZip(search);
+        console.log('Fetching suggestions for:', searchTerm);
+        const results = await mockAddressApi.searchZip(searchTerm);
         console.log('Received results:', results);
         setSuggestions(Array.isArray(results.zips) ? results.zips : []);
       } catch (error) {
@@ -34,11 +33,9 @@ export const useZipAutocomplete = () => {
 
     const timeoutId = setTimeout(fetchSuggestions, 300);
     return () => clearTimeout(timeoutId);
-  }, [search]);
+  }, [searchTerm]);
 
   return {
-    search,
-    setSearch,
     suggestions,
     isLoading,
   };

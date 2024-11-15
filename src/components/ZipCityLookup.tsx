@@ -1,9 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useZipAutocomplete } from "@/hooks/useZipAutocomplete";
 import type { ZipSuggestion } from "@/hooks/useZipAutocomplete";
@@ -15,91 +13,75 @@ interface ZipCityLookupProps {
 }
 
 export const ZipCityLookup = ({ plz, ort, onChange }: ZipCityLookupProps) => {
-  const [open, setOpen] = useState(false);
-  const { search, setSearch, suggestions = [], isLoading } = useZipAutocomplete();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const { suggestions = [], isLoading } = useZipAutocomplete(searchTerm);
 
-  // Safe handling of window messaging
-  const handleMessage = (event: MessageEvent) => {
-    // Only accept messages from the same origin
-    if (event.origin !== window.location.origin) {
-      console.warn('Received message from unexpected origin:', event.origin);
-      return;
-    }
-    
-    try {
-      const data = event.data;
-      console.log('Received message:', data);
-      // Handle the message data here if needed
-    } catch (error) {
-      console.error('Error processing message:', error);
-    }
-  };
-
-  // Add message listener when component mounts
-  useState(() => {
-    window.addEventListener('message', handleMessage);
-    return () => {
-      window.removeEventListener('message', handleMessage);
+  // Handle click outside to close suggestions
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest(".zip-city-lookup")) {
+        setShowSuggestions(false);
+      }
     };
-  });
 
-  const handleZipSelect = (zip: string, city: string) => {
-    console.log('Selected:', { zip, city });
-    onChange(zip, city);
-    setOpen(false);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleInputChange = (value: string) => {
+    console.log("Search input changed:", value);
+    setSearchTerm(value);
+    setShowSuggestions(true);
   };
 
-  const handleSearchChange = (value: string) => {
-    console.log('Search changed:', value);
-    setSearch(value);
+  const handleSuggestionClick = (suggestion: ZipSuggestion) => {
+    console.log("Selected suggestion:", suggestion);
+    onChange(suggestion.zip, suggestion.city18);
+    setSearchTerm(`${suggestion.zip} ${suggestion.city18}`);
+    setShowSuggestions(false);
   };
-
-  // Ensure suggestions is always a valid array
-  const safeSuggestions = Array.isArray(suggestions) ? suggestions : [];
 
   return (
-    <div className="space-y-2">
-      <Label htmlFor="plz">Postleitzahl & Ort</Label>
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className="w-full justify-between"
-          >
-            {plz ? `${plz} ${ort}` : "PLZ oder Ort eingeben..."}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-[400px] p-0">
-          <Command>
-            <CommandInput 
-              placeholder="PLZ oder Ort suchen..." 
-              value={search}
-              onValueChange={handleSearchChange}
-            />
-            <CommandEmpty>Keine Ergebnisse gefunden.</CommandEmpty>
-            <CommandGroup>
-              {safeSuggestions.map((item: ZipSuggestion) => (
-                <CommandItem
-                  key={item.zip}
-                  value={`${item.zip} ${item.city18}`}
-                  onSelect={() => handleZipSelect(item.zip, item.city18)}
+    <div className="space-y-2 relative zip-city-lookup">
+      <Label htmlFor="plz-ort">Postleitzahl & Ort</Label>
+      <Input
+        id="plz-ort"
+        type="text"
+        value={searchTerm || (plz && ort ? `${plz} ${ort}` : "")}
+        onChange={(e) => handleInputChange(e.target.value)}
+        placeholder="PLZ oder Ort eingeben..."
+        className="w-full"
+        autoComplete="off"
+      />
+
+      {showSuggestions && searchTerm.length >= 2 && (
+        <div className="absolute z-50 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto">
+          {isLoading ? (
+            <div className="p-2 text-sm text-gray-500">Suche...</div>
+          ) : suggestions.length > 0 ? (
+            <ul className="py-1">
+              {suggestions.map((suggestion) => (
+                <li
+                  key={suggestion.zip}
+                  className={cn(
+                    "px-3 py-2 text-sm cursor-pointer hover:bg-gray-100",
+                    plz === suggestion.zip ? "bg-gray-50" : ""
+                  )}
+                  onClick={() => handleSuggestionClick(suggestion)}
                 >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      plz === item.zip ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  {item.zip} {item.city18}
-                </CommandItem>
+                  {suggestion.zip} {suggestion.city18}
+                </li>
               ))}
-            </CommandGroup>
-          </Command>
-        </PopoverContent>
-      </Popover>
+            </ul>
+          ) : (
+            <div className="p-2 text-sm text-gray-500">
+              Keine Ergebnisse gefunden
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
