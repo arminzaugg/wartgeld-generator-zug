@@ -107,7 +107,7 @@ export const FormFields = ({ values, onChange }: FormFieldsProps) => {
               checked={values.betreuungGeburt}
               onCheckedChange={(checked) => onChange("betreuungGeburt", checked === true)}
             />
-            <Label htmlFor="betreuungGeburt">Betreuung der Gebärenden zuhause (CHF 1000)</Label>
+            <Label htmlFor="betreuungGeburt">Betreuung der Gebärenden zuhause (CHF 400)</Label>
           </div>
           <div className="flex items-center space-x-2">
             <Checkbox 
