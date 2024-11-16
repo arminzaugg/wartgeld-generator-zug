@@ -321,8 +321,8 @@ export const generatePDF = <span class="fstat-no" title="function not covered" >
 <span class="cstat-no" title="statement not covered" >  doc.text("Betreuung der Gebärenden zuhause", 20, 150);</span>
 <span class="cstat-no" title="statement not covered" >  doc.text(data.betreuungGeburt ? "[X] Ja" : "[  ] Ja", 140, 150);</span>
 <span class="cstat-no" title="statement not covered" >  doc.text(data.betreuungGeburt ? "[  ] Nein" : "[X] Nein", 160, 150);</span>
-<span class="cstat-no" title="statement not covered" >  doc.text(data.betreuungGeburt ? "CHF 1000" : "CHF  0", 180, 150);</span>
-<span class="cstat-no" title="statement not covered" >  if (data.betreuungGeburt) total += 1000;</span>
+<span class="cstat-no" title="statement not covered" >  doc.text(data.betreuungGeburt ? "CHF 400" : "CHF  0", 180, 150);</span>
+<span class="cstat-no" title="statement not covered" >  if (data.betreuungGeburt) total += 400;</span>
   
 <span class="cstat-no" title="statement not covered" >  doc.text("Pflege der Wöchnerin zuhause", 20, 160);</span>
 <span class="cstat-no" title="statement not covered" >  doc.text(data.betreuungWochenbett ? "[X] Ja" : "[  ] Ja", 140, 160);</span>
