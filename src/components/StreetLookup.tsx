@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useStreetAutocomplete } from "@/hooks/useStreetAutocomplete";
-import type { StreetSummary } from "@/types/address";
+import type { StreetSummary, HouseNumber } from "@/types/address";
 import { Loader2 } from "lucide-react";
 
 interface StreetLookupProps {
@@ -14,6 +14,8 @@ interface StreetLookupProps {
 export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [selectedStreet, setSelectedStreet] = useState<StreetSummary | null>(null);
+  const [showHouseNumbers, setShowHouseNumbers] = useState(false);
   const { suggestions = [], isLoading } = useStreetAutocomplete(searchTerm, zipCode);
 
   useEffect(() => {
@@ -21,6 +23,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
       const target = event.target as HTMLElement;
       if (!target.closest(".street-lookup")) {
         setShowSuggestions(false);
+        setShowHouseNumbers(false);
       }
     };
 
@@ -31,12 +34,23 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   const handleInputChange = (value: string) => {
     setSearchTerm(value);
     setShowSuggestions(true);
+    setShowHouseNumbers(false);
+    setSelectedStreet(null);
   };
 
   const handleSuggestionClick = (suggestion: StreetSummary) => {
-    onChange(suggestion.streetName, suggestion.zipCode, suggestion.city);
-    setSearchTerm(suggestion.streetName);
+    setSelectedStreet(suggestion);
     setShowSuggestions(false);
+    setShowHouseNumbers(true);
+  };
+
+  const handleHouseNumberClick = (houseNumber: HouseNumber) => {
+    if (!selectedStreet) return;
+    
+    const fullAddress = `${selectedStreet.streetName} ${houseNumber.number}${houseNumber.addition ? houseNumber.addition : ''}`;
+    onChange(fullAddress, selectedStreet.zipCode, selectedStreet.city);
+    setSearchTerm(fullAddress);
+    setShowHouseNumbers(false);
   };
 
   return (
@@ -80,6 +94,22 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
               {isLoading ? "Suche..." : "Keine Ergebnisse gefunden"}
             </div>
           )}
+        </div>
+      )}
+
+      {showHouseNumbers && selectedStreet?.houseNumbers && (
+        <div className="absolute z-50 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto">
+          <ul className="py-1 grid grid-cols-2 sm:grid-cols-3 gap-1">
+            {selectedStreet.houseNumbers.map((houseNumber, index) => (
+              <li
+                key={`${houseNumber.number}-${houseNumber.addition || ''}-${index}`}
+                className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 text-center"
+                onClick={() => handleHouseNumberClick(houseNumber)}
+              >
+                {houseNumber.number}{houseNumber.addition || ''}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>
