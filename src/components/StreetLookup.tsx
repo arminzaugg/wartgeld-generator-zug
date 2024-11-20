@@ -18,12 +18,14 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   const { suggestions = [], isLoading } = useStreetAutocomplete(searchTerm, zipCode);
   const [inputRef, setInputRef] = useState<HTMLInputElement | null>(null);
   const [houseNumberInput, setHouseNumberInput] = useState("");
+  const [showHouseNumbers, setShowHouseNumbers] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
       if (!target.closest(".street-lookup")) {
         setShowSuggestions(false);
+        setShowHouseNumbers(false);
       }
     };
 
@@ -39,10 +41,22 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
         setSelectedStreet(null);
       } else {
         setShowSuggestions(true);
+        setShowHouseNumbers(false);
       }
     } else {
-      setHouseNumberInput(value);
-      setShowSuggestions(true);
+      // Check if the input ends with a space and contains the selected street name
+      if (value.startsWith(selectedStreet.streetName) && value.endsWith(" ")) {
+        setShowHouseNumbers(true);
+        setHouseNumberInput("");
+      } else if (value.startsWith(selectedStreet.streetName + " ")) {
+        // Extract house number input after street name and space
+        const houseNumberPart = value.substring(selectedStreet.streetName.length + 1);
+        setHouseNumberInput(houseNumberPart);
+        setShowHouseNumbers(true);
+      } else {
+        setShowHouseNumbers(false);
+      }
+      setSearchTerm(value);
     }
   };
 
@@ -50,6 +64,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
     setSelectedStreet(suggestion);
     setSearchTerm(suggestion.streetName);
     setShowSuggestions(false);
+    setShowHouseNumbers(false);
     setHouseNumberInput("");
     
     // Focus back on input for house number
@@ -66,6 +81,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
     const fullAddress = `${selectedStreet!.streetName} ${fullNumber}`;
     setSearchTerm(fullAddress);
     setShowSuggestions(false);
+    setShowHouseNumbers(false);
     onChange(fullAddress, selectedStreet!.zipCode, selectedStreet!.city);
   };
 
@@ -73,6 +89,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
     setSelectedStreet(null);
     setSearchTerm("");
     setHouseNumberInput("");
+    setShowHouseNumbers(false);
     onChange("", undefined, undefined);
   };
 
@@ -92,7 +109,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
           type="text"
           value={selectedStreet ? searchTerm : value}
           onChange={(e) => handleInputChange(e.target.value)}
-          placeholder={selectedStreet ? "Hausnummer eingeben..." : "Strasse eingeben..."}
+          placeholder={selectedStreet ? "Fügen Sie eine Hausnummer hinzu..." : "Strasse eingeben..."}
           className="w-full pr-8"
           autoComplete="off"
           ref={(ref) => setInputRef(ref)}
@@ -112,7 +129,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
         )}
       </div>
 
-      {showSuggestions && (
+      {(showSuggestions || showHouseNumbers) && (
         <div className="absolute z-50 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto">
           {!selectedStreet ? (
             suggestions.length > 0 ? (
@@ -136,7 +153,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
                 {isLoading ? "Suche..." : "Keine Ergebnisse gefunden"}
               </div>
             )
-          ) : (
+          ) : showHouseNumbers && (
             <ul className="py-1 grid grid-cols-3 gap-1">
               {getFilteredHouseNumbers().map((houseNumber, index) => (
                 <li
