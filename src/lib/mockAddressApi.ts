@@ -1,4 +1,4 @@
-import { ZipSearchSummary, ZipSummary, AddressSearchParams } from '../types/address';
+import { ZipSearchSummary, ZipSummary, StreetSearchSummary, StreetSummary, AddressSearchParams, StreetSearchParams } from '../types/address';
 
 // Extended mock data for Swiss cities and ZIP codes
 const mockZipData: ZipSummary[] = [
@@ -15,11 +15,25 @@ const mockZipData: ZipSummary[] = [
   { zip: "6318", city18: "Walchwil", city27: "Walchwil", city39: "Walchwil" },
 ];
 
+// Extended mock data for streets
+const mockStreetData: StreetSummary[] = [
+  { STRID: 1001, streetName: "Bahnhofstrasse", zipCode: "6300", city: "Zug" },
+  { STRID: 1002, streetName: "Poststrasse", zipCode: "6300", city: "Zug" },
+  { STRID: 1003, streetName: "Bundesplatz", zipCode: "6300", city: "Zug" },
+  { STRID: 1004, streetName: "Baarerstrasse", zipCode: "6300", city: "Zug" },
+  { STRID: 1005, streetName: "Industriestrasse", zipCode: "6300", city: "Zug" },
+  { STRID: 2001, streetName: "Bahnhofplatz", zipCode: "6330", city: "Cham" },
+  { STRID: 2002, streetName: "Zugerstrasse", zipCode: "6330", city: "Cham" },
+  { STRID: 2003, streetName: "Dorfstrasse", zipCode: "6330", city: "Cham" },
+  { STRID: 3001, streetName: "Hauptstrasse", zipCode: "6331", city: "Hünenberg" },
+  { STRID: 3002, streetName: "Chamerstrasse", zipCode: "6331", city: "Hünenberg" },
+  { STRID: 3003, streetName: "Bahnhofstrasse", zipCode: "6331", city: "Hünenberg" },
+];
+
 export const mockAddressApi = {
   searchZip: async (params: AddressSearchParams): Promise<ZipSearchSummary> => {
     console.log('Mock API searching for:', params);
     
-    // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, Math.random() * 300));
 
     try {
@@ -41,6 +55,33 @@ export const mockAddressApi = {
     } catch (error) {
       console.error('Mock API error:', error);
       return { zips: [] };
+    }
+  },
+
+  searchStreets: async (params: StreetSearchParams): Promise<StreetSearchSummary> => {
+    console.log('Mock API searching streets:', params);
+    
+    await new Promise(resolve => setTimeout(resolve, Math.random() * 300));
+
+    try {
+      if (!params.streetName || params.streetName.length < 2) {
+        return { streets: [] };
+      }
+
+      let results = mockStreetData.filter(street => 
+        street.streetName.toLowerCase().includes(params.streetName.toLowerCase())
+      );
+
+      if (params.zipCode) {
+        results = results.filter(street => street.zipCode === params.zipCode);
+      }
+
+      return {
+        streets: results.slice(0, params.limit || 10)
+      };
+    } catch (error) {
+      console.error('Mock API street search error:', error);
+      return { streets: [] };
     }
   },
 
