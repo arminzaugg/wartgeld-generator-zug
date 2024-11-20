@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { mockAddressApi } from '@/lib/mockAddressApi';
 import type { StreetSummary } from '@/types/address';
 import { addressConfig } from '@/config/addressConfig';
+import { apiConfig } from '@/config/apiConfig';
 
 export interface StreetAutocompleteResult {
   suggestions: StreetSummary[];
@@ -29,13 +30,14 @@ export const useStreetAutocomplete = (
       setError(null);
 
       try {
+        // For now, we'll still use the mock API
+        // TODO: Replace with real API call using apiConfig credentials
         const results = await mockAddressApi.searchStreets({
           streetName: searchTerm,
           zipCode,
           limit: 10
         });
 
-        // Apply ZIP code filter if enabled
         const filteredStreets = addressConfig.streetFilter.enabled
           ? results.streets?.filter(street => 
               street.zipCode.startsWith(addressConfig.streetFilter.zipPrefix)
