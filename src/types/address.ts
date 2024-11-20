@@ -26,6 +26,12 @@ export interface StreetSummary {
   streetName: string;
   zipCode: string;
   city: string;
+  houseNumbers?: HouseNumber[];
+}
+
+export interface HouseNumber {
+  number: string;
+  addition?: string;
 }
 
 export interface ZipSearchSummary {
