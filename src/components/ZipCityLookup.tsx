@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, KeyboardEvent } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -39,6 +39,14 @@ export const ZipCityLookup = ({ plz, ort, onChange }: ZipCityLookupProps) => {
     }
   };
 
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Tab' && !e.shiftKey && suggestions.length > 0 && showSuggestions) {
+      e.preventDefault();
+      const firstSuggestion = suggestions[0];
+      handleSuggestionClick(firstSuggestion);
+    }
+  };
+
   const handleSuggestionClick = (suggestion: ZipSuggestion) => {
     onChange(suggestion.zip, suggestion.city18);
     setSearchTerm(`${suggestion.zip} ${suggestion.city18}`);
@@ -60,6 +68,7 @@ export const ZipCityLookup = ({ plz, ort, onChange }: ZipCityLookupProps) => {
           type="text"
           value={searchTerm || (plz && ort ? `${plz} ${ort}` : "")}
           onChange={(e) => handleInputChange(e.target.value)}
+          onKeyDown={handleKeyDown}
           placeholder="PLZ oder Ort eingeben..."
           className="w-full pr-8"
           autoComplete="off"

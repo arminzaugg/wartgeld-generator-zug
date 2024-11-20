@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, KeyboardEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useStreetAutocomplete } from "@/hooks/useStreetAutocomplete";
@@ -21,7 +21,6 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   const [showHouseNumbers, setShowHouseNumbers] = useState(false);
 
   useEffect(() => {
-    // Reset street selection if zipCode changes and current selection doesn't match
     if (zipCode && selectedStreet && selectedStreet.zipCode !== zipCode) {
       setSelectedStreet(null);
       setSearchTerm("");
@@ -64,6 +63,14 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
         setShowHouseNumbers(false);
       }
       setSearchTerm(value);
+    }
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Tab' && !e.shiftKey && suggestions.length > 0 && showSuggestions) {
+      e.preventDefault();
+      const firstSuggestion = suggestions[0];
+      handleSuggestionClick(firstSuggestion);
     }
   };
 
@@ -116,6 +123,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
           type="text"
           value={selectedStreet ? searchTerm : value}
           onChange={(e) => handleInputChange(e.target.value)}
+          onKeyDown={handleKeyDown}
           placeholder={selectedStreet ? "Fügen Sie eine Hausnummer hinzu..." : "Strasse eingeben..."}
           className="w-full pr-8"
           autoComplete="off"
