@@ -33,9 +33,14 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
 
   const handleInputChange = (value: string) => {
     setSearchTerm(value);
-    setShowSuggestions(true);
-    setShowHouseNumbers(false);
-    setSelectedStreet(null);
+    onChange(value, undefined, undefined); // This line ensures the parent component gets updated when clearing
+    if (value === "") {
+      setSelectedStreet(null);
+      setShowHouseNumbers(false);
+    } else {
+      setShowSuggestions(true);
+      setShowHouseNumbers(false);
+    }
   };
 
   const handleSuggestionClick = (suggestion: StreetSummary) => {
