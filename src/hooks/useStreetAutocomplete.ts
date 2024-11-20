@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { mockAddressApi } from '@/lib/mockAddressApi';
 import type { StreetSummary } from '@/types/address';
 import { addressConfig } from '@/config/addressConfig';
 import { apiConfig } from '@/config/apiConfig';
@@ -30,21 +29,33 @@ export const useStreetAutocomplete = (
       setError(null);
 
       try {
-        // For now, we'll still use the mock API
-        // TODO: Replace with real API call using apiConfig credentials
-        const results = await mockAddressApi.searchStreets({
-          streetName: searchTerm,
-          zipCode,
-          limit: 10
+        const response = await fetch(`${apiConfig.baseUrl}/api/streets/search`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Basic ' + btoa(`${apiConfig.username}:${apiConfig.password}`)
+          },
+          body: JSON.stringify({
+            streetName: searchTerm,
+            zipCode,
+            limit: 10
+          })
         });
 
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const streets = data.streets || [];
+
         const filteredStreets = addressConfig.streetFilter.enabled
-          ? results.streets?.filter(street => 
+          ? streets.filter(street => 
               street.zipCode.startsWith(addressConfig.streetFilter.zipPrefix)
             )
-          : results.streets;
+          : streets;
 
-        setSuggestions(filteredStreets || []);
+        setSuggestions(filteredStreets);
       } catch (error) {
         console.error('Error fetching street suggestions:', error);
         setError(error instanceof Error ? error : new Error('Failed to fetch suggestions'));
