@@ -21,6 +21,15 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   const [showHouseNumbers, setShowHouseNumbers] = useState(false);
 
   useEffect(() => {
+    // Reset street selection if zipCode changes and current selection doesn't match
+    if (zipCode && selectedStreet && selectedStreet.zipCode !== zipCode) {
+      setSelectedStreet(null);
+      setSearchTerm("");
+      onChange("", undefined, undefined);
+    }
+  }, [zipCode]);
+
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
       if (!target.closest(".street-lookup")) {
@@ -44,12 +53,10 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
         setShowHouseNumbers(false);
       }
     } else {
-      // Check if the input ends with a space and contains the selected street name
       if (value.startsWith(selectedStreet.streetName) && value.endsWith(" ")) {
         setShowHouseNumbers(true);
         setHouseNumberInput("");
       } else if (value.startsWith(selectedStreet.streetName + " ")) {
-        // Extract house number input after street name and space
         const houseNumberPart = value.substring(selectedStreet.streetName.length + 1);
         setHouseNumberInput(houseNumberPart);
         setShowHouseNumbers(true);
@@ -66,8 +73,8 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
     setShowSuggestions(false);
     setShowHouseNumbers(false);
     setHouseNumberInput("");
+    onChange(suggestion.streetName, suggestion.zipCode, suggestion.city);
     
-    // Focus back on input for house number
     if (inputRef) {
       inputRef.focus();
     }

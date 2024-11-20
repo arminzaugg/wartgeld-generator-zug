@@ -17,6 +17,10 @@ export const AddressFields = ({ values, onChange }: AddressFieldsProps) => {
   const handleZipCityChange = (plz: string, ort: string) => {
     onChange("plz", plz);
     onChange("ort", ort);
+    // Clear address when zip changes to prevent invalid combinations
+    if (values.address) {
+      onChange("address", "");
+    }
   };
 
   const handleStreetChange = (street: string, zipCode?: string, city?: string) => {
