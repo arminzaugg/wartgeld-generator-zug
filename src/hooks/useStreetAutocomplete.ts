@@ -29,7 +29,7 @@ export const useStreetAutocomplete = (
       setError(null);
 
       try {
-        const response = await fetch(`${apiConfig.baseUrl}/api/streets/search`, {
+        const response = await fetch(apiConfig.baseUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
