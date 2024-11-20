@@ -45,8 +45,13 @@ export const useStreetAutocomplete = (
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Basic ' + btoa(`${apiConfig.username}:${apiConfig.password}`)
+            'Authorization': 'Basic ' + btoa(`${apiConfig.username}:${apiConfig.password}`),
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
           },
+          mode: 'cors',
+          credentials: 'include',
           body: JSON.stringify(requestBody)
         });
 
