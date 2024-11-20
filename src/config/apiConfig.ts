@@ -6,9 +6,9 @@ interface ApiConfig {
 
 const getApiConfig = (): ApiConfig => {
   return {
-    baseUrl: import.meta.env.EXTWebServicePROD_API_BASE_URL || 'http://localhost:3000',
-    username: import.meta.env.EXTWebServicePROD_API_USERNAME || '',
-    password: import.meta.env.EXTWebServicePROD_API_PASSWORD || ''
+    baseUrl: import.meta.env.VITE_EXTWebServicePROD_API_BASE_URL || 'http://localhost:3000',
+    username: import.meta.env.VITE_EXTWebServicePROD_API_USERNAME || '',
+    password: import.meta.env.VITE_EXTWebServicePROD_API_PASSWORD || ''
   };
 };
 
