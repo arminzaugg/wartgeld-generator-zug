@@ -46,7 +46,7 @@ export const useStreetAutocomplete = (
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Basic ' + btoa(`${apiConfig.username}:${apiConfig.password}`),
-            'Access-Control-Allow-Origin': 'http://localhost:8080, https://lovable.dev',
+            'Access-Control-Allow-Origin': 'http://localhost:8080, https://lovable.dev, https://lovableproject.com',
             'Access-Control-Allow-Methods': 'POST, OPTIONS',
             'Access-Control-Allow-Headers': 'Content-Type, Authorization'
           },
