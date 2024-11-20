@@ -31,7 +31,12 @@ export const ZipCityLookup = ({ plz, ort, onChange }: ZipCityLookupProps) => {
 
   const handleInputChange = (value: string) => {
     setSearchTerm(value);
-    setShowSuggestions(true);
+    if (value === "") {
+      onChange("", ""); // This ensures the parent component gets updated when clearing
+      setShowSuggestions(false);
+    } else {
+      setShowSuggestions(true);
+    }
   };
 
   const handleSuggestionClick = (suggestion: ZipSuggestion) => {
