@@ -26,6 +26,18 @@ export const useZipAutocomplete = (searchTerm: string): ZipAutocompleteResult =>
       setIsLoading(true);
       setError(null);
 
+      const requestBody = {
+        zipCity: searchTerm,
+        type: 'DOMICILE',
+        limit: 10
+      };
+
+      console.log('ZIP API Request:', {
+        url: apiConfig.baseUrl,
+        body: requestBody,
+        timestamp: new Date().toISOString()
+      });
+
       try {
         const response = await fetch(apiConfig.baseUrl, {
           method: 'POST',
@@ -33,11 +45,13 @@ export const useZipAutocomplete = (searchTerm: string): ZipAutocompleteResult =>
             'Content-Type': 'application/json',
             'Authorization': 'Basic ' + btoa(`${apiConfig.username}:${apiConfig.password}`)
           },
-          body: JSON.stringify({
-            zipCity: searchTerm,
-            type: 'DOMICILE',
-            limit: 10
-          })
+          body: JSON.stringify(requestBody)
+        });
+
+        console.log('ZIP API Response Status:', {
+          status: response.status,
+          statusText: response.statusText,
+          timestamp: new Date().toISOString()
         });
 
         if (!response.ok) {
@@ -45,9 +59,17 @@ export const useZipAutocomplete = (searchTerm: string): ZipAutocompleteResult =>
         }
 
         const data = await response.json();
+        console.log('ZIP API Response Data:', {
+          resultsCount: data.zips?.length || 0,
+          timestamp: new Date().toISOString()
+        });
+
         setSuggestions(data.zips || []);
       } catch (error) {
-        console.error('Error fetching suggestions:', error);
+        console.error('ZIP API Error:', {
+          error: error instanceof Error ? error.message : 'Unknown error',
+          timestamp: new Date().toISOString()
+        });
         setError(error instanceof Error ? error : new Error('Failed to fetch suggestions'));
         setSuggestions([]);
       } finally {

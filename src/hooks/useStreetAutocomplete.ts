@@ -28,6 +28,18 @@ export const useStreetAutocomplete = (
       setIsLoading(true);
       setError(null);
 
+      const requestBody = {
+        streetName: searchTerm,
+        zipCode,
+        limit: 10
+      };
+
+      console.log('Street API Request:', {
+        url: apiConfig.baseUrl,
+        body: requestBody,
+        timestamp: new Date().toISOString()
+      });
+
       try {
         const response = await fetch(apiConfig.baseUrl, {
           method: 'POST',
@@ -35,11 +47,13 @@ export const useStreetAutocomplete = (
             'Content-Type': 'application/json',
             'Authorization': 'Basic ' + btoa(`${apiConfig.username}:${apiConfig.password}`)
           },
-          body: JSON.stringify({
-            streetName: searchTerm,
-            zipCode,
-            limit: 10
-          })
+          body: JSON.stringify(requestBody)
+        });
+
+        console.log('Street API Response Status:', {
+          status: response.status,
+          statusText: response.statusText,
+          timestamp: new Date().toISOString()
         });
 
         if (!response.ok) {
@@ -47,6 +61,11 @@ export const useStreetAutocomplete = (
         }
 
         const data = await response.json();
+        console.log('Street API Response Data:', {
+          resultsCount: data.streets?.length || 0,
+          timestamp: new Date().toISOString()
+        });
+
         const streets = data.streets || [];
 
         const filteredStreets = addressConfig.streetFilter.enabled
@@ -57,7 +76,10 @@ export const useStreetAutocomplete = (
 
         setSuggestions(filteredStreets);
       } catch (error) {
-        console.error('Error fetching street suggestions:', error);
+        console.error('Street API Error:', {
+          error: error instanceof Error ? error.message : 'Unknown error',
+          timestamp: new Date().toISOString()
+        });
         setError(error instanceof Error ? error : new Error('Failed to fetch suggestions'));
         setSuggestions([]);
       } finally {
