@@ -159,7 +159,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
                     onClick={() => handleSuggestionClick(suggestion)}
                   >
                     <span className="font-medium">{suggestion.streetName}</span>
-                    <span className="text-gray-600">{suggestion.zipCode}</span>
+                    <span className="text-gray-600">{suggestion.zipCode} {suggestion.city}</span>
                   </li>
                 ))}
               </ul>
