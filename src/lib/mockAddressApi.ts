@@ -38,6 +38,7 @@ export const mockAddressApi = {
         street.streetName.toLowerCase().includes(params.streetName.toLowerCase())
       );
 
+      // Apply ZIP code filter if provided
       if (params.zipCode) {
         results = results.filter(street => street.zipCode === params.zipCode);
       }

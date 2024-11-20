@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { mockAddressApi } from '@/lib/mockAddressApi';
 import type { StreetSummary } from '@/types/address';
+import { addressConfig } from '@/config/addressConfig';
 
 export interface StreetAutocompleteResult {
   suggestions: StreetSummary[];
@@ -33,7 +34,15 @@ export const useStreetAutocomplete = (
           zipCode,
           limit: 10
         });
-        setSuggestions(results.streets || []);
+
+        // Apply ZIP code filter if enabled
+        const filteredStreets = addressConfig.streetFilter.enabled
+          ? results.streets?.filter(street => 
+              street.zipCode.startsWith(addressConfig.streetFilter.zipPrefix)
+            )
+          : results.streets;
+
+        setSuggestions(filteredStreets || []);
       } catch (error) {
         console.error('Error fetching street suggestions:', error);
         setError(error instanceof Error ? error : new Error('Failed to fetch suggestions'));
