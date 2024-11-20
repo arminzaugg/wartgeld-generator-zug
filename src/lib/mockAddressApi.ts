@@ -1,4 +1,4 @@
-import { ZipSearchSummary, ZipSummary, StreetSearchSummary, StreetSummary, AddressSearchParams, StreetSearchParams } from '../types/address';
+import { ZipSearchSummary, ZipSummary, StreetSearchSummary, StreetSummary, AddressSearchParams, StreetSearchParams, HouseNumberSummary, HouseNumberSearchSummary, HouseNumberSearchParams } from '../types/address';
 
 // Extended mock data for Swiss cities and ZIP codes
 const mockZipData: ZipSummary[] = [
@@ -29,6 +29,25 @@ const mockStreetData: StreetSummary[] = [
   { STRID: 3002, streetName: "Chamerstrasse", zipCode: "6331", city: "Hünenberg" },
   { STRID: 3003, streetName: "Bahnhofstrasse", zipCode: "6331", city: "Hünenberg" },
 ];
+
+// Extended mock data for house numbers
+const mockHouseNumberData: HouseNumberSummary[] = [
+  { STRID: 1001, houseNumber: "1", houseNumberAddition: "", zipCode: "6300", city: "Zug" },
+  { STRID: 1001, houseNumber: "1", houseNumberAddition: "a", zipCode: "6300", city: "Zug" },
+  { STRID: 1001, houseNumber: "1", houseNumberAddition: "b", zipCode: "6300", city: "Zug" },
+  { STRID: 1001, houseNumber: "2", houseNumberAddition: "", zipCode: "6300", city: "Zug" },
+  { STRID: 1001, houseNumber: "3", houseNumberAddition: "", zipCode: "6300", city: "Zug" },
+  { STRID: 1002, houseNumber: "10", houseNumberAddition: "", zipCode: "6300", city: "Zug" },
+  { STRID: 1002, houseNumber: "12", houseNumberAddition: "", zipCode: "6300", city: "Zug" },
+  { STRID: 1002, houseNumber: "12", houseNumberAddition: "a", zipCode: "6300", city: "Zug" },
+  { STRID: 1003, houseNumber: "5", houseNumberAddition: "", zipCode: "6300", city: "Zug" },
+  { STRID: 1003, houseNumber: "7", houseNumberAddition: "", zipCode: "6300", city: "Zug" },
+  { STRID: 2001, houseNumber: "1", houseNumberAddition: "", zipCode: "6330", city: "Cham" },
+  { STRID: 2001, houseNumber: "2", houseNumberAddition: "", zipCode: "6330", city: "Cham" },
+  { STRID: 2002, houseNumber: "15", houseNumberAddition: "", zipCode: "6330", city: "Cham" },
+  { STRID: 2002, houseNumber: "15", houseNumberAddition: "a", zipCode: "6330", city: "Cham" },
+  { STRID: 2002, houseNumber: "17", houseNumberAddition: "", zipCode: "6330", city: "Cham" },
+};
 
 export const mockAddressApi = {
   searchZip: async (params: AddressSearchParams): Promise<ZipSearchSummary> => {
@@ -82,6 +101,35 @@ export const mockAddressApi = {
     } catch (error) {
       console.error('Mock API street search error:', error);
       return { streets: [] };
+    }
+  },
+
+  searchHouseNumbers: async (params: HouseNumberSearchParams): Promise<HouseNumberSearchSummary> => {
+    console.log('Mock API searching house numbers:', params);
+    
+    await new Promise(resolve => setTimeout(resolve, Math.random() * 300));
+
+    try {
+      let results = mockHouseNumberData.filter(house => house.STRID === params.streetId);
+
+      if (params.houseNumber) {
+        results = results.filter(house => 
+          house.houseNumber.startsWith(params.houseNumber!) ||
+          (house.houseNumberAddition && 
+           (house.houseNumber + house.houseNumberAddition).startsWith(params.houseNumber!))
+        );
+      }
+
+      if (params.zipCode) {
+        results = results.filter(house => house.zipCode === params.zipCode);
+      }
+
+      return {
+        houseNumbers: results.slice(0, params.limit || 10)
+      };
+    } catch (error) {
+      console.error('Mock API house number search error:', error);
+      return { houseNumbers: [] };
     }
   },
 

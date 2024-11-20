@@ -47,3 +47,22 @@ export interface StreetSearchParams {
   zipCode?: string;
   limit?: number;
 }
+
+export interface HouseNumberSummary {
+  STRID: number;
+  houseNumber: string;
+  houseNumberAddition: string;
+  zipCode: string;
+  city: string;
+}
+
+export interface HouseNumberSearchSummary {
+  houseNumbers: HouseNumberSummary[];
+}
+
+export interface HouseNumberSearchParams {
+  streetId: number;
+  houseNumber?: string;
+  zipCode?: string;
+  limit?: number;
+}
