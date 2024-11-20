@@ -27,13 +27,11 @@ export const useZipAutocomplete = (searchTerm: string): ZipAutocompleteResult =>
       setError(null);
 
       try {
-        console.log('Fetching suggestions for:', searchTerm);
         const results = await mockAddressApi.searchZip({
           zipCity: searchTerm,
           type: 'DOMICILE',
           limit: 10
         });
-        console.log('Received results:', results);
         setSuggestions(results.zips || []);
       } catch (error) {
         console.error('Error fetching suggestions:', error);

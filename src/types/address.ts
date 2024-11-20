@@ -1,3 +1,19 @@
+export interface AutocompleteRequest {
+  request: {
+    ONRP: number;
+    ZipCode: string;
+    ZipAddition: string;
+    TownName: string;
+    STRID: number;
+    StreetName: string;
+    HouseKey: number;
+    HouseNo: string;
+    HouseNoAddition: string;
+  };
+  zipOrderMode: number;
+  zipFilterMode: number;
+}
+
 export interface ZipSummary {
   zip: string;
   city18: string;
@@ -7,14 +23,6 @@ export interface ZipSummary {
 
 export interface ZipSearchSummary {
   zips: ZipSummary[];
-}
-
-export interface StreetSearchSummary {
-  streets: string[];
-}
-
-export interface HouseSearchSummary {
-  houses: string[];
 }
 
 export interface AddressSearchParams {
