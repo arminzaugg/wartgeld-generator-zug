@@ -32,7 +32,7 @@ export const ZipCityLookup = ({ plz, ort, onChange }: ZipCityLookupProps) => {
   const handleInputChange = (value: string) => {
     setSearchTerm(value);
     if (value === "") {
-      onChange("", ""); // This ensures the parent component gets updated when clearing
+      onChange("", "");
       setShowSuggestions(false);
     } else {
       setShowSuggestions(true);
@@ -42,6 +42,12 @@ export const ZipCityLookup = ({ plz, ort, onChange }: ZipCityLookupProps) => {
   const handleSuggestionClick = (suggestion: ZipSuggestion) => {
     onChange(suggestion.zip, suggestion.city18);
     setSearchTerm(`${suggestion.zip} ${suggestion.city18}`);
+    setShowSuggestions(false);
+  };
+
+  const clearSelection = () => {
+    setSearchTerm("");
+    onChange("", "");
     setShowSuggestions(false);
   };
 
@@ -58,6 +64,14 @@ export const ZipCityLookup = ({ plz, ort, onChange }: ZipCityLookupProps) => {
           className="w-full pr-8"
           autoComplete="off"
         />
+        {(searchTerm || (plz && ort)) && (
+          <button
+            onClick={clearSelection}
+            className="absolute right-8 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+          >
+            ×
+          </button>
+        )}
         {isLoading && (
           <div className="absolute right-2 top-1/2 -translate-y-1/2">
             <Loader2 className="h-4 w-4 animate-spin text-gray-500" />
