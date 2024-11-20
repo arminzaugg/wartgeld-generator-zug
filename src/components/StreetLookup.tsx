@@ -8,7 +8,7 @@ import { Loader2 } from "lucide-react";
 interface StreetLookupProps {
   value: string;
   zipCode?: string;
-  onChange: (street: string) => void;
+  onChange: (street: string, zipCode?: string, city?: string) => void;
 }
 
 export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) => {
@@ -34,7 +34,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   };
 
   const handleSuggestionClick = (suggestion: StreetSummary) => {
-    onChange(suggestion.streetName);
+    onChange(suggestion.streetName, suggestion.zipCode, suggestion.city);
     setSearchTerm(suggestion.streetName);
     setShowSuggestions(false);
   };

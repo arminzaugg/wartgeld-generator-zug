@@ -19,8 +19,10 @@ export const AddressFields = ({ values, onChange }: AddressFieldsProps) => {
     onChange("ort", ort);
   };
 
-  const handleStreetChange = (street: string) => {
+  const handleStreetChange = (street: string, zipCode?: string, city?: string) => {
     onChange("address", street);
+    if (zipCode) onChange("plz", zipCode);
+    if (city) onChange("ort", city);
   };
 
   return (
