@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { municipalities } from "@/config/addresses";
-import { ZipCityLookup } from "@/components/ZipCityLookup";
+import { AddressFields } from "@/components/AddressFields";
 
 interface FormFieldsProps {
   values: {
@@ -21,13 +21,7 @@ interface FormFieldsProps {
 }
 
 export const FormFields = ({ values, onChange }: FormFieldsProps) => {
-  const handleZipCityChange = (plz: string, ort: string) => {
-    onChange("plz", plz);
-    onChange("ort", ort);
-  };
-
   const handleInputChange = (field: string, value: string) => {
-    // Allow alphanumeric characters and spaces
     const sanitizedValue = value.replace(/[^a-zA-Z0-9\s]/g, '');
     onChange(field, sanitizedValue);
   };
@@ -60,24 +54,10 @@ export const FormFields = ({ values, onChange }: FormFieldsProps) => {
           </div>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="form-address">Strasse</Label>
-          <Input
-            id="form-address"
-            value={values.address}
-            onChange={(e) => handleInputChange("address", e.target.value)}
-            pattern="[a-zA-Z0-9\s]*"
-            title="Nur Buchstaben und Zahlen sind erlaubt"
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <ZipCityLookup 
-            plz={values.plz}
-            ort={values.ort}
-            onChange={handleZipCityChange}
-          />
-        </div>
+        <AddressFields 
+          values={values}
+          onChange={onChange}
+        />
 
         <div className="space-y-2">
           <Label htmlFor="form-geburtsdatum">Datum der Geburt</Label>
