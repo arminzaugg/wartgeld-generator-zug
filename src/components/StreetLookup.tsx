@@ -17,6 +17,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   const [selectedStreet, setSelectedStreet] = useState<StreetSummary | null>(null);
   const { suggestions = [], isLoading } = useStreetAutocomplete(searchTerm, zipCode);
   const [inputRef, setInputRef] = useState<HTMLInputElement | null>(null);
+  const [houseNumberInput, setHouseNumberInput] = useState("");
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -40,30 +41,48 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
         setShowSuggestions(true);
       }
     } else {
-      // If a street is selected, allow direct input of house number
-      const fullAddress = `${selectedStreet.streetName} ${value}`;
-      onChange(fullAddress, selectedStreet.zipCode, selectedStreet.city);
-      setSearchTerm(fullAddress);
+      setHouseNumberInput(value);
+      setShowSuggestions(true);
     }
   };
 
   const handleSuggestionClick = (suggestion: StreetSummary) => {
     setSelectedStreet(suggestion);
-    setSearchTerm(suggestion.streetName + " ");
+    setSearchTerm(suggestion.streetName);
     setShowSuggestions(false);
-    onChange(suggestion.streetName, suggestion.zipCode, suggestion.city);
+    setHouseNumberInput("");
     
     // Focus back on input for house number
     if (inputRef) {
       inputRef.focus();
-      inputRef.setSelectionRange(suggestion.streetName.length + 1, suggestion.streetName.length + 1);
     }
+  };
+
+  const handleHouseNumberClick = (houseNumber: HouseNumber) => {
+    const fullNumber = houseNumber.addition 
+      ? `${houseNumber.number}${houseNumber.addition}`
+      : houseNumber.number;
+    
+    const fullAddress = `${selectedStreet!.streetName} ${fullNumber}`;
+    setSearchTerm(fullAddress);
+    setShowSuggestions(false);
+    onChange(fullAddress, selectedStreet!.zipCode, selectedStreet!.city);
   };
 
   const clearSelection = () => {
     setSelectedStreet(null);
     setSearchTerm("");
+    setHouseNumberInput("");
     onChange("", undefined, undefined);
+  };
+
+  const getFilteredHouseNumbers = () => {
+    if (!selectedStreet?.houseNumbers) return [];
+    
+    return selectedStreet.houseNumbers.filter(hn => {
+      const fullNumber = `${hn.number}${hn.addition || ''}`;
+      return fullNumber.toLowerCase().startsWith(houseNumberInput.toLowerCase());
+    });
   };
 
   return (
@@ -71,7 +90,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
       <div className="relative">
         <Input
           type="text"
-          value={searchTerm}
+          value={selectedStreet ? searchTerm : value}
           onChange={(e) => handleInputChange(e.target.value)}
           placeholder={selectedStreet ? "Hausnummer eingeben..." : "Strasse eingeben..."}
           className="w-full pr-8"
@@ -93,28 +112,42 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
         )}
       </div>
 
-      {showSuggestions && !selectedStreet && searchTerm.length >= 2 && (
+      {showSuggestions && (
         <div className="absolute z-50 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto">
-          {suggestions.length > 0 ? (
-            <ul className="py-1">
-              {suggestions.map((suggestion) => (
+          {!selectedStreet ? (
+            suggestions.length > 0 ? (
+              <ul className="py-1">
+                {suggestions.map((suggestion) => (
+                  <li
+                    key={suggestion.STRID}
+                    className={cn(
+                      "px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 flex items-center justify-between",
+                      value === suggestion.streetName ? "bg-gray-50" : ""
+                    )}
+                    onClick={() => handleSuggestionClick(suggestion)}
+                  >
+                    <span className="font-medium">{suggestion.streetName}</span>
+                    <span className="text-gray-600">{suggestion.zipCode}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="p-2 text-sm text-gray-500 text-center">
+                {isLoading ? "Suche..." : "Keine Ergebnisse gefunden"}
+              </div>
+            )
+          ) : (
+            <ul className="py-1 grid grid-cols-3 gap-1">
+              {getFilteredHouseNumbers().map((houseNumber, index) => (
                 <li
-                  key={suggestion.STRID}
-                  className={cn(
-                    "px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 flex items-center justify-between",
-                    value === suggestion.streetName ? "bg-gray-50" : ""
-                  )}
-                  onClick={() => handleSuggestionClick(suggestion)}
+                  key={`${houseNumber.number}-${houseNumber.addition || ''}-${index}`}
+                  className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 text-center"
+                  onClick={() => handleHouseNumberClick(houseNumber)}
                 >
-                  <span className="font-medium">{suggestion.streetName}</span>
-                  <span className="text-gray-600">{suggestion.zipCode}</span>
+                  {houseNumber.number}{houseNumber.addition || ''}
                 </li>
               ))}
             </ul>
-          ) : (
-            <div className="p-2 text-sm text-gray-500 text-center">
-              {isLoading ? "Suche..." : "Keine Ergebnisse gefunden"}
-            </div>
           )}
         </div>
       )}
