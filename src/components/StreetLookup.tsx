@@ -3,7 +3,8 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useStreetAutocomplete } from "@/hooks/useStreetAutocomplete";
 import type { StreetSummary, HouseNumber } from "@/types/address";
-import { Loader2 } from "lucide-react";
+import { Loader2, MapPin, X } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 interface StreetLookupProps {
   value: string;
@@ -15,10 +16,21 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   const [searchTerm, setSearchTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedStreet, setSelectedStreet] = useState<StreetSummary | null>(null);
-  const { suggestions = [], isLoading } = useStreetAutocomplete(searchTerm, zipCode);
+  const { suggestions = [], isLoading, error } = useStreetAutocomplete(searchTerm, zipCode);
   const [inputRef, setInputRef] = useState<HTMLInputElement | null>(null);
   const [houseNumberInput, setHouseNumberInput] = useState("");
   const [showHouseNumbers, setShowHouseNumbers] = useState(false);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (error) {
+      toast({
+        title: "Fehler bei der Adresssuche",
+        description: "Bitte versuchen Sie es später erneut.",
+        variant: "destructive",
+      });
+    }
+  }, [error, toast]);
 
   useEffect(() => {
     if (zipCode && selectedStreet && selectedStreet.zipCode !== zipCode) {
@@ -119,22 +131,30 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   return (
     <div className="relative street-lookup">
       <div className="relative">
-        <Input
-          type="text"
-          value={selectedStreet ? searchTerm : value}
-          onChange={(e) => handleInputChange(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder={selectedStreet ? "Fügen Sie eine Hausnummer hinzu..." : "Strasse eingeben..."}
-          className="w-full pr-8"
-          autoComplete="off"
-          ref={(ref) => setInputRef(ref)}
-        />
+        <div className="relative">
+          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+          <Input
+            type="text"
+            value={selectedStreet ? searchTerm : value}
+            onChange={(e) => handleInputChange(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={selectedStreet ? "Fügen Sie eine Hausnummer hinzu..." : "Strasse eingeben..."}
+            className={cn(
+              "w-full pl-9 pr-8 transition-colors",
+              isLoading && "pr-12",
+              error && "border-red-500 focus-visible:ring-red-500"
+            )}
+            autoComplete="off"
+            ref={(ref) => setInputRef(ref)}
+          />
+        </div>
         {selectedStreet && (
           <button
             onClick={clearSelection}
-            className="absolute right-8 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors"
+            aria-label="Auswahl löschen"
           >
-            ×
+            <X className="h-4 w-4" />
           </button>
         )}
         {isLoading && (
@@ -145,7 +165,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
       </div>
 
       {(showSuggestions || showHouseNumbers) && (
-        <div className="absolute z-50 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto">
+        <div className="absolute z-50 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto animate-in fade-in slide-in-from-top-2">
           {!selectedStreet ? (
             suggestions.length > 0 ? (
               <ul className="py-1">
@@ -153,7 +173,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
                   <li
                     key={suggestion.STRID}
                     className={cn(
-                      "px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 flex items-center justify-between",
+                      "px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 flex items-center justify-between transition-colors",
                       value === suggestion.streetName ? "bg-gray-50" : ""
                     )}
                     onClick={() => handleSuggestionClick(suggestion)}
@@ -164,8 +184,19 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
                 ))}
               </ul>
             ) : (
-              <div className="p-2 text-sm text-gray-500 text-center">
-                {isLoading ? "Suche..." : "Keine Ergebnisse gefunden"}
+              <div className="p-4 text-sm text-gray-500 text-center">
+                {isLoading ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>Suche...</span>
+                  </div>
+                ) : error ? (
+                  <span className="text-red-500">Ein Fehler ist aufgetreten</span>
+                ) : searchTerm ? (
+                  "Keine Ergebnisse gefunden"
+                ) : (
+                  "Geben Sie mindestens 2 Zeichen ein"
+                )}
               </div>
             )
           ) : showHouseNumbers && (
@@ -173,7 +204,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
               {getFilteredHouseNumbers().map((houseNumber, index) => (
                 <li
                   key={`${houseNumber.number}-${houseNumber.addition || ''}-${index}`}
-                  className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 text-center"
+                  className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 text-center transition-colors"
                   onClick={() => handleHouseNumberClick(houseNumber)}
                 >
                   {houseNumber.number}{houseNumber.addition || ''}
