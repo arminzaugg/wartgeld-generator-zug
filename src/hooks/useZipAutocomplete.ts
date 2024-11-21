@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import type { ZipSummary } from "@/types/address";
 
 export type ZipSuggestion = {
   zip: string;
@@ -11,10 +10,14 @@ export const useZipAutocomplete = (searchTerm: string) => {
   const { data: suggestions = [], isLoading, error } = useQuery({
     queryKey: ['zipSearch', searchTerm],
     queryFn: async (): Promise<ZipSuggestion[]> => {
-      if (!searchTerm) return [];
+      if (!searchTerm || searchTerm.length < 2) return [];
       
       const { data, error } = await supabase.functions.invoke('address-lookup', {
-        body: { type: 'zip', searchTerm }
+        body: { 
+          type: 'zip', 
+          searchTerm,
+          searchType: searchTerm.match(/^\d/) ? 'zip' : 'city' // Determine if searching by zip or city
+        }
       });
 
       if (error) throw error;
@@ -29,7 +32,7 @@ export const useZipAutocomplete = (searchTerm: string) => {
       
       return [];
     },
-    enabled: searchTerm.length > 0
+    enabled: searchTerm.length >= 2
   });
 
   return { suggestions, isLoading, error };

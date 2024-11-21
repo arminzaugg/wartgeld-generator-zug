@@ -21,7 +21,7 @@ export const ZipCityLookup = ({ plz, ort, onChange }: ZipCityLookupProps) => {
   useEffect(() => {
     if (error) {
       toast({
-        title: "Fehler bei der PLZ-Suche",
+        title: "Fehler bei der PLZ/Ort-Suche",
         description: "Bitte versuchen Sie es später erneut.",
         variant: "destructive",
       });
@@ -45,8 +45,10 @@ export const ZipCityLookup = ({ plz, ort, onChange }: ZipCityLookupProps) => {
     if (value === "") {
       onChange("", "");
       setShowSuggestions(false);
-    } else {
+    } else if (value.length >= 2) {
       setShowSuggestions(true);
+    } else {
+      setShowSuggestions(false);
     }
   };
 
@@ -82,7 +84,7 @@ export const ZipCityLookup = ({ plz, ort, onChange }: ZipCityLookupProps) => {
             value={searchTerm || (plz && ort ? `${plz} ${ort}` : "")}
             onChange={(e) => handleInputChange(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="PLZ oder Ort eingeben..."
+            placeholder="PLZ oder Ort eingeben (mind. 2 Zeichen)..."
             className={cn(
               "w-full pl-9 pr-8 transition-colors",
               isLoading && "pr-12",
@@ -111,9 +113,9 @@ export const ZipCityLookup = ({ plz, ort, onChange }: ZipCityLookupProps) => {
         <div className="absolute z-50 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto animate-in fade-in slide-in-from-top-2">
           {suggestions.length > 0 ? (
             <ul className="py-1">
-              {suggestions.map((suggestion) => (
+              {suggestions.map((suggestion, index) => (
                 <li
-                  key={suggestion.zip}
+                  key={`${suggestion.zip}-${index}`}
                   className={cn(
                     "px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 flex items-center justify-between transition-colors",
                     plz === suggestion.zip ? "bg-gray-50" : ""
