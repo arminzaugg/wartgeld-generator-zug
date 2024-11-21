@@ -6,6 +6,13 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+const config = {
+  zipFilter: {
+    prefix: "63",
+    enabled: true
+  }
+};
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -88,25 +95,37 @@ serve(async (req) => {
     const data = await response.json()
     console.log('API response received:', data)
 
-    // Transform the response to match our existing format
-    const transformedData = searchType === 'zip' 
-      ? {
-          zips: data.suggestions?.map(item => ({
+    // Filter results based on ZIP code prefix if enabled
+    const filterResults = (data) => {
+      if (!config.zipFilter.enabled) return data;
+
+      if (searchType === 'zip') {
+        return {
+          zips: data.suggestions?.filter(item => 
+            item.ZipCode.startsWith(config.zipFilter.prefix)
+          ).map(item => ({
             zip: item.ZipCode,
             city18: item.TownName,
             city27: item.TownName,
             city39: item.TownName
           })) || []
-        }
-      : {
-          streets: data.suggestions?.map(item => ({
+        };
+      } else {
+        return {
+          streets: data.suggestions?.filter(item =>
+            item.ZipCode.startsWith(config.zipFilter.prefix)
+          ).map(item => ({
             STRID: item.STRID,
             streetName: item.StreetName,
             zipCode: item.ZipCode,
             city: item.TownName,
             houseNumbers: item.houseNumbers
           })) || []
-        }
+        };
+      }
+    };
+
+    const transformedData = filterResults(data);
 
     return new Response(
       JSON.stringify(transformedData),
