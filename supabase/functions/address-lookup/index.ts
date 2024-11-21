@@ -33,7 +33,7 @@ serve(async (req) => {
     // Get search parameters from request
     const { searchType, searchTerm, zipCode } = await req.json()
 
-    // Construct API request with fresh credentials
+    // Construct API request with fresh credentials and endpoint
     const apiUrl = `${credentials.endpoint_url}/${searchType === 'zip' ? 'searchZip' : 'searchStreets'}`
     const response = await fetch(apiUrl, {
       method: 'POST',
