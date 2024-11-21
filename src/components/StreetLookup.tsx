@@ -70,7 +70,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
       });
 
       if (matchingHouseNumber) {
-        const fullAddress = `${selectedStreet.streetName} ${fullHouseNumber}`;
+        const fullAddress = `${selectedStreet.streetName} ${fullHouseNumber}, ${selectedStreet.zipCode} ${selectedStreet.city}`;
         onChange(fullAddress, selectedStreet.zipCode, selectedStreet.city);
         setShowSuggestions(false);
       }
@@ -81,10 +81,20 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
     setSelectedStreet(suggestion);
     const { houseNumber, addition } = parseAddressInput(searchTerm);
     const fullHouseNumber = houseNumber + (addition || '');
-    const newValue = fullHouseNumber ? `${suggestion.streetName} ${fullHouseNumber}` : suggestion.streetName;
-    setSearchTerm(newValue);
+    
+    // Create the full address with postal code and city
+    let fullAddress = suggestion.streetName;
+    if (fullHouseNumber) {
+      fullAddress += ` ${fullHouseNumber}`;
+    } else if (suggestion.houseNumbers && suggestion.houseNumbers.length === 1) {
+      const defaultHouseNumber = suggestion.houseNumbers[0];
+      fullAddress += ` ${defaultHouseNumber.number}${defaultHouseNumber.addition || ''}`;
+    }
+    fullAddress += `, ${suggestion.zipCode} ${suggestion.city}`;
+    
+    setSearchTerm(fullAddress);
     setShowSuggestions(false);
-    onChange(newValue, suggestion.zipCode, suggestion.city);
+    onChange(fullAddress, suggestion.zipCode, suggestion.city);
     
     if (inputRef) {
       inputRef.focus();
