@@ -12,11 +12,12 @@ export const useZipAutocomplete = (searchTerm: string) => {
     queryFn: async (): Promise<ZipSuggestion[]> => {
       if (!searchTerm || searchTerm.length < 2) return [];
       
+      const searchType = searchTerm.match(/^\d/) ? 'zip' : 'city';
+      
       const { data, error } = await supabase.functions.invoke('address-lookup', {
         body: { 
-          type: 'zip', 
-          searchTerm,
-          searchType: searchTerm.match(/^\d/) ? 'zip' : 'city' // Determine if searching by zip or city
+          type: searchType,
+          searchTerm
         }
       });
 

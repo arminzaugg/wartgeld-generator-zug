@@ -43,15 +43,15 @@ serve(async (req) => {
       throw new Error('Failed to fetch API credentials')
     }
 
-    const { type: searchType, searchTerm, zipCode } = await req.json()
+    const { type: searchType, searchTerm } = await req.json()
 
     // Create request body based on search type
     const requestBody = {
       request: {
         ONRP: 0,
-        ZipCode: searchType === 'street' ? (zipCode || '') : searchTerm,
+        ZipCode: searchType === 'zip' ? searchTerm : '',
         ZipAddition: '',
-        TownName: searchType === 'zip' ? searchTerm : '',
+        TownName: searchType === 'city' ? searchTerm : '',
         STRID: 0,
         StreetName: searchType === 'street' ? searchTerm : '',
         HouseKey: 0,
