@@ -16,9 +16,16 @@ describe('FormFields', () => {
   };
 
   const mockOnChange = vi.fn();
+  const mockOnClear = vi.fn();
 
   it('renders checkboxes for services', () => {
-    render(<FormFields values={mockValues} onChange={mockOnChange} />);
+    render(
+      <FormFields 
+        values={mockValues} 
+        onChange={mockOnChange} 
+        onClear={mockOnClear}
+      />
+    );
     
     expect(screen.getByLabelText(/Betreuung der Gebärenden/)).toBeDefined();
     expect(screen.getByLabelText(/Pflege der Wöchnerin/)).toBeDefined();
