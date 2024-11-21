@@ -1,6 +1,7 @@
 import { MapPin, X, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 interface StreetInputProps {
   value: string;
@@ -12,6 +13,9 @@ interface StreetInputProps {
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onClear: () => void;
   inputRef: (ref: HTMLInputElement | null) => void;
+  "aria-expanded": boolean;
+  "aria-controls": string;
+  "aria-activedescendant"?: string;
 }
 
 export const StreetInput = ({
@@ -23,7 +27,8 @@ export const StreetInput = ({
   onInputChange,
   onKeyDown,
   onClear,
-  inputRef
+  inputRef,
+  ...ariaProps
 }: StreetInputProps) => {
   return (
     <div className="relative">
@@ -41,17 +46,21 @@ export const StreetInput = ({
             error && "border-red-500 focus-visible:ring-red-500"
           )}
           autoComplete="off"
+          role="combobox"
+          {...ariaProps}
           ref={inputRef}
         />
       </div>
-      {hasSelection && (
-        <button
+      {(hasSelection || value) && (
+        <Button
           onClick={onClear}
-          className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors"
+          variant="ghost"
+          size="sm"
+          className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 p-0 hover:bg-gray-100"
           aria-label="Auswahl löschen"
         >
           <X className="h-4 w-4" />
-        </button>
+        </Button>
       )}
       {isLoading && (
         <div className="absolute right-2 top-1/2 -translate-y-1/2">

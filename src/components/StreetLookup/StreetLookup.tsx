@@ -6,6 +6,7 @@ import { StreetSuggestionsList } from "./StreetSuggestionsList";
 import { HouseNumbersList } from "./HouseNumbersList";
 import { StreetInput } from "./StreetInput";
 import type { StreetSummary, HouseNumber } from "@/types/address";
+import { debounce } from "lodash";
 
 interface StreetLookupProps {
   value: string;
@@ -17,11 +18,20 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   const [searchTerm, setSearchTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedStreet, setSelectedStreet] = useState<StreetSummary | null>(null);
-  const { suggestions = [], isLoading, error } = useStreetAutocomplete(searchTerm, zipCode);
   const [inputRef, setInputRef] = useState<HTMLInputElement | null>(null);
   const [houseNumberInput, setHouseNumberInput] = useState("");
   const [showHouseNumbers, setShowHouseNumbers] = useState(false);
   const { toast } = useToast();
+
+  // Debounced search function
+  const debouncedSearch = debounce((term: string) => {
+    setSearchTerm(term);
+  }, 300);
+
+  const { suggestions = [], isLoading, error } = useStreetAutocomplete(
+    searchTerm.length >= 2 ? searchTerm : "", 
+    zipCode
+  );
 
   useEffect(() => {
     if (error) {
@@ -56,7 +66,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
 
   const handleInputChange = (value: string) => {
     if (!selectedStreet) {
-      setSearchTerm(value);
+      debouncedSearch(value);
       onChange(value, undefined, undefined);
       if (value === "") {
         setSelectedStreet(null);
@@ -78,6 +88,18 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
       setSearchTerm(value);
     }
   };
+
+  const { selectedIndex: streetSelectedIndex, handleKeyDown: handleStreetKeyDown } = useKeyboardNavigation({
+    items: suggestions,
+    isVisible: showSuggestions,
+    onSelect: handleSuggestionClick
+  });
+
+  const { selectedIndex: houseNumberSelectedIndex, handleKeyDown: handleHouseNumberKeyDown } = useKeyboardNavigation({
+    items: selectedStreet?.houseNumbers || [],
+    isVisible: showHouseNumbers,
+    onSelect: handleHouseNumberClick
+  });
 
   const handleSuggestionClick = (suggestion: StreetSummary) => {
     setSelectedStreet(suggestion);
@@ -115,18 +137,6 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
     }
   };
 
-  const { selectedIndex: streetSelectedIndex, handleKeyDown: handleStreetKeyDown } = useKeyboardNavigation({
-    items: suggestions,
-    isVisible: showSuggestions,
-    onSelect: handleSuggestionClick
-  });
-
-  const { selectedIndex: houseNumberSelectedIndex, handleKeyDown: handleHouseNumberKeyDown } = useKeyboardNavigation({
-    items: selectedStreet?.houseNumbers || [],
-    isVisible: showHouseNumbers,
-    onSelect: handleHouseNumberClick
-  });
-
   return (
     <div className="relative street-lookup">
       <StreetInput
@@ -139,6 +149,13 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
         onKeyDown={showHouseNumbers ? handleHouseNumberKeyDown : handleStreetKeyDown}
         onClear={clearSelection}
         inputRef={setInputRef}
+        aria-expanded={showSuggestions || showHouseNumbers}
+        aria-controls="street-suggestions-list"
+        aria-activedescendant={
+          showSuggestions && streetSelectedIndex >= 0
+            ? `street-suggestion-${streetSelectedIndex}`
+            : undefined
+        }
       />
 
       <StreetSuggestionsList 
