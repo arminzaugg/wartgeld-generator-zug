@@ -42,7 +42,7 @@ export const StreetInput = ({
           value={value}
           onChange={(e) => onInputChange(e.target.value)}
           onKeyDown={onKeyDown}
-          placeholder={placeholder}
+          placeholder="Strasse, Ort oder PLZ eingeben..."
           className={cn(
             "w-full pl-9 pr-8 transition-colors",
             isLoading && "pr-12",
@@ -53,12 +53,7 @@ export const StreetInput = ({
           {...ariaProps}
           ref={inputRef}
           aria-label="Adresseingabe mit Autovervollständigung"
-          aria-describedby="address-hint"
         />
-      </div>
-      
-      <div id="address-hint" className="text-sm text-gray-500 mt-1">
-        Geben Sie eine Adresse ein (z.B. Bahnhofstrasse 1, 6300 Zug)
       </div>
 
       {(hasSelection || value) && (

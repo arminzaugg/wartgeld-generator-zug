@@ -1,22 +1,23 @@
 export const parseAddressInput = (input: string) => {
-  // Match pattern: street + number, optional zip + city
-  const fullMatch = input.match(/^(.*?)(?:\s+(\d+)\s*([A-Za-z])?)?(?:,?\s+(\d{4})\s+(.+))?$/);
+  // Split input into parts
+  const parts = input.split(/\s+/);
   
-  if (!fullMatch) return { 
-    streetName: input, 
-    houseNumber: '', 
-    addition: '',
-    zipCode: '',
-    city: '' 
-  };
+  // Try to identify house number at the end
+  const lastPart = parts[parts.length - 1];
+  const hasNumberAtEnd = /^\d+[a-zA-Z]?$/.test(lastPart);
   
-  const [, streetName, number, addition, zipCode, city] = fullMatch;
+  let streetParts = hasNumberAtEnd ? parts.slice(0, -1) : parts;
+  let houseNumber = hasNumberAtEnd ? lastPart.match(/^\d+/)?.[0] || '' : '';
+  let addition = hasNumberAtEnd ? lastPart.match(/[a-zA-Z]$/)?.[0] || '' : '';
+  
+  // Join remaining parts as street name
+  const streetName = streetParts.join(' ');
   
   return {
     streetName: streetName.trim(),
-    houseNumber: number || '',
-    addition: addition || '',
-    zipCode: zipCode || '',
-    city: city || ''
+    houseNumber,
+    addition,
+    zipCode: '',
+    city: ''
   };
 };

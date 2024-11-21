@@ -13,14 +13,14 @@ interface SuggestionsListProps {
   onSelect: (suggestion: StreetSummary) => void;
 }
 
-const highlightMatch = (text: string, query: string) => {
-  if (!query) return text;
-  const parts = text.split(new RegExp(`(${query})`, 'gi'));
-  return parts.map((part, i) => 
-    part.toLowerCase() === query.toLowerCase() ? 
-      <span key={i} className="bg-yellow-100 font-medium">{part}</span> : 
-      part
-  );
+const highlightMatches = (text: string, searchTerms: string[]) => {
+  let result = text;
+  searchTerms.forEach(term => {
+    if (term.length < 2) return;
+    const regex = new RegExp(`(${term})`, 'gi');
+    result = result.replace(regex, '<mark class="bg-yellow-100 font-medium">$1</mark>');
+  });
+  return <span dangerouslySetInnerHTML={{ __html: result }} />;
 };
 
 export const SuggestionsList = ({
@@ -34,18 +34,18 @@ export const SuggestionsList = ({
 }: SuggestionsListProps) => {
   if (!show) return null;
 
-  const listId = "street-suggestions-list";
+  const searchTerms = searchTerm.toLowerCase().split(/\s+/).filter(Boolean);
 
   return (
     <div 
-      className="absolute z-50 w-full mt-1 bg-white border rounded-md shadow-lg overflow-hidden animate-in fade-in slide-in-from-top-2"
+      className="absolute z-50 w-full mt-1 bg-white border rounded-md shadow-lg animate-in fade-in slide-in-from-top-2"
       role="listbox"
-      id={listId}
+      id="street-suggestions-list"
     >
       <ScrollArea className="max-h-60">
         {suggestions.length > 0 ? (
           <ul className="py-1">
-            {suggestions.slice(0, 10).map((suggestion, index) => (
+            {suggestions.map((suggestion, index) => (
               <li
                 key={suggestion.STRID}
                 role="option"
@@ -59,10 +59,10 @@ export const SuggestionsList = ({
               >
                 <div className="flex items-center justify-between">
                   <span className="font-medium">
-                    {highlightMatch(suggestion.streetName, searchTerm)}
+                    {highlightMatches(suggestion.streetName, searchTerms)}
                   </span>
                   <span className="text-gray-600 text-xs">
-                    {suggestion.zipCode} {suggestion.city}
+                    {suggestion.zipCode} {highlightMatches(suggestion.city, searchTerms)}
                   </span>
                 </div>
                 {suggestion.houseNumbers && suggestion.houseNumbers.length > 0 && (
@@ -81,9 +81,9 @@ export const SuggestionsList = ({
                 <span>Suche Adressen...</span>
               </div>
             ) : error ? (
-              <div className="text-red-500 flex flex-col items-center gap-2">
-                <span>Ein Fehler ist aufgetreten</span>
-                <span className="text-xs">Bitte versuchen Sie es später erneut</span>
+              <div className="text-red-500">
+                <p>Ein Fehler ist aufgetreten</p>
+                <p className="text-xs mt-1">Bitte versuchen Sie es später erneut</p>
               </div>
             ) : searchTerm ? (
               <div className="text-gray-500">
@@ -93,7 +93,7 @@ export const SuggestionsList = ({
             ) : (
               <div className="text-gray-500">
                 <p>Geben Sie mindestens 2 Zeichen ein</p>
-                <p className="text-xs mt-1">z.B. Straßenname oder PLZ</p>
+                <p className="text-xs mt-1">z.B. Strasse, Ort oder PLZ</p>
               </div>
             )}
           </div>
