@@ -28,7 +28,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   const { toast } = useToast();
 
   const debouncedSearch = debounce((term: string) => {
-    const { streetName, zipCode: parsedZip, city } = parseAddressInput(term);
+    const { streetName } = parseAddressInput(term);
     if (streetName.length >= 2) {
       setSearchTerm(streetName);
       setShowSuggestions(true);
@@ -80,11 +80,23 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   const handleSuggestionClick = (suggestion: StreetSummary) => {
     setSelectedStreet(suggestion);
     const { houseNumber, addition } = parseAddressInput(searchTerm);
-    const fullHouseNumber = houseNumber + (addition || '');
-    const newValue = fullHouseNumber ? `${suggestion.streetName} ${fullHouseNumber}` : suggestion.streetName;
-    setSearchTerm(newValue);
+    
+    // Create the complete address string
+    let fullAddress = suggestion.streetName;
+    
+    // If the suggestion has a default house number, use it
+    if (suggestion.houseNumbers && suggestion.houseNumbers.length === 1) {
+      const defaultHouseNumber = suggestion.houseNumbers[0];
+      fullAddress += ` ${defaultHouseNumber.number}${defaultHouseNumber.addition || ''}`;
+    } 
+    // If user provided a house number, use that
+    else if (houseNumber) {
+      fullAddress += ` ${houseNumber}${addition || ''}`;
+    }
+    
+    setSearchTerm(fullAddress);
     setShowSuggestions(false);
-    onChange(newValue, suggestion.zipCode, suggestion.city);
+    onChange(fullAddress, suggestion.zipCode, suggestion.city);
     
     if (inputRef) {
       inputRef.focus();
@@ -122,7 +134,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
         isLoading={isLoading}
         error={error}
         hasSelection={!!selectedStreet}
-        placeholder="Adresse eingeben (z.B. Bahnhofstrasse 1, 6300 Zug)"
+        placeholder="Adresse eingeben (z.B. Dorfstrasse 1, 6312 Steinhausen)"
         onInputChange={handleInputChange}
         onKeyDown={handleKeyDown}
         onClear={clearSelection}
