@@ -1,7 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { municipalities } from "@/config/addresses";
@@ -31,7 +30,7 @@ interface FormFieldsProps {
 export const FormFields = ({ values, onChange, onAddressChange, onClear }: FormFieldsProps) => {
   const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [completedFields, setCompletedFields] = useState(0);
-  const totalFields = 7; // Required fields count
+  const totalFields = 7;
 
   const validateField = (field: string, value: string | boolean) => {
     switch (field) {
@@ -49,10 +48,22 @@ export const FormFields = ({ values, onChange, onAddressChange, onClear }: FormF
 
   const handleInputChange = (field: string, value: string | boolean) => {
     const error = validateField(field, value);
-    setErrors(prev => ({
-      ...prev,
-      [field]: error
-    }));
+    
+    // Only update errors if there's an actual error
+    if (error) {
+      setErrors(prev => ({
+        ...prev,
+        [field]: error
+      }));
+    } else {
+      // Remove the error for this field if it exists
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
+    
     onChange(field, value);
   };
 
@@ -63,6 +74,8 @@ export const FormFields = ({ values, onChange, onAddressChange, onClear }: FormF
     }).length;
     setCompletedFields(completed);
   }, [values]);
+
+  // ... keep existing code (JSX for form fields and validation)
 
   return (
     <div className="space-y-6">
@@ -144,7 +157,10 @@ export const FormFields = ({ values, onChange, onAddressChange, onClear }: FormF
           Wahl der Gemeinde
           <span className="text-red-500">*</span>
         </Label>
-        <Select value={values.gemeinde} onValueChange={(value) => handleInputChange("gemeinde", value)}>
+        <Select 
+          value={values.gemeinde} 
+          onValueChange={(value) => handleInputChange("gemeinde", value)}
+        >
           <SelectTrigger id="form-gemeinde" className={errors.gemeinde ? "border-red-500" : ""}>
             <SelectValue placeholder="Wählen Sie eine Gemeinde" />
           </SelectTrigger>
