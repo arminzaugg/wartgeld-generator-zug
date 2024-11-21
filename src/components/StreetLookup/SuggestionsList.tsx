@@ -66,8 +66,12 @@ export const SuggestionsList = ({
                   </span>
                 </div>
                 {suggestion.houseNumbers && suggestion.houseNumbers.length > 0 && (
-                  <div className="text-xs text-gray-500">
-                    Hausnummern verfügbar
+                  <div className="text-xs text-gray-500 flex flex-wrap gap-1">
+                    {suggestion.houseNumbers.map((hn, idx) => (
+                      <span key={idx} className="bg-gray-100 px-1 rounded">
+                        {hn.number}{hn.addition || ''}
+                      </span>
+                    ))}
                   </div>
                 )}
               </li>
