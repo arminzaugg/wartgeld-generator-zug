@@ -8,7 +8,7 @@ import { municipalities } from "@/config/addresses";
 import { AddressFields } from "@/components/AddressFields";
 import { FormValidation } from "@/components/FormValidation";
 import { FormProgress } from "@/components/FormProgress";
-import { Info, Loader2 } from "lucide-react";
+import { Info } from "lucide-react";
 import { useState, useEffect } from "react";
 
 interface FormFieldsProps {
@@ -24,12 +24,12 @@ interface FormFieldsProps {
     betreuungWochenbett: boolean;
   };
   onChange: (field: string, value: string | boolean) => void;
+  onAddressChange: (street: string, zipCode?: string, city?: string) => void;
   onClear: () => void;
 }
 
-export const FormFields = ({ values, onChange, onClear }: FormFieldsProps) => {
+export const FormFields = ({ values, onChange, onAddressChange, onClear }: FormFieldsProps) => {
   const [errors, setErrors] = useState<{[key: string]: string}>({});
-  const [isLoading, setIsLoading] = useState(false);
   const [completedFields, setCompletedFields] = useState(0);
   const totalFields = 7; // Required fields count
 
@@ -118,7 +118,7 @@ export const FormFields = ({ values, onChange, onClear }: FormFieldsProps) => {
 
       <AddressFields 
         values={values}
-        onChange={onChange}
+        onChange={onAddressChange}
       />
 
       <div className="space-y-2">
@@ -159,26 +159,6 @@ export const FormFields = ({ values, onChange, onClear }: FormFieldsProps) => {
         {errors.gemeinde && (
           <p className="text-sm text-red-500">{errors.gemeinde}</p>
         )}
-      </div>
-
-      <div className="space-y-4">
-        <Label>Dienstleistungen</Label>
-        <div className="flex items-center space-x-2">
-          <Checkbox 
-            id="form-betreuungGeburt" 
-            checked={values.betreuungGeburt}
-            onCheckedChange={(checked) => onChange("betreuungGeburt", checked === true)}
-          />
-          <Label htmlFor="form-betreuungGeburt">Betreuung der Gebärenden zuhause (CHF 1000)</Label>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Checkbox 
-            id="form-betreuungWochenbett" 
-            checked={values.betreuungWochenbett}
-            onCheckedChange={(checked) => onChange("betreuungWochenbett", checked === true)}
-          />
-          <Label htmlFor="form-betreuungWochenbett">Pflege der Wöchnerin zuhause (CHF 400)</Label>
-        </div>
       </div>
 
       <div className="flex gap-4">

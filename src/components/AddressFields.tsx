@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -10,16 +9,10 @@ interface AddressFieldsProps {
     plz: string;
     ort: string;
   };
-  onChange: (field: string, value: string) => void;
+  onChange: (street: string, zipCode?: string, city?: string) => void;
 }
 
 export const AddressFields = ({ values, onChange }: AddressFieldsProps) => {
-  const handleStreetChange = (street: string, zipCode?: string, city?: string) => {
-    onChange("address", street);
-    if (zipCode) onChange("plz", zipCode);
-    if (city) onChange("ort", city);
-  };
-
   return (
     <Card className="p-4 bg-gray-50">
       <div className="space-y-4">
@@ -28,7 +21,7 @@ export const AddressFields = ({ values, onChange }: AddressFieldsProps) => {
           <StreetLookup 
             value={values.address}
             zipCode={values.plz}
-            onChange={handleStreetChange}
+            onChange={onChange}
           />
         </div>
         

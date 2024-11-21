@@ -13,7 +13,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { debounce } from "lodash";
 
 const initialFormData = {
   vorname: "",
@@ -35,15 +34,21 @@ const Index = () => {
 
   const hasViewedSettings = localStorage.getItem("settings-viewed") === "true";
 
-  const handleFieldChange = useCallback(
-    debounce((field: string, value: string | boolean) => {
-      setFormData((prev) => ({
-        ...prev,
-        [field]: value,
-      }));
-    }, 300),
-    []
-  );
+  const handleFieldChange = useCallback((field: string, value: string | boolean) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  }, []);
+
+  const handleAddressChange = useCallback((street: string, zipCode?: string, city?: string) => {
+    setFormData(prev => ({
+      ...prev,
+      address: street,
+      plz: zipCode || prev.plz,
+      ort: city || prev.ort
+    }));
+  }, []);
 
   const validateForm = () => {
     const errors: string[] = [];
@@ -138,6 +143,7 @@ const Index = () => {
           <FormFields
             values={formData}
             onChange={handleFieldChange}
+            onAddressChange={handleAddressChange}
             onClear={handleClearForm}
           />
           
