@@ -17,12 +17,14 @@ describe('FormFields', () => {
 
   const mockOnChange = vi.fn();
   const mockOnClear = vi.fn();
+  const mockOnAddressChange = vi.fn();
 
   it('renders checkboxes for services', () => {
     render(
       <FormFields 
         values={mockValues} 
-        onChange={mockOnChange} 
+        onChange={mockOnChange}
+        onAddressChange={mockOnAddressChange}
         onClear={mockOnClear}
       />
     );
