@@ -7,7 +7,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useKeyboardNavigation } from "@/hooks/useKeyboardNavigation";
 import { StreetSuggestionsList } from "./StreetSuggestionsList";
 import { HouseNumbersList } from "./HouseNumbersList";
-import type { StreetSummary } from "@/types/address";
+import type { StreetSummary, HouseNumber } from "@/types/address";
 
 interface StreetLookupProps {
   value: string;
@@ -24,6 +24,18 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   const [houseNumberInput, setHouseNumberInput] = useState("");
   const [showHouseNumbers, setShowHouseNumbers] = useState(false);
   const { toast } = useToast();
+
+  const handleHouseNumberClick = (houseNumber: HouseNumber) => {
+    const fullNumber = houseNumber.addition 
+      ? `${houseNumber.number}${houseNumber.addition}`
+      : houseNumber.number;
+    
+    const fullAddress = `${selectedStreet!.streetName} ${fullNumber}`;
+    setSearchTerm(fullAddress);
+    setShowSuggestions(false);
+    setShowHouseNumbers(false);
+    onChange(fullAddress, selectedStreet!.zipCode, selectedStreet!.city);
+  };
 
   const handleSuggestionClick = (suggestion: StreetSummary) => {
     setSelectedStreet(suggestion);
@@ -104,18 +116,6 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
       }
       setSearchTerm(value);
     }
-  };
-
-  const handleHouseNumberClick = (houseNumber: HouseNumber) => {
-    const fullNumber = houseNumber.addition 
-      ? `${houseNumber.number}${houseNumber.addition}`
-      : houseNumber.number;
-    
-    const fullAddress = `${selectedStreet!.streetName} ${fullNumber}`;
-    setSearchTerm(fullAddress);
-    setShowSuggestions(false);
-    setShowHouseNumbers(false);
-    onChange(fullAddress, selectedStreet!.zipCode, selectedStreet!.city);
   };
 
   const clearSelection = () => {
