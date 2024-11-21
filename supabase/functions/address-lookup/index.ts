@@ -43,16 +43,33 @@ serve(async (req) => {
       throw new Error('Failed to fetch API credentials')
     }
 
-    const { type: searchType, searchTerm, zipCode } = await req.json()
+    const { type: searchType, searchTerm } = await req.json()
 
-    const requestBody = {
+    // Create two request bodies - one for ZIP search and one for city search
+    const zipRequestBody = {
       request: {
         ONRP: 0,
-        ZipCode: searchType === 'zip' ? searchTerm : zipCode || '',
+        ZipCode: searchTerm,
         ZipAddition: '',
         TownName: '',
         STRID: 0,
-        StreetName: searchType === 'street' ? searchTerm : '',
+        StreetName: '',
+        HouseKey: 0,
+        HouseNo: '',
+        HouseNoAddition: ''
+      },
+      zipOrderMode: 0,
+      zipFilterMode: 0
+    }
+
+    const cityRequestBody = {
+      request: {
+        ONRP: 0,
+        ZipCode: '',
+        ZipAddition: '',
+        TownName: searchTerm,
+        STRID: 0,
+        StreetName: '',
         HouseKey: 0,
         HouseNo: '',
         HouseNoAddition: ''
@@ -63,26 +80,63 @@ serve(async (req) => {
 
     const apiUrl = 'https://webservices.post.ch:17023/IN_SYNSYN_EXT/REST/v1/autocomplete4'
     
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Basic ' + btoa(`${credentials.username}:${credentials.password}`)
-      },
-      body: JSON.stringify(requestBody)
-    })
-
-    if (!response.ok) {
-      const errorText = await response.text()
-      console.error('API request failed:', {
-        status: response.status,
-        statusText: response.statusText,
-        body: errorText
+    // Make both requests in parallel
+    const [zipResponse, cityResponse] = await Promise.all([
+      fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Basic ' + btoa(`${credentials.username}:${credentials.password}`)
+        },
+        body: JSON.stringify(zipRequestBody)
+      }),
+      fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Basic ' + btoa(`${credentials.username}:${credentials.password}`)
+        },
+        body: JSON.stringify(cityRequestBody)
       })
-      throw new Error(`API request failed: ${response.status} ${response.statusText}`)
+    ])
+
+    if (!zipResponse.ok || !cityResponse.ok) {
+      const errorText = await zipResponse.text()
+      console.error('API request failed:', {
+        zipStatus: zipResponse.status,
+        cityStatus: cityResponse.status,
+        error: errorText
+      })
+      throw new Error(`API request failed`)
     }
 
-    const data = await response.json()
+    const [zipData, cityData] = await Promise.all([
+      zipResponse.json(),
+      cityResponse.json()
+    ])
+
+    // Combine and deduplicate results
+    const combinedResults = {
+      QueryAutoComplete4Result: {
+        AutoCompleteResult: [
+          ...(zipData.QueryAutoComplete4Result?.AutoCompleteResult || []),
+          ...(cityData.QueryAutoComplete4Result?.AutoCompleteResult || [])
+        ]
+      }
+    }
+
+    // Remove duplicates based on ZipCode and TownName combination
+    const uniqueResults = {
+      QueryAutoComplete4Result: {
+        AutoCompleteResult: Array.from(
+          new Map(
+            combinedResults.QueryAutoComplete4Result.AutoCompleteResult.map(item => 
+              [`${item.ZipCode}-${item.TownName}`, item]
+            )
+          ).values()
+        )
+      }
+    }
 
     // Filter results based on canton ZIP codes
     const filterResults = (data) => {
@@ -90,26 +144,16 @@ serve(async (req) => {
 
       const allowedZipCodes = config.zipFilter.cantons.ZG.zipCodes;
 
-      if (searchType === 'zip') {
-        return {
-          QueryAutoComplete4Result: {
-            AutoCompleteResult: data.QueryAutoComplete4Result?.AutoCompleteResult?.filter(item => 
-              allowedZipCodes.includes(item.ZipCode)
-            ) || []
-          }
-        };
-      } else {
-        return {
-          QueryAutoComplete4Result: {
-            AutoCompleteResult: data.QueryAutoComplete4Result?.AutoCompleteResult?.filter(item =>
-              allowedZipCodes.includes(item.ZipCode)
-            ) || []
-          }
-        };
-      }
+      return {
+        QueryAutoComplete4Result: {
+          AutoCompleteResult: data.QueryAutoComplete4Result?.AutoCompleteResult?.filter(item => 
+            allowedZipCodes.includes(item.ZipCode)
+          ) || []
+        }
+      };
     };
 
-    const filteredData = filterResults(data);
+    const filteredData = filterResults(uniqueResults);
 
     return new Response(
       JSON.stringify(filteredData),
