@@ -8,7 +8,7 @@ export type ZipSuggestion = {
 };
 
 export const useZipAutocomplete = (searchTerm: string) => {
-  const { data: suggestions, isLoading } = useQuery({
+  const { data: suggestions = [], isLoading, error } = useQuery({
     queryKey: ['zipSearch', searchTerm],
     queryFn: async (): Promise<ZipSuggestion[]> => {
       if (!searchTerm) return [];
@@ -32,5 +32,5 @@ export const useZipAutocomplete = (searchTerm: string) => {
     enabled: searchTerm.length > 0
   });
 
-  return { suggestions, isLoading };
+  return { suggestions, isLoading, error };
 };
