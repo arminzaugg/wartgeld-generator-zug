@@ -3,8 +3,8 @@ import { useStreetAutocomplete } from "@/hooks/useStreetAutocomplete";
 import { useToast } from "@/components/ui/use-toast";
 import type { StreetSummary } from "@/types/address";
 import { parseAddressInput } from "@/utils/addressParser";
-import { StreetInput } from "./StreetLookup/StreetInput";
-import { SuggestionsList } from "./StreetLookup/SuggestionsList";
+import { StreetInput } from "./StreetInput";
+import { SuggestionsList } from "./SuggestionsList";
 
 interface StreetLookupProps {
   value: string;
@@ -94,6 +94,14 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!showSuggestions || suggestions.length === 0) return;
 
+    if (e.key === 'Tab' && !e.shiftKey) {
+      e.preventDefault();
+      if (suggestions.length > 0) {
+        handleSuggestionClick(suggestions[0]);
+      }
+      return;
+    }
+
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       setSelectedIndex(prev => (prev < suggestions.length - 1 ? prev + 1 : 0));
@@ -122,16 +130,21 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
         isLoading={isLoading}
         error={error}
         hasSelection={!!selectedStreet}
-        placeholder="Adresse suchen..."
+        placeholder="Adresse eingeben (z.B. Dorfstrasse 1, 6312 Steinhausen)"
         onInputChange={handleInputChange}
         onKeyDown={handleKeyDown}
         onClear={clearSelection}
         inputRef={setInputRef}
         aria-expanded={showSuggestions}
         aria-controls="street-suggestions-list"
+        aria-activedescendant={
+          showSuggestions && selectedIndex >= 0
+            ? `street-suggestion-${selectedIndex}`
+            : undefined
+        }
       />
 
-      <SuggestionsList
+      <SuggestionsList 
         show={showSuggestions}
         suggestions={suggestions}
         selectedIndex={selectedIndex}
