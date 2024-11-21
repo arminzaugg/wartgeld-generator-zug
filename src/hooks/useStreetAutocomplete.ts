@@ -1,60 +1,37 @@
-import { useState, useEffect } from 'react';
-import type { StreetSummary } from '@/types/address';
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { StreetSummary } from "@/types/address";
 
-export interface StreetAutocompleteResult {
-  suggestions: StreetSummary[];
-  isLoading: boolean;
-  error: Error | null;
-}
+export const useStreetAutocomplete = (searchTerm: string, zipCode?: string) => {
+  const { data: suggestions, isLoading } = useQuery({
+    queryKey: ['streetSearch', searchTerm, zipCode],
+    queryFn: async (): Promise<StreetSummary[]> => {
+      if (!searchTerm) return [];
+      
+      const { data, error } = await supabase.functions.invoke('address-lookup', {
+        body: { type: 'street', searchTerm, zipCode }
+      });
 
-export const useStreetAutocomplete = (
-  searchTerm: string,
-  zipCode?: string
-): StreetAutocompleteResult => {
-  const [suggestions, setSuggestions] = useState<StreetSummary[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+      if (error) throw error;
 
-  useEffect(() => {
-    const fetchSuggestions = async () => {
-      if (!searchTerm || searchTerm.length < 2) {
-        setSuggestions([]);
-        setError(null);
-        return;
+      // Transform the API response to match our StreetSummary type
+      if (data?.QueryAutoComplete4Result?.AutoCompleteResult) {
+        return data.QueryAutoComplete4Result.AutoCompleteResult.map((item: any) => ({
+          STRID: item.STRID,
+          streetName: item.StreetName || '',
+          zipCode: item.ZipCode,
+          city: item.TownName,
+          houseNumbers: item.HouseNo ? [{
+            number: item.HouseNo,
+            addition: item.HouseNoAddition
+          }] : undefined
+        }));
       }
+      
+      return [];
+    },
+    enabled: searchTerm.length > 0
+  });
 
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const { data, error } = await supabase.functions.invoke('address-lookup', {
-          body: {
-            searchType: 'street',
-            searchTerm,
-            zipCode
-          }
-        });
-
-        if (error) throw error;
-
-        setSuggestions(data.streets || []);
-      } catch (error) {
-        console.error('Error fetching street suggestions:', error);
-        setError(error instanceof Error ? error : new Error('Failed to fetch suggestions'));
-        setSuggestions([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    const timeoutId = setTimeout(fetchSuggestions, 300);
-    return () => clearTimeout(timeoutId);
-  }, [searchTerm, zipCode]);
-
-  return {
-    suggestions,
-    isLoading,
-    error
-  };
+  return { suggestions, isLoading };
 };

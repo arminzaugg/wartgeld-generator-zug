@@ -34,12 +34,22 @@ export interface HouseNumber {
   addition?: string;
 }
 
-export interface ZipSearchSummary {
-  zips: ZipSummary[];
-}
-
-export interface StreetSearchSummary {
-  streets: StreetSummary[];
+export interface ApiResponse {
+  QueryAutoComplete4Result: {
+    AutoCompleteResult: Array<{
+      Canton: string;
+      CountryCode: string;
+      HouseKey: string;
+      HouseNo: string;
+      HouseNoAddition: string;
+      ONRP: string;
+      STRID: string;
+      StreetName: string;
+      TownName: string;
+      ZipAddition: string;
+      ZipCode: string;
+    }>;
+  };
 }
 
 export interface AddressSearchParams {
