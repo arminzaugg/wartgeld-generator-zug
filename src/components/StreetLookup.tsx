@@ -127,6 +127,8 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
         onKeyDown={handleKeyDown}
         onClear={clearSelection}
         inputRef={setInputRef}
+        aria-expanded={showSuggestions}
+        aria-controls="street-suggestions-list"
       />
 
       <SuggestionsList

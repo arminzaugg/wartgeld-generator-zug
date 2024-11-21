@@ -23,6 +23,32 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   const [showHouseNumbers, setShowHouseNumbers] = useState(false);
   const { toast } = useToast();
 
+  // Function declarations moved to the top to fix the reference error
+  const handleSuggestionClick = (suggestion: StreetSummary) => {
+    setSelectedStreet(suggestion);
+    setSearchTerm(suggestion.streetName);
+    setShowSuggestions(false);
+    setShowHouseNumbers(false);
+    setHouseNumberInput("");
+    onChange(suggestion.streetName, suggestion.zipCode, suggestion.city);
+    
+    if (inputRef) {
+      inputRef.focus();
+    }
+  };
+
+  const handleHouseNumberClick = (houseNumber: HouseNumber) => {
+    const fullNumber = houseNumber.addition 
+      ? `${houseNumber.number}${houseNumber.addition}`
+      : houseNumber.number;
+    
+    const fullAddress = `${selectedStreet!.streetName} ${fullNumber}`;
+    setSearchTerm(fullAddress);
+    setShowSuggestions(false);
+    setShowHouseNumbers(false);
+    onChange(fullAddress, selectedStreet!.zipCode, selectedStreet!.city);
+  };
+
   // Debounced search function
   const debouncedSearch = debounce((term: string) => {
     setSearchTerm(term);
@@ -100,31 +126,6 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
     isVisible: showHouseNumbers,
     onSelect: handleHouseNumberClick
   });
-
-  const handleSuggestionClick = (suggestion: StreetSummary) => {
-    setSelectedStreet(suggestion);
-    setSearchTerm(suggestion.streetName);
-    setShowSuggestions(false);
-    setShowHouseNumbers(false);
-    setHouseNumberInput("");
-    onChange(suggestion.streetName, suggestion.zipCode, suggestion.city);
-    
-    if (inputRef) {
-      inputRef.focus();
-    }
-  };
-
-  const handleHouseNumberClick = (houseNumber: HouseNumber) => {
-    const fullNumber = houseNumber.addition 
-      ? `${houseNumber.number}${houseNumber.addition}`
-      : houseNumber.number;
-    
-    const fullAddress = `${selectedStreet!.streetName} ${fullNumber}`;
-    setSearchTerm(fullAddress);
-    setShowSuggestions(false);
-    setShowHouseNumbers(false);
-    onChange(fullAddress, selectedStreet!.zipCode, selectedStreet!.city);
-  };
 
   const clearSelection = () => {
     setSelectedStreet(null);
