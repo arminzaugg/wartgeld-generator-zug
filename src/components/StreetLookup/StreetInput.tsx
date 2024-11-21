@@ -2,6 +2,7 @@ import { MapPin, X, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 interface StreetInputProps {
   value: string;
@@ -32,9 +33,11 @@ export const StreetInput = ({
 }: StreetInputProps) => {
   return (
     <div className="relative">
+      <Label htmlFor="address-input" className="sr-only">Adresse eingeben</Label>
       <div className="relative">
         <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
         <Input
+          id="address-input"
           type="text"
           value={value}
           onChange={(e) => onInputChange(e.target.value)}
@@ -49,8 +52,15 @@ export const StreetInput = ({
           role="combobox"
           {...ariaProps}
           ref={inputRef}
+          aria-label="Adresseingabe mit Autovervollständigung"
+          aria-describedby="address-hint"
         />
       </div>
+      
+      <div id="address-hint" className="text-sm text-gray-500 mt-1">
+        Geben Sie eine Adresse ein (z.B. Bahnhofstrasse 1, 6300 Zug)
+      </div>
+
       {(hasSelection || value) && (
         <Button
           onClick={onClear}
@@ -62,8 +72,9 @@ export const StreetInput = ({
           <X className="h-4 w-4" />
         </Button>
       )}
+      
       {isLoading && (
-        <div className="absolute right-2 top-1/2 -translate-y-1/2">
+        <div className="absolute right-2 top-1/2 -translate-y-1/2" aria-hidden="true">
           <Loader2 className="h-4 w-4 animate-spin text-gray-500" />
         </div>
       )}

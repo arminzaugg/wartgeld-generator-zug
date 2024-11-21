@@ -45,24 +45,31 @@ export const SuggestionsList = ({
       <ScrollArea className="max-h-60">
         {suggestions.length > 0 ? (
           <ul className="py-1">
-            {suggestions.map((suggestion, index) => (
+            {suggestions.slice(0, 10).map((suggestion, index) => (
               <li
                 key={suggestion.STRID}
                 role="option"
                 aria-selected={index === selectedIndex}
                 className={cn(
-                  "px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 flex items-center justify-between transition-colors",
+                  "px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 flex flex-col gap-1 transition-colors",
                   index === selectedIndex && "bg-gray-100"
                 )}
                 onClick={() => onSelect(suggestion)}
                 id={`street-suggestion-${index}`}
               >
-                <span className="font-medium">
-                  {highlightMatch(suggestion.streetName, searchTerm)}
-                </span>
-                <span className="text-gray-600">
-                  {suggestion.zipCode} {suggestion.city}
-                </span>
+                <div className="flex items-center justify-between">
+                  <span className="font-medium">
+                    {highlightMatch(suggestion.streetName, searchTerm)}
+                  </span>
+                  <span className="text-gray-600 text-xs">
+                    {suggestion.zipCode} {suggestion.city}
+                  </span>
+                </div>
+                {suggestion.houseNumbers && suggestion.houseNumbers.length > 0 && (
+                  <div className="text-xs text-gray-500">
+                    Hausnummern verfügbar
+                  </div>
+                )}
               </li>
             ))}
           </ul>
