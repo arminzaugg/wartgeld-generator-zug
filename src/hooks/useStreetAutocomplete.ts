@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
+import { mockAddressApi } from '@/lib/mockAddressApi';
 import type { StreetSummary } from '@/types/address';
 import { addressConfig } from '@/config/addressConfig';
-import { apiConfig } from '@/config/apiConfig';
 
 export interface StreetAutocompleteResult {
   suggestions: StreetSummary[];
@@ -28,63 +28,23 @@ export const useStreetAutocomplete = (
       setIsLoading(true);
       setError(null);
 
-      const requestBody = {
-        streetName: searchTerm,
-        zipCode,
-        limit: 10
-      };
-
-      console.log('Street API Request:', {
-        url: apiConfig.baseUrl,
-        body: requestBody,
-        timestamp: new Date().toISOString()
-      });
-
       try {
-        const response = await fetch(apiConfig.baseUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Basic ' + btoa(`${apiConfig.username}:${apiConfig.password}`),
-            'Access-Control-Allow-Origin': 'http://localhost:8080, https://lovable.dev, https://lovableproject.com, https://wartgeld.traintown.solutions',
-            'Access-Control-Allow-Methods': 'POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-          },
-          mode: 'cors',
-          credentials: 'include',
-          body: JSON.stringify(requestBody)
+        const results = await mockAddressApi.searchStreets({
+          streetName: searchTerm,
+          zipCode,
+          limit: 10
         });
 
-        console.log('Street API Response Status:', {
-          status: response.status,
-          statusText: response.statusText,
-          timestamp: new Date().toISOString()
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log('Street API Response Data:', {
-          resultsCount: data.streets?.length || 0,
-          timestamp: new Date().toISOString()
-        });
-
-        const streets = data.streets || [];
-
+        // Apply ZIP code filter if enabled
         const filteredStreets = addressConfig.streetFilter.enabled
-          ? streets.filter(street => 
+          ? results.streets?.filter(street => 
               street.zipCode.startsWith(addressConfig.streetFilter.zipPrefix)
             )
-          : streets;
+          : results.streets;
 
-        setSuggestions(filteredStreets);
+        setSuggestions(filteredStreets || []);
       } catch (error) {
-        console.error('Street API Error:', {
-          error: error instanceof Error ? error.message : 'Unknown error',
-          timestamp: new Date().toISOString()
-        });
+        console.error('Error fetching street suggestions:', error);
         setError(error instanceof Error ? error : new Error('Failed to fetch suggestions'));
         setSuggestions([]);
       } finally {
