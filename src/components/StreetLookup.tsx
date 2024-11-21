@@ -122,7 +122,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
         isLoading={isLoading}
         error={error}
         hasSelection={!!selectedStreet}
-        placeholder="Strasse und Hausnummer eingeben..."
+        placeholder="Adresse suchen..."
         onInputChange={handleInputChange}
         onKeyDown={handleKeyDown}
         onClear={clearSelection}
