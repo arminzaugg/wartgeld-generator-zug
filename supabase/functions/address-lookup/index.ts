@@ -6,6 +6,14 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+const config = {
+  allowedZipCodes: [
+    "6300", "6301", "6302", "6303", "6312", "6313", 
+    "6314", "6315", "6317", "6318", "6319", "6330", 
+    "6331", "6332", "6333", "6340", "6341", "6343", "6345"
+  ]
+};
+
 const parseAddressInput = (input: string) => {
   // Match pattern: street + number + optional letter, optional zip + city
   const match = input.match(/^(.*?)(?:\s+(\d+)\s*([A-Za-z])?)?(?:,?\s+(\d{4})\s+(.+))?$/);
@@ -57,10 +65,11 @@ serve(async (req) => {
     const { streetName, houseNumber, addition } = parseAddressInput(searchTerm)
     console.log('Parsed address:', { streetName, houseNumber, addition })
 
+    // Always include "63" as the base ZIP code for the API request
     const requestBody = {
       request: {
         ONRP: 0,
-        ZipCode: searchType === 'zip' ? searchTerm : filterZipCode || '',
+        ZipCode: searchType === 'zip' ? searchTerm : "63",
         ZipAddition: '',
         TownName: searchType === 'city' ? searchTerm : '',
         STRID: 0,
@@ -103,13 +112,12 @@ serve(async (req) => {
       const results = data.QueryAutoComplete4Result?.AutoCompleteResult || [];
       console.log('Total results before filtering:', results.length);
 
-      // Filter invalid addresses only
+      // Filter invalid addresses and apply ZIP code filter
       const validResults = results
         .filter(item => {
           // Log each item being filtered
           console.log('Filtering item:', {
             streetName: item.StreetName,
-            canton: item.Canton,
             zipCode: item.ZipCode
           });
           
@@ -122,6 +130,12 @@ serve(async (req) => {
           // Must have a valid ZIP code
           if (!item.ZipCode?.trim()) {
             console.log('Filtered out - no ZIP code');
+            return false;
+          }
+
+          // Must be in the allowed ZIP codes list
+          if (!config.allowedZipCodes.includes(item.ZipCode)) {
+            console.log('Filtered out - ZIP code not in allowed list:', item.ZipCode);
             return false;
           }
           
