@@ -91,6 +91,21 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!showSuggestions || suggestions.length === 0) return;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setSelectedIndex(prev => (prev < suggestions.length - 1 ? prev + 1 : 0));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setSelectedIndex(prev => (prev > 0 ? prev - 1 : suggestions.length - 1));
+    } else if (e.key === 'Enter' && selectedIndex >= 0) {
+      e.preventDefault();
+      handleSuggestionClick(suggestions[selectedIndex]);
+    }
+  };
+
   const clearSelection = () => {
     setSelectedStreet(null);
     setSearchTerm("");
@@ -109,6 +124,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
         hasSelection={!!selectedStreet}
         placeholder="Strasse und Hausnummer eingeben..."
         onInputChange={handleInputChange}
+        onKeyDown={handleKeyDown}
         onClear={clearSelection}
         inputRef={setInputRef}
       />
