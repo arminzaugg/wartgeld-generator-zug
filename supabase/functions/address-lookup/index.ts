@@ -100,23 +100,40 @@ serve(async (req) => {
     }
 
     const data = await response.json()
-    console.log('API response:', data)
+    console.log('Raw API response:', data)
 
     // Filter and sort results
     const filterResults = (data) => {
       const results = data.QueryAutoComplete4Result?.AutoCompleteResult || [];
+      console.log('Total results before filtering:', results.length);
 
       // Filter by canton and valid addresses only
       const validResults = results
         .filter(item => {
+          // Log each item being filtered
+          console.log('Filtering item:', {
+            streetName: item.StreetName,
+            canton: item.Canton,
+            zipCode: item.ZipCode
+          });
+
           // Must be in the correct canton
-          if (item.Canton !== config.canton) return false;
+          if (item.Canton !== config.canton) {
+            console.log('Filtered out - wrong canton:', item.Canton);
+            return false;
+          }
           
           // Must have a valid street name
-          if (!item.StreetName?.trim()) return false;
+          if (!item.StreetName?.trim()) {
+            console.log('Filtered out - no street name');
+            return false;
+          }
           
           // Must have a valid ZIP code
-          if (!item.ZipCode?.trim()) return false;
+          if (!item.ZipCode?.trim()) {
+            console.log('Filtered out - no ZIP code');
+            return false;
+          }
           
           return true;
         })
@@ -133,6 +150,7 @@ serve(async (req) => {
         })
         .slice(0, limit);
 
+      console.log('Results after filtering:', validResults.length);
       return {
         QueryAutoComplete4Result: {
           AutoCompleteResult: validResults
@@ -141,7 +159,7 @@ serve(async (req) => {
     };
 
     const filteredData = filterResults(data);
-    console.log('Filtered and sorted results:', filteredData)
+    console.log('Final filtered and sorted results:', filteredData)
 
     return new Response(
       JSON.stringify(filteredData),
