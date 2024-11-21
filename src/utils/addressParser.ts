@@ -1,9 +1,14 @@
 export const parseAddressInput = (input: string) => {
-  const match = input.match(/^(.*?)\s*(\d+\s*[a-zA-Z]*)?\s*$/);
-  if (!match) return { streetName: input, houseNumber: '' };
+  // Match pattern: any characters followed by optional space and optional number with optional letter
+  const match = input.match(/^(.*?)(?:\s+(\d+)\s*([A-Za-z])?)?$/);
+  
+  if (!match) return { streetName: input, houseNumber: '', addition: '' };
+  
+  const [, streetName, number, addition] = match;
   
   return {
-    streetName: match[1].trim(),
-    houseNumber: match[2]?.trim() || ''
+    streetName: streetName.trim(),
+    houseNumber: number || '',
+    addition: addition || ''
   };
 };

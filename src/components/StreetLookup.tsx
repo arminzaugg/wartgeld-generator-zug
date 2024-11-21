@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
 import { useStreetAutocomplete } from "@/hooks/useStreetAutocomplete";
-import type { StreetSummary, HouseNumber } from "@/types/address";
-import { Loader2, MapPin, X } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import { SuggestionsList } from "./StreetLookup/SuggestionsList";
+import type { StreetSummary } from "@/types/address";
 import { parseAddressInput } from "@/utils/addressParser";
+import { StreetInput } from "./StreetLookup/StreetInput";
+import { SuggestionsList } from "./StreetLookup/SuggestionsList";
 
 interface StreetLookupProps {
   value: string;
@@ -18,9 +16,14 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   const [searchTerm, setSearchTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedStreet, setSelectedStreet] = useState<StreetSummary | null>(null);
-  const { suggestions = [], isLoading, error } = useStreetAutocomplete(searchTerm.length >= 2 ? searchTerm : "", zipCode);
-  const [inputRef, setInputRef] = useState<HTMLInputElement | null>(null);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [inputRef, setInputRef] = useState<HTMLInputElement | null>(null);
+  
+  const { suggestions = [], isLoading, error } = useStreetAutocomplete(
+    searchTerm.length >= 2 ? searchTerm : "", 
+    zipCode
+  );
+  
   const { toast } = useToast();
 
   useEffect(() => {
@@ -53,19 +56,21 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   }, [inputRef]);
 
   const handleInputChange = (value: string) => {
-    const { streetName, houseNumber } = parseAddressInput(value);
+    const { streetName, houseNumber, addition } = parseAddressInput(value);
     setSearchTerm(value);
     
     if (!selectedStreet) {
       onChange(value, undefined, undefined);
       setShowSuggestions(streetName.length >= 2);
     } else {
-      const matchingHouseNumber = selectedStreet.houseNumbers?.find(hn => 
-        `${hn.number}${hn.addition || ''}`.toLowerCase() === houseNumber.toLowerCase()
-      );
+      const fullHouseNumber = houseNumber + (addition || '');
+      const matchingHouseNumber = selectedStreet.houseNumbers?.find(hn => {
+        const completeNumber = hn.number + (hn.addition || '');
+        return completeNumber.toLowerCase() === fullHouseNumber.toLowerCase();
+      });
 
       if (matchingHouseNumber) {
-        const fullAddress = `${selectedStreet.streetName} ${houseNumber}`;
+        const fullAddress = `${selectedStreet.streetName} ${fullHouseNumber}`;
         onChange(fullAddress, selectedStreet.zipCode, selectedStreet.city);
         setShowSuggestions(false);
       }
@@ -74,8 +79,9 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
 
   const handleSuggestionClick = (suggestion: StreetSummary) => {
     setSelectedStreet(suggestion);
-    const { houseNumber } = parseAddressInput(searchTerm);
-    const newValue = houseNumber ? `${suggestion.streetName} ${houseNumber}` : suggestion.streetName;
+    const { houseNumber, addition } = parseAddressInput(searchTerm);
+    const fullHouseNumber = houseNumber + (addition || '');
+    const newValue = fullHouseNumber ? `${suggestion.streetName} ${fullHouseNumber}` : suggestion.streetName;
     setSearchTerm(newValue);
     setShowSuggestions(false);
     onChange(newValue, suggestion.zipCode, suggestion.city);
@@ -96,36 +102,16 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
 
   return (
     <div className="relative street-lookup">
-      <div className="relative">
-        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-        <Input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => handleInputChange(e.target.value)}
-          placeholder="Strasse und Hausnummer eingeben..."
-          className={cn(
-            "w-full pl-9 pr-8 transition-colors",
-            isLoading && "pr-12",
-            error && "border-red-500 focus-visible:ring-red-500"
-          )}
-          autoComplete="off"
-          ref={setInputRef}
-        />
-        {selectedStreet && (
-          <button
-            onClick={clearSelection}
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors"
-            aria-label="Auswahl löschen"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        )}
-        {isLoading && (
-          <div className="absolute right-2 top-1/2 -translate-y-1/2">
-            <Loader2 className="h-4 w-4 animate-spin text-gray-500" />
-          </div>
-        )}
-      </div>
+      <StreetInput
+        value={searchTerm}
+        isLoading={isLoading}
+        error={error}
+        hasSelection={!!selectedStreet}
+        placeholder="Strasse und Hausnummer eingeben..."
+        onInputChange={handleInputChange}
+        onClear={clearSelection}
+        inputRef={setInputRef}
+      />
 
       <SuggestionsList
         show={showSuggestions}
