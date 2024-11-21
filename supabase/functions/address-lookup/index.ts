@@ -7,7 +7,7 @@ const corsHeaders = {
 }
 
 const config = {
-  canton: "ZG"  // Simplified to just use canton code
+  canton: "ZG"
 };
 
 const parseAddressInput = (input: string) => {
@@ -55,8 +55,8 @@ serve(async (req) => {
       throw new Error('Failed to fetch API credentials')
     }
 
-    const { type: searchType, searchTerm, zipCode: filterZipCode } = await req.json()
-    console.log('Search request:', { searchType, searchTerm, filterZipCode })
+    const { type: searchType, searchTerm, zipCode: filterZipCode, limit = 10 } = await req.json()
+    console.log('Search request:', { searchType, searchTerm, filterZipCode, limit })
 
     const { streetName, houseNumber, addition } = parseAddressInput(searchTerm)
     console.log('Parsed address:', { streetName, houseNumber, addition })
@@ -102,27 +102,40 @@ serve(async (req) => {
     const data = await response.json()
     console.log('API response:', data)
 
-    // Filter results based on canton only
+    // Filter and sort results
     const filterResults = (data) => {
       const results = data.QueryAutoComplete4Result?.AutoCompleteResult || [];
 
-      // Filter by canton and sort by relevance
-      const sortedResults = results
-        .filter(item => item.Canton === config.canton)
+      // Filter by canton and valid addresses only
+      const validResults = results
+        .filter(item => {
+          // Must be in the correct canton
+          if (item.Canton !== config.canton) return false;
+          
+          // Must have a valid street name
+          if (!item.StreetName?.trim()) return false;
+          
+          // Must have a valid ZIP code
+          if (!item.ZipCode?.trim()) return false;
+          
+          return true;
+        })
         .sort((a, b) => {
-          // Exact street name match gets highest priority
-          if (a.StreetName.toLowerCase() === streetName.toLowerCase()) return -1;
-          if (b.StreetName.toLowerCase() === streetName.toLowerCase()) return 1;
-
-          // Then sort by string similarity
-          const aSimilarity = similarity(a.StreetName.toLowerCase(), streetName.toLowerCase());
-          const bSimilarity = similarity(b.StreetName.toLowerCase(), streetName.toLowerCase());
-          return bSimilarity - aSimilarity;
-        });
+          // Exact matches first
+          const exactMatchA = a.StreetName.toLowerCase() === streetName.toLowerCase();
+          const exactMatchB = b.StreetName.toLowerCase() === streetName.toLowerCase();
+          if (exactMatchA && !exactMatchB) return -1;
+          if (!exactMatchA && exactMatchB) return 1;
+          
+          // Then by string similarity
+          return similarity(b.StreetName.toLowerCase(), streetName.toLowerCase()) - 
+                 similarity(a.StreetName.toLowerCase(), streetName.toLowerCase());
+        })
+        .slice(0, limit);
 
       return {
         QueryAutoComplete4Result: {
-          AutoCompleteResult: sortedResults
+          AutoCompleteResult: validResults
         }
       };
     };

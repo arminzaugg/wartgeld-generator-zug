@@ -42,7 +42,7 @@ export const SuggestionsList = ({
       role="listbox"
       id="street-suggestions-list"
     >
-      <ScrollArea className="max-h-60">
+      <ScrollArea className="max-h-[240px]">
         {suggestions.length > 0 ? (
           <ul className="py-1">
             {suggestions.map((suggestion, index) => (
@@ -91,13 +91,13 @@ export const SuggestionsList = ({
               </div>
             ) : searchTerm ? (
               <div className="text-gray-500">
-                <p>Keine Ergebnisse gefunden</p>
-                <p className="text-xs mt-1">Versuchen Sie es mit einem anderen Suchbegriff</p>
+                <p>Keine gültige Adresse gefunden</p>
+                <p className="text-xs mt-1">Bitte überprüfen Sie Ihre Eingabe</p>
               </div>
             ) : (
               <div className="text-gray-500">
-                <p>Geben Sie mindestens 2 Zeichen ein</p>
-                <p className="text-xs mt-1">z.B. Strasse, Ort oder PLZ</p>
+                <p>Geben Sie eine Adresse ein</p>
+                <p className="text-xs mt-1">z.B. Strasse, Hausnummer, Ort oder PLZ</p>
               </div>
             )}
           </div>
