@@ -16,7 +16,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   const [searchTerm, setSearchTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedStreet, setSelectedStreet] = useState<StreetSummary | null>(null);
-  const { suggestions = [], isLoading, error } = useStreetAutocomplete(searchTerm, zipCode);
+  const { suggestions = [], isLoading, error } = useStreetAutocomplete(searchTerm.length >= 2 ? searchTerm : "", zipCode);
   const [inputRef, setInputRef] = useState<HTMLInputElement | null>(null);
   const [houseNumberInput, setHouseNumberInput] = useState("");
   const [showHouseNumbers, setShowHouseNumbers] = useState(false);
@@ -59,9 +59,11 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
       onChange(value, undefined, undefined);
       if (value === "") {
         setSelectedStreet(null);
-      } else {
+      } else if (value.length >= 2) {
         setShowSuggestions(true);
         setShowHouseNumbers(false);
+      } else {
+        setShowSuggestions(false);
       }
     } else {
       if (value.startsWith(selectedStreet.streetName) && value.endsWith(" ")) {
@@ -128,6 +130,8 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
     });
   };
 
+  const limitedSuggestions = suggestions.slice(0, 7);
+
   return (
     <div className="relative street-lookup">
       <div className="relative">
@@ -167,9 +171,9 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
       {(showSuggestions || showHouseNumbers) && (
         <div className="absolute z-50 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto animate-in fade-in slide-in-from-top-2">
           {!selectedStreet ? (
-            suggestions.length > 0 ? (
+            limitedSuggestions.length > 0 ? (
               <ul className="py-1">
-                {suggestions.map((suggestion) => (
+                {limitedSuggestions.map((suggestion) => (
                   <li
                     key={suggestion.STRID}
                     className={cn(
@@ -192,10 +196,10 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
                   </div>
                 ) : error ? (
                   <span className="text-red-500">Ein Fehler ist aufgetreten</span>
-                ) : searchTerm ? (
-                  "Keine Ergebnisse gefunden"
-                ) : (
+                ) : searchTerm.length < 2 ? (
                   "Geben Sie mindestens 2 Zeichen ein"
+                ) : (
+                  "Keine Ergebnisse gefunden"
                 )}
               </div>
             )
