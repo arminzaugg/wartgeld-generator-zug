@@ -6,10 +6,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-const config = {
-  canton: "ZG"
-};
-
 const parseAddressInput = (input: string) => {
   // Match pattern: street + number + optional letter, optional zip + city
   const match = input.match(/^(.*?)(?:\s+(\d+)\s*([A-Za-z])?)?(?:,?\s+(\d{4})\s+(.+))?$/);
@@ -107,7 +103,7 @@ serve(async (req) => {
       const results = data.QueryAutoComplete4Result?.AutoCompleteResult || [];
       console.log('Total results before filtering:', results.length);
 
-      // Filter by canton and valid addresses only
+      // Filter invalid addresses only
       const validResults = results
         .filter(item => {
           // Log each item being filtered
@@ -116,12 +112,6 @@ serve(async (req) => {
             canton: item.Canton,
             zipCode: item.ZipCode
           });
-
-          // Must be in the correct canton
-          if (item.Canton !== config.canton) {
-            console.log('Filtered out - wrong canton:', item.Canton);
-            return false;
-          }
           
           // Must have a valid street name
           if (!item.StreetName?.trim()) {
