@@ -42,7 +42,7 @@ export const SuggestionsList = ({
       role="listbox"
       id="street-suggestions-list"
     >
-      <ScrollArea className="max-h-60">
+      <ScrollArea className="max-h-[240px]">
         {suggestions.length > 0 ? (
           <ul className="py-1">
             {suggestions.map((suggestion, index) => (
