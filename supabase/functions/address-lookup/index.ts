@@ -27,11 +27,14 @@ serve(async (req) => {
       .single()
 
     if (credentialsError) {
+      console.error('Failed to fetch API credentials:', credentialsError)
       throw new Error('Failed to fetch API credentials')
     }
 
     // Get search parameters from request
     const { searchType, searchTerm, zipCode } = await req.json()
+
+    console.log('Search parameters:', { searchType, searchTerm, zipCode })
 
     // Prepare the request body based on search type
     const requestBody = {
@@ -39,7 +42,7 @@ serve(async (req) => {
         ONRP: 0,
         ZipCode: searchType === 'zip' ? searchTerm : zipCode || '',
         ZipAddition: '',
-        TownName: searchType === 'zip' ? '' : '',
+        TownName: '',
         STRID: 0,
         StreetName: searchType === 'street' ? searchTerm : '',
         HouseKey: 0,
@@ -55,9 +58,12 @@ serve(async (req) => {
     
     console.log('Making request to Swiss Post API:', {
       url: apiUrl,
-      searchType,
-      searchTerm,
-      zipCode
+      body: requestBody,
+      credentials: {
+        username: credentials.username,
+        // Don't log the actual password
+        hasPassword: !!credentials.password
+      }
     })
 
     const response = await fetch(apiUrl, {
@@ -70,11 +76,13 @@ serve(async (req) => {
     })
 
     if (!response.ok) {
+      const errorText = await response.text()
       console.error('API request failed:', {
         status: response.status,
-        statusText: response.statusText
+        statusText: response.statusText,
+        body: errorText
       })
-      throw new Error(`API request failed: ${response.statusText}`)
+      throw new Error(`API request failed: ${response.status} ${response.statusText}`)
     }
 
     const data = await response.json()
