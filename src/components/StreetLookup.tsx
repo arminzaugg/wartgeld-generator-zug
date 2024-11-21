@@ -3,8 +3,8 @@ import { useStreetAutocomplete } from "@/hooks/useStreetAutocomplete";
 import { useToast } from "@/components/ui/use-toast";
 import type { StreetSummary } from "@/types/address";
 import { parseAddressInput } from "@/utils/addressParser";
-import { StreetInput } from "./StreetInput";
-import { SuggestionsList } from "./SuggestionsList";
+import { StreetInput } from "./StreetLookup/StreetInput";
+import { SuggestionsList } from "./StreetLookup/SuggestionsList";
 
 interface StreetLookupProps {
   value: string;
