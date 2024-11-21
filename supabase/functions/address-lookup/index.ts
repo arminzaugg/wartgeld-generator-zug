@@ -8,25 +8,30 @@ const corsHeaders = {
 
 const config = {
   zipFilter: {
-    prefix: "63",
-    enabled: true
+    cantons: {
+      ZG: {
+        enabled: true,
+        zipCodes: [
+          "6300", "6301", "6302", "6303", "6312", "6313", 
+          "6314", "6315", "6317", "6318", "6319", "6330", 
+          "6331", "6332", "6333", "6340", "6341", "6343", "6345"
+        ]
+      }
+    }
   }
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
 
   try {
-    // Initialize Supabase client for each request
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    // Get fresh API credentials from the database for each request
     const { data: credentials, error: credentialsError } = await supabaseClient
       .from('api_credentials')
       .select('*')
@@ -38,12 +43,8 @@ serve(async (req) => {
       throw new Error('Failed to fetch API credentials')
     }
 
-    // Get search parameters from request
-    const { searchType, searchTerm, zipCode } = await req.json()
+    const { type: searchType, searchTerm, zipCode } = await req.json()
 
-    console.log('Search parameters:', { searchType, searchTerm, zipCode })
-
-    // Prepare the request body based on search type
     const requestBody = {
       request: {
         ONRP: 0,
@@ -60,19 +61,8 @@ serve(async (req) => {
       zipFilterMode: 0
     }
 
-    // Construct API request URL
     const apiUrl = 'https://webservices.post.ch:17023/IN_SYNSYN_EXT/REST/v1/autocomplete4'
     
-    console.log('Making request to Swiss Post API:', {
-      url: apiUrl,
-      body: requestBody,
-      credentials: {
-        username: credentials.username,
-        // Don't log the actual password
-        hasPassword: !!credentials.password
-      }
-    })
-
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
@@ -93,42 +83,36 @@ serve(async (req) => {
     }
 
     const data = await response.json()
-    console.log('API response received:', data)
 
-    // Filter results based on ZIP code prefix if enabled
+    // Filter results based on canton ZIP codes
     const filterResults = (data) => {
-      if (!config.zipFilter.enabled) return data;
+      if (!config.zipFilter.cantons.ZG.enabled) return data;
+
+      const allowedZipCodes = config.zipFilter.cantons.ZG.zipCodes;
 
       if (searchType === 'zip') {
         return {
-          zips: data.suggestions?.filter(item => 
-            item.ZipCode.startsWith(config.zipFilter.prefix)
-          ).map(item => ({
-            zip: item.ZipCode,
-            city18: item.TownName,
-            city27: item.TownName,
-            city39: item.TownName
-          })) || []
+          QueryAutoComplete4Result: {
+            AutoCompleteResult: data.QueryAutoComplete4Result?.AutoCompleteResult?.filter(item => 
+              allowedZipCodes.includes(item.ZipCode)
+            ) || []
+          }
         };
       } else {
         return {
-          streets: data.suggestions?.filter(item =>
-            item.ZipCode.startsWith(config.zipFilter.prefix)
-          ).map(item => ({
-            STRID: item.STRID,
-            streetName: item.StreetName,
-            zipCode: item.ZipCode,
-            city: item.TownName,
-            houseNumbers: item.houseNumbers
-          })) || []
+          QueryAutoComplete4Result: {
+            AutoCompleteResult: data.QueryAutoComplete4Result?.AutoCompleteResult?.filter(item =>
+              allowedZipCodes.includes(item.ZipCode)
+            ) || []
+          }
         };
       }
     };
 
-    const transformedData = filterResults(data);
+    const filteredData = filterResults(data);
 
     return new Response(
-      JSON.stringify(transformedData),
+      JSON.stringify(filteredData),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   } catch (error) {
