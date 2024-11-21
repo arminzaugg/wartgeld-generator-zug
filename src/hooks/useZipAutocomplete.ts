@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { mockAddressApi } from '@/lib/mockAddressApi';
 import type { ZipSummary } from '@/types/address';
+import { supabase } from "@/integrations/supabase/client";
 
 export type ZipSuggestion = ZipSummary;
 
@@ -27,12 +27,16 @@ export const useZipAutocomplete = (searchTerm: string): ZipAutocompleteResult =>
       setError(null);
 
       try {
-        const results = await mockAddressApi.searchZip({
-          zipCity: searchTerm,
-          type: 'DOMICILE',
-          limit: 10
+        const { data, error } = await supabase.functions.invoke('address-lookup', {
+          body: {
+            searchType: 'zip',
+            searchTerm
+          }
         });
-        setSuggestions(results.zips || []);
+
+        if (error) throw error;
+
+        setSuggestions(data.zips || []);
       } catch (error) {
         console.error('Error fetching suggestions:', error);
         setError(error instanceof Error ? error : new Error('Failed to fetch suggestions'));

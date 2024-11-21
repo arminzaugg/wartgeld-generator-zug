@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { mockAddressApi } from '@/lib/mockAddressApi';
 import type { StreetSummary } from '@/types/address';
-import { addressConfig } from '@/config/addressConfig';
+import { supabase } from "@/integrations/supabase/client";
 
 export interface StreetAutocompleteResult {
   suggestions: StreetSummary[];
@@ -29,20 +28,17 @@ export const useStreetAutocomplete = (
       setError(null);
 
       try {
-        const results = await mockAddressApi.searchStreets({
-          streetName: searchTerm,
-          zipCode,
-          limit: 10
+        const { data, error } = await supabase.functions.invoke('address-lookup', {
+          body: {
+            searchType: 'street',
+            searchTerm,
+            zipCode
+          }
         });
 
-        // Apply ZIP code filter if enabled
-        const filteredStreets = addressConfig.streetFilter.enabled
-          ? results.streets?.filter(street => 
-              street.zipCode.startsWith(addressConfig.streetFilter.zipPrefix)
-            )
-          : results.streets;
+        if (error) throw error;
 
-        setSuggestions(filteredStreets || []);
+        setSuggestions(data.streets || []);
       } catch (error) {
         console.error('Error fetching street suggestions:', error);
         setError(error instanceof Error ? error : new Error('Failed to fetch suggestions'));
