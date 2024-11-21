@@ -13,16 +13,17 @@ serve(async (req) => {
   }
 
   try {
-    // Initialize Supabase client
+    // Initialize Supabase client for each request
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    // Get API credentials from the database
+    // Get fresh API credentials from the database for each request
     const { data: credentials, error: credentialsError } = await supabaseClient
       .from('api_credentials')
       .select('*')
+      .limit(1)
       .single()
 
     if (credentialsError) {
@@ -32,7 +33,7 @@ serve(async (req) => {
     // Get search parameters from request
     const { searchType, searchTerm, zipCode } = await req.json()
 
-    // Construct API request
+    // Construct API request with fresh credentials
     const apiUrl = `${credentials.endpoint_url}/${searchType === 'zip' ? 'searchZip' : 'searchStreets'}`
     const response = await fetch(apiUrl, {
       method: 'POST',
