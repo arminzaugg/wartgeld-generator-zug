@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -6,60 +6,101 @@ import { FormFields } from "@/components/FormFields";
 import { PDFPreview } from "@/components/PDFPreview";
 import { generatePDF } from "@/lib/pdfGenerator";
 import { useToast } from "@/components/ui/use-toast";
-import { Settings, Info } from "lucide-react";
+import { Settings, Info, Loader2 } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { debounce } from "lodash";
+
+const initialFormData = {
+  vorname: "",
+  nachname: "",
+  address: "",
+  plz: "",
+  ort: "",
+  geburtsdatum: "",
+  gemeinde: "",
+  betreuungGeburt: false,
+  betreuungWochenbett: false,
+};
 
 const Index = () => {
-  const [formData, setFormData] = useState({
-    vorname: "",
-    nachname: "",
-    address: "",
-    plz: "",
-    ort: "",
-    geburtsdatum: "",
-    gemeinde: "",
-    betreuungGeburt: false,
-    betreuungWochenbett: false,
-  });
-  
+  const [formData, setFormData] = useState(initialFormData);
   const [pdfUrl, setPdfUrl] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
 
   const hasViewedSettings = localStorage.getItem("settings-viewed") === "true";
 
-  const handleFieldChange = (field: string, value: string | boolean) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+  const handleFieldChange = useCallback(
+    debounce((field: string, value: string | boolean) => {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+    }, 300),
+    []
+  );
+
+  const validateForm = () => {
+    const errors: string[] = [];
+    if (!formData.vorname) errors.push("Vorname ist erforderlich");
+    if (!formData.nachname) errors.push("Nachname ist erforderlich");
+    if (!formData.gemeinde) errors.push("Gemeinde ist erforderlich");
+    if (!formData.geburtsdatum) errors.push("Geburtsdatum ist erforderlich");
+    return errors;
   };
 
-  const handleGeneratePDF = () => {
-    if (!formData.vorname || !formData.nachname || !formData.gemeinde) {
+  const handleGeneratePDF = async () => {
+    const errors = validateForm();
+    if (errors.length > 0) {
       toast({
         title: "Fehler",
-        description: "Bitte füllen Sie alle erforderlichen Felder aus",
+        description: (
+          <ul className="list-disc pl-4">
+            {errors.map((error, index) => (
+              <li key={index}>{error}</li>
+            ))}
+          </ul>
+        ),
         variant: "destructive",
       });
       return;
     }
 
-    const pdfUrl = generatePDF(formData);
-    setPdfUrl(pdfUrl);
-    
+    setIsGenerating(true);
+    try {
+      const pdfUrl = generatePDF(formData);
+      setPdfUrl(pdfUrl);
+      toast({
+        title: "Erfolgreich",
+        description: "PDF wurde erfolgreich erstellt",
+      });
+    } catch (error) {
+      toast({
+        title: "Fehler",
+        description: "PDF konnte nicht erstellt werden",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleClearForm = () => {
+    setFormData(initialFormData);
+    setPdfUrl("");
     toast({
-      title: "Erfolgreich",
-      description: "PDF wurde erfolgreich erstellt",
+      title: "Formular zurückgesetzt",
+      description: "Alle Eingaben wurden gelöscht",
     });
   };
 
   return (
-    <div className="container py-8">
+    <div className="container py-8 animate-in fade-in slide-in-from-bottom-4">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Hebammenwartgeld Kanton Zug</h1>
         <div className="flex gap-2">
@@ -97,11 +138,23 @@ const Index = () => {
           <FormFields
             values={formData}
             onChange={handleFieldChange}
+            onClear={handleClearForm}
           />
           
           <div className="mt-6">
-            <Button onClick={handleGeneratePDF} className="w-full">
-              Rechnung Generieren
+            <Button 
+              onClick={handleGeneratePDF} 
+              className="w-full"
+              disabled={isGenerating}
+            >
+              {isGenerating ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Generiere PDF...
+                </>
+              ) : (
+                "Rechnung Generieren"
+              )}
             </Button>
           </div>
         </Card>
