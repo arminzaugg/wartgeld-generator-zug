@@ -15,8 +15,8 @@ interface AddressFieldsProps {
 export const AddressFields = ({ values, onChange }: AddressFieldsProps) => {
   const handleStreetChange = (street: string, zipCode?: string, city?: string) => {
     onChange("address", street);
-    if (zipCode) onChange("plz", zipCode);
-    if (city) onChange("ort", city);
+    onChange("plz", zipCode || "");
+    onChange("ort", city || "");
   };
 
   return (
