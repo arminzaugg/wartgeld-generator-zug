@@ -1,7 +1,6 @@
-import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { ZipCityLookup } from "@/components/ZipCityLookup";
+import { Input } from "@/components/ui/input";
 import { StreetLookup } from "@/components/StreetLookup";
 
 interface AddressFieldsProps {
@@ -14,15 +13,6 @@ interface AddressFieldsProps {
 }
 
 export const AddressFields = ({ values, onChange }: AddressFieldsProps) => {
-  const handleZipCityChange = (plz: string, ort: string) => {
-    onChange("plz", plz);
-    onChange("ort", ort);
-    // Clear address when zip changes to prevent invalid combinations
-    if (values.address) {
-      onChange("address", "");
-    }
-  };
-
   const handleStreetChange = (street: string, zipCode?: string, city?: string) => {
     onChange("address", street);
     if (zipCode) onChange("plz", zipCode);
@@ -41,11 +31,15 @@ export const AddressFields = ({ values, onChange }: AddressFieldsProps) => {
           />
         </div>
         
-        <ZipCityLookup 
-          plz={values.plz}
-          ort={values.ort}
-          onChange={handleZipCityChange}
-        />
+        <div className="space-y-2">
+          <Label>Postleitzahl & Ort</Label>
+          <Input
+            value={values.plz && values.ort ? `${values.plz} ${values.ort}` : ""}
+            readOnly
+            className="bg-gray-100"
+            placeholder="Wird automatisch ausgefüllt"
+          />
+        </div>
       </div>
     </Card>
   );
