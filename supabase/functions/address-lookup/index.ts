@@ -43,33 +43,17 @@ serve(async (req) => {
       throw new Error('Failed to fetch API credentials')
     }
 
-    const { type: searchType, searchTerm } = await req.json()
+    const { type: searchType, searchTerm, zipCode } = await req.json()
 
-    // Create two request bodies - one for ZIP search and one for city search
-    const zipRequestBody = {
+    // Create request body based on search type
+    const requestBody = {
       request: {
         ONRP: 0,
-        ZipCode: searchTerm,
+        ZipCode: searchType === 'street' ? (zipCode || '') : searchTerm,
         ZipAddition: '',
-        TownName: '',
+        TownName: searchType === 'zip' ? searchTerm : '',
         STRID: 0,
-        StreetName: '',
-        HouseKey: 0,
-        HouseNo: '',
-        HouseNoAddition: ''
-      },
-      zipOrderMode: 0,
-      zipFilterMode: 0
-    }
-
-    const cityRequestBody = {
-      request: {
-        ONRP: 0,
-        ZipCode: '',
-        ZipAddition: '',
-        TownName: searchTerm,
-        STRID: 0,
-        StreetName: '',
+        StreetName: searchType === 'street' ? searchTerm : '',
         HouseKey: 0,
         HouseNo: '',
         HouseNoAddition: ''
@@ -80,65 +64,27 @@ serve(async (req) => {
 
     const apiUrl = 'https://webservices.post.ch:17023/IN_SYNSYN_EXT/REST/v1/autocomplete4'
     
-    // Make both requests in parallel
-    const [zipResponse, cityResponse] = await Promise.all([
-      fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Basic ' + btoa(`${credentials.username}:${credentials.password}`)
-        },
-        body: JSON.stringify(zipRequestBody)
-      }),
-      fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Basic ' + btoa(`${credentials.username}:${credentials.password}`)
-        },
-        body: JSON.stringify(cityRequestBody)
-      })
-    ])
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic ' + btoa(`${credentials.username}:${credentials.password}`)
+      },
+      body: JSON.stringify(requestBody)
+    })
 
-    if (!zipResponse.ok || !cityResponse.ok) {
-      const errorText = await zipResponse.text()
+    if (!response.ok) {
+      const errorText = await response.text()
       console.error('API request failed:', {
-        zipStatus: zipResponse.status,
-        cityStatus: cityResponse.status,
+        status: response.status,
         error: errorText
       })
       throw new Error(`API request failed`)
     }
 
-    const [zipData, cityData] = await Promise.all([
-      zipResponse.json(),
-      cityResponse.json()
-    ])
+    const data = await response.json()
 
-    // Combine and deduplicate results
-    const combinedResults = {
-      QueryAutoComplete4Result: {
-        AutoCompleteResult: [
-          ...(zipData.QueryAutoComplete4Result?.AutoCompleteResult || []),
-          ...(cityData.QueryAutoComplete4Result?.AutoCompleteResult || [])
-        ]
-      }
-    }
-
-    // Remove duplicates based on ZipCode and TownName combination
-    const uniqueResults = {
-      QueryAutoComplete4Result: {
-        AutoCompleteResult: Array.from(
-          new Map(
-            combinedResults.QueryAutoComplete4Result.AutoCompleteResult.map(item => 
-              [`${item.ZipCode}-${item.TownName}`, item]
-            )
-          ).values()
-        )
-      }
-    }
-
-    // Filter results based on canton ZIP codes
+    // Filter results based on canton ZIP codes if enabled
     const filterResults = (data) => {
       if (!config.zipFilter.cantons.ZG.enabled) return data;
 
@@ -153,7 +99,7 @@ serve(async (req) => {
       };
     };
 
-    const filteredData = filterResults(uniqueResults);
+    const filteredData = filterResults(data);
 
     return new Response(
       JSON.stringify(filteredData),
