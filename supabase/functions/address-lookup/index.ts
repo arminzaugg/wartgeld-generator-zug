@@ -7,18 +7,7 @@ const corsHeaders = {
 }
 
 const config = {
-  zipFilter: {
-    cantons: {
-      ZG: {
-        enabled: true,
-        zipCodes: [
-          "6300", "6301", "6302", "6303", "6312", "6313", 
-          "6314", "6315", "6317", "6318", "6319", "6330", 
-          "6331", "6332", "6333", "6340", "6341", "6343", "6345"
-        ]
-      }
-    }
-  }
+  canton: "ZG"  // Simplified to just use canton code
 };
 
 const parseAddressInput = (input: string) => {
@@ -72,7 +61,6 @@ serve(async (req) => {
     const { streetName, houseNumber, addition } = parseAddressInput(searchTerm)
     console.log('Parsed address:', { streetName, houseNumber, addition })
 
-    // Create request body based on search type and parsed input
     const requestBody = {
       request: {
         ONRP: 0,
@@ -114,16 +102,13 @@ serve(async (req) => {
     const data = await response.json()
     console.log('API response:', data)
 
-    // Filter results based on canton ZIP codes if enabled
+    // Filter results based on canton only
     const filterResults = (data) => {
-      if (!config.zipFilter.cantons.ZG.enabled) return data;
-
-      const allowedZipCodes = config.zipFilter.cantons.ZG.zipCodes;
       const results = data.QueryAutoComplete4Result?.AutoCompleteResult || [];
 
-      // Sort results by relevance
+      // Filter by canton and sort by relevance
       const sortedResults = results
-        .filter(item => allowedZipCodes.includes(item.ZipCode))
+        .filter(item => item.Canton === config.canton)
         .sort((a, b) => {
           // Exact street name match gets highest priority
           if (a.StreetName.toLowerCase() === streetName.toLowerCase()) return -1;
