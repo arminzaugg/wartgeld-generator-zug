@@ -63,6 +63,8 @@ export const FormFields = ({ values, onChange, onAddressChange, onClear }: FormF
 
   const handleClear = () => {
     onClear();
+    // Clear the address by calling onAddressChange with empty values
+    onAddressChange("", "", "");
     setErrors({});
     toast({
       title: "Formular zurückgesetzt",
