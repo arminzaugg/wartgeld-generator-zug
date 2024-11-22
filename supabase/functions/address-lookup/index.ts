@@ -15,7 +15,6 @@ const config = {
 };
 
 const parseAddressInput = (input: string) => {
-  // Match pattern: street + number + optional letter, optional zip + city
   const match = input.match(/^(.*?)(?:\s+(\d+)\s*([A-Za-z])?)?(?:,?\s+(\d{4})\s+(.+))?$/);
   
   if (!match) return { 
@@ -27,7 +26,6 @@ const parseAddressInput = (input: string) => {
   };
   
   const [, streetName, number, addition, zipCode, city] = match;
-  
   return {
     streetName: streetName.trim(),
     houseNumber: number || '',
@@ -48,24 +46,21 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    const { data: credentials, error: credentialsError } = await supabaseClient
+    const { data: credentials } = await supabaseClient
       .from('api_credentials')
       .select('*')
       .limit(1)
       .single()
 
-    if (credentialsError) {
-      console.error('Failed to fetch API credentials:', credentialsError)
+    if (!credentials) {
       throw new Error('Failed to fetch API credentials')
     }
 
-    const { type: searchType, searchTerm, zipCode: filterZipCode, limit = 10 } = await req.json()
-    console.log('Search request:', { searchType, searchTerm, filterZipCode, limit })
+    const { type: searchType, searchTerm, zipCode: filterZipCode } = await req.json()
+    console.log('Search request:', { searchType, searchTerm, filterZipCode })
 
     const { streetName, houseNumber, addition } = parseAddressInput(searchTerm)
-    console.log('Parsed address:', { streetName, houseNumber, addition })
 
-    // Always include "63" as the base ZIP code for the API request
     const requestBody = {
       request: {
         ONRP: 0,
@@ -82,8 +77,6 @@ serve(async (req) => {
       zipFilterMode: 0
     }
 
-    console.log('API request body:', requestBody)
-
     const apiUrl = 'https://webservices.post.ch:17023/IN_SYNSYN_EXT/REST/v1/autocomplete4'
     
     const response = await fetch(apiUrl, {
@@ -96,65 +89,32 @@ serve(async (req) => {
     })
 
     if (!response.ok) {
-      const errorText = await response.text()
-      console.error('API request failed:', {
-        status: response.status,
-        error: errorText
-      })
-      throw new Error(`API request failed`)
+      throw new Error(`API request failed: ${response.status}`)
     }
 
     const data = await response.json()
-    console.log('Raw API response:', data)
+    console.log('API response received')
 
-    // Filter and sort results
+    // Filter results
     const filterResults = (data) => {
       const results = data.QueryAutoComplete4Result?.AutoCompleteResult || [];
-      console.log('Total results before filtering:', results.length);
-
-      // Filter invalid addresses and apply ZIP code filter
+      
       const validResults = results
         .filter(item => {
-          // Log each item being filtered
-          console.log('Filtering item:', {
-            streetName: item.StreetName,
-            zipCode: item.ZipCode
-          });
-          
-          // Must have a valid street name
-          if (!item.StreetName?.trim()) {
-            console.log('Filtered out - no street name');
+          if (!item.StreetName?.trim() || !item.ZipCode?.trim()) {
             return false;
           }
-          
-          // Must have a valid ZIP code
-          if (!item.ZipCode?.trim()) {
-            console.log('Filtered out - no ZIP code');
-            return false;
-          }
-
-          // Must be in the allowed ZIP codes list
-          if (!config.allowedZipCodes.includes(item.ZipCode)) {
-            console.log('Filtered out - ZIP code not in allowed list:', item.ZipCode);
-            return false;
-          }
-          
-          return true;
+          return config.allowedZipCodes.includes(item.ZipCode);
         })
         .sort((a, b) => {
-          // Exact matches first
           const exactMatchA = a.StreetName.toLowerCase() === streetName.toLowerCase();
           const exactMatchB = b.StreetName.toLowerCase() === streetName.toLowerCase();
           if (exactMatchA && !exactMatchB) return -1;
           if (!exactMatchA && exactMatchB) return 1;
-          
-          // Then by string similarity
-          return similarity(b.StreetName.toLowerCase(), streetName.toLowerCase()) - 
-                 similarity(a.StreetName.toLowerCase(), streetName.toLowerCase());
-        })
-        .slice(0, limit);
+          return 0;
+        });
 
-      console.log('Results after filtering:', validResults.length);
+      console.log(`Filtered results: ${validResults.length} of ${results.length} total results`)
       return {
         QueryAutoComplete4Result: {
           AutoCompleteResult: validResults
@@ -163,14 +123,13 @@ serve(async (req) => {
     };
 
     const filteredData = filterResults(data);
-    console.log('Final filtered and sorted results:', filteredData)
 
     return new Response(
       JSON.stringify(filteredData),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   } catch (error) {
-    console.error('Error:', error)
+    console.error('Error:', error.message)
     return new Response(
       JSON.stringify({ error: error.message }),
       { 
@@ -180,30 +139,3 @@ serve(async (req) => {
     )
   }
 })
-
-// Levenshtein distance for string similarity
-function similarity(s1: string, s2: string): number {
-  const longer = s1.length > s2.length ? s1 : s2;
-  const shorter = s1.length > s2.length ? s2 : s1;
-
-  if (longer.length === 0) return 1.0;
-  
-  const costs = new Array();
-  for (let i = 0; i <= longer.length; i++) {
-    let lastValue = i;
-    for (let j = 0; j <= shorter.length; j++) {
-      if (i === 0) {
-        costs[j] = j;
-      } else if (j > 0) {
-        let newValue = costs[j - 1];
-        if (longer.charAt(i - 1) !== shorter.charAt(j - 1)) {
-          newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
-        }
-        costs[j - 1] = lastValue;
-        lastValue = newValue;
-      }
-    }
-    if (i > 0) costs[shorter.length] = lastValue;
-  }
-  return (longer.length - costs[shorter.length]) / longer.length;
-}
