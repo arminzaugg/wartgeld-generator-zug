@@ -1,23 +1,42 @@
 export const parseAddressInput = (input: string) => {
-  // Split input into parts
-  const parts = input.split(/\s+/);
+  // Match patterns for different address components
+  const zipCityPattern = /(\d{4})\s+([^,]+)/;
+  const houseNumberPattern = /(\d+[a-zA-Z]?)\s*$/;
   
-  // Try to identify house number at the end
-  const lastPart = parts[parts.length - 1];
-  const hasNumberAtEnd = /^\d+[a-zA-Z]?$/.test(lastPart);
-  
-  let streetParts = hasNumberAtEnd ? parts.slice(0, -1) : parts;
-  let houseNumber = hasNumberAtEnd ? lastPart.match(/^\d+/)?.[0] || '' : '';
-  let addition = hasNumberAtEnd ? lastPart.match(/[a-zA-Z]$/)?.[0] || '' : '';
-  
-  // Join remaining parts as street name
-  const streetName = streetParts.join(' ');
-  
+  let streetName = input;
+  let houseNumber = '';
+  let addition = '';
+  let zipCode = '';
+  let city = '';
+
+  // Extract ZIP and city if present
+  const zipCityMatch = input.match(zipCityPattern);
+  if (zipCityMatch) {
+    zipCode = zipCityMatch[1];
+    city = zipCityMatch[2].trim();
+    streetName = input.replace(zipCityPattern, '').trim();
+  }
+
+  // Extract house number if present
+  const houseNumberMatch = streetName.match(houseNumberPattern);
+  if (houseNumberMatch) {
+    const fullNumber = houseNumberMatch[1];
+    const numberMatch = fullNumber.match(/(\d+)([a-zA-Z])?/);
+    if (numberMatch) {
+      houseNumber = numberMatch[1];
+      addition = numberMatch[2] || '';
+      streetName = streetName.replace(houseNumberPattern, '').trim();
+    }
+  }
+
+  // Clean up any remaining commas
+  streetName = streetName.replace(/,/g, '').trim();
+
   return {
-    streetName: streetName.trim(),
+    streetName,
     houseNumber,
     addition,
-    zipCode: '',
-    city: ''
+    zipCode,
+    city
   };
 };

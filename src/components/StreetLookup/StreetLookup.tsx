@@ -28,10 +28,11 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   const { toast } = useToast();
 
   const debouncedSearch = debounce((term: string) => {
-    const { streetName } = parseAddressInput(term);
-    if (streetName.length >= 2) {
-      setSearchTerm(streetName);
+    if (term.length >= 2) {
+      setSearchTerm(term);
       setShowSuggestions(true);
+    } else {
+      setShowSuggestions(false);
     }
   }, 300);
 
@@ -66,9 +67,9 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
 
   const handleInputChange = (value: string) => {
     const parsed = parseAddressInput(value);
+    debouncedSearch(value);
     
     if (!selectedStreet) {
-      debouncedSearch(value);
       onChange(value, parsed.zipCode, parsed.city);
     } else {
       setSearchTerm(value);
@@ -81,18 +82,16 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
     setSelectedStreet(suggestion);
     const { houseNumber, addition } = parseAddressInput(searchTerm);
     
-    // Create the complete address string
     let fullAddress = suggestion.streetName;
     
-    // If the suggestion has a default house number, use it
     if (suggestion.houseNumbers && suggestion.houseNumbers.length === 1) {
       const defaultHouseNumber = suggestion.houseNumbers[0];
       fullAddress += ` ${defaultHouseNumber.number}${defaultHouseNumber.addition || ''}`;
-    } 
-    // If user provided a house number, use that
-    else if (houseNumber) {
+    } else if (houseNumber) {
       fullAddress += ` ${houseNumber}${addition || ''}`;
     }
+    
+    fullAddress += `, ${suggestion.zipCode} ${suggestion.city}`;
     
     setSearchTerm(fullAddress);
     setShowSuggestions(false);
@@ -115,6 +114,8 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
     } else if (e.key === 'Enter' && selectedIndex >= 0) {
       e.preventDefault();
       handleSuggestionClick(suggestions[selectedIndex]);
+    } else if (e.key === 'Escape') {
+      setShowSuggestions(false);
     }
   };
 
