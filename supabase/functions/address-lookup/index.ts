@@ -15,7 +15,6 @@ const config = {
 };
 
 const parseAddressInput = (input: string) => {
-  // Enhanced pattern to better match various address formats
   const zipCityPattern = /(\d{4})\s+([^,]+)/;
   const houseNumberPattern = /(\d+[a-zA-Z]?)\s*$/;
   
@@ -25,7 +24,6 @@ const parseAddressInput = (input: string) => {
   let zipCode = '';
   let city = '';
 
-  // Extract ZIP and city if present
   const zipCityMatch = input.match(zipCityPattern);
   if (zipCityMatch) {
     zipCode = zipCityMatch[1];
@@ -33,7 +31,6 @@ const parseAddressInput = (input: string) => {
     streetName = input.replace(zipCityPattern, '').trim();
   }
 
-  // Extract house number if present
   const houseNumberMatch = streetName.match(houseNumberPattern);
   if (houseNumberMatch) {
     const fullNumber = houseNumberMatch[1];
@@ -74,7 +71,6 @@ serve(async (req) => {
 
     const { streetName, houseNumber, addition, zipCode, city } = parseAddressInput(searchTerm)
 
-    // Determine search type based on input if not explicitly provided
     const effectiveSearchType = searchType || (() => {
       if (zipCode) return 'zip';
       if (city) return 'city';
@@ -117,7 +113,6 @@ serve(async (req) => {
     const data = await response.json()
     console.log('API response received')
 
-    // Enhanced filtering with fuzzy matching
     const filterResults = (data) => {
       const results = data.QueryAutoComplete4Result?.AutoCompleteResult || [];
       
@@ -129,23 +124,22 @@ serve(async (req) => {
           return config.allowedZipCodes.includes(item.ZipCode);
         })
         .sort((a, b) => {
-          // Prioritize exact matches
           const exactMatchA = a.StreetName.toLowerCase() === streetName.toLowerCase();
           const exactMatchB = b.StreetName.toLowerCase() === streetName.toLowerCase();
           if (exactMatchA && !exactMatchB) return -1;
           if (!exactMatchB && exactMatchA) return 1;
 
-          // Then prioritize matches that start with the search term
           const startsWithA = a.StreetName.toLowerCase().startsWith(streetName.toLowerCase());
           const startsWithB = b.StreetName.toLowerCase().startsWith(streetName.toLowerCase());
           if (startsWithA && !startsWithB) return -1;
           if (!startsWithA && startsWithB) return 1;
 
-          // Finally sort by string length (shorter = better match)
           return a.StreetName.length - b.StreetName.length;
         });
 
-      console.log(`Filtered ${validResults.length} results from ${results.length} total results`)
+      console.log(`Filtered ${validResults.length} results from ${results.length} total results`);
+      console.log('Filtered results:', JSON.stringify(validResults, null, 2));
+      
       return {
         QueryAutoComplete4Result: {
           AutoCompleteResult: validResults
