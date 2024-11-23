@@ -19,17 +19,19 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   const [selectedStreet, setSelectedStreet] = useState<StreetSummary | null>(null);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [inputRef, setInputRef] = useState<HTMLInputElement | null>(null);
+  const [debouncedTerm, setDebouncedTerm] = useState("");
   
   const { suggestions = [], isLoading, error } = useStreetAutocomplete(
-    searchTerm.length >= 2 ? searchTerm : "", 
+    debouncedTerm.length >= 2 ? debouncedTerm : "", 
     zipCode
   );
   
   const { toast } = useToast();
 
+  // Debounce the search term updates
   const debouncedSearch = debounce((term: string) => {
+    setDebouncedTerm(term);
     if (term.length >= 2) {
-      setSearchTerm(term);
       setShowSuggestions(true);
     } else {
       setShowSuggestions(false);
@@ -66,16 +68,18 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   }, [inputRef]);
 
   const handleInputChange = (value: string) => {
-    const parsed = parseAddressInput(value);
+    setSearchTerm(value);
+    setSelectedStreet(null); // Reset selected street when input changes
     debouncedSearch(value);
     
-    if (!selectedStreet) {
-      onChange(value, parsed.zipCode, parsed.city);
-    } else {
-      setSearchTerm(value);
-      const fullAddress = `${selectedStreet.streetName} ${parsed.houseNumber}${parsed.addition || ''}`;
-      onChange(fullAddress, selectedStreet.zipCode, selectedStreet.city);
+    if (!value) {
+      onChange("", undefined, undefined);
+      setShowSuggestions(false);
+      return;
     }
+
+    const parsed = parseAddressInput(value);
+    onChange(value, parsed.zipCode, parsed.city);
   };
 
   const handleSuggestionClick = (suggestion: StreetSummary) => {
@@ -122,6 +126,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   const clearSelection = () => {
     setSelectedStreet(null);
     setSearchTerm("");
+    setDebouncedTerm(""); // Reset debounced term
     onChange("", undefined, undefined);
     if (inputRef) {
       inputRef.focus();

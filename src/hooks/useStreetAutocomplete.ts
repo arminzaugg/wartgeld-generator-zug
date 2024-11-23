@@ -13,15 +13,14 @@ export const useStreetAutocomplete = (searchTerm: string, zipCode?: string) => {
           type: 'street', 
           searchTerm, 
           zipCode,
-          limit: 10 // Limit to 10 results
+          limit: 10
         }
       });
 
       if (error) throw error;
 
-      // Transform and sort the API response
       if (data?.QueryAutoComplete4Result?.AutoCompleteResult) {
-        const results = data.QueryAutoComplete4Result.AutoCompleteResult
+        return data.QueryAutoComplete4Result.AutoCompleteResult
           .map((item: any) => ({
             STRID: item.STRID,
             streetName: item.StreetName || '',
@@ -31,25 +30,14 @@ export const useStreetAutocomplete = (searchTerm: string, zipCode?: string) => {
               number: item.HouseNo,
               addition: item.HouseNoAddition
             }] : undefined
-          }))
-          .sort((a: StreetSummary, b: StreetSummary) => {
-            // Prioritize exact matches
-            const exactMatchA = a.streetName.toLowerCase() === searchTerm.toLowerCase();
-            const exactMatchB = b.streetName.toLowerCase() === searchTerm.toLowerCase();
-            if (exactMatchA && !exactMatchB) return -1;
-            if (!exactMatchA && exactMatchB) return 1;
-            
-            // Then sort by string similarity
-            return b.streetName.length - a.streetName.length;
-          })
-          .slice(0, 10); // Ensure we never return more than 10 results
-
-        return results;
+          }));
       }
       
       return [];
     },
-    enabled: searchTerm.length > 0
+    enabled: searchTerm.length >= 2,
+    staleTime: 0, // Always consider data stale to force refetch
+    cacheTime: 0, // Disable caching to ensure fresh data
   });
 
   return { suggestions, isLoading, error };
