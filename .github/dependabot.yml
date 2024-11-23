@@ -14,5 +14,16 @@ updates:
     directory: "/"
     # Check the npm registry for updates every day (weekdays)
     schedule:
-      interval: "daily"
+      interval: "weekly"
+    commit-message:
+      prefix: "deps"
+    open-pull-requests-limit: 5
+    auto-merge: true
+  
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily" # Check daily for security issues
+    labels:
+      - "security"
       
