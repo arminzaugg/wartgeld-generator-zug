@@ -37,7 +37,7 @@ export const useStreetAutocomplete = (searchTerm: string, zipCode?: string) => {
     },
     enabled: searchTerm.length >= 2,
     staleTime: 0, // Always consider data stale to force refetch
-    cacheTime: 0, // Disable caching to ensure fresh data
+    gcTime: 0 // Disable garbage collection (formerly cacheTime)
   });
 
   return { suggestions, isLoading, error };
