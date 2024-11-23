@@ -25,3 +25,6 @@ dist-ssr
 
 # Exclude secrets
 .env
+
+# Secrets
+.env
