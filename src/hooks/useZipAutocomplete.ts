@@ -20,7 +20,7 @@ export const useZipAutocomplete = (searchTerm: string) => {
     },
     enabled: searchTerm.length > 0,
     staleTime: 0, // Mark data as immediately stale
-    cacheTime: 0, // Don't cache at all
+    gcTime: 0, // Don't cache at all (previously cacheTime)
     refetchOnMount: true, // Always refetch on mount
     refetchOnWindowFocus: true, // Refetch when window regains focus
   });
