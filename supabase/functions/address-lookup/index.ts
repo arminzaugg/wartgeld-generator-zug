@@ -67,7 +67,7 @@ serve(async (req) => {
     }
 
     const { type: searchType, searchTerm, zipCode: filterZipCode } = await req.json()
-    console.log('Search request:', { searchType, searchTerm })
+    console.log('Search request:', { searchType, searchTerm, filterZipCode })
 
     const { streetName, houseNumber, addition, zipCode, city } = parseAddressInput(searchTerm)
 
@@ -93,7 +93,7 @@ serve(async (req) => {
       zipFilterMode: 0
     }
 
-    console.log('API request:', requestBody)
+    console.log('API request payload:', JSON.stringify(requestBody, null, 2))
 
     const apiUrl = 'https://webservices.post.ch:17023/IN_SYNSYN_EXT/REST/v1/autocomplete4'
     
@@ -111,7 +111,7 @@ serve(async (req) => {
     }
 
     const data = await response.json()
-    console.log('API response received')
+    console.log('Raw API response:', JSON.stringify(data, null, 2))
 
     const filterResults = (data) => {
       const results = data.QueryAutoComplete4Result?.AutoCompleteResult || [];
