@@ -38,8 +38,8 @@ serve(async (req) => {
       throw new Error('Failed to fetch API credentials');
     }
 
-    const { type, searchTerm, zipCode: filterZipCode } = await req.json();
-    console.log('Search request:', { type, searchTerm, filterZipCode });
+    const { type, searchTerm, houseNumber, zipCode: filterZipCode } = await req.json();
+    console.log('Search request:', { type, searchTerm, houseNumber, filterZipCode });
 
     const requestBody = {
       request: {
@@ -50,7 +50,7 @@ serve(async (req) => {
         STRID: 0,
         StreetName: type === 'street' ? searchTerm : '',
         HouseKey: 0,
-        HouseNo: '',
+        HouseNo: houseNumber || '',
         HouseNoAddition: ''
       },
       zipOrderMode: 0,

@@ -1,17 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { StreetSummary } from "@/types/address";
+import { parseAddressInput } from "@/utils/addressParser";
 
 export const useStreetAutocomplete = (searchTerm: string, zipCode?: string) => {
+  const { streetName, houseNumber } = parseAddressInput(searchTerm);
+  
   const { data: suggestions = [], isLoading, error } = useQuery({
-    queryKey: ['streetSearch', searchTerm, zipCode],
+    queryKey: ['streetSearch', streetName, zipCode],
     queryFn: async (): Promise<StreetSummary[]> => {
-      if (!searchTerm) return [];
+      if (!streetName) return [];
       
       const { data, error } = await supabase.functions.invoke('address-lookup', {
         body: { 
           type: 'street', 
-          searchTerm, 
+          searchTerm: streetName,
+          houseNumber,
           zipCode,
           limit: 10
         }
@@ -30,14 +34,23 @@ export const useStreetAutocomplete = (searchTerm: string, zipCode?: string) => {
               number: item.HouseNo,
               addition: item.HouseNoAddition
             }] : undefined
-          }));
+          }))
+          .filter(street => {
+            // If a house number is provided, filter streets that have matching house numbers
+            if (houseNumber && street.houseNumbers) {
+              return street.houseNumbers.some(hn => 
+                hn.number.toLowerCase().startsWith(houseNumber.toLowerCase())
+              );
+            }
+            return true;
+          });
       }
       
       return [];
     },
-    enabled: searchTerm.length >= 2,
-    staleTime: 0, // Always consider data stale to force refetch
-    gcTime: 0 // Disable garbage collection (formerly cacheTime)
+    enabled: streetName.length >= 2,
+    staleTime: 0,
+    gcTime: 0
   });
 
   return { suggestions, isLoading, error };
