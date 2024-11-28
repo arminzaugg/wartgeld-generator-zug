@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { FormFields } from "@/components/FormFields";
+import { FormContainer } from "@/features/form/components/FormContainer";
 import { PDFPreview } from "@/components/PDFPreview";
 import { generatePDF } from "@/lib/pdfGenerator";
 import { useToast } from "@/components/ui/use-toast";
@@ -39,6 +39,34 @@ const Index = () => {
     }));
   };
 
+  const handleAddressChange = (street: string, zipCode?: string, city?: string) => {
+    setFormData(prev => ({
+      ...prev,
+      address: street,
+      plz: zipCode || prev.plz,
+      ort: city || prev.ort
+    }));
+  };
+
+  const handleClearForm = () => {
+    setFormData({
+      vorname: "",
+      nachname: "",
+      address: "",
+      plz: "",
+      ort: "",
+      geburtsdatum: "",
+      gemeinde: "",
+      betreuungGeburt: false,
+      betreuungWochenbett: false,
+    });
+    setPdfUrl("");
+    toast({
+      title: "Formular zurückgesetzt",
+      description: "Alle Eingaben wurden gelöscht",
+    });
+  };
+
   const handleGeneratePDF = () => {
     if (!formData.vorname || !formData.nachname || !formData.gemeinde) {
       toast({
@@ -49,7 +77,11 @@ const Index = () => {
       return;
     }
 
-    const pdfUrl = generatePDF(formData);
+    const pdfUrl = generatePDF({
+      ...formData,
+      betreuungGeburt: formData.betreuungGeburt,
+      betreuungWochenbett: formData.betreuungWochenbett,
+    });
     setPdfUrl(pdfUrl);
     
     toast({
@@ -94,9 +126,11 @@ const Index = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <Card className="p-6">
-          <FormFields
+          <FormContainer
             values={formData}
             onChange={handleFieldChange}
+            onAddressChange={handleAddressChange}
+            onClear={handleClearForm}
           />
           
           <div className="mt-6">

@@ -2,7 +2,6 @@ import jsPDF from 'jspdf';
 import { administrationData } from './administrationData';
 import { getSettings } from './presetStorage';
 
-
 interface FormData {
   vorname: string;
   nachname: string;
@@ -62,7 +61,8 @@ export const generatePDF = (data: FormData): string => {
   doc.text("Betreuung der Gebärenden zuhause", 20, 150);
   doc.text(data.betreuungGeburt ? "[X] Ja" : "[  ] Ja", 140, 150);
   doc.text(data.betreuungGeburt ? "[  ] Nein" : "[X] Nein", 160, 150);
-  doc.text(data.betreuungGeburt ? "CHF 400" : "CHF  0", 180, 150);
+  doc.text(data.betreuungGeburt ? "CHF  400" : "CHF  0", 180, 150);
+
   if (data.betreuungGeburt) total += 400;
   
   doc.text("Pflege der Wöchnerin zuhause", 20, 160);
@@ -82,7 +82,7 @@ export const generatePDF = (data: FormData): string => {
   // Add signature line and place/date
   const currentDate = new Date().toLocaleDateString('de-CH');
   doc.text(`${settings.ortRechnungssteller}, ${currentDate}`, 20, 265);
-
+  
   // Add signature if available
   if (settings.signature) {
     doc.addImage(settings.signature, 'PNG', 20, 240, 40, 20);
