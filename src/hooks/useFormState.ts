@@ -1,17 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { Database } from '@/integrations/supabase/types';
 
-interface FormData {
-  vorname: string;
-  nachname: string;
-  address: string;
-  plz: string;
-  ort: string;
-  geburtsdatum: string;
-  gemeinde: string;
-  betreuungGeburt: boolean;
-  betreuungWochenbett: boolean;
-}
+type FormData = Database['public']['Tables']['form_data']['Row'];
 
 const FORM_QUERY_KEY = 'form-data';
 
@@ -31,6 +22,7 @@ export const useFormState = () => {
       return data as FormData;
     },
     initialData: {
+      id: '',
       vorname: '',
       nachname: '',
       address: '',
@@ -38,8 +30,10 @@ export const useFormState = () => {
       ort: '',
       geburtsdatum: '',
       gemeinde: '',
-      betreuungGeburt: false,
-      betreuungWochenbett: false,
+      betreuunggeburt: false,
+      betreuungwochenbett: false,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     }
   });
 
@@ -66,13 +60,14 @@ export const useFormState = () => {
       const { error } = await supabase
         .from('form_data')
         .delete()
-        .neq('id', 0); // Delete all records
+        .neq('id', '0'); // Delete all records
 
       if (error) throw error;
       return null;
     },
     onSuccess: () => {
       queryClient.setQueryData([FORM_QUERY_KEY], {
+        id: '',
         vorname: '',
         nachname: '',
         address: '',
@@ -80,8 +75,10 @@ export const useFormState = () => {
         ort: '',
         geburtsdatum: '',
         gemeinde: '',
-        betreuungGeburt: false,
-        betreuungWochenbett: false,
+        betreuunggeburt: false,
+        betreuungwochenbett: false,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       });
     },
   });
