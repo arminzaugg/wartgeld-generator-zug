@@ -7,7 +7,7 @@ type FormData = Database['public']['Tables']['form_data']['Row'];
 const FORM_QUERY_KEY = 'form-data';
 
 const initialFormData: FormData = {
-  id: '',
+  id: crypto.randomUUID(), // Generate a valid UUID instead of empty string
   vorname: '',
   nachname: '',
   address: '',
@@ -36,7 +36,6 @@ export const useFormState = () => {
       if (error) throw error;
       return data || initialFormData;
     },
-    initialData: initialFormData
   });
 
   // Update form data
@@ -44,7 +43,11 @@ export const useFormState = () => {
     mutationFn: async (newData: Partial<FormData>) => {
       const { data, error } = await supabase
         .from('form_data')
-        .upsert({ ...formData, ...newData })
+        .upsert({ 
+          ...formData, 
+          ...newData,
+          updated_at: new Date().toISOString()
+        })
         .select()
         .single();
 
@@ -59,7 +62,7 @@ export const useFormState = () => {
   // Clear form data
   const { mutate: clearFormData } = useMutation({
     mutationFn: async () => {
-      if (formData.id) {
+      if (formData?.id) {
         const { error } = await supabase
           .from('form_data')
           .delete()
@@ -67,15 +70,15 @@ export const useFormState = () => {
 
         if (error) throw error;
       }
-      return initialFormData;
+      return { ...initialFormData, id: crypto.randomUUID() };
     },
-    onSuccess: () => {
-      queryClient.setQueryData([FORM_QUERY_KEY], initialFormData);
+    onSuccess: (data) => {
+      queryClient.setQueryData([FORM_QUERY_KEY], data);
     },
   });
 
   return {
-    formData,
+    formData: formData || initialFormData,
     isLoading,
     updateFormData,
     clearFormData,

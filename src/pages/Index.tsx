@@ -14,9 +14,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Database } from '@/integrations/supabase/types';
-
-type FormData = Database['public']['Tables']['form_data']['Row'];
 
 const Index = () => {
   const { formData, updateFormData, clearFormData, isLoading } = useFormState();
