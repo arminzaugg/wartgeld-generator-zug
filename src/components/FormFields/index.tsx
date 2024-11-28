@@ -47,6 +47,7 @@ export const FormFields = ({ values, onChange, onAddressChange, onClear }: FormF
 
   const handleInputChange = (field: string, value: string | boolean) => {
     const error = validateField(field, value);
+    
     if (error) {
       setErrors(prev => ({
         ...prev,
@@ -59,17 +60,8 @@ export const FormFields = ({ values, onChange, onAddressChange, onClear }: FormF
         return newErrors;
       });
     }
+    
     onChange(field, value);
-  };
-
-  const handleClear = () => {
-    onClear();
-    onAddressChange("", "", "");
-    setErrors({});
-    toast({
-      title: "Formular zurückgesetzt",
-      description: "Alle Eingaben wurden gelöscht",
-    });
   };
 
   useEffect(() => {
@@ -112,7 +104,7 @@ export const FormFields = ({ values, onChange, onAddressChange, onClear }: FormF
       <div className="flex gap-4">
         <Button 
           variant="outline" 
-          onClick={handleClear}
+          onClick={onClear}
           className="w-full"
           type="button"
         >
