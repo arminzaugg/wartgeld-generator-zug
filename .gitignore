@@ -23,8 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-# Exclude secrets
-.env
 
-# Secrets
+# Exclude secrets
 .env

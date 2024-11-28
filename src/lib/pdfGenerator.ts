@@ -62,6 +62,7 @@ export const generatePDF = (data: FormData): string => {
   doc.text(data.betreuungGeburt ? "[X] Ja" : "[  ] Ja", 140, 150);
   doc.text(data.betreuungGeburt ? "[  ] Nein" : "[X] Nein", 160, 150);
   doc.text(data.betreuungGeburt ? "CHF  400" : "CHF  0", 180, 150);
+
   if (data.betreuungGeburt) total += 400;
   
   doc.text("Pflege der Wöchnerin zuhause", 20, 160);
