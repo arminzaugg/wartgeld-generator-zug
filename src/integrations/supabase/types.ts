@@ -36,6 +36,51 @@ export type Database = {
         }
         Relationships: []
       }
+      form_data: {
+        Row: {
+          address: string | null
+          betreuunggeburt: boolean | null
+          betreuungwochenbett: boolean | null
+          created_at: string
+          geburtsdatum: string | null
+          gemeinde: string | null
+          id: string
+          nachname: string | null
+          ort: string | null
+          plz: string | null
+          updated_at: string
+          vorname: string | null
+        }
+        Insert: {
+          address?: string | null
+          betreuunggeburt?: boolean | null
+          betreuungwochenbett?: boolean | null
+          created_at?: string
+          geburtsdatum?: string | null
+          gemeinde?: string | null
+          id?: string
+          nachname?: string | null
+          ort?: string | null
+          plz?: string | null
+          updated_at?: string
+          vorname?: string | null
+        }
+        Update: {
+          address?: string | null
+          betreuunggeburt?: boolean | null
+          betreuungwochenbett?: boolean | null
+          created_at?: string
+          geburtsdatum?: string | null
+          gemeinde?: string | null
+          id?: string
+          nachname?: string | null
+          ort?: string | null
+          plz?: string | null
+          updated_at?: string
+          vorname?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

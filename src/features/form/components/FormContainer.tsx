@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { FormProgress } from "./FormProgress";
 import { PersonalInfoFields } from "./PersonalInfoFields";
 import { AddressFields } from "./AddressFields";
 import { DateAndMunicipalityFields } from "./DateAndMunicipalityFields";
+import { ServiceSelectionFields } from "./ServiceSelectionFields";
 import { FormValidation } from "@/components/FormValidation";
-import { PDFPreview } from "@/components/PDFPreview";
 
 interface FormContainerProps {
   values: {
@@ -84,6 +83,11 @@ export const FormContainer = ({ values, onChange, onAddressChange, onClear }: Fo
       <DateAndMunicipalityFields
         values={values}
         errors={errors}
+        onChange={handleInputChange}
+      />
+
+      <ServiceSelectionFields
+        values={values}
         onChange={handleInputChange}
       />
 
