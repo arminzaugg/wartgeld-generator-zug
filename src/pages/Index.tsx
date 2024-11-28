@@ -14,6 +14,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Database } from '@/integrations/supabase/types';
+
+type FormData = Database['public']['Tables']['form_data']['Row'];
 
 const Index = () => {
   const { formData, updateFormData, clearFormData, isLoading } = useFormState();
@@ -24,7 +27,14 @@ const Index = () => {
   const hasViewedSettings = localStorage.getItem("settings-viewed") === "true";
 
   const handleFieldChange = (field: string, value: string | boolean) => {
-    updateFormData({ [field]: value });
+    // Map the form field names to match the database column names
+    const fieldMapping: { [key: string]: string } = {
+      betreuungGeburt: 'betreuunggeburt',
+      betreuungWochenbett: 'betreuungwochenbett'
+    };
+
+    const mappedField = fieldMapping[field] || field;
+    updateFormData({ [mappedField]: value });
   };
 
   const handleAddressChange = (street: string, zipCode?: string, city?: string) => {
