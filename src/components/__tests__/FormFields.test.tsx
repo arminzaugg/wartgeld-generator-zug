@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { FormContainer } from '@/features/form/components/FormContainer';
 import { Database } from '@/integrations/supabase/types';
@@ -20,9 +21,9 @@ describe('FormContainer', () => {
     updated_at: new Date().toISOString(),
   };
 
-  const mockOnChange = jest.fn();
-  const mockOnAddressChange = jest.fn();
-  const mockOnClear = jest.fn();
+  const mockOnChange = vi.fn();
+  const mockOnAddressChange = vi.fn();
+  const mockOnClear = vi.fn();
 
   it('renders without crashing', () => {
     render(
@@ -45,6 +46,4 @@ describe('FormContainer', () => {
     // Test the address change handling
     // ...
   });
-
-  // ... additional test cases
 });

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FormProgress } from "./FormProgress";
 import { PersonalInfoFields } from "./PersonalInfoFields";
@@ -16,81 +16,58 @@ interface FormContainerProps {
   onClear: () => void;
 }
 
-export const FormContainer = ({ values, onChange, onAddressChange, onClear }: FormContainerProps) => {
-  const [errors, setErrors] = useState<{[key: string]: string}>({});
-  const [completedFields, setCompletedFields] = useState(0);
-  const totalFields = 7;
+export const FormContainer = ({
+  values,
+  onChange,
+  onAddressChange,
+  onClear,
+}: FormContainerProps) => {
+  const [currentStep, setCurrentStep] = useState(1);
 
-  const validateField = (field: string, value: string | boolean) => {
-    switch (field) {
-      case 'vorname':
-      case 'nachname':
-        return typeof value === 'string' && value.length >= 2 ? '' : 'Mindestens 2 Zeichen erforderlich';
-      case 'geburtsdatum':
-        return value ? '' : 'Bitte geben Sie ein Datum ein';
-      case 'gemeinde':
-        return value ? '' : 'Bitte wählen Sie eine Gemeinde';
-      default:
-        return '';
-    }
+  const handleNext = () => {
+    setCurrentStep((prev) => Math.min(prev + 1, 3));
   };
 
-  const handleInputChange = (field: string, value: string | boolean) => {
-    const error = validateField(field, value);
-    if (error) {
-      setErrors(prev => ({ ...prev, [field]: error }));
-    } else {
-      setErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[field];
-        return newErrors;
-      });
-    }
-    onChange(field, value);
+  const handleBack = () => {
+    setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
-
-  useEffect(() => {
-    const completed = Object.entries(values).filter(([key, value]) => {
-      if (key === 'betreuunggeburt' || key === 'betreuungwochenbett') return true;
-      if (key === 'id' || key === 'created_at' || key === 'updated_at') return false;
-      return value !== '';
-    }).length;
-    setCompletedFields(completed);
-  }, [values]);
 
   return (
     <div className="space-y-6">
-      <FormProgress completedFields={completedFields} totalFields={totalFields} />
+      <FormProgress currentStep={currentStep} />
+      <FormValidation values={values}>
+        {currentStep === 1 && (
+          <PersonalInfoFields
+            values={values}
+            onChange={onChange}
+          />
+        )}
+        {currentStep === 2 && (
+          <AddressFields
+            values={values}
+            onChange={onChange}
+            onAddressChange={onAddressChange}
+          />
+        )}
+        {currentStep === 3 && (
+          <DateAndMunicipalityFields
+            values={values}
+            onChange={onChange}
+          />
+        )}
+      </FormValidation>
 
-      <PersonalInfoFields
-        values={values}
-        errors={errors}
-        onChange={handleInputChange}
-      />
-
-      <AddressFields 
-        values={values}
-        onChange={onAddressChange}
-      />
-
-      <DateAndMunicipalityFields
-        values={values}
-        errors={errors}
-        onChange={handleInputChange}
-      />
-
-      <div className="flex gap-4">
-        <Button 
-          variant="outline" 
-          onClick={onClear}
-          className="w-full"
-          type="button"
+      <div className="flex justify-between mt-6">
+        <Button
+          variant="outline"
+          onClick={currentStep === 1 ? onClear : handleBack}
         >
-          Formular Zurücksetzen
+          {currentStep === 1 ? "Zurücksetzen" : "Zurück"}
+        </Button>
+        <Button onClick={handleNext}>
+          {currentStep === 3 ? "Abschliessen" : "Weiter"}
         </Button>
       </div>
-
-      <FormValidation errors={errors} />
     </div>
   );
 };
