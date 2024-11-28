@@ -43,7 +43,7 @@ export const DateAndMunicipalityFields = ({ values, errors, onChange }: DateAndM
           onValueChange={(value) => onChange("gemeinde", value)}
         >
           <SelectTrigger id="form-gemeinde" className={errors.gemeinde ? "border-red-500" : ""}>
-            <SelectValue placeholder="Wählen Sie eine Gemeinde" />
+            <SelectValue placeholder="Wählen Sie eine Gemeinde aus" />
           </SelectTrigger>
           <SelectContent>
             {municipalities.map((municipality) => (
