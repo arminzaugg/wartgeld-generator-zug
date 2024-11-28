@@ -79,8 +79,8 @@ const Index = () => {
 
     const pdfUrl = generatePDF({
       ...formData,
-      betreuunggeburt: formData.betreuungGeburt,
-      betreuungwochenbett: formData.betreuungWochenbett,
+      betreuungGeburt: formData.betreuungGeburt,
+      betreuungWochenbett: formData.betreuungWochenbett,
     });
     setPdfUrl(pdfUrl);
     
