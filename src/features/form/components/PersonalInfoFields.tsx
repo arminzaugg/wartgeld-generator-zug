@@ -1,9 +1,14 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-interface PersonalInfoProps {
+interface PersonalInfoFieldsProps {
   values: {
     vorname: string;
     nachname: string;
@@ -12,7 +17,7 @@ interface PersonalInfoProps {
   onChange: (field: string, value: string) => void;
 }
 
-export const PersonalInfo = ({ values, errors, onChange }: PersonalInfoProps) => {
+export const PersonalInfoFields = ({ values, errors, onChange }: PersonalInfoFieldsProps) => {
   return (
     <div className="grid grid-cols-2 gap-4">
       <div className="space-y-2">

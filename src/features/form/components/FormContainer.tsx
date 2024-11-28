@@ -1,14 +1,14 @@
-import { Button } from "@/components/ui/button";
-import { AddressFields } from "@/components/AddressFields";
-import { FormValidation } from "@/components/FormValidation";
-import { PersonalInfo } from "./PersonalInfo";
-import { DateAndMunicipality } from "./DateAndMunicipality";
-import { ServiceSelection } from "./ServiceSelection";
-import { FormProgress } from "@/components/FormProgress";
 import { useState, useEffect } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { FormProgress } from "./FormProgress";
+import { PersonalInfoFields } from "./PersonalInfoFields";
+import { AddressFields } from "./AddressFields";
+import { DateAndMunicipalityFields } from "./DateAndMunicipalityFields";
+import { FormValidation } from "@/components/FormValidation";
+import { PDFPreview } from "@/components/PDFPreview";
 
-interface FormFieldsProps {
+interface FormContainerProps {
   values: {
     vorname: string;
     nachname: string;
@@ -25,19 +25,10 @@ interface FormFieldsProps {
   onClear: () => void;
 }
 
-export const FormFields = ({ values, onChange, onAddressChange, onClear }: FormFieldsProps) => {
+export const FormContainer = ({ values, onChange, onAddressChange, onClear }: FormContainerProps) => {
   const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [completedFields, setCompletedFields] = useState(0);
-  const totalFields = 7; // Required fields count
-  const { toast } = useToast();
-
-  useEffect(() => {
-    const completed = Object.entries(values).filter(([key, value]) => {
-      if (key === 'betreuungGeburt' || key === 'betreuungWochenbett') return true;
-      return value !== '';
-    }).length;
-    setCompletedFields(completed);
-  }, [values]);
+  const totalFields = 7;
 
   const validateField = (field: string, value: string | boolean) => {
     switch (field) {
@@ -55,12 +46,8 @@ export const FormFields = ({ values, onChange, onAddressChange, onClear }: FormF
 
   const handleInputChange = (field: string, value: string | boolean) => {
     const error = validateField(field, value);
-    
     if (error) {
-      setErrors(prev => ({
-        ...prev,
-        [field]: error
-      }));
+      setErrors(prev => ({ ...prev, [field]: error }));
     } else {
       setErrors(prev => {
         const newErrors = { ...prev };
@@ -68,16 +55,23 @@ export const FormFields = ({ values, onChange, onAddressChange, onClear }: FormF
         return newErrors;
       });
     }
-    
     onChange(field, value);
   };
+
+  useEffect(() => {
+    const completed = Object.entries(values).filter(([key, value]) => {
+      if (key === 'betreuungGeburt' || key === 'betreuungWochenbett') return true;
+      return value !== '';
+    }).length;
+    setCompletedFields(completed);
+  }, [values]);
 
   return (
     <div className="space-y-6">
       <FormProgress completedFields={completedFields} totalFields={totalFields} />
 
-      <PersonalInfo 
-        values={{ vorname: values.vorname, nachname: values.nachname }}
+      <PersonalInfoFields
+        values={values}
         errors={errors}
         onChange={handleInputChange}
       />
@@ -87,17 +81,9 @@ export const FormFields = ({ values, onChange, onAddressChange, onClear }: FormF
         onChange={onAddressChange}
       />
 
-      <DateAndMunicipality
-        values={{ geburtsdatum: values.geburtsdatum, gemeinde: values.gemeinde }}
+      <DateAndMunicipalityFields
+        values={values}
         errors={errors}
-        onChange={handleInputChange}
-      />
-
-      <ServiceSelection 
-        values={{
-          betreuungGeburt: values.betreuungGeburt,
-          betreuungWochenbett: values.betreuungWochenbett
-        }}
         onChange={handleInputChange}
       />
 

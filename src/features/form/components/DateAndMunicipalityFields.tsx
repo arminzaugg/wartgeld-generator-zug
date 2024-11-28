@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { municipalities } from "@/config/addresses";
 
-interface DateAndMunicipalityProps {
+interface DateAndMunicipalityFieldsProps {
   values: {
     geburtsdatum: string;
     gemeinde: string;
@@ -12,7 +12,7 @@ interface DateAndMunicipalityProps {
   onChange: (field: string, value: string) => void;
 }
 
-export const DateAndMunicipality = ({ values, errors, onChange }: DateAndMunicipalityProps) => {
+export const DateAndMunicipalityFields = ({ values, errors, onChange }: DateAndMunicipalityFieldsProps) => {
   return (
     <>
       <div className="space-y-2">

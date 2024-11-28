@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { FormFields } from "@/components/FormFields";
+import { FormContainer } from "@/features/form/components/FormContainer";
 import { PDFPreview } from "@/components/PDFPreview";
 import { generatePDF } from "@/lib/pdfGenerator";
 import { useToast } from "@/components/ui/use-toast";
@@ -140,7 +140,7 @@ const Index = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <Card className="p-6">
-          <FormFields
+          <FormContainer
             values={formData}
             onChange={handleFieldChange}
             onAddressChange={handleAddressChange}
