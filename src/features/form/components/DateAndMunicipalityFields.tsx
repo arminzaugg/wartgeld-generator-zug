@@ -27,6 +27,7 @@ export const DateAndMunicipalityFields = ({ values, errors, onChange }: DateAndM
           onChange={(e) => onChange("geburtsdatum", e.target.value)}
           aria-invalid={!!errors.geburtsdatum}
           className={errors.geburtsdatum ? "border-red-500" : ""}
+          placeholder="Datum"
         />
         {errors.geburtsdatum && (
           <p className="text-sm text-red-500">{errors.geburtsdatum}</p>
