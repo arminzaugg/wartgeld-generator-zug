@@ -22,7 +22,7 @@ export const municipalities = [
 export const administrationData: Record<string, Administration> = {
   "Zug": {
     title: "Stadtverwaltung Zug",
-    name: "Fachstelle Alter und Gesundheit Stadt Zug, Stadthaus",
+    name: "Fachstelle Alter und Gesundheit Stadt Zug",
     address: "Gubelstrasse 22 Postfach",
     city: "6301 Zug"
   },
