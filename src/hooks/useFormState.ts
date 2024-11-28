@@ -6,6 +6,21 @@ type FormData = Database['public']['Tables']['form_data']['Row'];
 
 const FORM_QUERY_KEY = 'form-data';
 
+const initialFormData: FormData = {
+  id: '',
+  vorname: '',
+  nachname: '',
+  address: '',
+  plz: '',
+  ort: '',
+  geburtsdatum: '',
+  gemeinde: '',
+  betreuunggeburt: false,
+  betreuungwochenbett: false,
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+};
+
 export const useFormState = () => {
   const queryClient = useQueryClient();
 
@@ -16,25 +31,12 @@ export const useFormState = () => {
       const { data, error } = await supabase
         .from('form_data')
         .select('*')
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
-      return data as FormData;
+      return data || initialFormData;
     },
-    initialData: {
-      id: '',
-      vorname: '',
-      nachname: '',
-      address: '',
-      plz: '',
-      ort: '',
-      geburtsdatum: '',
-      gemeinde: '',
-      betreuunggeburt: false,
-      betreuungwochenbett: false,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    }
+    initialData: initialFormData
   });
 
   // Update form data
@@ -57,29 +59,18 @@ export const useFormState = () => {
   // Clear form data
   const { mutate: clearFormData } = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase
-        .from('form_data')
-        .delete()
-        .neq('id', '0'); // Delete all records
+      if (formData.id) {
+        const { error } = await supabase
+          .from('form_data')
+          .delete()
+          .eq('id', formData.id);
 
-      if (error) throw error;
-      return null;
+        if (error) throw error;
+      }
+      return initialFormData;
     },
     onSuccess: () => {
-      queryClient.setQueryData([FORM_QUERY_KEY], {
-        id: '',
-        vorname: '',
-        nachname: '',
-        address: '',
-        plz: '',
-        ort: '',
-        geburtsdatum: '',
-        gemeinde: '',
-        betreuunggeburt: false,
-        betreuungwochenbett: false,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      });
+      queryClient.setQueryData([FORM_QUERY_KEY], initialFormData);
     },
   });
 

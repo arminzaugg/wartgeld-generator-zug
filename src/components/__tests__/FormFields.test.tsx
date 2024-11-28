@@ -1,10 +1,12 @@
-import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { FormContainer } from '@/features/form/components/FormContainer';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Database } from '@/integrations/supabase/types';
+
+type FormData = Database['public']['Tables']['form_data']['Row'];
 
 describe('FormContainer', () => {
-  const mockValues = {
+  const mockValues: FormData = {
+    id: '',
     vorname: '',
     nachname: '',
     address: '',
@@ -12,22 +14,37 @@ describe('FormContainer', () => {
     ort: '',
     geburtsdatum: '',
     gemeinde: '',
-    betreuungGeburt: false,
-    betreuungWochenbett: false,
+    betreuunggeburt: false,
+    betreuungwochenbett: false,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   };
 
-  const queryClient = new QueryClient();
+  const mockOnChange = jest.fn();
+  const mockOnAddressChange = jest.fn();
+  const mockOnClear = jest.fn();
 
   it('renders without crashing', () => {
     render(
-      <QueryClientProvider client={queryClient}>
-        <FormContainer
-          values={mockValues}
-          onChange={() => {}}
-          onAddressChange={() => {}}
-          onClear={() => {}}
-        />
-      </QueryClientProvider>
+      <FormContainer
+        values={mockValues}
+        onChange={mockOnChange}
+        onAddressChange={mockOnAddressChange}
+        onClear={mockOnClear}
+      />
     );
   });
+
+  it('displays validation errors', () => {
+    // Additional test cases for validation
+    // Here you can simulate changes and check for validation messages
+    // ...
+  });
+  
+  it('handles address change', () => {
+    // Test the address change handling
+    // ...
+  });
+
+  // ... additional test cases
 });

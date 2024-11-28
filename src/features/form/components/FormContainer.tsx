@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { FormProgress } from "./FormProgress";
 import { PersonalInfoFields } from "./PersonalInfoFields";
 import { AddressFields } from "./AddressFields";
 import { DateAndMunicipalityFields } from "./DateAndMunicipalityFields";
 import { FormValidation } from "@/components/FormValidation";
-import { PDFPreview } from "@/components/PDFPreview";
 import { Database } from "@/integrations/supabase/types";
 
 type FormData = Database['public']['Tables']['form_data']['Row'];
