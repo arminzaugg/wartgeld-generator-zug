@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { FormProgress } from "./FormProgress";
 import { PersonalInfoFields } from "./PersonalInfoFields";
 import { AddressFields } from "./AddressFields";
 import { DateAndMunicipalityFields } from "./DateAndMunicipalityFields";
@@ -26,8 +25,6 @@ interface FormContainerProps {
 
 export const FormContainer = ({ values, onChange, onAddressChange, onClear }: FormContainerProps) => {
   const [errors, setErrors] = useState<{[key: string]: string}>({});
-  const [completedFields, setCompletedFields] = useState(0);
-  const totalFields = 7;
 
   const validateField = (field: string, value: string | boolean) => {
     switch (field) {
@@ -57,17 +54,9 @@ export const FormContainer = ({ values, onChange, onAddressChange, onClear }: Fo
     onChange(field, value);
   };
 
-  useEffect(() => {
-    const completed = Object.entries(values).filter(([key, value]) => {
-      if (key === 'betreuungGeburt' || key === 'betreuungWochenbett') return true;
-      return value !== '';
-    }).length;
-    setCompletedFields(completed);
-  }, [values]);
-
   return (
     <div className="space-y-6">
-      <FormProgress completedFields={completedFields} totalFields={totalFields} />
+      <h2 className="text-xl font-semibold">Angaben</h2>
 
       <PersonalInfoFields
         values={values}
