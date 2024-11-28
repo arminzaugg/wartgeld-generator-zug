@@ -4,7 +4,7 @@ import { FormValidation } from "@/components/FormValidation";
 import { PersonalInfo } from "./PersonalInfo";
 import { DateAndMunicipality } from "./DateAndMunicipality";
 import { ServiceSelection } from "./ServiceSelection";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 
 interface FormFieldsProps {
