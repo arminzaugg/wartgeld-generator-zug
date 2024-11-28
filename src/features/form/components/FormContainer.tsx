@@ -23,6 +23,7 @@ export const FormContainer = ({
   onClear,
 }: FormContainerProps) => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
 
   const handleNext = () => {
     setCurrentStep((prev) => Math.min(prev + 1, 3));
@@ -32,27 +33,40 @@ export const FormContainer = ({
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
 
+  const totalFields = 7; // vorname, nachname, address, plz, ort, geburtsdatum, gemeinde
+  const completedFields = Object.values(values).filter(value => 
+    value !== null && value !== '' && typeof value !== 'undefined'
+  ).length;
+
   return (
     <div className="space-y-6">
-      <FormProgress currentStep={currentStep} />
-      <FormValidation values={values}>
+      <FormProgress 
+        completedFields={completedFields} 
+        totalFields={totalFields} 
+      />
+      <FormValidation errors={errors}>
         {currentStep === 1 && (
           <PersonalInfoFields
             values={values}
             onChange={onChange}
+            errors={errors}
           />
         )}
         {currentStep === 2 && (
           <AddressFields
             values={values}
-            onChange={onChange}
-            onAddressChange={onAddressChange}
+            onChange={(street, zipCode, city) => {
+              if (zipCode) onChange('plz', zipCode);
+              if (city) onChange('ort', city);
+              onChange('address', street);
+            }}
           />
         )}
         {currentStep === 3 && (
           <DateAndMunicipalityFields
             values={values}
             onChange={onChange}
+            errors={errors}
           />
         )}
       </FormValidation>
