@@ -22,4 +22,5 @@ ATM we are running on Netflify using automatic builds and manual deploys.
 ## Future ideas
 
 [ ] tag releases
-[ ] introduce address verification
+
+[x] introduce address verification
