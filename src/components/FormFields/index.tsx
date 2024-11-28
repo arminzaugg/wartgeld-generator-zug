@@ -4,6 +4,7 @@ import { FormValidation } from "@/components/FormValidation";
 import { FormProgress } from "@/components/FormProgress";
 import { PersonalInfo } from "./PersonalInfo";
 import { DateAndMunicipality } from "./DateAndMunicipality";
+import { ServiceSelection } from "./ServiceSelection";
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -63,7 +64,6 @@ export const FormFields = ({ values, onChange, onAddressChange, onClear }: FormF
 
   const handleClear = () => {
     onClear();
-    // Clear the address by calling onAddressChange with empty values
     onAddressChange("", "", "");
     setErrors({});
     toast({
@@ -98,6 +98,14 @@ export const FormFields = ({ values, onChange, onAddressChange, onClear }: FormF
       <DateAndMunicipality
         values={{ geburtsdatum: values.geburtsdatum, gemeinde: values.gemeinde }}
         errors={errors}
+        onChange={handleInputChange}
+      />
+
+      <ServiceSelection 
+        values={{
+          betreuungGeburt: values.betreuungGeburt,
+          betreuungWochenbett: values.betreuungWochenbett
+        }}
         onChange={handleInputChange}
       />
 
