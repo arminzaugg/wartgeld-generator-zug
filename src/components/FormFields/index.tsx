@@ -4,7 +4,8 @@ import { FormValidation } from "@/components/FormValidation";
 import { PersonalInfo } from "./PersonalInfo";
 import { DateAndMunicipality } from "./DateAndMunicipality";
 import { ServiceSelection } from "./ServiceSelection";
-import { useState } from "react";
+import { FormProgress } from "@/components/FormProgress";
+import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 
 interface FormFieldsProps {
@@ -26,7 +27,17 @@ interface FormFieldsProps {
 
 export const FormFields = ({ values, onChange, onAddressChange, onClear }: FormFieldsProps) => {
   const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [completedFields, setCompletedFields] = useState(0);
+  const totalFields = 7; // Required fields count
   const { toast } = useToast();
+
+  useEffect(() => {
+    const completed = Object.entries(values).filter(([key, value]) => {
+      if (key === 'betreuungGeburt' || key === 'betreuungWochenbett') return true;
+      return value !== '';
+    }).length;
+    setCompletedFields(completed);
+  }, [values]);
 
   const validateField = (field: string, value: string | boolean) => {
     switch (field) {
@@ -63,6 +74,8 @@ export const FormFields = ({ values, onChange, onAddressChange, onClear }: FormF
 
   return (
     <div className="space-y-6">
+      <FormProgress completedFields={completedFields} totalFields={totalFields} />
+
       <PersonalInfo 
         values={{ vorname: values.vorname, nachname: values.nachname }}
         errors={errors}
