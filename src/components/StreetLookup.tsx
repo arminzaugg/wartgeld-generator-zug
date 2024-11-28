@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useStreetAutocomplete } from "@/hooks/useStreetAutocomplete";
 import { useToast } from "@/components/ui/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 import type { StreetSummary } from "@/types/address";
 import { parseAddressInput } from "@/utils/addressParser";
 import { StreetInput } from "./StreetLookup/StreetInput";
@@ -18,6 +19,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   const [selectedStreet, setSelectedStreet] = useState<StreetSummary | null>(null);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [inputRef, setInputRef] = useState<HTMLInputElement | null>(null);
+  const queryClient = useQueryClient();
   
   const { suggestions = [], isLoading, error } = useStreetAutocomplete(
     searchTerm.length >= 2 ? searchTerm : "", 
@@ -25,6 +27,18 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   );
   
   const { toast } = useToast();
+
+  // Reset component when value prop is empty (form reset)
+  useEffect(() => {
+    if (!value) {
+      setSearchTerm("");
+      setSelectedStreet(null);
+      setShowSuggestions(false);
+      setSelectedIndex(-1);
+      // Remove all street queries from the cache
+      queryClient.removeQueries({ queryKey: ['streetSearch'] });
+    }
+  }, [value, queryClient]);
 
   useEffect(() => {
     if (error) {
@@ -82,7 +96,6 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
     const { houseNumber, addition } = parseAddressInput(searchTerm);
     const fullHouseNumber = houseNumber + (addition || '');
     
-    // Create the full address with postal code and city
     let fullAddress = suggestion.streetName;
     if (fullHouseNumber) {
       fullAddress += ` ${fullHouseNumber}`;
@@ -128,6 +141,8 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
     setSelectedStreet(null);
     setSearchTerm("");
     onChange("", undefined, undefined);
+    // Remove all street queries from the cache
+    queryClient.removeQueries({ queryKey: ['streetSearch'] });
     if (inputRef) {
       inputRef.focus();
     }
