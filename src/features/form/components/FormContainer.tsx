@@ -7,19 +7,12 @@ import { AddressFields } from "./AddressFields";
 import { DateAndMunicipalityFields } from "./DateAndMunicipalityFields";
 import { FormValidation } from "@/components/FormValidation";
 import { PDFPreview } from "@/components/PDFPreview";
+import { Database } from "@/integrations/supabase/types";
+
+type FormData = Database['public']['Tables']['form_data']['Row'];
 
 interface FormContainerProps {
-  values: {
-    vorname: string;
-    nachname: string;
-    address: string;
-    plz: string;
-    ort: string;
-    geburtsdatum: string;
-    gemeinde: string;
-    betreuungGeburt: boolean;
-    betreuungWochenbett: boolean;
-  };
+  values: FormData;
   onChange: (field: string, value: string | boolean) => void;
   onAddressChange: (street: string, zipCode?: string, city?: string) => void;
   onClear: () => void;
@@ -60,7 +53,8 @@ export const FormContainer = ({ values, onChange, onAddressChange, onClear }: Fo
 
   useEffect(() => {
     const completed = Object.entries(values).filter(([key, value]) => {
-      if (key === 'betreuungGeburt' || key === 'betreuungWochenbett') return true;
+      if (key === 'betreuunggeburt' || key === 'betreuungwochenbett') return true;
+      if (key === 'id' || key === 'created_at' || key === 'updated_at') return false;
       return value !== '';
     }).length;
     setCompletedFields(completed);
