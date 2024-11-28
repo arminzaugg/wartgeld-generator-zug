@@ -11,8 +11,8 @@ interface ServiceSelectionProps {
 
 export const ServiceSelection = ({ values, onChange }: ServiceSelectionProps) => {
   return (
-    <div className="space-y-4">
-      <Label className="text-base">Dienstleistungen</Label>
+    <div className="space-y-4 border rounded-lg p-4 bg-gray-50">
+      <Label className="text-base font-semibold">Dienstleistungen</Label>
       <div className="flex flex-col space-y-4">
         <div className="flex items-center space-x-2">
           <Checkbox 
