@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FormProgress } from "./FormProgress";
 import { PersonalInfoFields } from "./PersonalInfoFields";
@@ -22,18 +21,8 @@ export const FormContainer = ({
   onAddressChange,
   onClear,
 }: FormContainerProps) => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [errors, setErrors] = useState<{[key: string]: string}>({});
-
-  const handleNext = () => {
-    setCurrentStep((prev) => Math.min(prev + 1, 3));
-  };
-
-  const handleBack = () => {
-    setCurrentStep((prev) => Math.max(prev - 1, 1));
-  };
-
-  const totalFields = 7; // vorname, nachname, address, plz, ort, geburtsdatum, gemeinde
+  const errors: {[key: string]: string} = {};
+  const totalFields = 7;
   const completedFields = Object.values(values).filter(value => 
     value !== null && value !== '' && typeof value !== 'undefined'
   ).length;
@@ -45,14 +34,13 @@ export const FormContainer = ({
         totalFields={totalFields} 
       />
       <FormValidation errors={errors}>
-        {currentStep === 1 && (
+        <div className="space-y-6">
           <PersonalInfoFields
             values={values}
             onChange={onChange}
             errors={errors}
           />
-        )}
-        {currentStep === 2 && (
+          
           <AddressFields
             values={values}
             onChange={(street, zipCode, city) => {
@@ -61,25 +49,24 @@ export const FormContainer = ({
               onChange('address', street);
             }}
           />
-        )}
-        {currentStep === 3 && (
+          
           <DateAndMunicipalityFields
             values={values}
             onChange={onChange}
             errors={errors}
           />
-        )}
+        </div>
       </FormValidation>
 
       <div className="flex justify-between mt-6">
         <Button
           variant="outline"
-          onClick={currentStep === 1 ? onClear : handleBack}
+          onClick={onClear}
         >
-          {currentStep === 1 ? "Zurücksetzen" : "Zurück"}
+          Zurücksetzen
         </Button>
-        <Button onClick={handleNext}>
-          {currentStep === 3 ? "Abschliessen" : "Weiter"}
+        <Button onClick={() => {}}>
+          Abschliessen
         </Button>
       </div>
     </div>
