@@ -14,7 +14,6 @@ interface FormContainerProps {
     plz: string;
     ort: string;
     geburtsdatum: string;
-    gemeinde: string;
     betreuungGeburt: boolean;
     betreuungWochenbett: boolean;
   };
@@ -33,8 +32,6 @@ export const FormContainer = ({ values, onChange, onAddressChange, onClear }: Fo
         return typeof value === 'string' && value.length >= 2 ? '' : 'Mindestens 2 Zeichen erforderlich';
       case 'geburtsdatum':
         return value ? '' : 'Bitte geben Sie ein Datum ein';
-      case 'gemeinde':
-        return value ? '' : 'Bitte wählen Sie eine Gemeinde';
       default:
         return '';
     }

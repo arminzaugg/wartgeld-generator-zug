@@ -81,6 +81,33 @@ export type Database = {
         }
         Relationships: []
       }
+      plz_mappings: {
+        Row: {
+          address_plz: string
+          administration_plz: string
+          created_at: string
+          gemeinde: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          address_plz: string
+          administration_plz: string
+          created_at?: string
+          gemeinde: string
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          address_plz?: string
+          administration_plz?: string
+          created_at?: string
+          gemeinde?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

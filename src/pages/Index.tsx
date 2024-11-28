@@ -13,6 +13,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const [formData, setFormData] = useState({
@@ -22,7 +23,6 @@ const Index = () => {
     plz: "",
     ort: "",
     geburtsdatum: "",
-    gemeinde: "",
     betreuungGeburt: false,
     betreuungWochenbett: false,
   });
@@ -32,14 +32,14 @@ const Index = () => {
 
   const hasViewedSettings = localStorage.getItem("settings-viewed") === "true";
 
-  const handleFieldChange = (field: string, value: string | boolean) => {
+  const handleFieldChange = async (field: string, value: string | boolean) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
   };
 
-  const handleAddressChange = (street: string, zipCode?: string, city?: string) => {
+  const handleAddressChange = async (street: string, zipCode?: string, city?: string) => {
     setFormData(prev => ({
       ...prev,
       address: street,
@@ -56,7 +56,6 @@ const Index = () => {
       plz: "",
       ort: "",
       geburtsdatum: "",
-      gemeinde: "",
       betreuungGeburt: false,
       betreuungWochenbett: false,
     });
@@ -67,8 +66,8 @@ const Index = () => {
     });
   };
 
-  const handleGeneratePDF = () => {
-    if (!formData.vorname || !formData.nachname || !formData.gemeinde) {
+  const handleGeneratePDF = async () => {
+    if (!formData.vorname || !formData.nachname || !formData.plz) {
       toast({
         title: "Fehler",
         description: "Bitte füllen Sie alle erforderlichen Felder aus",
@@ -77,17 +76,42 @@ const Index = () => {
       return;
     }
 
-    const pdfUrl = generatePDF({
-      ...formData,
-      betreuungGeburt: formData.betreuungGeburt,
-      betreuungWochenbett: formData.betreuungWochenbett,
-    });
-    setPdfUrl(pdfUrl);
-    
-    toast({
-      title: "Erfolgreich",
-      description: "PDF wurde erfolgreich erstellt",
-    });
+    try {
+      // Get the municipality based on the PLZ
+      const { data: plzMapping, error } = await supabase
+        .from('plz_mappings')
+        .select('gemeinde')
+        .eq('address_plz', formData.plz)
+        .single();
+
+      if (error || !plzMapping) {
+        toast({
+          title: "Fehler",
+          description: "Die eingegebene PLZ wird nicht unterstützt",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const pdfUrl = generatePDF({
+        ...formData,
+        gemeinde: plzMapping.gemeinde,
+        betreuungGeburt: formData.betreuungGeburt,
+        betreuungWochenbett: formData.betreuungWochenbett,
+      });
+      setPdfUrl(pdfUrl);
+      
+      toast({
+        title: "Erfolgreich",
+        description: "PDF wurde erfolgreich erstellt",
+      });
+    } catch (error) {
+      toast({
+        title: "Fehler",
+        description: "Ein Fehler ist aufgetreten",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
