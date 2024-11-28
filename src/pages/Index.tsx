@@ -1,4 +1,3 @@
-import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -7,6 +6,7 @@ import { PDFPreview } from "@/components/PDFPreview";
 import { generatePDF } from "@/lib/pdfGenerator";
 import { useToast } from "@/components/ui/use-toast";
 import { Settings, Info, Loader2 } from "lucide-react";
+import { useFormState } from "@/hooks/useFormState";
 import {
   Tooltip,
   TooltipContent,
@@ -14,41 +14,25 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-const initialFormData = {
-  vorname: "",
-  nachname: "",
-  address: "",
-  plz: "",
-  ort: "",
-  geburtsdatum: "",
-  gemeinde: "",
-  betreuungGeburt: false,
-  betreuungWochenbett: false,
-};
-
 const Index = () => {
-  const [formData, setFormData] = useState(initialFormData);
+  const { formData, updateFormData, clearFormData, isLoading } = useFormState();
   const [pdfUrl, setPdfUrl] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
 
   const hasViewedSettings = localStorage.getItem("settings-viewed") === "true";
 
-  const handleFieldChange = useCallback((field: string, value: string | boolean) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  }, []);
+  const handleFieldChange = (field: string, value: string | boolean) => {
+    updateFormData({ [field]: value });
+  };
 
-  const handleAddressChange = useCallback((street: string, zipCode?: string, city?: string) => {
-    setFormData(prev => ({
-      ...prev,
+  const handleAddressChange = (street: string, zipCode?: string, city?: string) => {
+    updateFormData({
       address: street,
-      plz: zipCode || prev.plz,
-      ort: city || prev.ort
-    }));
-  }, []);
+      plz: zipCode || formData.plz,
+      ort: city || formData.ort
+    });
+  };
 
   const validateForm = () => {
     const errors: string[] = [];
@@ -96,13 +80,21 @@ const Index = () => {
   };
 
   const handleClearForm = () => {
-    setFormData(initialFormData);
+    clearFormData();
     setPdfUrl("");
     toast({
       title: "Formular zurückgesetzt",
       description: "Alle Eingaben wurden gelöscht",
     });
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="container py-8 animate-in fade-in slide-in-from-bottom-4">

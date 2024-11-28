@@ -1,5 +1,7 @@
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { FormContainer } from '@/features/form/components/FormContainer';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 describe('FormContainer', () => {
   const mockValues = {
@@ -14,14 +16,18 @@ describe('FormContainer', () => {
     betreuungWochenbett: false,
   };
 
+  const queryClient = new QueryClient();
+
   it('renders without crashing', () => {
     render(
-      <FormContainer
-        values={mockValues}
-        onChange={() => {}}
-        onAddressChange={() => {}}
-        onClear={() => {}}
-      />
+      <QueryClientProvider client={queryClient}>
+        <FormContainer
+          values={mockValues}
+          onChange={() => {}}
+          onAddressChange={() => {}}
+          onClear={() => {}}
+        />
+      </QueryClientProvider>
     );
   });
 });
