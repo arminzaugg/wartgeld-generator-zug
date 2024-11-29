@@ -14,7 +14,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { supabase } from "@/integrations/supabase/client";
+import { addressService } from "@/services/api/addressService";
 
 const Index = () => {
   const [formData, setFormData] = useState({
@@ -77,13 +77,9 @@ const Index = () => {
     }
 
     try {
-      const { data: plzMapping, error } = await supabase
-        .from('plz_mappings')
-        .select('gemeinde')
-        .eq('address_plz', formData.plz)
-        .single();
+      const plzMapping = await addressService.getPlzMapping(formData.plz);
 
-      if (error || !plzMapping) {
+      if (!plzMapping) {
         toast({
           title: "Fehler",
           description: "Die eingegebene PLZ wird nicht unterstützt",
