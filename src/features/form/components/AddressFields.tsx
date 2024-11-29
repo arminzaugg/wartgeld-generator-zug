@@ -13,7 +13,7 @@ interface AddressFieldsProps {
 
 export const AddressFields = ({ values, onChange }: AddressFieldsProps) => {
   return (
-    <Card className="p-4 bg-gray-50">
+    <Card className="p-4 bg-gray-50 dark:bg-gray-800/50">
       <div className="space-y-2">
         <Label>Adresse</Label>
         <StreetLookup 

@@ -7,6 +7,7 @@ import { PDFPreview } from "@/components/PDFPreview";
 import { generatePDF } from "@/lib/pdfGenerator";
 import { useToast } from "@/components/ui/use-toast";
 import { Settings, Info } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   Tooltip,
   TooltipContent,
@@ -118,6 +119,7 @@ const Index = () => {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold tracking-tight">Hebammenwartgeld Kanton Zug</h1>
           <div className="flex gap-2">
+            <ThemeToggle />
             <Link to="/info">
               <TooltipProvider>
                 <Tooltip>
