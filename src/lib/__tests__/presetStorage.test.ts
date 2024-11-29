@@ -1,45 +1,47 @@
-import { savePreset, loadPreset, deletePreset, listPresets } from '../presetStorage';
+import { describe, it, expect, beforeEach } from 'vitest';
+import { savePreset, getPresets, deletePreset, getSettings, saveSenderInfo } from '../presetStorage';
 
 describe('presetStorage', () => {
   beforeEach(() => {
     localStorage.clear();
   });
 
-  const mockPresetData = {
+  const mockPreset = {
+    id: '123',
     name: 'Test Preset',
-    data: {
-      vorname: 'John',
-      nachname: 'Doe',
+    fields: {
+      companyName: 'Test Company',
       address: 'Test Street 1',
-      plz: '6300',
-      ort: 'Zug',
-      geburtsdatum: '2024-01-01',
-      gemeinde: 'Zug',
-      betreuungGeburt: true,
-      betreuungWochenbett: false,
+      city: 'Test City',
+      state: 'Test State',
+      zipCode: '12345',
     }
   };
 
-  it('saves and loads a preset', () => {
-    savePreset(mockPresetData.name, mockPresetData.data);
-    const loaded = loadPreset(mockPresetData.name);
-    expect(loaded).toEqual(mockPresetData.data);
+  it('saves and retrieves presets', () => {
+    savePreset(mockPreset);
+    const presets = getPresets();
+    expect(presets).toHaveLength(1);
+    expect(presets[0]).toEqual(mockPreset);
   });
 
   it('deletes a preset', () => {
-    savePreset(mockPresetData.name, mockPresetData.data);
-    deletePreset(mockPresetData.name);
-    const loaded = loadPreset(mockPresetData.name);
-    expect(loaded).toBeNull();
+    savePreset(mockPreset);
+    deletePreset(mockPreset.id);
+    const presets = getPresets();
+    expect(presets).toHaveLength(0);
   });
 
-  it('lists all presets', () => {
-    savePreset('Preset 1', mockPresetData.data);
-    savePreset('Preset 2', mockPresetData.data);
+  it('manages sender info settings', () => {
+    const mockInfo = 'Test Sender Info';
+    const mockOrt = 'Test Ort';
+    const mockSignature = 'Test Signature';
 
-    const presets = listPresets();
-    expect(presets).toHaveLength(2);
-    expect(presets).toContain('Preset 1');
-    expect(presets).toContain('Preset 2');
+    saveSenderInfo(mockInfo, mockOrt, mockSignature);
+    const settings = getSettings();
+
+    expect(settings.senderInfo).toBe(mockInfo);
+    expect(settings.ortRechnungssteller).toBe(mockOrt);
+    expect(settings.signature).toBe(mockSignature);
   });
 });
