@@ -8,6 +8,16 @@ on:
     branches:
       - '**'
   workflow_dispatch:
+    inputs:
+      test-type:
+        description: 'Type of tests to run (unit/integration/all)'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - unit
+          - integration
+          - all
 
 jobs:
   test:
@@ -17,6 +27,17 @@ jobs:
       matrix:
         node-version: [18, 20]
         test-group: [unit, integration]
+        exclude:
+          - test-group: integration
+            node-version: 18
+          - test-group: unit
+            node-version: 18
+          - test-group: integration
+            node-version: 20
+            if: github.event_name == 'workflow_dispatch' && github.event.inputs.test-type != 'all' && github.event.inputs.test-type != matrix.test-group
+          - test-group: unit
+            node-version: 20
+            if: github.event_name == 'workflow_dispatch' && github.event.inputs.test-type != 'all' && github.event.inputs.test-type != matrix.test-group
       fail-fast: false
 
     steps:
