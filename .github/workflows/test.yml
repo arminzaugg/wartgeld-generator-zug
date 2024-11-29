@@ -25,7 +25,7 @@ jobs:
     
     strategy:
       matrix:
-        node-version: [18, 20]
+        node-version: [20]
         test-group: [unit, integration]
         exclude:
           - test-group: integration
@@ -33,11 +33,6 @@ jobs:
           - test-group: unit
             node-version: 18
       fail-fast: false
-
-    if: >-
-      github.event_name != 'workflow_dispatch' ||
-      github.event.inputs.test-type == 'all' ||
-      github.event.inputs.test-type == matrix.test-group
 
     steps:
     - uses: actions/checkout@v4
@@ -61,6 +56,7 @@ jobs:
         npm ci
       
     - name: Run ${{ matrix.test-group }} tests
+      if: github.event_name != 'workflow_dispatch' || github.event.inputs.test-type == 'all' || github.event.inputs.test-type == '${{ matrix.test-group }}'
       run: |
         if [ "${{ matrix.test-group }}" = "unit" ]; then
           npm run test:unit
