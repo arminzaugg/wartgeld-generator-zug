@@ -51,10 +51,14 @@ export const SuggestionsList = ({
                 role="option"
                 aria-selected={index === selectedIndex}
                 className={cn(
-                  "px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 flex flex-col gap-1 transition-colors",
+                  "px-3 py-3 text-sm cursor-pointer hover:bg-gray-100 flex flex-col gap-1 transition-colors active:bg-gray-200 touch-manipulation",
                   index === selectedIndex && "bg-gray-100"
                 )}
                 onClick={() => onSelect(suggestion)}
+                onTouchEnd={(e) => {
+                  e.preventDefault();
+                  onSelect(suggestion);
+                }}
                 id={`street-suggestion-${index}`}
               >
                 <div className="flex items-center justify-between">
