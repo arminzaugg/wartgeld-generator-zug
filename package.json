@@ -9,10 +9,11 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test:unit": "vitest run \"src/**/*.unit.test.{ts,tsx}\"",
-    "test:integration": "vitest run \"src/**/*.integration.test.{ts,tsx}\"",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test": "vitest",
+    "test:unit": "vitest run \"**/*.unit.test.{ts,tsx}\"",
+    "test:integration": "vitest run \"**/*.integration.test.{ts,tsx}\"",
+    "coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
