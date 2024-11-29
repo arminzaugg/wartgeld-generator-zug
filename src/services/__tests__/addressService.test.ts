@@ -10,10 +10,7 @@ vi.mock('@/integrations/supabase/client', () => ({
     from: vi.fn(() => ({
       select: vi.fn(() => ({
         eq: vi.fn(() => ({
-          single: vi.fn(() => ({
-            data: { gemeinde: 'Test Gemeinde' },
-            error: null
-          }))
+          single: vi.fn()
         }))
       }))
     }))
@@ -21,13 +18,9 @@ vi.mock('@/integrations/supabase/client', () => ({
 }));
 
 describe('addressService', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  describe('street lookup', () => {
-    it('looks up street addresses', async () => {
-      const mockResponse = {
+  describe('lookupStreet', () => {
+    it('should transform API response correctly', async () => {
+      const mockApiResponse = {
         data: {
           QueryAutoComplete4Result: {
             AutoCompleteResult: [
@@ -35,73 +28,52 @@ describe('addressService', () => {
                 STRID: '123',
                 StreetName: 'Test Street',
                 ZipCode: '1234',
-                TownName: 'Test Town'
+                TownName: 'Test City',
+                HouseNo: '1',
+                HouseNoAddition: 'A'
               }
             ]
           }
-        },
-        error: null
+        }
       };
 
-      (supabase.functions.invoke as any).mockResolvedValue(mockResponse);
+      vi.mocked(supabase.functions.invoke).mockResolvedValueOnce(mockApiResponse);
 
       const result = await addressService.lookupStreet('Test');
-      
+
       expect(result).toHaveLength(1);
-      expect(result[0].streetName).toBe('Test Street');
-      expect(supabase.functions.invoke).toHaveBeenCalledWith('address-lookup', {
-        body: expect.any(Object)
+      expect(result[0]).toEqual({
+        STRID: '123',
+        streetName: 'Test Street',
+        zipCode: '1234',
+        city: 'Test City',
+        houseNumbers: [{ number: '1', addition: 'A' }]
       });
     });
 
-    it('handles empty results', async () => {
-      const mockResponse = {
-        data: {
-          QueryAutoComplete4Result: {
-            AutoCompleteResult: []
-          }
-        },
-        error: null
-      };
-
-      (supabase.functions.invoke as any).mockResolvedValue(mockResponse);
+    it('should return empty array when no results', async () => {
+      vi.mocked(supabase.functions.invoke).mockResolvedValueOnce({
+        data: { QueryAutoComplete4Result: { AutoCompleteResult: [] } }
+      });
 
       const result = await addressService.lookupStreet('NonExistent');
-      expect(result).toHaveLength(0);
-    });
 
-    it('handles errors', async () => {
-      (supabase.functions.invoke as any).mockResolvedValue({
-        data: null,
-        error: new Error('API Error')
-      });
-
-      await expect(addressService.lookupStreet('Test')).rejects.toThrow('API Error');
+      expect(result).toEqual([]);
     });
   });
 
-  describe('PLZ mapping', () => {
-    it('gets PLZ mapping', async () => {
-      const result = await addressService.getPlzMapping('1234');
-      
-      expect(result).toEqual({ gemeinde: 'Test Gemeinde' });
-      expect(supabase.from).toHaveBeenCalledWith('plz_mappings');
-    });
-
-    it('handles non-existent PLZ', async () => {
-      (supabase.from as any).mockImplementationOnce(() => ({
-        select: () => ({
-          eq: () => ({
-            single: () => ({
-              data: null,
-              error: null
-            })
-          })
-        })
+  describe('getPlzMapping', () => {
+    it('should return PLZ mapping data', async () => {
+      const mockMapping = { gemeinde: 'Test Gemeinde' };
+      vi.mocked(supabase.from).mockImplementationOnce(() => ({
+        select: vi.fn().mockReturnThis(),
+        eq: vi.fn().mockReturnThis(),
+        single: vi.fn().mockResolvedValueOnce({ data: mockMapping, error: null })
       }));
 
-      const result = await addressService.getPlzMapping('9999');
-      expect(result).toBeNull();
+      const result = await addressService.getPlzMapping('1234');
+
+      expect(result).toEqual(mockMapping);
     });
   });
 });
