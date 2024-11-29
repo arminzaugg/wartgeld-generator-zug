@@ -52,36 +52,38 @@ export const FormContainer = ({ values, onChange, onAddressChange, onClear }: Fo
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 md:space-y-8">
       <h2 className="text-xl font-semibold">Angaben</h2>
 
-      <PersonalInfoFields
-        values={values}
-        errors={errors}
-        onChange={handleInputChange}
-      />
+      <div className="space-y-6 md:space-y-8">
+        <PersonalInfoFields
+          values={values}
+          errors={errors}
+          onChange={handleInputChange}
+        />
 
-      <AddressFields 
-        values={values}
-        onChange={onAddressChange}
-      />
+        <AddressFields 
+          values={values}
+          onChange={onAddressChange}
+        />
 
-      <DateAndMunicipalityFields
-        values={values}
-        errors={errors}
-        onChange={handleInputChange}
-      />
+        <DateAndMunicipalityFields
+          values={values}
+          errors={errors}
+          onChange={handleInputChange}
+        />
 
-      <ServiceSelectionFields
-        values={values}
-        onChange={handleInputChange}
-      />
+        <ServiceSelectionFields
+          values={values}
+          onChange={handleInputChange}
+        />
+      </div>
 
-      <div className="flex gap-4">
+      <div className="pt-4">
         <Button 
           variant="outline" 
           onClick={onClear}
-          className="w-full"
+          className="w-full h-12"
           type="button"
         >
           Formular Zurücksetzen

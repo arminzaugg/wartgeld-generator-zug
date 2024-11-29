@@ -14,6 +14,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { supabase } from "@/integrations/supabase/client";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 const Index = () => {
   const [formData, setFormData] = useState({
@@ -28,8 +29,8 @@ const Index = () => {
   });
   
   const [pdfUrl, setPdfUrl] = useState("");
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const { toast } = useToast();
-
   const hasViewedSettings = localStorage.getItem("settings-viewed") === "true";
 
   const handleFieldChange = async (field: string, value: string | boolean) => {
@@ -60,6 +61,7 @@ const Index = () => {
       betreuungWochenbett: false,
     });
     setPdfUrl("");
+    setIsSheetOpen(false);
     toast({
       title: "Formular zurückgesetzt",
       description: "Alle Eingaben wurden gelöscht",
@@ -77,7 +79,6 @@ const Index = () => {
     }
 
     try {
-      // Get the municipality based on the PLZ
       const { data: plzMapping, error } = await supabase
         .from('plz_mappings')
         .select('gemeinde')
@@ -100,6 +101,7 @@ const Index = () => {
         betreuungWochenbett: formData.betreuungWochenbett,
       });
       setPdfUrl(pdfUrl);
+      setIsSheetOpen(true);
       
       toast({
         title: "Erfolgreich",
@@ -115,16 +117,16 @@ const Index = () => {
   };
 
   return (
-    <div className="container py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Hebammenwartgeld Kanton Zug</h1>
+    <div className="container py-4 md:py-8 px-4 md:px-6">
+      <div className="flex justify-between items-center mb-6 md:mb-8">
+        <h1 className="text-2xl md:text-3xl font-bold">Hebammenwartgeld Kanton Zug</h1>
         <div className="flex gap-2">
           <Link to="/info">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="outline" size="icon">
-                    <Info className="h-4 w-4" />
+                  <Button variant="outline" size="icon" className="h-10 w-10">
+                    <Info className="h-5 w-5" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -137,9 +139,9 @@ const Index = () => {
             <Button 
               variant="outline" 
               size="icon"
-              className="relative"
+              className="relative h-10 w-10"
             >
-              <Settings className="h-4 w-4" />
+              <Settings className="h-5 w-5" />
               {!hasViewedSettings && (
                 <span className="absolute -top-1 -right-1 h-2 w-2 bg-red-500 rounded-full" />
               )}
@@ -148,8 +150,8 @@ const Index = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <Card className="p-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+        <Card className="p-4 md:p-6">
           <FormContainer
             values={formData}
             onChange={handleFieldChange}
@@ -158,22 +160,30 @@ const Index = () => {
           />
           
           <div className="mt-6">
-            <Button onClick={handleGeneratePDF} className="w-full">
+            <Button onClick={handleGeneratePDF} className="w-full h-12 text-lg">
               Rechnung Generieren
             </Button>
           </div>
         </Card>
 
-        <Card className="p-6">
+        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+          <SheetContent side="bottom" className="h-[80vh] sm:h-[90vh]">
+            <div className="h-full pt-6">
+              {pdfUrl && <PDFPreview pdfUrl={pdfUrl} />}
+            </div>
+          </SheetContent>
+        </Sheet>
+
+        <Card className="hidden lg:block p-4 md:p-6">
           <h2 className="text-xl font-semibold mb-4">Vorschau</h2>
           {pdfUrl ? (
             <PDFPreview pdfUrl={pdfUrl} />
           ) : (
             <div className="h-[600px] flex items-center justify-center bg-gray-50 rounded-lg">
-              <div className="text-gray-500 flex flex-col items-center space-y-1">
-                <p>Bitte füllen Sie das Formular aus</p>
-                <p>und klicken Sie auf "Rechnung Generieren"</p>
-                <p>um eine Vorschau zu sehen.</p>
+              <div className="text-gray-500 flex flex-col items-center space-y-2 px-4 text-center">
+                <p className="text-lg">Bitte füllen Sie das Formular aus</p>
+                <p className="text-sm">und klicken Sie auf "Rechnung Generieren"</p>
+                <p className="text-sm">um eine Vorschau zu sehen.</p>
               </div>
             </div>
           )}
