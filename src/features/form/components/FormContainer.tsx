@@ -87,7 +87,7 @@ export const FormContainer = ({ values, onChange, onAddressChange, onClear, onSu
         </div>
       </div>
 
-      <div className="sticky bottom-0 bg-background pt-4 border-t">
+      <div className="sticky bottom-0 bg-background pt-4">
         <div className="container flex flex-col sm:flex-row gap-3 max-w-3xl mx-auto">
           <Button 
             variant="outline" 
