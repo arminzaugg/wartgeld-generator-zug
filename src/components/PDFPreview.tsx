@@ -14,12 +14,11 @@ export const PDFPreview = ({ pdfUrl }: PDFPreviewProps) => {
   }, [pdfUrl]);
 
   return (
-    <div className="w-full h-full min-h-[400px] border rounded-lg overflow-hidden bg-white">
+    <div className="w-full h-[600px] border rounded-lg overflow-hidden bg-white">
       <iframe
         ref={iframeRef}
         className="w-full h-full"
         title="PDF Preview"
-        style={{ minHeight: '400px' }}
       />
     </div>
   );
