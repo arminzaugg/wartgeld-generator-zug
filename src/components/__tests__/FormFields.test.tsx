@@ -21,6 +21,7 @@ describe('FormContainer', () => {
         onChange={() => {}}
         onAddressChange={() => {}}
         onClear={() => {}}
+        onSubmit={() => {}}
       />
     );
   });
