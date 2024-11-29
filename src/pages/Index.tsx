@@ -29,6 +29,7 @@ const Index = () => {
   });
   
   const [pdfUrl, setPdfUrl] = useState("");
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const { toast } = useToast();
   const hasViewedSettings = localStorage.getItem("settings-viewed") === "true";
 
@@ -60,6 +61,7 @@ const Index = () => {
       betreuungWochenbett: false,
     });
     setPdfUrl("");
+    setIsSheetOpen(false);
     toast({
       title: "Formular zurückgesetzt",
       description: "Alle Eingaben wurden gelöscht",
@@ -77,7 +79,6 @@ const Index = () => {
     }
 
     try {
-      // Get the municipality based on the PLZ
       const { data: plzMapping, error } = await supabase
         .from('plz_mappings')
         .select('gemeinde')
@@ -100,6 +101,7 @@ const Index = () => {
         betreuungWochenbett: formData.betreuungWochenbett,
       });
       setPdfUrl(pdfUrl);
+      setIsSheetOpen(true);
       
       toast({
         title: "Erfolgreich",
@@ -166,12 +168,7 @@ const Index = () => {
 
         <div className="block lg:hidden">
           {pdfUrl && (
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" className="w-full mb-4">
-                  PDF Vorschau öffnen
-                </Button>
-              </SheetTrigger>
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
               <SheetContent side="bottom" className="h-[80vh] sm:h-[90vh]">
                 <div className="h-full pt-6">
                   <PDFPreview pdfUrl={pdfUrl} />
