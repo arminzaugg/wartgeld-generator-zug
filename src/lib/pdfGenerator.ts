@@ -1,5 +1,5 @@
 import jsPDF from 'jspdf';
-import { administrationData } from './administrationData';
+import { getAdministrationData } from './administrationData';
 import { getSettings } from './presetStorage';
 
 interface FormData {
@@ -14,9 +14,9 @@ interface FormData {
   betreuungWochenbett: boolean;
 }
 
-export const generatePDF = (data: FormData): string => {
+export const generatePDF = async (data: FormData): Promise<string> => {
   const doc = new jsPDF();
-  const administration = administrationData[data.gemeinde];
+  const administration = await getAdministrationData(data.gemeinde);
   const settings = getSettings();
   const senderInfo = settings.senderInfo.split('\n');
   

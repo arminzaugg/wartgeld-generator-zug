@@ -2,7 +2,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { municipalities } from "@/config/addresses";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface FormFieldsProps {
   values: {
@@ -20,6 +21,22 @@ interface FormFieldsProps {
 }
 
 export const FormFields = ({ values, onChange }: FormFieldsProps) => {
+  const { data: municipalities = [] } = useQuery({
+    queryKey: ['municipalities'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('plz_mappings')
+        .select('gemeinde')
+        .order('gemeinde');
+      
+      if (error) throw error;
+      
+      // Get unique municipalities
+      const uniqueMunicipalities = [...new Set(data.map(item => item.gemeinde))];
+      return uniqueMunicipalities;
+    }
+  });
+
   return (
     <>
       <h2 className="text-xl font-semibold mb-4">Angaben</h2>
