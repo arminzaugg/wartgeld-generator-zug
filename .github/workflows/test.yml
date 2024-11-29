@@ -43,9 +43,9 @@ jobs:
     - name: Run ${{ matrix.test-group }} tests
       run: |
         if [ "${{ matrix.test-group }}" = "unit" ]; then
-          npm test -- --test-pattern "**/*.unit.test.{ts,tsx}"
+          npm run test:unit
         else
-          npm test -- --test-pattern "**/*.integration.test.{ts,tsx}"
+          npm run test:integration
         fi
 
     - name: Upload coverage reports
