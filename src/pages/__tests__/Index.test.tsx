@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import Index from '../Index';
 import * as pdfGenerator from '@/lib/pdfGenerator';
 import { addressService } from '@/services/api/addressService';
+import { createFormValues } from '@/lib/__tests__/factories/formFactory';
 
 vi.mock('@/lib/pdfGenerator', () => ({
   generatePDF: vi.fn(() => 'mock-pdf-url')
@@ -49,17 +50,23 @@ describe('Index', () => {
   it('handles form submission', async () => {
     renderComponent();
     
+    const testFormData = createFormValues({
+      vorname: 'John',
+      nachname: 'Doe',
+      plz: '6300'
+    });
+    
     // Fill in required fields
-    fireEvent.change(screen.getByLabelText('Vorname'), { target: { value: 'John' } });
-    fireEvent.change(screen.getByLabelText('Nachname'), { target: { value: 'Doe' } });
-    fireEvent.change(screen.getByLabelText('Postleitzahl'), { target: { value: '6300' } });
+    fireEvent.change(screen.getByLabelText('Vorname'), { target: { value: testFormData.vorname } });
+    fireEvent.change(screen.getByLabelText('Nachname'), { target: { value: testFormData.nachname } });
+    fireEvent.change(screen.getByLabelText('Postleitzahl'), { target: { value: testFormData.plz } });
     
     // Submit form
     const submitButton = screen.getByText('Rechnung Generieren');
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(addressService.getPlzMapping).toHaveBeenCalledWith('6300');
+      expect(addressService.getPlzMapping).toHaveBeenCalledWith(testFormData.plz);
       expect(pdfGenerator.generatePDF).toHaveBeenCalled();
     });
   });
@@ -67,9 +74,11 @@ describe('Index', () => {
   it('handles form reset', () => {
     renderComponent();
     
+    const testFormData = createFormValues();
+    
     // Fill in a field
     const vornameInput = screen.getByLabelText('Vorname');
-    fireEvent.change(vornameInput, { target: { value: 'John' } });
+    fireEvent.change(vornameInput, { target: { value: testFormData.vorname } });
     
     // Reset form
     const resetButton = screen.getByText('Formular Zurücksetzen');
