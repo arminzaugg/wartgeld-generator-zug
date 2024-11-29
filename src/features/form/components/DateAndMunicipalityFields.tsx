@@ -9,10 +9,13 @@ interface DateAndMunicipalityFieldsProps {
     geburtsdatum: string;
     gemeinde: string;
   };
+  errors?: {
+    [key: string]: string;
+  };
   onChange: (field: string, value: string) => void;
 }
 
-export const DateAndMunicipalityFields = ({ values, onChange }: DateAndMunicipalityFieldsProps) => {
+export const DateAndMunicipalityFields = ({ values, errors = {}, onChange }: DateAndMunicipalityFieldsProps) => {
   const { data: municipalities = [] } = useQuery({
     queryKey: ['municipalities'],
     queryFn: async () => {
@@ -37,13 +40,17 @@ export const DateAndMunicipalityFields = ({ values, onChange }: DateAndMunicipal
           type="date"
           value={values.geburtsdatum}
           onChange={(e) => onChange("geburtsdatum", e.target.value)}
+          className={errors.geburtsdatum ? "border-red-500" : ""}
         />
+        {errors.geburtsdatum && (
+          <p className="text-sm text-red-500">{errors.geburtsdatum}</p>
+        )}
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="gemeinde">Wahl der Gemeinde</Label>
         <Select value={values.gemeinde} onValueChange={(value) => onChange("gemeinde", value)}>
-          <SelectTrigger>
+          <SelectTrigger className={errors.gemeinde ? "border-red-500" : ""}>
             <SelectValue placeholder="Wählen Sie eine Gemeinde" />
           </SelectTrigger>
           <SelectContent>
@@ -54,6 +61,9 @@ export const DateAndMunicipalityFields = ({ values, onChange }: DateAndMunicipal
             ))}
           </SelectContent>
         </Select>
+        {errors.gemeinde && (
+          <p className="text-sm text-red-500">{errors.gemeinde}</p>
+        )}
       </div>
     </div>
   );
