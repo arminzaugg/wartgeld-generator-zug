@@ -79,14 +79,20 @@ export const FormContainer = ({ values, onChange, onAddressChange, onClear }: Fo
         />
       </div>
 
-      <div className="pt-4">
+      <div className="pt-4 grid grid-cols-2 gap-4">
         <Button 
           variant="outline" 
           onClick={onClear}
-          className="w-full h-12"
+          className="h-12"
           type="button"
         >
           Formular Zurücksetzen
+        </Button>
+        <Button 
+          className="h-12 text-lg"
+          type="submit"
+        >
+          Rechnung Generieren
         </Button>
       </div>
 
