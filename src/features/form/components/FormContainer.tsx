@@ -20,9 +20,10 @@ interface FormContainerProps {
   onChange: (field: string, value: string | boolean) => void;
   onAddressChange: (street: string, zipCode?: string, city?: string) => void;
   onClear: () => void;
+  onSubmit: () => void;
 }
 
-export const FormContainer = ({ values, onChange, onAddressChange, onClear }: FormContainerProps) => {
+export const FormContainer = ({ values, onChange, onAddressChange, onClear, onSubmit }: FormContainerProps) => {
   const [errors, setErrors] = useState<{[key: string]: string}>({});
 
   const validateField = (field: string, value: string | boolean) => {
@@ -51,8 +52,13 @@ export const FormContainer = ({ values, onChange, onAddressChange, onClear }: Fo
     onChange(field, value);
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit();
+  };
+
   return (
-    <div className="space-y-6 md:space-y-8">
+    <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
       <h2 className="text-xl font-semibold">Angaben</h2>
 
       <div className="space-y-6 md:space-y-8">
@@ -97,6 +103,6 @@ export const FormContainer = ({ values, onChange, onAddressChange, onClear }: Fo
       </div>
 
       <FormValidation errors={errors} />
-    </div>
+    </form>
   );
 };

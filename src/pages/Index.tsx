@@ -28,7 +28,6 @@ const Index = () => {
   });
   
   const [pdfUrl, setPdfUrl] = useState("");
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const { toast } = useToast();
   const hasViewedSettings = localStorage.getItem("settings-viewed") === "true";
 
@@ -60,7 +59,6 @@ const Index = () => {
       betreuungWochenbett: false,
     });
     setPdfUrl("");
-    setIsSheetOpen(false);
     toast({
       title: "Formular zurückgesetzt",
       description: "Alle Eingaben wurden gelöscht",
@@ -100,7 +98,6 @@ const Index = () => {
         betreuungWochenbett: formData.betreuungWochenbett,
       });
       setPdfUrl(pdfUrl);
-      setIsSheetOpen(true);
       
       toast({
         title: "Erfolgreich",
@@ -156,6 +153,7 @@ const Index = () => {
             onChange={handleFieldChange}
             onAddressChange={handleAddressChange}
             onClear={handleClearForm}
+            onSubmit={handleGeneratePDF}
           />
         </Card>
 
