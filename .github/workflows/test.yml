@@ -36,12 +36,14 @@ jobs:
         restore-keys: npm-
 
     - name: Install dependencies
-      run: npm ci
+      run: |
+        npm install
+        npm ci
       
     - name: Run ${{ matrix.test-group }} tests
       run: |
         if [ "${{ matrix.test-group }}" = "unit" ]; then
-          npm test -- --coverage --testMatch="**/*.test.ts?(x)"
+          npm test -- --coverage --testMatch="**/*.unit.test.ts?(x)"
         else
           npm test -- --coverage --testMatch="**/*.integration.test.ts?(x)"
         fi
@@ -73,7 +75,9 @@ jobs:
         cache: 'npm'
           
     - name: Install dependencies
-      run: npm ci
+      run: |
+        npm install
+        npm ci
       
     - name: Build
       run: npm run build
