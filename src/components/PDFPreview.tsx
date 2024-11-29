@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button } from './ui/button';
-import { Eye } from 'lucide-react';
+import { Eye, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
 
 interface PDFPreviewProps {
   pdfUrl: string;
@@ -9,7 +10,6 @@ interface PDFPreviewProps {
 
 export const PDFPreview = ({ pdfUrl }: PDFPreviewProps) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [isCollapsed, setIsCollapsed] = useState(false);
   const [scale, setScale] = useState(1);
 
   useEffect(() => {
@@ -45,30 +45,11 @@ export const PDFPreview = ({ pdfUrl }: PDFPreviewProps) => {
 
   return (
     <div className="relative w-full">
-      {/* Mobile floating button */}
-      <Button
-        variant="secondary"
-        size="lg"
-        className="fixed bottom-4 right-4 z-50 lg:hidden shadow-lg"
-        onClick={() => setIsCollapsed(!isCollapsed)}
-      >
-        <Eye className="mr-2 h-4 w-4" />
-        {isCollapsed ? 'Show Preview' : 'Hide Preview'}
-      </Button>
-
-      {/* Preview container */}
-      <div
-        className={cn(
-          "w-full transition-all duration-300 ease-in-out bg-white flex flex-col rounded-lg overflow-hidden border",
-          isCollapsed ? "h-0" : "h-[50vh] lg:h-[80vh]"
-        )}
-      >
+      {/* Desktop view */}
+      <div className="hidden lg:block w-full h-[80vh] border rounded-lg overflow-hidden bg-white">
         <iframe
           ref={iframeRef}
-          className={cn(
-            "w-full h-full transition-transform",
-            `scale-${scale}`
-          )}
+          className="w-full h-full"
           style={{ transform: `scale(${scale})`, transformOrigin: 'center' }}
           title="PDF Preview"
           onTouchStart={(e) => handleTouchStart(e)}
@@ -77,6 +58,40 @@ export const PDFPreview = ({ pdfUrl }: PDFPreviewProps) => {
             if (initialDistance) handleTouchMove(e, initialDistance);
           }}
         />
+      </div>
+
+      {/* Mobile view with Sheet component */}
+      <div className="lg:hidden">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button 
+              variant="secondary" 
+              size="lg" 
+              className="fixed bottom-4 right-4 z-50 shadow-lg"
+            >
+              <Eye className="mr-2 h-4 w-4" />
+              Preview PDF
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="bottom" className="h-[90vh] p-0">
+            <SheetHeader className="px-4 py-2 border-b">
+              <SheetTitle>PDF Preview</SheetTitle>
+            </SheetHeader>
+            <div className="h-full bg-white">
+              <iframe
+                ref={iframeRef}
+                className="w-full h-full"
+                style={{ transform: `scale(${scale})`, transformOrigin: 'center' }}
+                title="PDF Preview"
+                onTouchStart={(e) => handleTouchStart(e)}
+                onTouchMove={(e) => {
+                  const initialDistance = handleTouchStart(e);
+                  if (initialDistance) handleTouchMove(e, initialDistance);
+                }}
+              />
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
     </div>
   );
