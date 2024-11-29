@@ -14,7 +14,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { supabase } from "@/integrations/supabase/client";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 const Index = () => {
   const [formData, setFormData] = useState({
@@ -158,15 +157,8 @@ const Index = () => {
             onAddressChange={handleAddressChange}
             onClear={handleClearForm}
           />
-          
-          <div className="mt-6">
-            <Button onClick={handleGeneratePDF} className="w-full h-12 text-lg">
-              Rechnung Generieren
-            </Button>
-          </div>
         </Card>
 
-        {/* Remove Sheet component for mobile and show PDFPreview directly */}
         <div className="w-full">
           {pdfUrl ? (
             <PDFPreview pdfUrl={pdfUrl} />
