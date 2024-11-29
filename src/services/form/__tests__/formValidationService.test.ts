@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { formValidationService } from '../formValidationService';
+import { createFormValues } from '@/lib/__tests__/factories/formFactory';
 
 describe('formValidationService', () => {
   describe('validateField', () => {
@@ -23,18 +24,14 @@ describe('formValidationService', () => {
 
   describe('validateForm', () => {
     it('should return errors for invalid form', () => {
-      const values = {
+      const invalidValues = createFormValues({
         vorname: '',
         nachname: '',
         address: '',
-        plz: '',
-        ort: '',
         geburtsdatum: '',
-        betreuungGeburt: false,
-        betreuungWochenbett: false,
-      };
+      });
 
-      const errors = formValidationService.validateForm(values);
+      const errors = formValidationService.validateForm(invalidValues);
       expect(errors).toHaveProperty('vorname');
       expect(errors).toHaveProperty('nachname');
       expect(errors).toHaveProperty('address');
@@ -42,18 +39,14 @@ describe('formValidationService', () => {
     });
 
     it('should return no errors for valid form', () => {
-      const values = {
+      const validValues = createFormValues({
         vorname: 'John',
         nachname: 'Doe',
         address: 'Test Street 1',
-        plz: '1234',
-        ort: 'Test City',
         geburtsdatum: '2024-01-01',
-        betreuungGeburt: true,
-        betreuungWochenbett: false,
-      };
+      });
 
-      const errors = formValidationService.validateForm(values);
+      const errors = formValidationService.validateForm(validValues);
       expect(Object.keys(errors).length).toBe(0);
     });
   });
