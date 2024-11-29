@@ -32,13 +32,12 @@ jobs:
             node-version: 18
           - test-group: unit
             node-version: 18
-          - test-group: integration
-            node-version: 20
-            if: github.event_name == 'workflow_dispatch' && github.event.inputs.test-type != 'all' && github.event.inputs.test-type != matrix.test-group
-          - test-group: unit
-            node-version: 20
-            if: github.event_name == 'workflow_dispatch' && github.event.inputs.test-type != 'all' && github.event.inputs.test-type != matrix.test-group
       fail-fast: false
+
+    if: >-
+      github.event_name != 'workflow_dispatch' ||
+      github.event.inputs.test-type == 'all' ||
+      github.event.inputs.test-type == matrix.test-group
 
     steps:
     - uses: actions/checkout@v4
