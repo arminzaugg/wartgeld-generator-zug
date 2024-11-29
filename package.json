@@ -9,8 +9,8 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "vitest",
-    "test:unit": "vitest run \"src/**/*.unit.test.{ts,tsx}\"",
-    "test:integration": "vitest run \"src/**/*.integration.test.{ts,tsx}\"",
+    "test:unit": "vitest run \"src/**/*unit.test*.{ts,tsx}\"",
+    "test:integration": "vitest run \"src/**/*integration.test*.{ts,tsx}\"",
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
