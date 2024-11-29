@@ -5,6 +5,9 @@ import { AddressFields } from "./AddressFields";
 import { DateAndMunicipalityFields } from "./DateAndMunicipalityFields";
 import { ServiceSelectionFields } from "./ServiceSelectionFields";
 import { FormValidation } from "@/components/FormValidation";
+import { formValidationService } from "@/services/form/formValidationService";
+import { pdfGenerationService } from "@/services/pdf/pdfGenerationService";
+import { useToast } from "@/components/ui/use-toast";
 
 interface FormContainerProps {
   values: {
@@ -25,21 +28,10 @@ interface FormContainerProps {
 
 export const FormContainer = ({ values, onChange, onAddressChange, onClear, onSubmit }: FormContainerProps) => {
   const [errors, setErrors] = useState<{[key: string]: string}>({});
-
-  const validateField = (field: string, value: string | boolean) => {
-    switch (field) {
-      case 'vorname':
-      case 'nachname':
-        return typeof value === 'string' && value.length >= 2 ? '' : 'Mindestens 2 Zeichen erforderlich';
-      case 'geburtsdatum':
-        return value ? '' : 'Bitte geben Sie ein Datum ein';
-      default:
-        return '';
-    }
-  };
+  const { toast } = useToast();
 
   const handleInputChange = (field: string, value: string | boolean) => {
-    const error = validateField(field, value);
+    const error = formValidationService.validateField(field, value);
     if (error) {
       setErrors(prev => ({ ...prev, [field]: error }));
     } else {
@@ -52,9 +44,30 @@ export const FormContainer = ({ values, onChange, onAddressChange, onClear, onSu
     onChange(field, value);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit();
+    
+    const validationErrors = formValidationService.validateForm(values);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      toast({
+        title: "Validation Error",
+        description: "Please check the form for errors",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      await pdfGenerationService.generatePDF(values);
+      onSubmit();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to generate PDF. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
