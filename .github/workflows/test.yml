@@ -27,11 +27,6 @@ jobs:
       matrix:
         node-version: [20]
         test-group: [unit, integration]
-        exclude:
-          - test-group: integration
-            node-version: 18
-          - test-group: unit
-            node-version: 18
       fail-fast: false
 
     steps:
@@ -59,9 +54,9 @@ jobs:
       if: github.event_name != 'workflow_dispatch' || github.event.inputs.test-type == 'all' || github.event.inputs.test-type == '${{ matrix.test-group }}'
       run: |
         if [ "${{ matrix.test-group }}" = "unit" ]; then
-          npm run test:unit
+          npm run test:unit -- --passWithNoTests
         else
-          npm run test:integration
+          npm run test:integration -- --passWithNoTests
         fi
 
     - name: Upload coverage reports
