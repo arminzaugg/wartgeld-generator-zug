@@ -88,7 +88,7 @@ const Index = () => {
         return;
       }
 
-      const pdfUrl = generatePDF({
+      const pdfUrl = await generatePDF({
         ...formData,
         gemeinde: plzMapping.gemeinde,
         betreuungGeburt: formData.betreuungGeburt,

@@ -1,5 +1,24 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { generatePDF } from '../pdfGenerator';
+
+// Mock the administration data fetch
+vi.mock('../administrationData', () => ({
+  getAdministrationData: vi.fn().mockResolvedValue({
+    title: 'Test Administration',
+    name: 'Test Name',
+    address: 'Test Address',
+    city: 'Test City'
+  })
+}));
+
+// Mock the settings
+vi.mock('../presetStorage', () => ({
+  getSettings: () => ({
+    senderInfo: 'Test Sender\nTest Address',
+    ortRechnungssteller: 'Test Ort',
+    signature: null
+  })
+}));
 
 describe('pdfGenerator', () => {
   const mockFormData = {
@@ -14,9 +33,10 @@ describe('pdfGenerator', () => {
     betreuungWochenbett: false,
   };
 
-  it('includes form data in the generated PDF', () => {
-    const result = generatePDF(mockFormData);
+  it('generates PDF with form data', async () => {
+    const result = await generatePDF(mockFormData);
     expect(result).toBeDefined();
-    expect(result.length).toBeGreaterThan(0);
+    expect(typeof result).toBe('string');
+    expect(result.startsWith('data:application/pdf;base64,')).toBe(true);
   });
 });

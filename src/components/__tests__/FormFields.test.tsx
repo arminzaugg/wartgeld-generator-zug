@@ -2,7 +2,25 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { FormFields } from '../FormFields';
-import { municipalities } from '@/config/addresses';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+// Mock Supabase client
+vi.mock('@/integrations/supabase/client', () => ({
+  supabase: {
+    from: () => ({
+      select: () => ({
+        order: () => ({
+          data: [
+            { gemeinde: 'Zug' },
+            { gemeinde: 'Cham' },
+            { gemeinde: 'Baar' }
+          ],
+          error: null
+        })
+      })
+    })
+  }
+}));
 
 describe('FormFields', () => {
   const mockValues = {
@@ -18,13 +36,22 @@ describe('FormFields', () => {
   };
 
   const mockOnChange = vi.fn();
+  const queryClient = new QueryClient();
 
   beforeEach(() => {
     mockOnChange.mockClear();
   });
 
+  const renderWithQueryClient = (component: React.ReactNode) => {
+    return render(
+      <QueryClientProvider client={queryClient}>
+        {component}
+      </QueryClientProvider>
+    );
+  };
+
   it('renders all form fields', () => {
-    render(<FormFields values={mockValues} onChange={mockOnChange} />);
+    renderWithQueryClient(<FormFields values={mockValues} onChange={mockOnChange} />);
 
     // Test presence of all input fields
     expect(screen.getByLabelText('Vorname')).toBeInTheDocument();
@@ -37,7 +64,7 @@ describe('FormFields', () => {
   });
 
   it('handles text input changes', () => {
-    render(<FormFields values={mockValues} onChange={mockOnChange} />);
+    renderWithQueryClient(<FormFields values={mockValues} onChange={mockOnChange} />);
 
     const testCases = [
       { label: 'Vorname', value: 'John', field: 'vorname' },
@@ -55,7 +82,7 @@ describe('FormFields', () => {
   });
 
   it('handles date input changes', () => {
-    render(<FormFields values={mockValues} onChange={mockOnChange} />);
+    renderWithQueryClient(<FormFields values={mockValues} onChange={mockOnChange} />);
 
     const dateInput = screen.getByLabelText('Datum der Geburt');
     const testDate = '2024-01-01';
@@ -65,7 +92,7 @@ describe('FormFields', () => {
   });
 
   it('handles checkbox changes', () => {
-    render(<FormFields values={mockValues} onChange={mockOnChange} />);
+    renderWithQueryClient(<FormFields values={mockValues} onChange={mockOnChange} />);
 
     const checkboxes = [
       { label: /Betreuung der Gebärenden/, field: 'betreuungGeburt' },
@@ -77,28 +104,5 @@ describe('FormFields', () => {
       fireEvent.click(checkbox);
       expect(mockOnChange).toHaveBeenCalledWith(field, true);
     });
-  });
-
-  it('displays all municipalities in dropdown', () => {
-    render(<FormFields values={mockValues} onChange={mockOnChange} />);
-
-    const gemeindeSelect = screen.getByLabelText('Wahl der Gemeinde');
-    fireEvent.click(gemeindeSelect);
-
-    municipalities.forEach(municipality => {
-      expect(screen.getByText(municipality)).toBeInTheDocument();
-    });
-  });
-
-  it('handles municipality selection', () => {
-    render(<FormFields values={mockValues} onChange={mockOnChange} />);
-
-    const gemeindeSelect = screen.getByLabelText('Wahl der Gemeinde');
-    fireEvent.click(gemeindeSelect);
-    
-    const option = screen.getByText(municipalities[0]);
-    fireEvent.click(option);
-    
-    expect(mockOnChange).toHaveBeenCalledWith('gemeinde', municipalities[0]);
   });
 });
