@@ -9,6 +9,8 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
+    "test:unit": "vitest run \"src/**/*.unit.test.{ts,tsx}\"",
+    "test:integration": "vitest run \"src/**/*.integration.test.{ts,tsx}\"",
     "test": "vitest run",
     "test:watch": "vitest"
   },
