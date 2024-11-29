@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { cn } from '@/lib/utils';
 
 interface PDFPreviewProps {
   pdfUrl: string;
@@ -14,10 +15,12 @@ export const PDFPreview = ({ pdfUrl }: PDFPreviewProps) => {
   }, [pdfUrl]);
 
   return (
-    <div className="w-full h-[600px] border rounded-lg overflow-hidden bg-white">
+    <div className="relative w-full h-[80vh] border rounded-lg overflow-hidden bg-white">
       <iframe
         ref={iframeRef}
-        className="w-full h-full"
+        className={cn(
+          "w-full h-full"
+        )}
         title="PDF Preview"
       />
     </div>

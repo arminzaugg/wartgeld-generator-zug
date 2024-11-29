@@ -20,9 +20,10 @@ interface FormContainerProps {
   onChange: (field: string, value: string | boolean) => void;
   onAddressChange: (street: string, zipCode?: string, city?: string) => void;
   onClear: () => void;
+  onSubmit: () => void;
 }
 
-export const FormContainer = ({ values, onChange, onAddressChange, onClear }: FormContainerProps) => {
+export const FormContainer = ({ values, onChange, onAddressChange, onClear, onSubmit }: FormContainerProps) => {
   const [errors, setErrors] = useState<{[key: string]: string}>({});
 
   const validateField = (field: string, value: string | boolean) => {
@@ -51,46 +52,61 @@ export const FormContainer = ({ values, onChange, onAddressChange, onClear }: Fo
     onChange(field, value);
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit();
+  };
+
   return (
-    <div className="space-y-6 md:space-y-8">
-      <h2 className="text-xl font-semibold">Angaben</h2>
+    <form onSubmit={handleSubmit} className="space-y-8">
+      <div className="space-y-6">
+        <h2 className="text-2xl font-semibold tracking-tight">Angaben</h2>
 
-      <div className="space-y-6 md:space-y-8">
-        <PersonalInfoFields
-          values={values}
-          errors={errors}
-          onChange={handleInputChange}
-        />
+        <div className="grid gap-8">
+          <PersonalInfoFields
+            values={values}
+            errors={errors}
+            onChange={handleInputChange}
+          />
 
-        <AddressFields 
-          values={values}
-          onChange={onAddressChange}
-        />
+          <AddressFields 
+            values={values}
+            onChange={onAddressChange}
+          />
 
-        <DateAndMunicipalityFields
-          values={values}
-          errors={errors}
-          onChange={handleInputChange}
-        />
+          <DateAndMunicipalityFields
+            values={values}
+            errors={errors}
+            onChange={handleInputChange}
+          />
 
-        <ServiceSelectionFields
-          values={values}
-          onChange={handleInputChange}
-        />
+          <ServiceSelectionFields
+            values={values}
+            onChange={handleInputChange}
+          />
+        </div>
       </div>
 
-      <div className="pt-4">
-        <Button 
-          variant="outline" 
-          onClick={onClear}
-          className="w-full h-12"
-          type="button"
-        >
-          Formular Zurücksetzen
-        </Button>
+      <div className="sticky bottom-0 bg-background pt-4">
+        <div className="container flex flex-col sm:flex-row gap-3 max-w-3xl mx-auto">
+          <Button 
+            variant="outline" 
+            onClick={onClear}
+            className="w-full sm:w-1/2 h-11"
+            type="button"
+          >
+            Formular Zurücksetzen
+          </Button>
+          <Button 
+            className="w-full sm:w-1/2 h-11"
+            type="submit"
+          >
+            Rechnung Generieren
+          </Button>
+        </div>
       </div>
 
       <FormValidation errors={errors} />
-    </div>
+    </form>
   );
 };
