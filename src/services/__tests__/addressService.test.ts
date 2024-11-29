@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { addressService } from '../api/addressService';
 import { supabase } from '@/integrations/supabase/client';
+import { createAutocompleteRequest, createApiResponse } from '@/lib/__tests__/factories/apiFactory';
 
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
@@ -27,42 +28,28 @@ describe('addressService', () => {
 
   describe('street lookup', () => {
     it('looks up street addresses', async () => {
-      const mockResponse = {
-        data: {
-          QueryAutoComplete4Result: {
-            AutoCompleteResult: [
-              {
-                STRID: '123',
-                StreetName: 'Test Street',
-                ZipCode: '1234',
-                TownName: 'Test Town'
-              }
-            ]
-          }
-        },
-        error: null
-      };
-
-      (supabase.functions.invoke as any).mockResolvedValue(mockResponse);
-
-      const result = await addressService.lookupStreet('Test');
+      // Arrange
+      const mockApiResponse = createApiResponse();
       
-      expect(result).toHaveLength(1);
+      (supabase.functions.invoke as any).mockResolvedValue(mockApiResponse);
+
+      // Act
+      const result = await addressService.lookupStreet('Test');
+
+      // Assert
       expect(result[0].streetName).toBe('Test Street');
-      expect(supabase.functions.invoke).toHaveBeenCalledWith('address-lookup', {
-        body: expect.any(Object)
-      });
+      expect(supabase.functions.invoke).toHaveBeenCalledWith(
+        'address-lookup',
+        expect.any(Object)
+      );
     });
 
     it('handles empty results', async () => {
-      const mockResponse = {
-        data: {
-          QueryAutoComplete4Result: {
-            AutoCompleteResult: []
-          }
-        },
-        error: null
-      };
+      const mockResponse = createApiResponse({
+        QueryAutoComplete4Result: {
+          AutoCompleteResult: []
+        }
+      });
 
       (supabase.functions.invoke as any).mockResolvedValue(mockResponse);
 

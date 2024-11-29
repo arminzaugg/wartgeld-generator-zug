@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { generatePDF } from '../pdfGenerator';
+import { createFormValues } from './factories/formFactory';
 
 // Mock the administration data fetch
 vi.mock('../administrationData', () => ({
@@ -21,7 +22,7 @@ vi.mock('../presetStorage', () => ({
 }));
 
 describe('pdfGenerator', () => {
-  const mockFormData = {
+  const mockFormData = createFormValues({
     vorname: 'John',
     nachname: 'Doe',
     address: 'Test Street 1',
@@ -31,7 +32,7 @@ describe('pdfGenerator', () => {
     gemeinde: 'Zug',
     betreuungGeburt: true,
     betreuungWochenbett: false,
-  };
+  });
 
   it('generates PDF with form data', async () => {
     const result = await generatePDF(mockFormData);
