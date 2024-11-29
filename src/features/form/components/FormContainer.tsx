@@ -14,7 +14,6 @@ interface FormContainerProps {
     plz: string;
     ort: string;
     geburtsdatum: string;
-    gemeinde: string;
     betreuungGeburt: boolean;
     betreuungWochenbett: boolean;
   };
@@ -77,8 +76,7 @@ export const FormContainer = ({ values, onChange, onAddressChange, onClear, onSu
 
           <DateAndMunicipalityFields
             values={{
-              geburtsdatum: values.geburtsdatum,
-              gemeinde: values.gemeinde
+              geburtsdatum: values.geburtsdatum
             }}
             errors={errors}
             onChange={handleInputChange}
