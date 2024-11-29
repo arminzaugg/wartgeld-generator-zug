@@ -24,6 +24,7 @@ const Index = () => {
     plz: "",
     ort: "",
     geburtsdatum: "",
+    gemeinde: "", // Added the missing gemeinde field
     betreuungGeburt: false,
     betreuungWochenbett: false,
   });
@@ -56,6 +57,7 @@ const Index = () => {
       plz: "",
       ort: "",
       geburtsdatum: "",
+      gemeinde: "", // Added here as well for consistency
       betreuungGeburt: false,
       betreuungWochenbett: false,
     });
