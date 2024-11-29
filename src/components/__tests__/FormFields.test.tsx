@@ -26,6 +26,7 @@ describe('FormFields', () => {
   it('renders all form fields', () => {
     render(<FormFields values={mockValues} onChange={mockOnChange} />);
 
+    // Test presence of all input fields
     expect(screen.getByLabelText('Vorname')).toBeInTheDocument();
     expect(screen.getByLabelText('Nachname')).toBeInTheDocument();
     expect(screen.getByLabelText('Strasse')).toBeInTheDocument();
@@ -38,19 +39,44 @@ describe('FormFields', () => {
   it('handles text input changes', () => {
     render(<FormFields values={mockValues} onChange={mockOnChange} />);
 
-    const vornameInput = screen.getByLabelText('Vorname');
-    fireEvent.change(vornameInput, { target: { value: 'John' } });
+    const testCases = [
+      { label: 'Vorname', value: 'John', field: 'vorname' },
+      { label: 'Nachname', value: 'Doe', field: 'nachname' },
+      { label: 'Strasse', value: 'Test Street', field: 'address' },
+      { label: 'Postleitzahl', value: '1234', field: 'plz' },
+      { label: 'Ort', value: 'Test City', field: 'ort' },
+    ];
 
-    expect(mockOnChange).toHaveBeenCalledWith('vorname', 'John');
+    testCases.forEach(({ label, value, field }) => {
+      const input = screen.getByLabelText(label);
+      fireEvent.change(input, { target: { value } });
+      expect(mockOnChange).toHaveBeenCalledWith(field, value);
+    });
+  });
+
+  it('handles date input changes', () => {
+    render(<FormFields values={mockValues} onChange={mockOnChange} />);
+
+    const dateInput = screen.getByLabelText('Datum der Geburt');
+    const testDate = '2024-01-01';
+    
+    fireEvent.change(dateInput, { target: { value: testDate } });
+    expect(mockOnChange).toHaveBeenCalledWith('geburtsdatum', testDate);
   });
 
   it('handles checkbox changes', () => {
     render(<FormFields values={mockValues} onChange={mockOnChange} />);
 
-    const geburtsBetreuungCheckbox = screen.getByLabelText(/Betreuung der Gebärenden/);
-    fireEvent.click(geburtsBetreuungCheckbox);
+    const checkboxes = [
+      { label: /Betreuung der Gebärenden/, field: 'betreuungGeburt' },
+      { label: /Pflege der Wöchnerin/, field: 'betreuungWochenbett' },
+    ];
 
-    expect(mockOnChange).toHaveBeenCalledWith('betreuungGeburt', true);
+    checkboxes.forEach(({ label, field }) => {
+      const checkbox = screen.getByLabelText(label);
+      fireEvent.click(checkbox);
+      expect(mockOnChange).toHaveBeenCalledWith(field, true);
+    });
   });
 
   it('displays all municipalities in dropdown', () => {
@@ -62,5 +88,17 @@ describe('FormFields', () => {
     municipalities.forEach(municipality => {
       expect(screen.getByText(municipality)).toBeInTheDocument();
     });
+  });
+
+  it('handles municipality selection', () => {
+    render(<FormFields values={mockValues} onChange={mockOnChange} />);
+
+    const gemeindeSelect = screen.getByLabelText('Wahl der Gemeinde');
+    fireEvent.click(gemeindeSelect);
+    
+    const option = screen.getByText(municipalities[0]);
+    fireEvent.click(option);
+    
+    expect(mockOnChange).toHaveBeenCalledWith('gemeinde', municipalities[0]);
   });
 });
