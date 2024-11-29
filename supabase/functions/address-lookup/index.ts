@@ -6,14 +6,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-const config = {
-  allowedZipCodes: [
-    "6300", "6301", "6302", "6303", "6312", "6313", 
-    "6314", "6315", "6317", "6318", "6319", "6330", 
-    "6331", "6332", "6333", "6340", "6341", "6343", "6345"
-  ]
-};
-
 const parseAddressInput = (input: string) => {
   const zipCityPattern = /(\d{4})\s+([^,]+)/;
   const houseNumberPattern = /(\d+[a-zA-Z]?)\s*$/;
@@ -56,15 +48,22 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    const { data: credentials } = await supabaseClient
-      .from('api_credentials')
-      .select('*')
-      .limit(1)
-      .single()
+    // Get allowed ZIP codes from the database
+    const { data: zipCodesData, error: zipCodesError } = await supabaseClient
+      .from('canton_zip_codes')
+      .select('zip_code')
+      .eq('canton_id', (
+        await supabaseClient
+          .from('cantons')
+          .select('id')
+          .eq('code', 'ZG')
+          .eq('enabled', true)
+          .single()
+      ).data?.id);
 
-    if (!credentials) {
-      throw new Error('Failed to fetch API credentials')
-    }
+    if (zipCodesError) throw zipCodesError;
+
+    const allowedZipCodes = zipCodesData.map(row => row.zip_code);
 
     const { type: searchType, searchTerm, zipCode: filterZipCode } = await req.json()
     console.log('Search request:', { searchType, searchTerm, filterZipCode })
@@ -95,6 +94,16 @@ serve(async (req) => {
 
     console.log('API request payload:', JSON.stringify(requestBody, null, 2))
 
+    const { data: credentials } = await supabaseClient
+      .from('api_credentials')
+      .select('*')
+      .limit(1)
+      .single()
+
+    if (!credentials) {
+      throw new Error('Failed to fetch API credentials')
+    }
+
     const apiUrl = 'https://webservices.post.ch:17023/IN_SYNSYN_EXT/REST/v1/autocomplete4'
     
     const response = await fetch(apiUrl, {
@@ -121,7 +130,7 @@ serve(async (req) => {
           if (!item.StreetName?.trim() || !item.ZipCode?.trim()) {
             return false;
           }
-          return config.allowedZipCodes.includes(item.ZipCode);
+          return allowedZipCodes.includes(item.ZipCode);
         })
         .sort((a, b) => {
           const exactMatchA = a.StreetName.toLowerCase() === streetName.toLowerCase();
