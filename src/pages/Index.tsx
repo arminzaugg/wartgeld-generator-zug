@@ -166,7 +166,7 @@ const Index = () => {
           </div>
         </Card>
 
-        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen} className="lg:hidden">
+        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
           <SheetContent side="bottom" className="h-[80vh] sm:h-[90vh]">
             <div className="h-full pt-6">
               {pdfUrl && <PDFPreview pdfUrl={pdfUrl} />}
