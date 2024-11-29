@@ -166,20 +166,12 @@ const Index = () => {
           </div>
         </Card>
 
-        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-          <SheetContent side="bottom" className="h-[80vh] sm:h-[90vh] lg:hidden">
-            <div className="h-full pt-6">
-              {pdfUrl && <PDFPreview pdfUrl={pdfUrl} />}
-            </div>
-          </SheetContent>
-        </Sheet>
-
-        <Card className="hidden lg:block p-4 md:p-6">
-          <h2 className="text-xl font-semibold mb-4">Vorschau</h2>
+        {/* Remove Sheet component for mobile and show PDFPreview directly */}
+        <div className="w-full">
           {pdfUrl ? (
             <PDFPreview pdfUrl={pdfUrl} />
           ) : (
-            <div className="h-[600px] flex items-center justify-center bg-gray-50 rounded-lg">
+            <div className="h-[50vh] lg:h-[80vh] flex items-center justify-center bg-gray-50 rounded-lg border">
               <div className="text-gray-500 flex flex-col items-center space-y-2 px-4 text-center">
                 <p className="text-lg">Bitte füllen Sie das Formular aus</p>
                 <p className="text-sm">und klicken Sie auf "Rechnung Generieren"</p>
@@ -187,7 +179,7 @@ const Index = () => {
               </div>
             </div>
           )}
-        </Card>
+        </div>
       </div>
     </div>
   );
