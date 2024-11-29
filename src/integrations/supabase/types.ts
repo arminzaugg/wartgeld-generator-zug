@@ -9,6 +9,39 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      administration_addresses: {
+        Row: {
+          address: string
+          city: string
+          created_at: string
+          id: string
+          municipality: string
+          name: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          address: string
+          city: string
+          created_at?: string
+          id?: string
+          municipality: string
+          name?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          city?: string
+          created_at?: string
+          id?: string
+          municipality?: string
+          name?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       api_credentials: {
         Row: {
           created_at: string
@@ -36,48 +69,59 @@ export type Database = {
         }
         Relationships: []
       }
-      form_data: {
+      canton_zip_codes: {
         Row: {
-          address: string | null
-          betreuunggeburt: boolean | null
-          betreuungwochenbett: boolean | null
+          canton_id: string
           created_at: string
-          geburtsdatum: string | null
-          gemeinde: string | null
           id: string
-          nachname: string | null
-          ort: string | null
-          plz: string | null
           updated_at: string
-          vorname: string | null
+          zip_code: string
         }
         Insert: {
-          address?: string | null
-          betreuunggeburt?: boolean | null
-          betreuungwochenbett?: boolean | null
+          canton_id: string
           created_at?: string
-          geburtsdatum?: string | null
-          gemeinde?: string | null
           id?: string
-          nachname?: string | null
-          ort?: string | null
-          plz?: string | null
           updated_at?: string
-          vorname?: string | null
+          zip_code: string
         }
         Update: {
-          address?: string | null
-          betreuunggeburt?: boolean | null
-          betreuungwochenbett?: boolean | null
+          canton_id?: string
           created_at?: string
-          geburtsdatum?: string | null
-          gemeinde?: string | null
           id?: string
-          nachname?: string | null
-          ort?: string | null
-          plz?: string | null
           updated_at?: string
-          vorname?: string | null
+          zip_code?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "canton_zip_codes_canton_id_fkey"
+            columns: ["canton_id"]
+            isOneToOne: false
+            referencedRelation: "cantons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cantons: {
+        Row: {
+          code: string
+          created_at: string
+          enabled: boolean
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          updated_at?: string
         }
         Relationships: []
       }
