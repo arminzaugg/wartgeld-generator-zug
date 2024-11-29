@@ -1,9 +1,18 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import Index from '../Index';
+import * as pdfGenerator from '@/lib/pdfGenerator';
+
+vi.mock('@/lib/pdfGenerator', () => ({
+  generatePDF: vi.fn(),
+}));
 
 describe('Index', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   const renderComponent = () => {
     render(
       <BrowserRouter>
@@ -29,8 +38,35 @@ describe('Index', () => {
     expect(screen.getByText('Bitte füllen Sie das Formular aus')).toBeDefined();
   });
 
-  it('renders generate button', () => {
+  it('handles form submission', async () => {
     renderComponent();
-    expect(screen.getByText('Rechnung Generieren')).toBeDefined();
+    
+    // Fill in required fields
+    fireEvent.change(screen.getByLabelText('Vorname'), { target: { value: 'John' } });
+    fireEvent.change(screen.getByLabelText('Nachname'), { target: { value: 'Doe' } });
+    fireEvent.change(screen.getByLabelText('Datum der Geburt'), { target: { value: '2024-01-01' } });
+    
+    // Submit form
+    const submitButton = screen.getByText('Rechnung Generieren');
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(pdfGenerator.generatePDF).toHaveBeenCalled();
+    });
+  });
+
+  it('handles form reset', () => {
+    renderComponent();
+    
+    // Fill in a field
+    const vornameInput = screen.getByLabelText('Vorname');
+    fireEvent.change(vornameInput, { target: { value: 'John' } });
+    
+    // Reset form
+    const resetButton = screen.getByText('Formular Zurücksetzen');
+    fireEvent.click(resetButton);
+    
+    // Check if field was cleared
+    expect(vornameInput).toHaveValue('');
   });
 });
