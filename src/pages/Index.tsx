@@ -14,6 +14,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { supabase } from "@/integrations/supabase/client";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 const Index = () => {
   const [formData, setFormData] = useState({
@@ -28,6 +29,7 @@ const Index = () => {
   });
   
   const [pdfUrl, setPdfUrl] = useState("");
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const { toast } = useToast();
   const hasViewedSettings = localStorage.getItem("settings-viewed") === "true";
 
@@ -59,6 +61,7 @@ const Index = () => {
       betreuungWochenbett: false,
     });
     setPdfUrl("");
+    setIsSheetOpen(false);
     toast({
       title: "Formular zurückgesetzt",
       description: "Alle Eingaben wurden gelöscht",
@@ -98,6 +101,7 @@ const Index = () => {
         betreuungWochenbett: formData.betreuungWochenbett,
       });
       setPdfUrl(pdfUrl);
+      setIsSheetOpen(true);
       
       toast({
         title: "Erfolgreich",
@@ -162,7 +166,15 @@ const Index = () => {
           </div>
         </Card>
 
-        <Card className="p-4 md:p-6">
+        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen} className="lg:hidden">
+          <SheetContent side="bottom" className="h-[80vh] sm:h-[90vh]">
+            <div className="h-full pt-6">
+              {pdfUrl && <PDFPreview pdfUrl={pdfUrl} />}
+            </div>
+          </SheetContent>
+        </Sheet>
+
+        <Card className="hidden lg:block p-4 md:p-6">
           <h2 className="text-xl font-semibold mb-4">Vorschau</h2>
           {pdfUrl ? (
             <PDFPreview pdfUrl={pdfUrl} />
