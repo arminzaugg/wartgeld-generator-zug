@@ -10,8 +10,8 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "vitest",
-    "test:unit": "vitest run --config ./vitest.config.ts \"src/**/__tests__/**/*.unit.test.{ts,tsx}\" \"src/**/*.unit.test.{ts,tsx}\"",
-    "test:integration": "vitest run --config ./vitest.config.ts \"src/**/__tests__/**/*.integration.test.{ts,tsx}\" \"src/**/*.integration.test.{ts,tsx}\"",
+    "test:unit": "vitest run --config ./vitest.config.ts",
+    "test:integration": "vitest run --config ./vitest.config.ts",
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
