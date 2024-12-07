@@ -1,5 +1,20 @@
 import { vi } from 'vitest';
-import { mockSupabaseResponses } from '../test-utils';
+
+export const mockSupabaseResponses = {
+  plzMapping: {
+    data: { gemeinde: 'Zug' },
+    error: null
+  },
+  administrationAddress: {
+    data: {
+      title: 'Test Administration',
+      name: 'Test Name',
+      address: 'Test Address',
+      city: 'Test City'
+    },
+    error: null
+  }
+};
 
 export const mockSupabaseClient = {
   from: vi.fn().mockReturnValue({
