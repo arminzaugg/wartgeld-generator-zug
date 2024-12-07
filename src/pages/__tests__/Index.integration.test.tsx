@@ -1,9 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import { BrowserRouter } from 'react-router-dom';
+import { screen } from '@testing-library/react';
 import Index from '../Index';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { renderWithProviders } from '@/lib/__tests__/test-utils';
 
 vi.mock('@/lib/pdfGenerator', () => ({
   generatePDF: vi.fn(() => 'mock-pdf-url')
@@ -16,25 +14,13 @@ vi.mock('@/services/api/addressService', () => ({
 }));
 
 describe('Index', () => {
-  const queryClient = new QueryClient();
-
-  const renderComponent = () => {
-    return render(
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <Index />
-        </BrowserRouter>
-      </QueryClientProvider>
-    );
-  };
-
   it('renders the main heading', () => {
-    renderComponent();
+    renderWithProviders(<Index />);
     expect(screen.getByText('Hebammenwartgeld Kanton Zug')).toBeInTheDocument();
   });
 
   it('shows preview placeholder when no PDF is generated', () => {
-    renderComponent();
+    renderWithProviders(<Index />);
     expect(screen.getByText('Bitte füllen Sie das Formular aus')).toBeInTheDocument();
   });
 });
