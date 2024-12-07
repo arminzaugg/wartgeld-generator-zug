@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { FormFields } from '../FormFields';
+import { FormFields } from './FormFields';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createFormValues } from '@/lib/__tests__/factories/formFactory';
 
