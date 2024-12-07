@@ -1,19 +1,7 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
 import Index from '../Index';
 import { renderWithProviders } from '@/lib/__tests__/test-utils';
-
-// Mock PDF generator
-vi.mock('@/lib/pdfGenerator', () => ({
-  generatePDF: vi.fn(() => 'mock-pdf-url')
-}));
-
-// Mock address service
-vi.mock('@/services/api/addressService', () => ({
-  addressService: {
-    getPlzMapping: vi.fn().mockResolvedValue({ gemeinde: 'Test Gemeinde' })
-  }
-}));
 
 describe('Index Page', () => {
   it('renders the main heading', () => {
