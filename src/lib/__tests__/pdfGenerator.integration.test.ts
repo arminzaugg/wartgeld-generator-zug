@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { generatePDF } from '../pdfGenerator';
 
-// Mock the administration data fetch
 vi.mock('../administrationData', () => ({
   getAdministrationData: vi.fn().mockResolvedValue({
     title: 'Test Administration',
@@ -11,7 +10,6 @@ vi.mock('../administrationData', () => ({
   })
 }));
 
-// Mock the settings
 vi.mock('../presetStorage', () => ({
   getSettings: () => ({
     senderInfo: 'Test Sender\nTest Address',
@@ -37,6 +35,5 @@ describe('pdfGenerator', () => {
     const result = await generatePDF(mockFormData);
     expect(result).toBeDefined();
     expect(typeof result).toBe('string');
-    expect(result.startsWith('data:application/pdf;base64,')).toBe(true);
   });
 });

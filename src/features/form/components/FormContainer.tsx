@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { PersonalInfoFields } from "./PersonalInfoFields";
 import { AddressFields } from "./AddressFields";
 import { DateAndMunicipalityFields } from "./DateAndMunicipalityFields";
 import { ServiceSelectionFields } from "./ServiceSelectionFields";
-import { FormValidation } from "@/components/FormValidation";
+import { FormActions } from "./FormActions";
+import { FormValidationDisplay } from "./FormValidationDisplay";
+import { formValidationService } from "@/services/form/formValidationService";
+import { pdfGenerationService } from "@/services/pdf/pdfGenerationService";
+import { useToast } from "@/components/ui/use-toast";
 
 interface FormContainerProps {
   values: {
@@ -23,23 +26,19 @@ interface FormContainerProps {
   onSubmit: () => void;
 }
 
-export const FormContainer = ({ values, onChange, onAddressChange, onClear, onSubmit }: FormContainerProps) => {
+export const FormContainer = ({ 
+  values, 
+  onChange, 
+  onAddressChange, 
+  onClear, 
+  onSubmit 
+}: FormContainerProps) => {
   const [errors, setErrors] = useState<{[key: string]: string}>({});
-
-  const validateField = (field: string, value: string | boolean) => {
-    switch (field) {
-      case 'vorname':
-      case 'nachname':
-        return typeof value === 'string' && value.length >= 2 ? '' : 'Mindestens 2 Zeichen erforderlich';
-      case 'geburtsdatum':
-        return value ? '' : 'Bitte geben Sie ein Datum ein';
-      default:
-        return '';
-    }
-  };
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   const handleInputChange = (field: string, value: string | boolean) => {
-    const error = validateField(field, value);
+    const error = formValidationService.validateField(field, value);
     if (error) {
       setErrors(prev => ({ ...prev, [field]: error }));
     } else {
@@ -52,9 +51,33 @@ export const FormContainer = ({ values, onChange, onAddressChange, onClear, onSu
     onChange(field, value);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit();
+    
+    const validationErrors = formValidationService.validateForm(values);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      toast({
+        title: "Validation Error",
+        description: "Bitte überprüfen Sie Ihre Eingaben",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await pdfGenerationService.generatePDF(values);
+      onSubmit();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "PDF konnte nicht generiert werden. Bitte versuchen Sie es erneut.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -75,7 +98,9 @@ export const FormContainer = ({ values, onChange, onAddressChange, onClear, onSu
           />
 
           <DateAndMunicipalityFields
-            values={values}
+            values={{
+              geburtsdatum: values.geburtsdatum
+            }}
             errors={errors}
             onChange={handleInputChange}
           />
@@ -87,26 +112,12 @@ export const FormContainer = ({ values, onChange, onAddressChange, onClear, onSu
         </div>
       </div>
 
-      <div className="sticky bottom-0 bg-background pt-4">
-        <div className="container flex flex-col sm:flex-row gap-3 max-w-3xl mx-auto">
-          <Button 
-            variant="outline" 
-            onClick={onClear}
-            className="w-full sm:w-1/2 h-11"
-            type="button"
-          >
-            Formular Zurücksetzen
-          </Button>
-          <Button 
-            className="w-full sm:w-1/2 h-11"
-            type="submit"
-          >
-            Rechnung Generieren
-          </Button>
-        </div>
-      </div>
+      <FormActions 
+        onClear={onClear}
+        isSubmitting={isSubmitting}
+      />
 
-      <FormValidation errors={errors} />
+      <FormValidationDisplay errors={errors} />
     </form>
   );
 };
