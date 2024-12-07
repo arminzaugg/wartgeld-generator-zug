@@ -5,6 +5,16 @@ import { ThemeProvider } from '@/components/ThemeProvider';
 import { Toaster } from '@/components/ui/toaster';
 import { BrowserRouter } from 'react-router-dom';
 
+// Mock ResizeObserver
+class ResizeObserverMock {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+
+// Add ResizeObserver to the global object
+global.ResizeObserver = ResizeObserverMock;
+
 export function renderWithProviders(
   ui: React.ReactElement,
   {
