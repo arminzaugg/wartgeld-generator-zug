@@ -54,9 +54,9 @@ jobs:
       if: github.event_name != 'workflow_dispatch' || github.event.inputs.test-type == 'all' || github.event.inputs.test-type == '${{ matrix.test-group }}'
       run: |
         if [ "${{ matrix.test-group }}" = "unit" ]; then
-          npm run test:unit -- "src/**/__tests__/**/*.unit.test.{ts,tsx}" --passWithNoTests
+          npm run test:unit
         else
-          npm run test:integration -- "src/**/__tests__/**/*.integration.test.{ts,tsx}" --passWithNoTests
+          npm run test:integration
         fi
 
     - name: Upload coverage reports
