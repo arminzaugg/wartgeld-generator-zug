@@ -51,7 +51,7 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   doc.text("Betreuung von", 20, 120);
   doc.text(`${data.vorname} ${data.nachname}`, 20, 125);
   // Format address without duplication
-  doc.text(`${data.address}, ${data.plz} ${data.ort}`, 20, 130);
+  doc.text(`${data.address}`, 20, 130);
   doc.text(new Date().toLocaleDateString('de-CH'), 20, 135);
   
   // Calculate total
