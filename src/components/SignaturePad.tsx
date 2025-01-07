@@ -6,7 +6,7 @@ import { useToast } from './ui/use-toast';
 import { Card } from './ui/card';
 
 interface SignaturePadProps {
-  onSave: (signature: string) => void;
+  onSave: (signature: string | null) => void;
   initialSignature?: string;
 }
 
@@ -20,6 +20,11 @@ export const SignaturePad = ({ onSave, initialSignature }: SignaturePadProps) =>
     if (signaturePad.current) {
       signaturePad.current.clear();
       setImagePreview(null);
+      onSave(null); // Pass null to remove signature from storage
+      toast({
+        title: "Unterschrift gelöscht",
+        description: "Ihre Unterschrift wurde erfolgreich gelöscht.",
+      });
     }
   };
 
