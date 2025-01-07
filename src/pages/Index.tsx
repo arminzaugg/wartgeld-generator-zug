@@ -14,7 +14,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { addressService } from "@/services/api/addressService";
+import { pdfGenerationService } from "@/services/pdf/pdfGenerationService";
 
 const Index = () => {
   const [formData, setFormData] = useState({
@@ -77,23 +77,7 @@ const Index = () => {
     }
 
     try {
-      const plzMapping = await addressService.getPlzMapping(formData.plz);
-
-      if (!plzMapping) {
-        toast({
-          title: "Fehler",
-          description: "Die eingegebene PLZ wird nicht unterstützt",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const pdfUrl = await generatePDF({
-        ...formData,
-        gemeinde: plzMapping.gemeinde,
-        betreuungGeburt: formData.betreuungGeburt,
-        betreuungWochenbett: formData.betreuungWochenbett,
-      });
+      const pdfUrl = await pdfGenerationService.generatePDF(formData);
       setPdfUrl(pdfUrl);
       
       toast({
@@ -101,9 +85,20 @@ const Index = () => {
         description: "PDF wurde erfolgreich erstellt",
       });
     } catch (error) {
+      console.error('Error generating PDF:', error);
+      
+      let errorMessage = "Ein Fehler ist aufgetreten";
+      if (error instanceof Error) {
+        if (error.message.includes("No municipality found")) {
+          errorMessage = "Die eingegebene PLZ wird nicht unterstützt";
+        } else if (error.message.includes("No administration data found")) {
+          errorMessage = "Keine Verwaltungsdaten für diese Gemeinde gefunden";
+        }
+      }
+      
       toast({
         title: "Fehler",
-        description: "Ein Fehler ist aufgetreten",
+        description: errorMessage,
         variant: "destructive",
       });
     }

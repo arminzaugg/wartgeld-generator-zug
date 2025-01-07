@@ -15,14 +15,14 @@ interface FormData {
 export const pdfGenerationService = {
   async generatePDF(formData: FormData): Promise<string> {
     try {
-      const administrationData = await getAdministrationData(formData.ort);
+      const administrationData = await getAdministrationData(formData.plz);
       return await pdfGenerator({
         ...formData,
         gemeinde: administrationData.municipality
       });
     } catch (error) {
       console.error('Error generating PDF:', error);
-      throw new Error('PDF generation failed');
+      throw error; // Let the error bubble up for proper handling
     }
   }
 };
