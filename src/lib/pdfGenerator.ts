@@ -16,7 +16,7 @@ interface FormData {
 
 export const generatePDF = async (data: FormData): Promise<string> => {
   const doc = new jsPDF();
-  const administration = await getAdministrationData(data.gemeinde);
+  const administration = await getAdministrationData(data.plz);
   const settings = getSettings();
   const senderInfo = settings.senderInfo.split('\n');
   
@@ -32,7 +32,7 @@ export const generatePDF = async (data: FormData): Promise<string> => {
     doc.text(administration.name, 120, 52);
   }
   doc.text(administration.address, 120, administration.name ? 59 : 52);
-  doc.text(administration.city, 120, administration.name ? 66 : 59);
+  doc.text(`${administration.plz} ${administration.city}`, 120, administration.name ? 66 : 59);
   
   // Add invoice title with larger font and bold
   doc.setFontSize(20);
@@ -50,7 +50,8 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   doc.setFontSize(12);
   doc.text("Betreuung von", 20, 120);
   doc.text(`${data.vorname} ${data.nachname}`, 20, 125);
-  doc.text(`${data.address}, ${data.plz} ${data.ort}`, 20, 130);
+  // Format address without duplication
+  doc.text(`${data.address}`, 20, 130);
   doc.text(new Date().toLocaleDateString('de-CH'), 20, 135);
   
   // Calculate total
@@ -62,7 +63,6 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   doc.text(data.betreuungGeburt ? "[X] Ja" : "[  ] Ja", 140, 150);
   doc.text(data.betreuungGeburt ? "[  ] Nein" : "[X] Nein", 160, 150);
   doc.text(data.betreuungGeburt ? "CHF  400" : "CHF  0", 180, 150);
-
   if (data.betreuungGeburt) total += 400;
   
   doc.text("Pflege der Wöchnerin zuhause", 20, 160);
