@@ -45,11 +45,10 @@ export const deletePreset = (id: string): void => {
 };
 
 export const saveSenderInfo = (info: string, ortRechnungssteller: string, signature?: string): void => {
-  const currentSettings = getSettings();
   localStorage.setItem(SETTINGS_KEY, JSON.stringify({ 
     senderInfo: info, 
     ortRechnungssteller,
-    signature: signature || currentSettings.signature
+    signature
   }));
 };
 

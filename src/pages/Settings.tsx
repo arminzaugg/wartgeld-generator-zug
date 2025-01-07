@@ -25,8 +25,8 @@ const Settings = () => {
     });
   };
 
-  const handleSaveSignature = (signature: string) => {
-    saveSenderInfo(senderInfo, ortRechnungssteller, signature);
+  const handleSaveSignature = (signature: string | null) => {
+    saveSenderInfo(senderInfo, ortRechnungssteller, signature || undefined);
     localStorage.setItem("settings-viewed", "true");
   };
 
