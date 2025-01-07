@@ -21,6 +21,4 @@ ATM we are running on Netflify using automatic builds and manual deploys.
 
 ## Future ideas
 
-[ ] tag releases
-
-[x] introduce address verification
+[x] use Swiss Post API to lookup addresses.
