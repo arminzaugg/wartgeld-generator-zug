@@ -1,10 +1,10 @@
 import { supabase } from "@/integrations/supabase/client";
 
 export const getAdministrationData = async (plz: string) => {
-  // First get the municipality from plz_mappings
+  // First get the municipality and administration PLZ from plz_mappings
   const { data: plzMapping, error: plzError } = await supabase
     .from('plz_mappings')
-    .select('gemeinde')
+    .select('gemeinde, administration_plz')
     .eq('address_plz', plz)
     .maybeSingle();
 
@@ -21,5 +21,8 @@ export const getAdministrationData = async (plz: string) => {
   if (adminError) throw adminError;
   if (!adminData) throw new Error(`No administration data found for municipality ${plzMapping.gemeinde}`);
 
-  return adminData;
+  return {
+    ...adminData,
+    plz: plzMapping.administration_plz // Include the administration PLZ in the returned data
+  };
 };

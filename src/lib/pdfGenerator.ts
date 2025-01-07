@@ -16,7 +16,7 @@ interface FormData {
 
 export const generatePDF = async (data: FormData): Promise<string> => {
   const doc = new jsPDF();
-  const administration = await getAdministrationData(data.gemeinde);
+  const administration = await getAdministrationData(data.plz);
   const settings = getSettings();
   const senderInfo = settings.senderInfo.split('\n');
   
@@ -32,7 +32,7 @@ export const generatePDF = async (data: FormData): Promise<string> => {
     doc.text(administration.name, 120, 52);
   }
   doc.text(administration.address, 120, administration.name ? 59 : 52);
-  doc.text(administration.city, 120, administration.name ? 66 : 59);
+  doc.text(`${administration.plz} ${administration.city}`, 120, administration.name ? 66 : 59);
   
   // Add invoice title with larger font and bold
   doc.setFontSize(20);
