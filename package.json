@@ -70,7 +70,7 @@
     "react-hook-form": "^7.53.2",
     "react-resizable-panels": "^2.1.7",
     "react-router-dom": "^6.26.2",
-    "react-signature-canvas": "^1.0.6",
+    "react-signature-canvas": "^1.0.7",
     "recharts": "^2.12.7",
     "sonner": "^1.7.0",
     "tailwind-merge": "^2.5.2",
