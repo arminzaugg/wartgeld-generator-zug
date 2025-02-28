@@ -23,7 +23,7 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   // Add sender information (top left)
   doc.setFontSize(11);
   senderInfo.forEach((line, index) => {
-    doc.text(line, 20, 20 + (index * 5));
+    doc.text(line, 25, 20 + (index * 5));
   });
   
   // Add recipient information (administration)
@@ -35,78 +35,79 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   doc.text(`${administration.city}`, 120, administration.name ? 60 : 55);
   
   // Add invoice title with larger font and bold
-  doc.setFontSize(20);
+  doc.setFontSize(18);
   doc.setFont("helvetica", "bold");
-  doc.text("Rechnung: Hebammenwartgeld", 20, 90);
+  doc.text("Rechnung: Hebammenwartgeld", 25, 104);
   
   // Add legal basis in bold with reduced spacing
   doc.setFontSize(12);
   doc.setFont("helvetica", "bold");
-  doc.text("gestützt auf § 53 des Gesundheitsgesetzes vom 30. Oktober 2008, und § 53 der", 20, 100);
-  doc.text("Gesundheitsverordnung vom 30. Juni 2009.", 20, 105);
+  doc.text("gestützt auf § 53 des Gesundheitsgesetzes vom 30. Oktober 2008, und § 53 der", 25, 119);
+  doc.text("Gesundheitsverordnung vom 30. Juni 2009.", 25, 124);
   
   // Reset font to normal and increase size for patient information
   doc.setFont("helvetica", "normal");
   doc.setFontSize(12);
-  doc.text("Betreuung von", 20, 120);
-  doc.text(`${data.vorname} ${data.nachname}`, 20, 130);
-  doc.text(`____________________________________________________________________`, 20, 131);
+  doc.text("Betreuung von", 25, 134);
+  doc.text(`${data.vorname} ${data.nachname}`, 25, 144);
+  doc.text(`____________________________________________________________________`, 25, 145);
   // Format address without duplication
-  doc.text(`${data.address}`, 20, 140);
-  doc.text(`____________________________________________________________________`, 20, 141);
-  doc.text(new Date().toLocaleDateString('de-CH'), 20, 150);
-  doc.text(`____________________________________________________________________`, 20, 151);
+  doc.text(`${data.address}`, 25, 154);
+  doc.text(`____________________________________________________________________`, 25, 155);
+  doc.text(new Date().toLocaleDateString('de-CH'), 25, 164);
+  doc.text(`____________________________________________________________________`, 25, 165);
   
   // Calculate total
   let total = 0;
   
   // Add service table with text-based checkbox symbols
   doc.setFontSize(12);
-  doc.text("Betreuung der Gebärenden zuhause", 20, 165);
-  doc.text(data.betreuungGeburt ? "[X] Ja" : "[  ] Ja", 120, 165);
-  doc.text(data.betreuungGeburt ? "[  ] Nein" : "[X] Nein", 140, 165);
-  doc.text(data.betreuungGeburt ? "Fr.  400" : "Fr.  0", 160, 165);
+  doc.text("Betreuung der Gebärenden zuhause", 25, 184);
+  doc.text(data.betreuungGeburt ? "[X] Ja" : "[  ] Ja", 120, 184);
+  doc.text(data.betreuungGeburt ? "[  ] Nein" : "[X] Nein", 140, 184);
+  doc.text(data.betreuungGeburt ? "Fr.  400" : "Fr.  0", 160, 184);
   if (data.betreuungGeburt) total += 400;
   
-  doc.text("Pflege der Wöchnerin zuhause", 20, 175);
-  doc.text(data.betreuungWochenbett ? "[X] Ja" : "[  ] Ja", 120, 175);
-  doc.text(data.betreuungWochenbett ? "[  ] Nein" : "[X] Nein", 140, 175);
-  doc.text(data.betreuungWochenbett ? "Fr.  400" : "Fr.  0", 160, 175);
+  doc.text("Pflege der Wöchnerin zuhause", 25, 194);
+  doc.text(data.betreuungWochenbett ? "[X] Ja" : "[  ] Ja", 120, 194);
+  doc.text(data.betreuungWochenbett ? "[  ] Nein" : "[X] Nein", 140, 194);
+  doc.text(data.betreuungWochenbett ? "Fr.  400" : "Fr.  0", 160, 194);
   if (data.betreuungWochenbett) total += 400;
   
   doc.setFont("helvetica", "bold");
-  doc.text("Total Rechnungsbetrag", 20, 185);
-  doc.text(`Fr.  ${total}`, 160, 185);
-  doc.text(`========`, 160, 188);
+  doc.text("Total Rechnungsbetrag", 25, 204);
+  doc.text(`Fr.  ${total}`, 160, 204);
+  doc.setFont("helvetica", "normal");
+  doc.text(`========`, 160, 207);
   
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
-  doc.text("Zutreffendes ankreuzen, Formular vollständig und in Blockschrift ausfüllen", 20, 195);
+  doc.text("Zutreffendes ankreuzen, Formular vollständig und in Blockschrift ausfüllen", 25, 213);
   
   doc.setFontSize(12);
   doc.setFont("helvetica", "bold");
-  doc.text("Die Unterzeichnende bescheinigt die Richtigkeit obiger Angaben", 20, 220);
+  doc.text("Die Unterzeichnende bescheinigt die Richtigkeit obiger Angaben", 25, 227);
   doc.setFont("helvetica", "normal")
-  doc.text("Freundliche Grüsse", 20, 230);
+  doc.text("Mit freundlichen Grüssen", 25, 237);
   
-  doc.text("Ort / Datum", 20, 240);
-  doc.text("Unterschrift Hebamme", 120, 240);
+  doc.text("Ort / Datum", 25, 247);
+  doc.text("Unterschrift Hebamme", 120, 247);
   
   
   // Add signature line and place/date
   const currentDate = new Date().toLocaleDateString('de-CH');
-  doc.text(`${settings.ortRechnungssteller}, ${currentDate}`, 20, 265);
-  doc.text("____________________________________________________________________", 20, 266);
+  doc.text(`${settings.ortRechnungssteller}, ${currentDate}`, 25, 262);
+  doc.text("____________________________________________________________________", 25, 263);
   
   // Add signature if available
   if (settings.signature) {
-    doc.addImage(settings.signature, 'PNG', 130, 245, 40, 20);
+    doc.addImage(settings.signature, 'PNG', 130, 243, 40, 20);
   }
   
   // Add payment terms
   doc.setFontSize(12);
-  doc.text("Zahlbar innert 30 Tagen", 20, 280);
-  doc.text("Die Rechnungsstellung erfolgt bis spätestens 2 Monate nach der Geburt", 20, 285);
+  doc.text("Zahlbar innert 30 Tagen", 25, 272);
+  doc.text("Die Rechnungsstellung erfolgt bis spätestens 2 Monate nach der Geburt", 25, 277);
   
   // Generate PDF as base64 string
   return doc.output('datauristring');
