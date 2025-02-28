@@ -63,14 +63,14 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   // Add service table with text-based checkbox symbols
   doc.setFontSize(12);
   doc.text("Betreuung der Gebärenden zuhause", 25, 184);
-  doc.text(data.betreuungGeburt ? "[X] ja" : "[  ] ja", 112, 184);
-  doc.text(data.betreuungGeburt ? "[  ] nein" : "[X] nein", 137, 184);
+  doc.text(data.betreuungGeburt ? "[X]  ja" : "[  ]  ja", 112, 184);
+  doc.text(data.betreuungGeburt ? "[  ]  nein" : "[X]  nein", 137, 184);
   doc.text(data.betreuungGeburt ? "Fr.  400.-" : "Fr.________", 163, 184);
   if (data.betreuungGeburt) total += 400;
   
   doc.text("Pflege der Wöchnerin zuhause", 25, 194);
-  doc.text(data.betreuungWochenbett ? "[X] ja" : "[  ] ja", 112, 194);
-  doc.text(data.betreuungWochenbett ? "[  ] nein" : "[X] nein", 137, 194);
+  doc.text(data.betreuungWochenbett ? "[X]  ja" : "[  ]  ja", 112, 194);
+  doc.text(data.betreuungWochenbett ? "[  ]  nein" : "[X]  nein", 137, 194);
   doc.text(data.betreuungWochenbett ? "Fr.  400.-" : "Fr.________", 163, 194);
   if (data.betreuungWochenbett) total += 400;
   
