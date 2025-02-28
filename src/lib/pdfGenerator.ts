@@ -23,16 +23,16 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   // Add sender information (top left)
   doc.setFontSize(11);
   senderInfo.forEach((line, index) => {
-    doc.text(line, 25, 20 + (index * 5));
+    doc.text(line, 25, 25 + (index * 5));
   });
   
   // Add recipient information (administration)
-  doc.text(administration.title, 120, 45);
+  doc.text(administration.title, 120, 65);
   if (administration.name) {
-    doc.text(administration.name, 120, 50);
+    doc.text(administration.name, 120, 70);
   }
-  doc.text(administration.address, 120, administration.name ? 55 : 50);
-  doc.text(`${administration.city}`, 120, administration.name ? 60 : 55);
+  doc.text(administration.address, 120, administration.name ? 75 : 70);
+  doc.text(`${administration.city}`, 120, administration.name ? 80 : 85);
   
   // Add invoice title with larger font and bold
   doc.setFontSize(18);
@@ -63,22 +63,22 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   // Add service table with text-based checkbox symbols
   doc.setFontSize(12);
   doc.text("Betreuung der Gebärenden zuhause", 25, 184);
-  doc.text(data.betreuungGeburt ? "[X] Ja" : "[  ] Ja", 120, 184);
-  doc.text(data.betreuungGeburt ? "[  ] Nein" : "[X] Nein", 140, 184);
-  doc.text(data.betreuungGeburt ? "Fr.  400" : "Fr.  0", 160, 184);
+  doc.text(data.betreuungGeburt ? "[X] ja" : "[  ] ja", 112, 184);
+  doc.text(data.betreuungGeburt ? "[  ] nein" : "[X] nein", 137, 184);
+  doc.text(data.betreuungGeburt ? "Fr.  400.-" : "Fr.________", 163, 184);
   if (data.betreuungGeburt) total += 400;
   
   doc.text("Pflege der Wöchnerin zuhause", 25, 194);
-  doc.text(data.betreuungWochenbett ? "[X] Ja" : "[  ] Ja", 120, 194);
-  doc.text(data.betreuungWochenbett ? "[  ] Nein" : "[X] Nein", 140, 194);
-  doc.text(data.betreuungWochenbett ? "Fr.  400" : "Fr.  0", 160, 194);
+  doc.text(data.betreuungWochenbett ? "[X] ja" : "[  ] ja", 112, 194);
+  doc.text(data.betreuungWochenbett ? "[  ] nein" : "[X] nein", 137, 194);
+  doc.text(data.betreuungWochenbett ? "Fr.  400.-" : "Fr.________", 163, 194);
   if (data.betreuungWochenbett) total += 400;
   
   doc.setFont("helvetica", "bold");
   doc.text("Total Rechnungsbetrag", 25, 204);
-  doc.text(`Fr.  ${total}`, 160, 204);
   doc.setFont("helvetica", "normal");
-  doc.text(`========`, 160, 207);
+  doc.text(`Fr.  ${total}.-`, 163, 204);
+  doc.text(`========`, 163, 207);
   
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
@@ -91,7 +91,7 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   doc.text("Mit freundlichen Grüssen", 25, 237);
   
   doc.text("Ort / Datum", 25, 247);
-  doc.text("Unterschrift Hebamme", 120, 247);
+  doc.text("Unterschrift Hebamme", 127, 247);
   
   
   // Add signature line and place/date
