@@ -29,7 +29,7 @@ const Info = () => {
             <li>Einfache Erfassung von Patientendaten</li>
             <li>Automatische Generierung von Rechnungen im PDF-Format</li>
             <li>Speicherung von Rechnungsstellerdaten in den Einstellungen</li>
-            <li>Unterstützung aller Gemeinden im Kanton Zug</li>
+            <li>Automatische Adressenerkennung</li>
           </ul>
         </section>
 
@@ -46,8 +46,10 @@ const Info = () => {
         <section>
           <h2 className="text-2xl font-semibold mb-4">Datenschutz</h2>
           <p className="text-gray-700 leading-relaxed">
-            Diese Anwendung verarbeitet alle Daten ausschliesslich lokal in Ihrem Browser. Es werden keine Daten an externe Server gesendet. 
+            Diese Anwendung speichert alle Daten ausschliesslich lokal in Ihrem Browser. Es werden keine sensiblen Daten an externe Server gesendet. 
             Die einzigen gespeicherten Informationen sind Ihre Einstellungen, die im lokalen Speicher (Local Storage) Ihres Browsers gespeichert werden.
+            Die automatische Vervollständigung der Adresse wird durch eine Schnittstelle der Schweizer Post bereitgestellt. Dazu wird die Eingabe
+            des Strassennamens an die API der Schweizer Post gesendet. Es werden keine weiteren Daten an die Schweizer Post übermittelt.
           </p>
         </section>
 

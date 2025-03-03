@@ -2,7 +2,7 @@
 
 # Welcome to Wartgeld Generator Zug
 
-This simple webapp should make the life of a midwife in Zug a little bit easier. At the same time, its a fun project for me :)
+This is a simple webapp to input form data and get a Wartgeld Rechnung for Kanton Zug. This page is dedicated to the hardworking midwifes in the Kanton Zug.
 
 ## What technologies are used for this project?
 
@@ -14,6 +14,7 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 - Loveable
+- Post API
 
 ## How can I deploy this project?
 
