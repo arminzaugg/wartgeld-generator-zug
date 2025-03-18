@@ -24,6 +24,8 @@ interface FormContainerProps {
   onAddressChange: (street: string, zipCode?: string, city?: string) => void;
   onClear: () => void;
   onSubmit: () => void;
+  hasGeneratedPDF?: boolean;
+  pdfData?: string;
 }
 
 export const FormContainer = ({ 
@@ -31,7 +33,9 @@ export const FormContainer = ({
   onChange, 
   onAddressChange, 
   onClear, 
-  onSubmit 
+  onSubmit,
+  hasGeneratedPDF = false,
+  pdfData
 }: FormContainerProps) => {
   const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -114,7 +118,11 @@ export const FormContainer = ({
 
       <FormActions 
         onClear={onClear}
+        onSubmit={handleSubmit}
         isSubmitting={isSubmitting}
+        hasGeneratedPDF={hasGeneratedPDF}
+        pdfData={pdfData}
+        values={values}
       />
 
       <FormValidationDisplay errors={errors} />
