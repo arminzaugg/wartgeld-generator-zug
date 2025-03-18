@@ -15,7 +15,7 @@ export const PDFPreview = ({ pdfUrl }: PDFPreviewProps) => {
   }, [pdfUrl]);
 
   return (
-    <div className="relative w-full h-[80vh] border rounded-lg overflow-hidden bg-white">
+    <div className="relative w-full h-[80vh] border rounded-lg overflow-hidden bg-white print:fixed print:inset-0 print:h-screen print:w-screen print:border-0 print:rounded-none print:bg-white print:z-50">
       <iframe
         ref={iframeRef}
         className={cn(
