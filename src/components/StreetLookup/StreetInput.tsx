@@ -56,18 +56,6 @@ export const StreetInput = ({
         />
       </div>
 
-      {(hasSelection || value) && (
-        <Button
-          onClick={onClear}
-          variant="ghost"
-          size="sm"
-          className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 p-0 hover:bg-gray-100"
-          aria-label="Auswahl löschen"
-        >
-          <X className="h-4 w-4" />
-        </Button>
-      )}
-      
       {isLoading && (
         <div className="absolute right-2 top-1/2 -translate-y-1/2" aria-hidden="true">
           <Loader2 className="h-4 w-4 animate-spin text-gray-500" />
