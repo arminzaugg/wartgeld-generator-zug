@@ -28,11 +28,15 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   
   // Add recipient information (administration)
   doc.text(administration.title, 120, 65);
+  // Dynamically calculate y-positions to avoid empty lines
+  let recipientY = 70;
   if (administration.name) {
-    doc.text(administration.name, 120, 70);
+    doc.text(administration.name, 120, recipientY);
+    recipientY += 5;
   }
-  doc.text(administration.address, 120, administration.name ? 75 : 70);
-  doc.text(`${administration.city}`, 120, administration.name ? 80 : 85);
+  doc.text(administration.address, 120, recipientY);
+  recipientY += 5;
+  doc.text(`${administration.city}`, 120, recipientY);
   
   // Add invoice title with larger font and bold
   doc.setFontSize(18);
