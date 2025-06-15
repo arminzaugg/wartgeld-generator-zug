@@ -8,34 +8,18 @@ on:
     branches:
       - '**'
   workflow_dispatch:
-    inputs:
-      test-type:
-        description: 'Type of tests to run (unit/integration/all)'
-        required: true
-        default: 'all'
-        type: choice
-        options:
-          - unit
-          - integration
-          - all
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    
-    strategy:
-      matrix:
-        node-version: [20]
-        test-group: [unit, integration]
-      fail-fast: false
 
     steps:
     - uses: actions/checkout@v4
     
-    - name: Setup Node.js ${{ matrix.node-version }}
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: 20
         cache: 'npm'
           
     - name: Cache dependencies
@@ -46,23 +30,15 @@ jobs:
         restore-keys: npm-
 
     - name: Install dependencies
-      run: |
-        npm install
-        npm ci
+      run: npm ci
       
-    - name: Run ${{ matrix.test-group }} tests
-      if: github.event_name != 'workflow_dispatch' || github.event.inputs.test-type == 'all' || github.event.inputs.test-type == '${{ matrix.test-group }}'
-      run: |
-        if [ "${{ matrix.test-group }}" = "unit" ]; then
-          npm run test:unit
-        else
-          npm run test:integration
-        fi
+    - name: Run tests with coverage
+      run: npm test
 
     - name: Upload coverage reports
       uses: actions/upload-artifact@v4
       with:
-        name: coverage-${{ matrix.node-version }}-${{ matrix.test-group }}
+        name: coverage-report
         path: coverage/
 
     - name: Report Coverage to PR
