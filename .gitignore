@@ -26,3 +26,10 @@ dist-ssr
 
 # Exclude secrets
 .env
+
+
+
+backup.sql
+
+
+supabase/.temp/*
