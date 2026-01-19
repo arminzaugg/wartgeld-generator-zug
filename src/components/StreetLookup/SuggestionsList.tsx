@@ -52,7 +52,7 @@ export const SuggestionsList = ({
                 aria-selected={index === selectedIndex}
                 className={cn(
                   "px-4 py-3 cursor-pointer transition-colors border-b last:border-0 border-gray-50",
-                  index === selectedIndex ? "bg-primary/5" : "hover:bg-gray-50"
+                  index === selectedIndex ? "bg-primary/10" : "hover:bg-gray-50"
                 )}
                 onMouseDown={(e) => {
                   e.preventDefault(); // Prevent input blur
