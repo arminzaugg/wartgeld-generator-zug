@@ -42,10 +42,10 @@ export const StreetInput = ({
           value={value}
           onChange={(e) => onInputChange(e.target.value)}
           onKeyDown={onKeyDown}
-          placeholder="Strasse, Ort oder PLZ eingeben..."
+          placeholder={placeholder}
           className={cn(
             "w-full pl-9 pr-8 transition-colors",
-            isLoading && "pr-12",
+            (isLoading || value) && "pr-12",
             error && "border-red-500 focus-visible:ring-red-500"
           )}
           autoComplete="off"
@@ -56,11 +56,22 @@ export const StreetInput = ({
         />
       </div>
 
-      {isLoading && (
+      {isLoading ? (
         <div className="absolute right-2 top-1/2 -translate-y-1/2" aria-hidden="true">
           <Loader2 className="h-4 w-4 animate-spin text-gray-500" />
         </div>
-      )}
+      ) : value ? (
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-gray-400 hover:text-gray-900"
+          onClick={onClear}
+          aria-label="Eingabe löschen"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      ) : null}
     </div>
   );
 };
