@@ -14,27 +14,37 @@ interface StreetLookupProps {
 }
 
 export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(value);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedStreet, setSelectedStreet] = useState<StreetSummary | null>(null);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [inputRef, setInputRef] = useState<HTMLInputElement | null>(null);
-  
+
   const { suggestions = [], isLoading, error } = useStreetAutocomplete(
-    searchTerm.length >= 2 ? searchTerm : "", 
+    searchTerm.length >= 2 ? searchTerm : "",
     zipCode
   );
-  
+
   const { toast } = useToast();
 
   const debouncedSearch = debounce((term: string) => {
     if (term.length >= 2) {
-      setSearchTerm(term);
-      setShowSuggestions(true);
+      // Don't show suggestions if the term matches the current value exactly (selection made)
+      if (term !== value) {
+        setShowSuggestions(true);
+      }
     } else {
       setShowSuggestions(false);
     }
   }, 300);
+
+  // Sync internal state with external value prop
+  useEffect(() => {
+    setSearchTerm(value);
+    if (!value) {
+      setSelectedStreet(null);
+    }
+  }, [value]);
 
   useEffect(() => {
     if (error) {
@@ -56,7 +66,12 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (!inputRef?.contains(event.target as Node)) {
+      // Check if click is outside both input and suggestions list
+      const suggestionsList = document.getElementById('street-suggestions-list');
+      const isOutsideInput = !inputRef?.contains(event.target as Node);
+      const isOutsideList = !suggestionsList?.contains(event.target as Node);
+
+      if (isOutsideInput && isOutsideList) {
         setShowSuggestions(false);
       }
     };
@@ -65,38 +80,58 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [inputRef]);
 
-  const handleInputChange = (value: string) => {
-    const parsed = parseAddressInput(value);
-    debouncedSearch(value);
-    
-    if (!selectedStreet) {
-      onChange(value, parsed.zipCode, parsed.city);
-    } else {
-      setSearchTerm(value);
-      const fullAddress = `${selectedStreet.streetName} ${parsed.houseNumber}${parsed.addition || ''}`;
-      onChange(fullAddress, selectedStreet.zipCode, selectedStreet.city);
+  const handleInputChange = (newValue: string) => {
+    setSearchTerm(newValue);
+
+    // If input is cleared, clear everything
+    if (!newValue.trim()) {
+      setSelectedStreet(null);
+      setShowSuggestions(false);
+      onChange("", "", "");
+      return;
     }
+
+    const parsed = parseAddressInput(newValue);
+
+    // If we have a selection but user is typing a new street name...
+    if (selectedStreet && !newValue.toLowerCase().includes(selectedStreet.streetName.toLowerCase())) {
+      setSelectedStreet(null);
+    }
+
+    if (newValue.length >= 2) {
+      setShowSuggestions(true);
+    } else {
+      setShowSuggestions(false);
+    }
+
+    // Always pass the parsed values. If user types "Musterstrasse 5", zipCode/city might be empty.
+    onChange(newValue, parsed.zipCode ?? "", parsed.city ?? "");
   };
 
   const handleSuggestionClick = (suggestion: StreetSummary) => {
-    setSelectedStreet(suggestion);
     const { houseNumber, addition } = parseAddressInput(searchTerm);
-    
+
     let fullAddress = suggestion.streetName;
-    
+
+    // logic to construct full address...
     if (suggestion.houseNumbers && suggestion.houseNumbers.length === 1) {
       const defaultHouseNumber = suggestion.houseNumbers[0];
       fullAddress += ` ${defaultHouseNumber.number}${defaultHouseNumber.addition || ''}`;
     } else if (houseNumber) {
+      // If user already typed a house number, preserve it
       fullAddress += ` ${houseNumber}${addition || ''}`;
     }
-    
+
     fullAddress += `, ${suggestion.zipCode} ${suggestion.city}`;
-    
+
+    // Update EVERYTHING
+    setSelectedStreet(suggestion);
     setSearchTerm(fullAddress);
     setShowSuggestions(false);
+
+    // IMPORTANT: Call onChange with the FULL address string we just constructed
     onChange(fullAddress, suggestion.zipCode, suggestion.city);
-    
+
     if (inputRef) {
       inputRef.focus();
     }
@@ -149,7 +184,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
         }
       />
 
-      <SuggestionsList 
+      <SuggestionsList
         show={showSuggestions}
         suggestions={suggestions}
         selectedIndex={selectedIndex}

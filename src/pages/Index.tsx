@@ -27,7 +27,7 @@ const Index = () => {
     betreuungGeburt: false,
     betreuungWochenbett: false,
   });
-  
+
   const [pdfUrl, setPdfUrl] = useState("");
   const [pdfData, setPdfData] = useState<string>("");
   const { toast } = useToast();
@@ -44,8 +44,10 @@ const Index = () => {
     setFormData(prev => ({
       ...prev,
       address: street,
-      plz: zipCode || prev.plz,
-      ort: city || prev.ort
+      // Only default to previous value if the new value is explicitly undefined.
+      // Empty string should be respected to allow clearing.
+      plz: zipCode !== undefined ? zipCode : prev.plz,
+      ort: city !== undefined ? city : prev.ort
     }));
   };
 
