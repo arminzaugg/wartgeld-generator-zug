@@ -14,7 +14,7 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 - Loveable
-- Post API
+- Swiss Post API
 
 ## How can I deploy this project?
 
