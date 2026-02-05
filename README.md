@@ -4,6 +4,8 @@
 
 This is a simple webapp to input form data and get a Wartgeld Rechnung for Kanton Zug. This page is dedicated to the hardworking midwifes in the Kanton Zug.
 
+The app's main title displayed in the UI is "Wartgeld Generator".
+
 ## What technologies are used for this project?
 
 This project is built with:
@@ -18,8 +20,12 @@ This project is built with:
 
 ## How can I deploy this project?
 
-ATM we are running on Netflify using automatic builds and manual deploys.
+ATM we are running on Netlify using automatic builds and manual deploys.
 
-## Future ideas
+## Privacy
 
-[x] use Swiss Post API to lookup addresses.
+The application stores user settings and form data locally in the browser (Local Storage). Address autocomplete sends the entered street name to an address lookup service (Swiss Post API) to provide suggestions; no other user data is transmitted.
+
+## Future ideas / status
+
+- Address lookup via Swiss Post API is implemented for autocompletion of addresses.
