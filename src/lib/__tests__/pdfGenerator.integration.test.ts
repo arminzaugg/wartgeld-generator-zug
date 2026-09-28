@@ -1,39 +1,41 @@
 import { describe, it, expect, vi } from 'vitest';
 import { generatePDF } from '../pdfGenerator';
-
-vi.mock('../administrationData', () => ({
-  getAdministrationData: vi.fn().mockResolvedValue({
-    title: 'Test Administration',
-    name: 'Test Name',
-    address: 'Test Address',
-    city: 'Test City'
-  })
-}));
+import type { AdministrationData } from '../administrationData';
+import { createFormValues } from './factories/formFactory';
 
 vi.mock('../presetStorage', () => ({
   getSettings: () => ({
     senderInfo: 'Test Sender\nTest Address',
     ortRechnungssteller: 'Test Ort',
-    signature: null
+    signature: undefined
   })
 }));
 
-describe('pdfGenerator', () => {
-  const mockFormData = {
-    vorname: 'John',
-    nachname: 'Doe',
-    address: 'Test Street 1',
-    plz: '1234',
-    ort: 'Test City',
-    geburtsdatum: '2024-01-01',
-    gemeinde: 'Zug',
-    betreuungGeburt: true,
-    betreuungWochenbett: false,
-  };
+const administration: AdministrationData = {
+  id: '1',
+  municipality: 'Zug',
+  title: 'Test Administration',
+  name: 'Test Name',
+  address: 'Test Address',
+  city: '6300 Zug',
+  plz: '6300',
+  created_at: '',
+  updated_at: '',
+};
 
-  it('generates PDF with form data', async () => {
-    const result = await generatePDF(mockFormData);
-    expect(result).toBeDefined();
-    expect(typeof result).toBe('string');
+const decode = (dataUri: string) => atob(dataUri.split(',')[1]);
+
+describe('pdfGenerator', () => {
+  it('renders the given administration and form data', async () => {
+    const result = await generatePDF(
+      createFormValues({ vorname: 'Anna', nachname: 'Muster', betreuungGeburt: true }),
+      administration
+    );
+
+    expect(result).toMatch(/^data:application\/pdf/);
+    const pdf = decode(result);
+    expect(pdf).toContain('Test Administration');
+    expect(pdf).toContain('Anna Muster');
+    expect(pdf).toContain('Test Ort');
   });
 });

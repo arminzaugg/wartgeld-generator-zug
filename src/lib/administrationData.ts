@@ -1,6 +1,11 @@
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 
-export const getAdministrationData = async (plz: string) => {
+export type AdministrationData = Database["public"]["Tables"]["administration_addresses"]["Row"] & {
+  plz: string;
+};
+
+export const getAdministrationData = async (plz: string): Promise<AdministrationData> => {
   // First get the municipality and administration PLZ from plz_mappings
   const { data: plzMapping, error: plzError } = await supabase
     .from('plz_mappings')

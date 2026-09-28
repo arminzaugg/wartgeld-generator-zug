@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1'
+import { compareStreets } from './sort.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -132,19 +133,7 @@ serve(async (req) => {
           }
           return allowedZipCodes.includes(item.ZipCode);
         })
-        .sort((a, b) => {
-          const exactMatchA = a.StreetName.toLowerCase() === streetName.toLowerCase();
-          const exactMatchB = b.StreetName.toLowerCase() === streetName.toLowerCase();
-          if (exactMatchA && !exactMatchB) return -1;
-          if (!exactMatchB && exactMatchA) return 1;
-
-          const startsWithA = a.StreetName.toLowerCase().startsWith(streetName.toLowerCase());
-          const startsWithB = b.StreetName.toLowerCase().startsWith(streetName.toLowerCase());
-          if (startsWithA && !startsWithB) return -1;
-          if (!startsWithA && startsWithB) return 1;
-
-          return a.StreetName.length - b.StreetName.length;
-        });
+        .sort(compareStreets(streetName));
 
       console.log(`Filtered ${validResults.length} results from ${results.length} total results`);
       console.log('Filtered results:', JSON.stringify(validResults, null, 2));

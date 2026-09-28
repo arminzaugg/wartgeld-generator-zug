@@ -6,24 +6,16 @@ import { ServiceSelectionFields } from "./ServiceSelectionFields";
 import { FormActions } from "./FormActions";
 import { FormValidationDisplay } from "./FormValidationDisplay";
 import { formValidationService } from "@/services/form/formValidationService";
-import { pdfGenerationService } from "@/services/pdf/pdfGenerationService";
 import { useToast } from "@/components/ui/use-toast";
+import type { FormValues } from "@/types/form";
 
 interface FormContainerProps {
-  values: {
-    vorname: string;
-    nachname: string;
-    address: string;
-    plz: string;
-    ort: string;
-    geburtsdatum: string;
-    betreuungGeburt: boolean;
-    betreuungWochenbett: boolean;
-  };
+  values: FormValues;
   onChange: (field: string, value: string | boolean) => void;
   onAddressChange: (street: string, zipCode?: string, city?: string) => void;
   onClear: () => void;
-  onSubmit: () => void;
+  /** Generates the invoice; reports its own errors. Called only with valid values. */
+  onSubmit: () => Promise<void>;
   hasGeneratedPDF?: boolean;
   pdfData?: string;
 }
@@ -71,14 +63,7 @@ export const FormContainer = ({
 
     setIsSubmitting(true);
     try {
-      await pdfGenerationService.generatePDF(values);
-      onSubmit();
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "PDF konnte nicht generiert werden. Bitte versuchen Sie es erneut.",
-        variant: "destructive",
-      });
+      await onSubmit();
     } finally {
       setIsSubmitting(false);
     }

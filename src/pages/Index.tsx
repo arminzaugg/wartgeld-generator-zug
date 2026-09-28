@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { FormContainer } from "@/features/form/components/FormContainer";
 import { PDFPreview } from "@/components/PDFPreview";
-import { generatePDF } from "@/lib/pdfGenerator";
 import { useToast } from "@/components/ui/use-toast";
 import { Settings, Info } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -15,24 +14,15 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { pdfGenerationService } from "@/services/pdf/pdfGenerationService";
+import { emptyFormValues, type FormValues } from "@/types/form";
 
 const Index = () => {
-  const [formData, setFormData] = useState({
-    vorname: "",
-    nachname: "",
-    address: "",
-    plz: "",
-    ort: "",
-    geburtsdatum: "",
-    betreuungGeburt: false,
-    betreuungWochenbett: false,
-  });
-
-  const [pdfUrl, setPdfUrl] = useState("");
-  const [pdfData, setPdfData] = useState<string>("");
+  const [formData, setFormData] = useState<FormValues>(emptyFormValues);
+  // PDF as data URI; used for the preview as well as print/save.
+  const [pdfData, setPdfData] = useState("");
   const { toast } = useToast();
 
-  const handleFieldChange = async (field: string, value: string | boolean) => {
+  const handleFieldChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -52,17 +42,7 @@ const Index = () => {
   }, []);
 
   const handleClearForm = () => {
-    setFormData({
-      vorname: "",
-      nachname: "",
-      address: "",
-      plz: "",
-      ort: "",
-      geburtsdatum: "",
-      betreuungGeburt: false,
-      betreuungWochenbett: false,
-    });
-    setPdfUrl("");
+    setFormData(emptyFormValues);
     setPdfData("");
     toast({
       title: "Formular zurückgesetzt",
@@ -72,9 +52,7 @@ const Index = () => {
 
   const handleGeneratePDF = async () => {
     try {
-      const pdfData = await pdfGenerationService.generatePDF(formData);
-      setPdfData(pdfData);
-      setPdfUrl(pdfData);
+      setPdfData(await pdfGenerationService.generatePDF(formData));
     } catch (error) {
       toast({
         title: "Error",
@@ -131,14 +109,14 @@ const Index = () => {
             onAddressChange={handleAddressChange}
             onClear={handleClearForm}
             onSubmit={handleGeneratePDF}
-            hasGeneratedPDF={!!pdfUrl}
+            hasGeneratedPDF={!!pdfData}
             pdfData={pdfData}
           />
         </Card>
 
         <div className="w-full">
-          {pdfUrl ? (
-            <PDFPreview pdfUrl={pdfUrl} />
+          {pdfData ? (
+            <PDFPreview pdfUrl={pdfData} />
           ) : (
             <div className="h-[80vh] flex items-center justify-center bg-muted rounded-lg border">
               <div className="text-muted-foreground flex flex-col items-center space-y-2 px-4 text-center">

@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import type { StreetSummary } from "@/types/address";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { highlightMatches } from "./highlightMatches";
 
 interface SuggestionsListProps {
   show: boolean;
@@ -12,16 +13,6 @@ interface SuggestionsListProps {
   searchTerm: string;
   onSelect: (suggestion: StreetSummary) => void;
 }
-
-const highlightMatches = (text: string, searchTerms: string[]) => {
-  let result = text;
-  searchTerms.forEach(term => {
-    if (term.length < 2) return;
-    const regex = new RegExp(`(${term})`, 'gi');
-    result = result.replace(regex, '<mark class="bg-yellow-100 font-medium">$1</mark>');
-  });
-  return <span dangerouslySetInnerHTML={{ __html: result }} />;
-};
 
 export const SuggestionsList = ({
   show,

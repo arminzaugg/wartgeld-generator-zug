@@ -1,23 +1,11 @@
-import { getAdministrationData } from './administrationData';
+import type { AdministrationData } from './administrationData';
 import { getSettings } from './presetStorage';
+import type { FormValues } from '@/types/form';
 
-interface FormData {
-  vorname: string;
-  nachname: string;
-  address: string;
-  plz: string;
-  ort: string;
-  geburtsdatum: string;
-  gemeinde: string;
-  betreuungGeburt: boolean;
-  betreuungWochenbett: boolean;
-}
-
-export const generatePDF = async (data: FormData): Promise<string> => {
+export const generatePDF = async (data: FormValues, administration: AdministrationData): Promise<string> => {
   // Loaded on demand so jsPDF (and html2canvas) stay out of the initial bundle.
   const { default: jsPDF } = await import('jspdf');
   const doc = new jsPDF();
-  const administration = await getAdministrationData(data.plz);
   const settings = getSettings();
   const senderInfo = settings.senderInfo.split('\n');
   

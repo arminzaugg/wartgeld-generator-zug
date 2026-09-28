@@ -16,6 +16,7 @@ export const addressService = {
 
     if (error) throw error;
 
+    // Results arrive ranked by the edge function (see supabase/functions/address-lookup/sort.ts).
     if (data?.QueryAutoComplete4Result?.AutoCompleteResult) {
       return data.QueryAutoComplete4Result.AutoCompleteResult
         .map((item: PostAutocompleteItem) => ({
@@ -28,13 +29,6 @@ export const addressService = {
             addition: item.HouseNoAddition
           }] : undefined
         }))
-        .sort((a: StreetSummary, b: StreetSummary) => {
-          const exactMatchA = a.streetName.toLowerCase() === searchTerm.toLowerCase();
-          const exactMatchB = b.streetName.toLowerCase() === searchTerm.toLowerCase();
-          if (exactMatchA && !exactMatchB) return -1;
-          if (!exactMatchA && exactMatchB) return 1;
-          return b.streetName.length - a.streetName.length;
-        })
         .slice(0, 10);
     }
     
