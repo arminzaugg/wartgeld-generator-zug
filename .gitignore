@@ -33,3 +33,5 @@ backup.sql
 
 
 supabase/.temp/*
+# Test coverage output
+coverage

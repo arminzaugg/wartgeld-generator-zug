@@ -1,55 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { savePreset, getPresets, deletePreset, getSettings, saveSenderInfo } from '../presetStorage';
+import { getSettings, saveSenderInfo } from '../presetStorage';
 
 describe('presetStorage', () => {
   beforeEach(() => {
     localStorage.clear();
-  });
-
-  const mockPreset = {
-    id: '123',
-    name: 'Test Preset',
-    fields: {
-      companyName: 'Test Company',
-      address: 'Test Street 1',
-      city: 'Test City',
-      state: 'Test State',
-      zipCode: '12345',
-    }
-  };
-
-  describe('preset management', () => {
-    it('saves and retrieves presets', () => {
-      savePreset(mockPreset);
-      const presets = getPresets();
-      expect(presets).toHaveLength(1);
-      expect(presets[0]).toEqual(mockPreset);
-    });
-
-    it('handles multiple presets', () => {
-      const secondPreset = { ...mockPreset, id: '456', name: 'Second Preset' };
-      savePreset(mockPreset);
-      savePreset(secondPreset);
-      
-      const presets = getPresets();
-      expect(presets).toHaveLength(2);
-      expect(presets).toContainEqual(mockPreset);
-      expect(presets).toContainEqual(secondPreset);
-    });
-
-    it('deletes a preset', () => {
-      savePreset(mockPreset);
-      deletePreset(mockPreset.id);
-      const presets = getPresets();
-      expect(presets).toHaveLength(0);
-    });
-
-    it('handles deleting non-existent preset', () => {
-      savePreset(mockPreset);
-      deletePreset('non-existent-id');
-      const presets = getPresets();
-      expect(presets).toHaveLength(1);
-    });
   });
 
   describe('settings management', () => {

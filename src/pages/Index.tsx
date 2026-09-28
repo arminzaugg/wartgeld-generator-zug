@@ -31,7 +31,6 @@ const Index = () => {
   const [pdfUrl, setPdfUrl] = useState("");
   const [pdfData, setPdfData] = useState<string>("");
   const { toast } = useToast();
-  const hasViewedSettings = localStorage.getItem("settings-viewed") === "true";
 
   const handleFieldChange = async (field: string, value: string | boolean) => {
     setFormData((prev) => ({

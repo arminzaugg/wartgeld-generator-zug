@@ -37,29 +37,5 @@ export const addressService = {
     }
     
     return [];
-  },
-
-  async lookupZip(searchTerm: string): Promise<any[]> {
-    const { data, error } = await supabase.functions.invoke('address-lookup', {
-      body: { 
-        type: 'zip', 
-        searchTerm,
-        limit: 10
-      }
-    });
-
-    if (error) throw error;
-    return data?.QueryAutoComplete4Result?.AutoCompleteResult || [];
-  },
-
-  async getPlzMapping(plz: string) {
-    const { data, error } = await supabase
-      .from('plz_mappings')
-      .select('gemeinde')
-      .eq('address_plz', plz)
-      .single();
-      
-    if (error) throw error;
-    return data;
   }
 };
