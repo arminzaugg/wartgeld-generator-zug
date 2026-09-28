@@ -7,7 +7,8 @@ vi.mock('../presetStorage', () => ({
   getSettings: () => ({
     senderInfo: 'Test Sender\nTest Address',
     ortRechnungssteller: 'Test Ort',
-    signature: undefined
+    signature: undefined,
+    rechnungsDatum: '2025-03-01'
   })
 }));
 
@@ -36,6 +37,7 @@ describe('pdfGenerator', () => {
     const pdf = decode(result);
     expect(pdf).toContain('Test Administration');
     expect(pdf).toContain('Anna Muster');
-    expect(pdf).toContain('Test Ort');
+    expect(pdf).toContain('Test Ort, 01.03.2025');
+    expect(pdf).toContain('01.01.2024'); // birth date from the factory
   });
 });

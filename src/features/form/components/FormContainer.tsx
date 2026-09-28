@@ -54,7 +54,7 @@ export const FormContainer = ({
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       toast({
-        title: "Validation Error",
+        title: "Ungültige Eingaben",
         description: "Bitte überprüfen Sie Ihre Eingaben",
         variant: "destructive",
       });

@@ -1,5 +1,6 @@
 import type { AdministrationData } from './administrationData';
 import { getSettings } from './presetStorage';
+import { formatSwissDate, todayIso } from './date';
 import type { FormValues } from '@/types/form';
 
 export const generatePDF = async (data: FormValues, administration: AdministrationData): Promise<string> => {
@@ -47,8 +48,7 @@ export const generatePDF = async (data: FormValues, administration: Administrati
   // Format address without duplication
   doc.text(`${data.address}`, 25, 154);
   doc.text(`____________________________________________________________________`, 25, 155);
-  const formattedDate = new Date(data.geburtsdatum).toLocaleDateString('de-CH');
-  doc.text(`${formattedDate}`, 25, 164);
+  doc.text(formatSwissDate(data.geburtsdatum), 25, 164);
   doc.text(`____________________________________________________________________`, 25, 165);
   
   // Calculate total
@@ -89,8 +89,8 @@ export const generatePDF = async (data: FormValues, administration: Administrati
   
   
   // Add signature line and place/date
-  const currentDate = new Date().toLocaleDateString('de-CH');
-  doc.text(`${settings.ortRechnungssteller}, ${currentDate}`, 25, 262);
+  const invoiceDate = formatSwissDate(settings.rechnungsDatum || todayIso());
+  doc.text(`${settings.ortRechnungssteller}, ${invoiceDate}`, 25, 262);
   doc.text("____________________________________________________________________", 25, 263);
   
   // Add signature if available

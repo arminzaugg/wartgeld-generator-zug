@@ -49,5 +49,20 @@ describe('formValidationService', () => {
       const errors = formValidationService.validateForm(validValues);
       expect(Object.keys(errors).length).toBe(0);
     });
+
+    it('requires a 4-digit PLZ once an address is entered', () => {
+      expect(formValidationService.validateForm(createFormValues({ plz: '' })))
+        .toHaveProperty('plz');
+      expect(formValidationService.validateForm(createFormValues({ plz: '630' })))
+        .toHaveProperty('plz');
+      expect(formValidationService.validateForm(createFormValues({ plz: '6300' })))
+        .not.toHaveProperty('plz');
+    });
+
+    it('reports only the missing address when it is empty', () => {
+      const errors = formValidationService.validateForm(createFormValues({ address: '', plz: '' }));
+      expect(errors).toHaveProperty('address');
+      expect(errors).not.toHaveProperty('plz');
+    });
   });
 });

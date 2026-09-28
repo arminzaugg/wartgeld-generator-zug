@@ -15,12 +15,16 @@ import {
 } from "@/components/ui/tooltip";
 import { pdfGenerationService } from "@/services/pdf/pdfGenerationService";
 import { emptyFormValues, type FormValues } from "@/types/form";
+import { UnknownPlzError } from "@/lib/administrationData";
+import { getSettings } from "@/lib/presetStorage";
+import { formatSwissDate } from "@/lib/date";
 
 const Index = () => {
   const [formData, setFormData] = useState<FormValues>(emptyFormValues);
   // PDF as data URI; used for the preview as well as print/save.
   const [pdfData, setPdfData] = useState("");
   const { toast } = useToast();
+  const fixedInvoiceDate = getSettings().rechnungsDatum;
 
   const handleFieldChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({
@@ -54,9 +58,12 @@ const Index = () => {
     try {
       setPdfData(await pdfGenerationService.generatePDF(formData));
     } catch (error) {
+      console.error("Error generating PDF:", error);
       toast({
-        title: "Error",
-        description: "PDF konnte nicht generiert werden. Bitte versuchen Sie es erneut.",
+        title: "Fehler",
+        description: error instanceof UnknownPlzError
+          ? `Für die PLZ ${error.plz} ist keine Gemeinde im Kanton Zug hinterlegt. Bitte prüfen Sie die Adresse.`
+          : "PDF konnte nicht generiert werden. Bitte versuchen Sie es erneut.",
         variant: "destructive",
       });
     }
@@ -112,6 +119,12 @@ const Index = () => {
             hasGeneratedPDF={!!pdfData}
             pdfData={pdfData}
           />
+          {fixedInvoiceDate && (
+            <p className="mt-4 text-sm text-muted-foreground">
+              Rechnungsdatum fest eingestellt auf {formatSwissDate(fixedInvoiceDate)} (
+              <Link to="/settings" className="underline underline-offset-2">Einstellungen</Link>).
+            </p>
+          )}
         </Card>
 
         <div className="w-full">
