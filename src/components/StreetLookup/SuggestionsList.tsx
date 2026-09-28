@@ -8,7 +8,7 @@ interface SuggestionsListProps {
   suggestions: StreetSummary[];
   selectedIndex: number;
   isLoading: boolean;
-  error: any;
+  error: unknown;
   searchTerm: string;
   onSelect: (suggestion: StreetSummary) => void;
 }

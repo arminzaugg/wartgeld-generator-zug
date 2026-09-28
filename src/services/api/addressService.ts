@@ -1,9 +1,11 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { StreetSummary } from "@/types/address";
+import type { ApiResponse, StreetSummary } from "@/types/address";
+
+type PostAutocompleteItem = ApiResponse["QueryAutoComplete4Result"]["AutoCompleteResult"][number];
 
 export const addressService = {
   async lookupStreet(searchTerm: string, zipCode?: string): Promise<StreetSummary[]> {
-    const { data, error } = await supabase.functions.invoke('address-lookup', {
+    const { data, error } = await supabase.functions.invoke<ApiResponse>('address-lookup', {
       body: { 
         type: 'street', 
         searchTerm, 
@@ -16,8 +18,8 @@ export const addressService = {
 
     if (data?.QueryAutoComplete4Result?.AutoCompleteResult) {
       return data.QueryAutoComplete4Result.AutoCompleteResult
-        .map((item: any) => ({
-          STRID: item.STRID,
+        .map((item: PostAutocompleteItem) => ({
+          STRID: Number(item.STRID),
           streetName: item.StreetName || '',
           zipCode: item.ZipCode,
           city: item.TownName,

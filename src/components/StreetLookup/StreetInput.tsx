@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 interface StreetInputProps {
   value: string;
   isLoading: boolean;
-  error: any;
+  error: unknown;
   hasSelection: boolean;
   placeholder: string;
   onInputChange: (value: string) => void;

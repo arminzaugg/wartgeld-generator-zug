@@ -14,11 +14,16 @@ Mobile
 IBAN
 QR IBAN`;
 
-export const saveSenderInfo = (info: string, ortRechnungssteller: string, signature?: string): void => {
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify({ 
-    senderInfo: info, 
+/**
+ * Persists the invoice sender settings.
+ * `signature`: a data URL replaces it, `null` removes it, `undefined` keeps the stored one.
+ */
+export const saveSenderInfo = (info: string, ortRechnungssteller: string, signature?: string | null): void => {
+  const nextSignature = signature === undefined ? getSettings().signature : signature ?? undefined;
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify({
+    senderInfo: info,
     ortRechnungssteller,
-    signature
+    signature: nextSignature
   }));
 };
 

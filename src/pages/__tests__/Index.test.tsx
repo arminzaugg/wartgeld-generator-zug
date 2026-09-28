@@ -18,7 +18,7 @@ vi.mock('@/services/api/addressService', () => ({
 describe('Index', () => {
   it('renders the main heading', () => {
     renderWithProviders(<Index />);
-    expect(screen.getByText('Hebammenwartgeld Kanton Zug')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Wartgeld Generator' })).toBeInTheDocument();
   });
 
   it('shows preview placeholder when no PDF is generated', () => {

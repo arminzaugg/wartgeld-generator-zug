@@ -38,5 +38,11 @@ describe('presetStorage', () => {
       expect(settings.ortRechnungssteller).toBe('New Ort');
       expect(settings.signature).toBe(mockSignature);
     });
+
+    it('removes the signature when null is passed', () => {
+      saveSenderInfo('Info', 'Ort', 'Existing Signature');
+      saveSenderInfo('Info', 'Ort', null);
+      expect(getSettings().signature).toBeUndefined();
+    });
   });
 });

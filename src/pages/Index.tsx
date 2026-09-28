@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -39,7 +39,8 @@ const Index = () => {
     }));
   };
 
-  const handleAddressChange = async (street: string, zipCode?: string, city?: string) => {
+  // Stable identity: StreetLookup lists it as an effect dependency.
+  const handleAddressChange = useCallback((street: string, zipCode?: string, city?: string) => {
     setFormData(prev => ({
       ...prev,
       address: street,
@@ -48,7 +49,7 @@ const Index = () => {
       plz: zipCode !== undefined ? zipCode : prev.plz,
       ort: city !== undefined ? city : prev.ort
     }));
-  };
+  }, []);
 
   const handleClearForm = () => {
     setFormData({
