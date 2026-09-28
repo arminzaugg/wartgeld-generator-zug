@@ -124,3 +124,28 @@ Today anyone can call `https://kdyultegduvfggjovban.supabase.co/functions/v1/add
 - `npm run lint && npm test && npm run build` is green after every commit.
 - Manual check with the `run` skill (Playwright against `npm run dev`): fill in the form, generate the PDF, confirm one generation in the network log, and check Print and Save.
 - For step E: `curl` from a foreign Origin → 403, 100 rapid calls → 429, normal app usage still works. This can only be checked after deploy.
+
+---
+
+## Status (implemented on this branch)
+
+All five steps are done. Order changed slightly: B's deletions came first, so no lint fixes were spent on files that were then removed.
+
+| Commit | Step |
+|---|---|
+| `chore: remove dead code…` | B: dead code, 35 UI components, 38 packages, `coverage/`, `bun.lockb` |
+| `fix: green lint, typecheck and tests…` | A: lint script, real typecheck in `build`, signature bug, CI |
+| `refactor: share PDF blob helper…` | B: `dataUriToBlob`, lazy jsPDF/pages, vendor chunks, `strict: true` |
+| `fix: generate the PDF once per submit…` | C: one generation, one admin lookup, sort fix, highlight crash fix |
+| `feat: PLZ validation…` | D: PLZ validation, invoice date setting, German UI, dark-mode labels |
+| `feat(security): lock down…` | E: origin allowlist, JWT, input validation, rate limit, no PII logs |
+
+Open-question defaults used: netlify.app + localhost origins, date field wired up, 60 req/min per IP (+3000/h global), strict TS included.
+
+Extra fix found on the way: address highlighting built a RegExp from raw input (typing `(a` crashed the page) and injected HTML.
+
+**Verified:** `npm run lint`, `npm run build` and `npm test` (39 tests) are green. The edge function was typechecked with `deno check` and smoke-tested with a fake Supabase client (403/405/400/413/429/200 paths). A browser run against the dev server (with mocked Supabase) confirmed one PLZ lookup and one admin lookup per click.
+
+**Still to do manually:**
+- The Supabase deploy (see README: `db push` → `secrets set` → `functions deploy`).
+- Making "Run Tests" a required check on `main`.
