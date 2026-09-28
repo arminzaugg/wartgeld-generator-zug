@@ -1,4 +1,3 @@
-import jsPDF from 'jspdf';
 import { getAdministrationData } from './administrationData';
 import { getSettings } from './presetStorage';
 
@@ -15,6 +14,8 @@ interface FormData {
 }
 
 export const generatePDF = async (data: FormData): Promise<string> => {
+  // Loaded on demand so jsPDF (and html2canvas) stay out of the initial bundle.
+  const { default: jsPDF } = await import('jspdf');
   const doc = new jsPDF();
   const administration = await getAdministrationData(data.plz);
   const settings = getSettings();

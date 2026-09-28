@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { dataUriToBlob } from "@/lib/pdf";
 
 interface FormActionsProps {
   onClear: () => void;
@@ -23,24 +24,7 @@ export const FormActions = ({
   const handlePrint = () => {
     if (!pdfData) return;
 
-    // Convert base64 to blob
-    const base64Data = pdfData.split(',')[1];
-    const byteCharacters = atob(base64Data);
-    const byteArrays = [];
-
-    for (let offset = 0; offset < byteCharacters.length; offset += 1024) {
-      const slice = byteCharacters.slice(offset, offset + 1024);
-      const byteNumbers = new Array(slice.length);
-      
-      for (let i = 0; i < slice.length; i++) {
-        byteNumbers[i] = slice.charCodeAt(i);
-      }
-      
-      const byteArray = new Uint8Array(byteNumbers);
-      byteArrays.push(byteArray);
-    }
-
-    const blob = new Blob(byteArrays, { type: 'application/pdf' });
+    const blob = dataUriToBlob(pdfData);
     const url = URL.createObjectURL(blob);
     
     // Create an iframe for printing
@@ -56,12 +40,6 @@ export const FormActions = ({
     printFrame.onload = () => {
       const iframeWindow = printFrame.contentWindow;
       if (!iframeWindow) return;
-
-      // Add event listeners for print events
-      iframeWindow.addEventListener('beforeprint', () => {
-        // Print dialog is about to open
-        console.log('Print dialog opening...');
-      });
 
       iframeWindow.addEventListener('afterprint', () => {
         // Print dialog has been closed after printing
@@ -83,24 +61,7 @@ export const FormActions = ({
   const handleDownload = () => {
     if (!pdfData || !values?.vorname || !values?.nachname) return;
 
-    // Convert base64 to blob
-    const base64Data = pdfData.split(',')[1];
-    const byteCharacters = atob(base64Data);
-    const byteArrays = [];
-
-    for (let offset = 0; offset < byteCharacters.length; offset += 1024) {
-      const slice = byteCharacters.slice(offset, offset + 1024);
-      const byteNumbers = new Array(slice.length);
-      
-      for (let i = 0; i < slice.length; i++) {
-        byteNumbers[i] = slice.charCodeAt(i);
-      }
-      
-      const byteArray = new Uint8Array(byteNumbers);
-      byteArrays.push(byteArray);
-    }
-
-    const blob = new Blob(byteArrays, { type: 'application/pdf' });
+    const blob = dataUriToBlob(pdfData);
     const url = URL.createObjectURL(blob);
     
     // Create a link element

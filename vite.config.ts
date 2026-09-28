@@ -12,6 +12,17 @@ export default defineConfig(({ mode }) => ({
     react(),
     // Removed: mode === 'development' && componentTagger(),
   ].filter(Boolean),
+  build: {
+    rollupOptions: {
+      output: {
+        // Long-lived vendor chunks cache well across app deploys.
+        manualChunks: {
+          react: ["react", "react-dom", "react-router-dom"],
+          supabase: ["@supabase/supabase-js"],
+        },
+      },
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
