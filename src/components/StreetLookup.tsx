@@ -56,7 +56,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
       setSearchTerm("");
       onChange("", undefined, undefined);
     }
-  }, [zipCode]);
+  }, [zipCode, selectedStreet, onChange]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

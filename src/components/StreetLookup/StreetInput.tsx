@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 interface StreetInputProps {
   value: string;
   isLoading: boolean;
-  error: any;
+  error: unknown;
   hasSelection: boolean;
   placeholder: string;
   onInputChange: (value: string) => void;
@@ -46,7 +46,7 @@ export const StreetInput = ({
           className={cn(
             "w-full pl-9 pr-8 transition-colors",
             (isLoading || value) && "pr-12",
-            error && "border-red-500 focus-visible:ring-red-500"
+            !!error && "border-red-500 focus-visible:ring-red-500"
           )}
           autoComplete="off"
           role="combobox"

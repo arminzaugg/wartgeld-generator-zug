@@ -55,7 +55,7 @@ export const SignaturePad = ({ onSave, initialSignature }: SignaturePadProps) =>
 
   return (
     <div className="space-y-4">
-      <Card className="p-4 bg-gray-50">
+      <Card className="p-4 bg-gray-50 dark:bg-gray-800/50">
         <div 
           className={`border-2 rounded-lg overflow-hidden transition-all ${
             isDrawing ? 'border-blue-500 shadow-lg' : 'border-gray-200'

@@ -29,7 +29,7 @@ export function renderWithProviders(
     ...renderOptions
   } = {}
 ) {
-  function Wrapper({ children }: PropsWithChildren<{}>): JSX.Element {
+  function Wrapper({ children }: PropsWithChildren): JSX.Element {
     return (
       <BrowserRouter>
         <QueryClientProvider client={queryClient}>

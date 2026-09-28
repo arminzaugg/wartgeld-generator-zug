@@ -1,23 +1,14 @@
-export interface Preset {
-  id: string;
-  name: string;
-  fields: {
-    companyName?: string;
-    address?: string;
-    city?: string;
-    state?: string;
-    zipCode?: string;
-    additionalNotes?: string;
-  };
-}
-
 export interface Settings {
   senderInfo: string;
   ortRechnungssteller: string;
   signature?: string;
+  /** Fixed invoice date (`YYYY-MM-DD`); empty means "today". */
+  rechnungsDatum: string;
 }
 
-const STORAGE_KEY = 'form-presets';
+/** Fields to change; `signature: null` removes the stored signature. */
+export type SettingsUpdate = Partial<Omit<Settings, 'signature'>> & { signature?: string | null };
+
 const SETTINGS_KEY = 'form-settings';
 
 const DEFAULT_SENDER_INFO = `Martina Mustermann
@@ -28,37 +19,27 @@ Mobile
 IBAN
 QR IBAN`;
 
-export const savePreset = (preset: Preset): void => {
-  const presets = getPresets();
-  presets.push(preset);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(presets));
-};
-
-export const getPresets = (): Preset[] => {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  return stored ? JSON.parse(stored) : [];
-};
-
-export const deletePreset = (id: string): void => {
-  const presets = getPresets().filter(p => p.id !== id);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(presets));
-};
-
-export const saveSenderInfo = (info: string, ortRechnungssteller: string, signature?: string): void => {
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify({ 
-    senderInfo: info, 
-    ortRechnungssteller,
-    signature
-  }));
-};
+const DEFAULT_ORT = 'Kanton Zug';
 
 export const getSettings = (): Settings => {
   const stored = localStorage.getItem(SETTINGS_KEY);
-  if (!stored) return { senderInfo: DEFAULT_SENDER_INFO, ortRechnungssteller: 'Kanton Zug' };
-  const settings: Settings = JSON.parse(stored);
+  const settings: Partial<Settings> = stored ? JSON.parse(stored) : {};
   return {
     senderInfo: settings.senderInfo || DEFAULT_SENDER_INFO,
-    ortRechnungssteller: settings.ortRechnungssteller || 'Kanton Zug',
-    signature: settings.signature
+    ortRechnungssteller: settings.ortRechnungssteller || DEFAULT_ORT,
+    signature: settings.signature,
+    rechnungsDatum: settings.rechnungsDatum || '',
   };
+};
+
+/** Merges `update` into the stored settings; omitted fields keep their current value. */
+export const updateSettings = (update: SettingsUpdate): void => {
+  const { signature, ...rest } = update;
+  const current = getSettings();
+  const next: Settings = {
+    ...current,
+    ...rest,
+    signature: signature === undefined ? current.signature : signature ?? undefined,
+  };
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(next));
 };

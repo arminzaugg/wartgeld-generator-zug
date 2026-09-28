@@ -1,9 +1,11 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { StreetSummary } from "@/types/address";
+import type { ApiResponse, StreetSummary } from "@/types/address";
+
+type PostAutocompleteItem = ApiResponse["QueryAutoComplete4Result"]["AutoCompleteResult"][number];
 
 export const addressService = {
   async lookupStreet(searchTerm: string, zipCode?: string): Promise<StreetSummary[]> {
-    const { data, error } = await supabase.functions.invoke('address-lookup', {
+    const { data, error } = await supabase.functions.invoke<ApiResponse>('address-lookup', {
       body: { 
         type: 'street', 
         searchTerm, 
@@ -14,10 +16,11 @@ export const addressService = {
 
     if (error) throw error;
 
+    // Results arrive ranked by the edge function (see supabase/functions/address-lookup/sort.ts).
     if (data?.QueryAutoComplete4Result?.AutoCompleteResult) {
       return data.QueryAutoComplete4Result.AutoCompleteResult
-        .map((item: any) => ({
-          STRID: item.STRID,
+        .map((item: PostAutocompleteItem) => ({
+          STRID: Number(item.STRID),
           streetName: item.StreetName || '',
           zipCode: item.ZipCode,
           city: item.TownName,
@@ -26,40 +29,9 @@ export const addressService = {
             addition: item.HouseNoAddition
           }] : undefined
         }))
-        .sort((a: StreetSummary, b: StreetSummary) => {
-          const exactMatchA = a.streetName.toLowerCase() === searchTerm.toLowerCase();
-          const exactMatchB = b.streetName.toLowerCase() === searchTerm.toLowerCase();
-          if (exactMatchA && !exactMatchB) return -1;
-          if (!exactMatchA && exactMatchB) return 1;
-          return b.streetName.length - a.streetName.length;
-        })
         .slice(0, 10);
     }
     
     return [];
-  },
-
-  async lookupZip(searchTerm: string): Promise<any[]> {
-    const { data, error } = await supabase.functions.invoke('address-lookup', {
-      body: { 
-        type: 'zip', 
-        searchTerm,
-        limit: 10
-      }
-    });
-
-    if (error) throw error;
-    return data?.QueryAutoComplete4Result?.AutoCompleteResult || [];
-  },
-
-  async getPlzMapping(plz: string) {
-    const { data, error } = await supabase
-      .from('plz_mappings')
-      .select('gemeinde')
-      .eq('address_plz', plz)
-      .single();
-      
-    if (error) throw error;
-    return data;
   }
 };

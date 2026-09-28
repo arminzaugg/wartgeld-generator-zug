@@ -1,6 +1,6 @@
 project_id = "kdyultegduvfggjovban"
 [functions.address-lookup]
-verify_jwt = false
+verify_jwt = true
 
 [db]
 major_version = 17

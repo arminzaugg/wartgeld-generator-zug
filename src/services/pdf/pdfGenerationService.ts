@@ -1,28 +1,11 @@
-import { generatePDF as pdfGenerator } from '@/lib/pdfGenerator';
+import { generatePDF } from '@/lib/pdfGenerator';
 import { getAdministrationData } from '@/lib/administrationData';
-
-interface FormData {
-  vorname: string;
-  nachname: string;
-  address: string;
-  plz: string;
-  ort: string;
-  geburtsdatum: string;
-  betreuungGeburt: boolean;
-  betreuungWochenbett: boolean;
-}
+import type { FormValues } from '@/types/form';
 
 export const pdfGenerationService = {
-  async generatePDF(formData: FormData): Promise<string> {
-    try {
-      const administrationData = await getAdministrationData(formData.plz);
-      return await pdfGenerator({
-        ...formData,
-        gemeinde: administrationData.municipality
-      });
-    } catch (error) {
-      console.error('Error generating PDF:', error);
-      throw error; // Let the error bubble up for proper handling
-    }
+  /** Looks up the responsible administration for the PLZ once and renders the invoice. */
+  async generatePDF(formData: FormValues): Promise<string> {
+    const administration = await getAdministrationData(formData.plz);
+    return generatePDF(formData, administration);
   }
 };

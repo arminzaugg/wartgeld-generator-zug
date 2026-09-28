@@ -1,22 +1,12 @@
-import jsPDF from 'jspdf';
-import { getAdministrationData } from './administrationData';
+import type { AdministrationData } from './administrationData';
 import { getSettings } from './presetStorage';
+import { formatSwissDate, todayIso } from './date';
+import type { FormValues } from '@/types/form';
 
-interface FormData {
-  vorname: string;
-  nachname: string;
-  address: string;
-  plz: string;
-  ort: string;
-  geburtsdatum: string;
-  gemeinde: string;
-  betreuungGeburt: boolean;
-  betreuungWochenbett: boolean;
-}
-
-export const generatePDF = async (data: FormData): Promise<string> => {
+export const generatePDF = async (data: FormValues, administration: AdministrationData): Promise<string> => {
+  // Loaded on demand so jsPDF (and html2canvas) stay out of the initial bundle.
+  const { default: jsPDF } = await import('jspdf');
   const doc = new jsPDF();
-  const administration = await getAdministrationData(data.plz);
   const settings = getSettings();
   const senderInfo = settings.senderInfo.split('\n');
   
@@ -58,8 +48,7 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   // Format address without duplication
   doc.text(`${data.address}`, 25, 154);
   doc.text(`____________________________________________________________________`, 25, 155);
-  const formattedDate = new Date(data.geburtsdatum).toLocaleDateString('de-CH');
-  doc.text(`${formattedDate}`, 25, 164);
+  doc.text(formatSwissDate(data.geburtsdatum), 25, 164);
   doc.text(`____________________________________________________________________`, 25, 165);
   
   // Calculate total
@@ -100,8 +89,8 @@ export const generatePDF = async (data: FormData): Promise<string> => {
   
   
   // Add signature line and place/date
-  const currentDate = new Date().toLocaleDateString('de-CH');
-  doc.text(`${settings.ortRechnungssteller}, ${currentDate}`, 25, 262);
+  const invoiceDate = formatSwissDate(settings.rechnungsDatum || todayIso());
+  doc.text(`${settings.ortRechnungssteller}, ${invoiceDate}`, 25, 262);
   doc.text("____________________________________________________________________", 25, 263);
   
   // Add signature if available

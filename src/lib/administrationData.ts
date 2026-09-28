@@ -1,6 +1,19 @@
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 
-export const getAdministrationData = async (plz: string) => {
+export type AdministrationData = Database["public"]["Tables"]["administration_addresses"]["Row"] & {
+  plz: string;
+};
+
+/** The PLZ has no municipality mapping, i.e. it is not a supported Zug address. */
+export class UnknownPlzError extends Error {
+  constructor(public readonly plz: string) {
+    super(`No municipality found for PLZ ${plz}`);
+    this.name = 'UnknownPlzError';
+  }
+}
+
+export const getAdministrationData = async (plz: string): Promise<AdministrationData> => {
   // First get the municipality and administration PLZ from plz_mappings
   const { data: plzMapping, error: plzError } = await supabase
     .from('plz_mappings')
@@ -9,7 +22,7 @@ export const getAdministrationData = async (plz: string) => {
     .maybeSingle();
 
   if (plzError) throw plzError;
-  if (!plzMapping) throw new Error(`No municipality found for PLZ ${plz}`);
+  if (!plzMapping) throw new UnknownPlzError(plz);
 
   // Then get the administration data using the municipality
   const { data: adminData, error: adminError } = await supabase

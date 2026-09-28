@@ -10,7 +10,8 @@ export default defineConfig({
     setupFiles: ['./src/test-setup.ts'],
     include: [
       "src/**/__tests__/**/*.{test,spec}.{ts,tsx}",
-      "src/**/*.{test,spec}.{ts,tsx}"
+      "src/**/*.{test,spec}.{ts,tsx}",
+      "supabase/functions/**/*.test.ts"
     ],
     coverage: {
       provider: 'v8',

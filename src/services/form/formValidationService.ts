@@ -1,3 +1,5 @@
+import type { FormValues } from '@/types/form';
+
 interface ValidationErrors {
   [key: string]: string;
 }
@@ -15,16 +17,7 @@ export const formValidationService = {
     }
   },
 
-  validateForm(values: {
-    vorname: string;
-    nachname: string;
-    address: string;
-    plz: string;
-    ort: string;
-    geburtsdatum: string;
-    betreuungGeburt: boolean;
-    betreuungWochenbett: boolean;
-  }): ValidationErrors {
+  validateForm(values: FormValues): ValidationErrors {
     const errors: ValidationErrors = {};
 
     if (!values.vorname || values.vorname.length < 2) {
@@ -35,6 +28,9 @@ export const formValidationService = {
     }
     if (!values.address) {
       errors.address = 'Adresse ist erforderlich';
+    } else if (!/^\d{4}$/.test(values.plz)) {
+      // The PLZ is only set when an address is picked from the suggestions.
+      errors.plz = 'Bitte wählen Sie die Adresse aus der Vorschlagsliste (PLZ fehlt)';
     }
     if (!values.geburtsdatum) {
       errors.geburtsdatum = 'Datum ist erforderlich';
