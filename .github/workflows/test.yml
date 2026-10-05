@@ -12,6 +12,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # Needed by the coverage step to comment on the PR.
+      pull-requests: write
 
     steps:
     - uses: actions/checkout@v4
@@ -43,6 +47,8 @@ jobs:
 
     - name: Report Coverage to PR
       if: github.event_name == 'pull_request'
+      # Informational only; PRs from forks get a read-only token and cannot comment.
+      continue-on-error: true
       uses: romeovs/lcov-reporter-action@v0.3.1
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
