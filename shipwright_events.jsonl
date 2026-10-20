@@ -1,0 +1,2 @@
+{"type": "adopted", "timestamp": "2026-10-20T20:46:12.843157+00:00", "profile": "generic", "scope": "full_app", "features_inferred": 10, "nested_excluded": [], "plugin_version": "0.1.0", "commit_at_adoption": "49c0ddaa837e1a13c067188022b8db4f627aa448"}
+{"type": "work_completed", "timestamp": "2026-09-28 09:00:06 +0000", "source": "adopted-backfill", "confidence": "low", "commit_sha": "7ac7ddc03da91f596cdb9bc61323572d3ce16e2f", "subject": "refactor: share PDF blob helper, split bundle, enable strict TypeScript", "author": "Claude", "files_changed": 10}

@@ -35,3 +35,49 @@ backup.sql
 supabase/.temp/*
 # Test coverage output
 coverage
+
+# === BEGIN Shipwright canonical .shipwright artifact-ignore (managed) ===
+# Managed by Shipwright (adopt/project). Do not hand-edit — re-running
+# /shipwright-adopt or /shipwright-project back-fills missing rules.
+# SSoT: shared/templates/shipwright-gitignore.template
+/.shipwright/*
+!/.shipwright/adopt/
+!/.shipwright/agent_docs/
+!/.shipwright/compliance/
+!/.shipwright/designs/
+!/.shipwright/planning/
+!/.shipwright/triage.jsonl
+/.shipwright/triage.outbox.jsonl
+/.shipwright/triage.outbox.quarantine.jsonl
+/.shipwright/adopt/backups/
+/.shipwright/adopt/screenshots/
+/.shipwright/agent_docs/decision-drops/INDEX.md
+/.shipwright/agent_docs/decision-drops/*.tmp
+/.shipwright/agent_docs/decision-drops-legacy-pending-scan/
+/.shipwright/agent_docs/visual/
+/.shipwright/designs/design-feedback-round*.md
+/.shipwright/agent_docs/runtime/
+/.shipwright/agent_docs/iterates/*.plan.json
+/.shipwright/agent_docs/iterates/*.phase_timings.jsonl
+/.shipwright/agent_docs/iterates/*.iterate_timings.jsonl
+/.shipwright/agent_docs/iterates/*.iterate_timings.jsonl.lock
+/.shipwright/compliance/context-cost/
+/.shipwright/compliance/skill-compliance/
+/.shipwright/compliance/audit-report.md
+/.shipwright/compliance/audit-report.json
+/.shipwright/compliance/evidence/
+/.shipwright/compliance/test-evidence-index.json
+/.shipwright/planning/iterate/**/external_review_state.json
+/.shipwright/planning/iterate/**/external_code_review_state.json
+/.shipwright/planning/iterate/campaigns/
+/.shipwright/planning/adr/*.tmp
+/.shipwright/planning/iterate/**/scratch/
+**/.shipwright/locks/
+/.shipwright/agent_docs/iterates/*.test-results.json.*.tmp
+/.shipwright/agent_docs/*.tmp
+/.shipwright/agent_docs/*.log.lock
+# === END Shipwright canonical .shipwright artifact-ignore (managed) ===
+
+# Triage Inbox (shipwright)
+.shipwright/triage.jsonl.lock
+.shipwright/triage.jsonl.bak

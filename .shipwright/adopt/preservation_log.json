@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "file": "CLAUDE.md",
+      "action": "written_fresh"
+    },
+    {
+      "file": "AGENTS.md",
+      "action": "written_fresh"
+    },
+    {
+      "file": ".shipwright/agent_docs/architecture.md",
+      "action": "written_fresh"
+    },
+    {
+      "file": ".shipwright/agent_docs/conventions.md",
+      "action": "written_fresh"
+    },
+    {
+      "file": ".shipwright/agent_docs/decision_log.md",
+      "action": "written_fresh"
+    },
+    {
+      "file": ".shipwright/planning/adr/001-adopt-this-repository-into-the-shipwright-sdlc.md",
+      "action": "written_fresh"
+    },
+    {
+      "file": ".shipwright/planning/adr/002-refactor-share-pdf-blob-helper-split-bundle-enable-strict-ty.md",
+      "action": "written_fresh"
+    },
+    {
+      "file": ".shipwright/agent_docs/build_dashboard.md",
+      "action": "written_fresh"
+    }
+  ]
+}

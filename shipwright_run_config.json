@@ -1,0 +1,161 @@
+{
+  "pipeline": [
+    "project",
+    "design",
+    "plan",
+    "build",
+    "test",
+    "changelog",
+    "deploy"
+  ],
+  "status": "complete",
+  "phase_tasks": [
+    {
+      "phaseTaskId": "ptk-b284fdf0",
+      "phase": "project",
+      "splitId": null,
+      "sessionUuid": "c5a3a51f-0f9f-4026-bfb2-9bdd2260de87",
+      "version": 1,
+      "status": "done",
+      "title": "Project (established at adoption)",
+      "description": "Seeded by /shipwright-adopt: this phase pre-dates adoption and was never run through the phase-task lifecycle. Not outstanding.",
+      "slashCommand": "/shipwright-project",
+      "prerequisites": [],
+      "claimedBySessionUuid": null,
+      "claimAttemptedAt": null,
+      "executionCount": 0,
+      "createdAt": "2026-10-20T20:46:12.840366+00:00",
+      "awaitingLaunchAt": null,
+      "startedAt": null,
+      "completedAt": "2026-10-20T20:46:12.840366+00:00",
+      "result": {
+        "ok": true,
+        "establishedAtAdoption": true
+      },
+      "errors": [],
+      "establishedAtAdoption": true
+    },
+    {
+      "phaseTaskId": "ptk-7c2a3cee",
+      "phase": "plan",
+      "splitId": null,
+      "sessionUuid": "47c543b0-2221-4069-8824-02329a528ab1",
+      "version": 1,
+      "status": "done",
+      "title": "Plan (established at adoption)",
+      "description": "Seeded by /shipwright-adopt: this phase pre-dates adoption and was never run through the phase-task lifecycle. Not outstanding.",
+      "slashCommand": "/shipwright-plan",
+      "prerequisites": [],
+      "claimedBySessionUuid": null,
+      "claimAttemptedAt": null,
+      "executionCount": 0,
+      "createdAt": "2026-10-20T20:46:12.840366+00:00",
+      "awaitingLaunchAt": null,
+      "startedAt": null,
+      "completedAt": "2026-10-20T20:46:12.840366+00:00",
+      "result": {
+        "ok": true,
+        "establishedAtAdoption": true
+      },
+      "errors": [],
+      "establishedAtAdoption": true
+    },
+    {
+      "phaseTaskId": "ptk-a4b426b1",
+      "phase": "build",
+      "splitId": null,
+      "sessionUuid": "620463a4-a505-40c5-b4bd-a052fc69f8f1",
+      "version": 1,
+      "status": "done",
+      "title": "Build (established at adoption)",
+      "description": "Seeded by /shipwright-adopt: this phase pre-dates adoption and was never run through the phase-task lifecycle. Not outstanding.",
+      "slashCommand": "/shipwright-build",
+      "prerequisites": [],
+      "claimedBySessionUuid": null,
+      "claimAttemptedAt": null,
+      "executionCount": 0,
+      "createdAt": "2026-10-20T20:46:12.840366+00:00",
+      "awaitingLaunchAt": null,
+      "startedAt": null,
+      "completedAt": "2026-10-20T20:46:12.840366+00:00",
+      "result": {
+        "ok": true,
+        "establishedAtAdoption": true
+      },
+      "errors": [],
+      "establishedAtAdoption": true
+    },
+    {
+      "phaseTaskId": "ptk-3a0e2e64",
+      "phase": "test",
+      "splitId": null,
+      "sessionUuid": "dcf06a1e-424c-4611-bfae-902f13dcc2c0",
+      "version": 1,
+      "status": "skipped",
+      "title": "Test (established at adoption)",
+      "description": "Seeded by /shipwright-adopt: this phase pre-dates adoption and was never run through the phase-task lifecycle. Not outstanding.",
+      "slashCommand": "/shipwright-test",
+      "prerequisites": [],
+      "claimedBySessionUuid": null,
+      "claimAttemptedAt": null,
+      "executionCount": 0,
+      "createdAt": "2026-10-20T20:46:12.840366+00:00",
+      "awaitingLaunchAt": null,
+      "startedAt": null,
+      "completedAt": "2026-10-20T20:46:12.840366+00:00",
+      "result": {
+        "ok": true,
+        "establishedAtAdoption": true
+      },
+      "errors": [],
+      "establishedAtAdoption": true
+    }
+  ],
+  "profile": "generic",
+  "scope": "full_app",
+  "autonomy": "supervised",
+  "standalone": false,
+  "adoption": {
+    "adopted_at": "2026-10-20T20:46:12.840366+00:00",
+    "commit_at_adoption": "49c0ddaa837e1a13c067188022b8db4f627aa448",
+    "features_inferred": 10,
+    "nested_excluded": [],
+    "plugin_version": "0.1.0"
+  },
+  "phase_history": {
+    "project": [
+      {
+        "outcome": "adopted",
+        "run_id": "adopt-2026-10-20T204612",
+        "at": "2026-10-20T20:46:12.840366+00:00"
+      }
+    ],
+    "plan": [
+      {
+        "outcome": "adopted",
+        "run_id": "adopt-2026-10-20T204612",
+        "at": "2026-10-20T20:46:12.840366+00:00"
+      }
+    ],
+    "build": [
+      {
+        "outcome": "adopted",
+        "run_id": "adopt-2026-10-20T204612",
+        "at": "2026-10-20T20:46:12.840366+00:00"
+      }
+    ],
+    "test": [
+      {
+        "outcome": "adopted-skipped",
+        "run_id": "adopt-2026-10-20T204612",
+        "at": "2026-10-20T20:46:12.840366+00:00"
+      }
+    ]
+  },
+  "iterate_history": [],
+  "_iterate_migration_state": "complete",
+  "_iterate_migration_ts": "2026-10-20T20:46:12.840366+00:00",
+  "_iterate_migration_quarantined_count": 0,
+  "created_at": "2026-10-20T20:46:12.840366+00:00",
+  "updated_at": "2026-10-20T20:46:12.840366+00:00"
+}

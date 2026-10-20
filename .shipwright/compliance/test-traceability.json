@@ -1,0 +1,236 @@
+{
+  "schema_version": 4,
+  "collector_version": "test_links/1.0.0",
+  "generated_at": "(no events)",
+  "source_commit": "49c0ddaa837e1a13c067188022b8db4f627aa448",
+  "spec_hash": "sha256:d3347d5130a8633f6f0071870d5f999188ea087020a5e5706019cd2b0ffeb2bf",
+  "requirements": {
+    "01::FR-01.01": {
+      "id": "FR-01.01",
+      "spec_path": ".shipwright/planning/01-adopted/spec.md",
+      "title": "The midwife enters the mother's first and last name, home address, date of birth, and which reimbursable services were provided. Missing or too-short entries are flagged before an invoice can be produced, and the address must be chosen from the suggestion list so that the postcode is known.",
+      "priority": "Must",
+      "status": "active",
+      "required_layers": [
+        "unit",
+        "e2e"
+      ],
+      "required_layers_source": "inferred_legacy",
+      "tests": {},
+      "coverage": {
+        "unit": "MISSING",
+        "e2e": "MISSING"
+      }
+    },
+    "01::FR-01.02": {
+      "id": "FR-01.02",
+      "spec_path": ".shipwright/planning/01-adopted/spec.md",
+      "title": "While the midwife types a street, matching addresses are suggested, limited to postcodes in the Canton of Zug and ranked so the closest street-name matches come first. Choosing a suggestion fills in street, house number, postcode and town. If the lookup fails, the midwife is told to try again later.",
+      "priority": "Must",
+      "status": "active",
+      "required_layers": [
+        "unit",
+        "e2e"
+      ],
+      "required_layers_source": "inferred_legacy",
+      "tests": {},
+      "coverage": {
+        "unit": "MISSING",
+        "e2e": "MISSING"
+      }
+    },
+    "01::FR-01.03": {
+      "id": "FR-01.03",
+      "spec_path": ".shipwright/planning/01-adopted/spec.md",
+      "title": "From valid form data the app produces a one-page PDF invoice addressed to the administration of the municipality responsible for the mother's postcode. It contains the midwife's sender details, the legal basis, the mother's details, the ticked services at CHF 400 each with the total, place and date, the stored signature, and payment terms. If no municipality is known for the postcode, the midwife is told to check the address instead of getting a wrong invoice.",
+      "priority": "Must",
+      "status": "active",
+      "required_layers": [
+        "unit",
+        "e2e"
+      ],
+      "required_layers_source": "inferred_legacy",
+      "tests": {},
+      "coverage": {
+        "unit": "MISSING",
+        "e2e": "MISSING"
+      }
+    },
+    "01::FR-01.04": {
+      "id": "FR-01.04",
+      "spec_path": ".shipwright/planning/01-adopted/spec.md",
+      "title": "Once an invoice has been generated, the midwife can print it directly or save it as a PDF file named after the mother.",
+      "priority": "Must",
+      "status": "active",
+      "required_layers": [
+        "unit",
+        "e2e"
+      ],
+      "required_layers_source": "inferred_legacy",
+      "tests": {},
+      "coverage": {
+        "unit": "MISSING",
+        "e2e": "MISSING"
+      }
+    },
+    "01::FR-01.05": {
+      "id": "FR-01.05",
+      "spec_path": ".shipwright/planning/01-adopted/spec.md",
+      "title": "The midwife can clear all entered patient data and the generated invoice in one step to start the next invoice.",
+      "priority": "Must",
+      "status": "active",
+      "required_layers": [
+        "unit",
+        "e2e"
+      ],
+      "required_layers_source": "inferred_legacy",
+      "tests": {},
+      "coverage": {
+        "unit": "MISSING",
+        "e2e": "MISSING"
+      }
+    },
+    "01::FR-01.06": {
+      "id": "FR-01.06",
+      "spec_path": ".shipwright/planning/01-adopted/spec.md",
+      "title": "The midwife stores her sender details (name, address, contact, IBAN), the place shown on the invoice, and optionally a fixed invoice date; left empty, each invoice carries the current date. The details are kept in the browser and reused for every invoice, and the form page shows when a fixed date is in effect.",
+      "priority": "Must",
+      "status": "active",
+      "required_layers": [
+        "unit",
+        "e2e"
+      ],
+      "required_layers_source": "inferred_legacy",
+      "tests": {},
+      "coverage": {
+        "unit": "MISSING",
+        "e2e": "MISSING"
+      }
+    },
+    "01::FR-01.07": {
+      "id": "FR-01.07",
+      "spec_path": ".shipwright/planning/01-adopted/spec.md",
+      "title": "The midwife draws her signature once; it is stored in the browser and placed on every invoice. Saving other settings never removes the signature, and it can be cleared on purpose.",
+      "priority": "Must",
+      "status": "active",
+      "required_layers": [
+        "unit",
+        "e2e"
+      ],
+      "required_layers_source": "inferred_legacy",
+      "tests": {},
+      "coverage": {
+        "unit": "MISSING",
+        "e2e": "MISSING"
+      }
+    },
+    "01::FR-01.08": {
+      "id": "FR-01.08",
+      "spec_path": ".shipwright/planning/01-adopted/spec.md",
+      "title": "Explains what the app does, how to use it, what data leaves the browser (only the typed street text, for address suggestions), the best-effort service disclaimer, and whom to contact.",
+      "priority": "Must",
+      "status": "active",
+      "required_layers": [
+        "unit",
+        "e2e"
+      ],
+      "required_layers_source": "inferred_legacy",
+      "tests": {},
+      "coverage": {
+        "unit": "MISSING",
+        "e2e": "MISSING"
+      }
+    },
+    "01::FR-01.09": {
+      "id": "FR-01.09",
+      "spec_path": ".shipwright/planning/01-adopted/spec.md",
+      "title": "The user can switch between light, dark and system appearance; the choice is remembered in the browser.",
+      "priority": "Must",
+      "status": "active",
+      "required_layers": [
+        "unit",
+        "e2e"
+      ],
+      "required_layers_source": "inferred_legacy",
+      "tests": {},
+      "coverage": {
+        "unit": "MISSING",
+        "e2e": "MISSING"
+      }
+    },
+    "01::FR-01.10": {
+      "id": "FR-01.10",
+      "spec_path": ".shipwright/planning/01-adopted/spec.md",
+      "title": "The address lookup service only answers the app's own web origins, rejects malformed or oversized requests, and limits how often a single client and all clients together may call it, so the Swiss Post quota cannot be used up by others. It never logs the addresses it handles.",
+      "priority": "Must",
+      "status": "active",
+      "required_layers": [
+        "unit"
+      ],
+      "required_layers_source": "inferred_legacy",
+      "tests": {},
+      "coverage": {
+        "unit": "MISSING"
+      }
+    },
+    "01::FR-01.11": {
+      "id": "FR-01.11",
+      "spec_path": ".shipwright/planning/01-adopted/spec.md",
+      "title": "CI pipeline (github-actions) must pass on pull requests.",
+      "priority": "Must",
+      "status": "active",
+      "required_layers": [
+        "unit"
+      ],
+      "required_layers_source": "inferred_legacy",
+      "tests": {},
+      "coverage": {
+        "unit": "MISSING"
+      }
+    },
+    "01::FR-01.12": {
+      "id": "FR-01.12",
+      "spec_path": ".shipwright/planning/01-adopted/spec.md",
+      "title": "Code passes eslint-flat without warnings.",
+      "priority": "Must",
+      "status": "active",
+      "required_layers": [
+        "unit"
+      ],
+      "required_layers_source": "inferred_legacy",
+      "tests": {},
+      "coverage": {
+        "unit": "MISSING"
+      }
+    }
+  },
+  "orphans": [],
+  "invalid_tags": [],
+  "invalid_layers": [],
+  "untagged_tests": [
+    "src/components/StreetLookup/__tests__/highlightMatches.test.tsx::does not interpret HTML in the text",
+    "src/components/StreetLookup/__tests__/highlightMatches.test.tsx::marks every matching term case-insensitively",
+    "src/components/StreetLookup/__tests__/highlightMatches.test.tsx::treats regex characters in the input literally instead of throwing",
+    "src/features/form/components/__tests__/FormContainer.test.tsx::calls onSubmit exactly once and does not generate a PDF itself",
+    "src/features/form/components/__tests__/FormContainer.test.tsx::does not submit invalid values",
+    "src/lib/__tests__/date.test.ts::formats ISO dates as DD.MM.YYYY without time-zone shifts",
+    "src/lib/__tests__/date.test.ts::returns the local date for today",
+    "src/lib/__tests__/pdfGenerator.integration.test.ts::renders the given administration and form data",
+    "src/lib/__tests__/presetStorage.unit.test.ts::keeps reading settings stored by older versions",
+    "src/lib/__tests__/presetStorage.unit.test.ts::preserves existing fields when updating others",
+    "src/lib/__tests__/presetStorage.unit.test.ts::provides default settings when none exist",
+    "src/lib/__tests__/presetStorage.unit.test.ts::removes the signature when null is passed",
+    "src/lib/__tests__/presetStorage.unit.test.ts::stores all settings fields",
+    "src/pages/__tests__/Index.test.tsx::renders the main heading",
+    "src/pages/__tests__/Index.test.tsx::shows a notice when a fixed invoice date is configured",
+    "src/pages/__tests__/Index.test.tsx::shows no notice when the invoice date is today",
+    "src/pages/__tests__/Index.test.tsx::shows preview placeholder when no PDF is generated",
+    "src/services/form/__tests__/formValidationService.test.ts::reports only the missing address when it is empty",
+    "src/services/form/__tests__/formValidationService.test.ts::requires a 4-digit PLZ once an address is entered",
+    "src/services/form/__tests__/formValidationService.test.ts::should return errors for invalid form",
+    "src/services/form/__tests__/formValidationService.test.ts::should return no errors for valid form",
+    "src/services/form/__tests__/formValidationService.test.ts::should validate geburtsdatum field",
+    "src/services/form/__tests__/formValidationService.test.ts::should validate nachname field",
+    "src/services/form/__tests__/formValidationService.test.ts::should validate vorname field"
+  ]
+}
