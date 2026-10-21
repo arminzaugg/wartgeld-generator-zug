@@ -98,7 +98,7 @@ _Source: enrichment._
 
 - Given the user opens the information page, then the purpose, usage steps, privacy statement, disclaimer and contact address are shown in German, with a way back to the form.
 - (E) Given the user opens the information page, when she reads the privacy statement, then it says that the text typed into the address field (street, house number, postcode, town) goes via Netlify and bunny.net, which see the IP address, to Swiss Post, and that nothing else is sent (iterate-2026-10-21-bunny-post-proxy).
-- (E) Given the user reads the privacy statement, then bunny.net is named as host, Netlify only for the old address, and saved settings files stay on the user's device (iterate-2026-10-21-bunny-static-hosting).
+- (E) Given the user opens the information page, when she reads the privacy statement, then bunny.net is named as host, Netlify only for the old address, and saved settings files stay on the user's device (iterate-2026-10-21-bunny-static-hosting).
 
 ### FR-01.09 — Light and dark appearance
 

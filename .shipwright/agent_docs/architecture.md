@@ -83,6 +83,7 @@ Layering: pages (src/pages) compose feature components (src/features/form, src/c
 
 - **iterate-2026-10-21-zug-municipality-data** (2026-10-21): Data-flow — municipality data ships with the app; the recipient is chosen in the browser, no DB read. → decision_log.md (ADR via Run-ID: iterate-2026-10-21-zug-municipality-data)
 - **iterate-2026-10-21-bunny-post-proxy** (2026-10-21): Component — address lookup is a Bunny edge script (`/api/address`) calling Swiss Post APIM; Supabase removed. → decision_log.md (ADR via Run-ID: iterate-2026-10-21-bunny-post-proxy)
+- **iterate-2026-10-21-bunny-static-hosting** (2026-10-21): Component — the static site is served from a Bunny storage + pull zone at wartgeld.nidea.ch; an exact-URL edge rule forwards `/api/address` to the lookup service with a site marker; Bunny Shield limits lookups per IP; settings move via file export/import. → decision_log.md (ADR via Run-ID: iterate-2026-10-21-bunny-static-hosting)
 
 ## See also
 
