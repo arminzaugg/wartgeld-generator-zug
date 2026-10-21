@@ -1,4 +1,5 @@
 import { isOfferedLocality } from '../../src/lib/municipality';
+import type { AddressSuggestion } from '../../src/types/address';
 import { parseAddressInput } from '../../src/utils/addressParser';
 import { createPostClient, PostError, type CompletionFields, type PostAddress, type PostConfig } from './postClient';
 import { createRateLimiter } from './rateLimit';
@@ -21,14 +22,7 @@ export interface HandlerDeps {
   lookupTimeoutMs?: number;
 }
 
-/** The contract between this service and the web app (`/api/address`). */
-export interface AddressSuggestion {
-  street: string;
-  houseNumber: string;
-  houseNumberAddition: string;
-  postcode: string;
-  town: string;
-}
+export type { AddressSuggestion };
 
 const MAX_RESULTS = 10;
 /** Swiss Post lists parcel pickup points (PickMup) and parcel machines (MP …) as streets. */
@@ -50,16 +44,41 @@ const toFields = (searchTerm: string, knownZip?: string): CompletionFields => {
 
 const key = (a: AddressSuggestion) => [a.street, a.houseNumber, a.houseNumberAddition, a.postcode, a.town].join('|');
 
-const toSuggestions = (results: PostAddress[], fields: CompletionFields): AddressSuggestion[] => {
+/** Reads the body, stopping as soon as it passes the limit (null), also when no length was declared. */
+const readLimited = async (request: Request): Promise<string | null> => {
+  if (!request.body) return '';
+  const reader = request.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    size += value.byteLength;
+    if (size > MAX_BODY_BYTES) {
+      await reader.cancel();
+      return null;
+    }
+    chunks.push(value);
+  }
+  const bytes = new Uint8Array(size);
+  chunks.reduce((offset, chunk) => (bytes.set(chunk, offset), offset + chunk.byteLength), 0);
+  return new TextDecoder().decode(bytes);
+};
+
+const text = (value: unknown): string => (typeof value === 'string' ? value : '');
+
+const toSuggestions = (results: unknown[], fields: CompletionFields): AddressSuggestion[] => {
   const exact = (a: AddressSuggestion) => Boolean(fields.houseNumber) && a.houseNumber === fields.houseNumber
     && (!fields.houseNumberAppendix || a.houseNumberAddition.toLowerCase() === fields.houseNumberAppendix.toLowerCase());
   return results
+    // Swiss Post's answer is not trusted: malformed entries are skipped, not fatal.
+    .filter((r): r is PostAddress => typeof r === 'object' && r !== null)
     .map(r => ({
-      street: r.street?.trim() ?? '',
-      houseNumber: r.houseNumber ?? '',
-      houseNumberAddition: r.houseNumberAppendix ?? '',
-      postcode: r.postcode4 ?? '',
-      town: r.city ?? '',
+      street: text(r.street).trim(),
+      houseNumber: text(r.houseNumber),
+      houseNumberAddition: text(r.houseNumberAppendix),
+      postcode: text(r.postcode4),
+      town: text(r.city),
     }))
     .filter(a => a.street && !PICKUP_POINT.test(a.street) && isOfferedLocality(a.postcode, a.town))
     // Several buildings can share one address; show it once.
@@ -96,8 +115,8 @@ export const createAddressHandler = (config: LookupConfig, deps: HandlerDeps) =>
       return reply({ error: 'Request too large' }, 413);
     }
 
-    const raw = await request.text();
-    if (new TextEncoder().encode(raw).length > MAX_BODY_BYTES) return reply({ error: 'Request too large' }, 413);
+    const raw = await readLimited(request);
+    if (raw === null) return reply({ error: 'Request too large' }, 413);
     let body: unknown;
     try {
       body = JSON.parse(raw);

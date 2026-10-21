@@ -15,7 +15,10 @@ export const parseLookupRequest = (body: unknown): ParseResult => {
   if (typeof body !== 'object' || body === null) {
     return { ok: false, error: 'Invalid request body' };
   }
-  const { searchTerm, zipCode } = body as Record<string, unknown>;
+  const { searchTerm, zipCode, ...unexpected } = body as Record<string, unknown>;
+  if (Object.keys(unexpected).length > 0) {
+    return { ok: false, error: 'Unexpected fields' };
+  }
 
   if (typeof searchTerm !== 'string' || searchTerm.trim().length < 2 || searchTerm.length > 100) {
     return { ok: false, error: 'searchTerm must be 2-100 characters' };

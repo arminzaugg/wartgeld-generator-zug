@@ -42,6 +42,7 @@ interface PostClientDeps {
 interface Token {
   value: string;
   refreshAt: number;
+  expiresAt: number;
 }
 
 /** Tokens are renewed this long before Swiss Post says they expire. */
@@ -83,6 +84,9 @@ const withDeadline = async <T>(ms: number | undefined, parent: AbortSignal | und
   }
 };
 
+/** Releases the connection of an answer whose body is not needed. */
+const discard = (response: Response) => response.body?.cancel().catch(() => {});
+
 export const createPostClient = (config: PostConfig, deps: PostClientDeps) => {
   const { fetch, now, tokenTimeoutMs = 3_000 } = deps;
   let token: Token | null = null;
@@ -100,21 +104,32 @@ export const createPostClient = (config: PostConfig, deps: PostClientDeps) => {
       }),
       signal,
     });
-    if (!response.ok) throw new PostError('token', response.status);
-    const body = await response.json() as { access_token?: unknown; expires_in?: unknown };
-    if (typeof body.access_token !== 'string' || typeof body.expires_in !== 'number') {
+    if (!response.ok) {
+      await discard(response);
+      throw new PostError('token', response.status);
+    }
+    const body = await response.json().catch(() => null) as { access_token?: unknown; expires_in?: unknown } | null;
+    if (typeof body?.access_token !== 'string' || typeof body.expires_in !== 'number') {
       throw new PostError('token');
     }
-    return { value: body.access_token, refreshAt: now() + body.expires_in * 1000 - REFRESH_MARGIN_MS };
+    const expiresAt = now() + body.expires_in * 1000;
+    return { value: body.access_token, refreshAt: expiresAt - REFRESH_MARGIN_MS, expiresAt };
   });
 
-  /** One token request at a time; a failed request is forgotten so the next lookup asks again. */
+  /**
+   * One token request at a time; a failed request is forgotten so the next lookup asks again.
+   * An early refresh that fails falls back to the old token while it is still valid.
+   */
   const currentToken = async (): Promise<Token> => {
     if (token && now() < token.refreshAt) return token;
     pending ??= requestToken()
       .then(fresh => (token = fresh))
       .finally(() => { pending = null; });
-    return pending;
+    const previous = token;
+    return pending.catch(error => {
+      if (previous && previous === token && now() < previous.expiresAt) return previous;
+      throw error;
+    });
   };
 
   const query = (fields: CompletionFields, bearer: string, signal?: AbortSignal) =>
@@ -136,11 +151,15 @@ export const createPostClient = (config: PostConfig, deps: PostClientDeps) => {
       let used = await tokenWithin();
       let response = await query(fields, used.value, signal);
       if (response.status === 401) {
+        await discard(response);
         if (token === used) token = null;
         used = await tokenWithin();
         response = await query(fields, used.value, signal);
       }
-      if (!response.ok) throw new PostError('status', response.status);
+      if (!response.ok) {
+        await discard(response);
+        throw new PostError('status', response.status);
+      }
 
       const body = await withDeadline(undefined, signal, () => response.json().catch(() => null)) as { result?: unknown } | null;
       if (!Array.isArray(body?.result)) throw new PostError('format');

@@ -4,15 +4,17 @@
   "reviews": {
     "self": {
       "review_type": "self",
-      "status": "pending",
+      "status": "completed",
       "findings_count": 0,
       "findings": [],
       "provider": null,
-      "completed_at": null,
+      "completed_at": "2026-10-21T18:59:57.750485+00:00",
       "disposition": null,
-      "recorded_by": null,
+      "recorded_by": "self-review",
       "parse_status": null,
-      "raw_excerpt": null
+      "raw_excerpt": null,
+      "verdict": "pass",
+      "reviewed_commit": "90f0aaf59dbe74abe9df2253de5731d664a0cb8f"
     },
     "plan": {
       "review_type": "plan",

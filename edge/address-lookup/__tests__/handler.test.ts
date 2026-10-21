@@ -78,10 +78,28 @@ describe('address handler — request checks', () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 
+  it('stops reading a streamed body without declared length as soon as it passes 1 KB', async () => {
+    let pulled = 0;
+    const body = new ReadableStream<Uint8Array>({
+      pull(controller) {
+        pulled += 1;
+        controller.enqueue(new TextEncoder().encode('x'.repeat(512)));
+      },
+    });
+    const request = new Request(`${SELF}/api/address`, {
+      method: 'POST', headers: { Origin: APP }, body, duplex: 'half',
+    } as RequestInit);
+    const { handle, fetch } = setup();
+    expect((await handle(request)).status).toBe(413);
+    expect(pulled).toBeLessThan(10);
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
   it('refuses invalid JSON and invalid fields with 400', async () => {
     const { handle } = setup();
     expect((await handle(lookup('{not json'))).status).toBe(400);
     expect((await handle(lookup({ searchTerm: 'a' }))).status).toBe(400);
+    expect((await handle(lookup({ searchTerm: 'Dorf', limit: 10 }))).status).toBe(400);
   });
 
   it('answers 503 when Swiss Post access is not configured', async () => {
@@ -149,6 +167,13 @@ describe('address handler — suggestions', () => {
     const answer = [at('Seestrasse', '3', '6300', 'Zug'), at('Seestrasse', '3', '6300', 'Zug')];
     const response = await setup(() => json({ result: answer })).handle(lookup({ searchTerm: 'Seestrasse 3' }));
     expect((await response.json()).results).toHaveLength(1);
+  });
+
+  it('skips malformed entries from Swiss Post instead of failing the lookup', async () => {
+    const answer = [null, { street: 42, city: 'Zug', postcode4: '6300' }, at('Dorfstrasse', '', '6340', 'Baar')];
+    const response = await setup(() => json({ result: answer })).handle(lookup({ searchTerm: 'Dorf' }));
+    expect(response.status).toBe(200);
+    expect((await response.json()).results.map((r: { street: string }) => r.street)).toEqual(['Dorfstrasse']);
   });
 
   it('ranks closer street names first when no house number is typed', async () => {

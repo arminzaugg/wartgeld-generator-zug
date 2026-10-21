@@ -20,6 +20,7 @@ describe('parseLookupRequest', () => {
     ['non-string searchTerm', { searchTerm: 42 }],
     ['malformed zipCode', { searchTerm: 'Dorf', zipCode: '63' }],
     ['non-string zipCode', { searchTerm: 'Dorf', zipCode: 6300 }],
+    ['unexpected field', { searchTerm: 'Dorf', limit: 10 }],
   ])('rejects %s', (_, body) => {
     expect(parseLookupRequest(body).ok).toBe(false);
   });

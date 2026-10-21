@@ -69,7 +69,7 @@ describe('createPostClient — autocomplete', () => {
   });
 
   it('gives up when Swiss Post does not answer before the caller aborts', async () => {
-    const post = fakePost(() => new Promise<Response>(() => {}));
+    const post = fakePost();
     const fetch = vi.fn((url: string | URL | Request, init?: RequestInit) =>
       String(url) === autocompleteUrl
         ? new Promise<Response>((_, reject) => init?.signal?.addEventListener('abort', () => reject(new Error('aborted'))))
@@ -77,6 +77,8 @@ describe('createPostClient — autocomplete', () => {
     const client = createPostClient(config, { fetch: fetch as typeof globalThis.fetch, now: () => 0 });
     const controller = new AbortController();
     const pending = client.autocomplete({ street: 'X' }, controller.signal);
+    // Abort only once the autocomplete request itself is waiting.
+    await vi.waitFor(() => expect(fetch).toHaveBeenCalledWith(autocompleteUrl, expect.anything()));
     controller.abort();
     await expect(pending).rejects.toMatchObject({ reason: 'timeout' });
   });
@@ -134,6 +136,29 @@ describe('createPostClient — token handling', () => {
 
     tokenStatus = 200;
     await expect(client.autocomplete({ street: 'A' })).resolves.toEqual([]);
+  });
+
+  it('keeps using the still-valid token when an early refresh fails', async () => {
+    let now = 0;
+    let tokenDown = false;
+    const fetch = vi.fn(async (url: string | URL | Request) => {
+      if (String(url) !== config.tokenUrl) return json({ result: [ADDRESS] });
+      return tokenDown ? json({}, 503) : json({ access_token: 'token-1', expires_in: 300 });
+    });
+    const client = createPostClient(config, { fetch: fetch as typeof globalThis.fetch, now: () => now });
+    await client.autocomplete({ street: 'A' });
+
+    tokenDown = true;
+    now = 280_000; // inside the 30 s refresh margin, token valid until 300 s
+    await expect(client.autocomplete({ street: 'B' })).resolves.toEqual([ADDRESS]);
+    now = 301_000; // expired: the failed refresh now fails the lookup
+    await expect(client.autocomplete({ street: 'C' })).rejects.toMatchObject({ reason: 'token', status: 503 });
+  });
+
+  it('reports an unreadable token answer as a token failure', async () => {
+    const fetch = vi.fn(async () => new Response('<html>', { status: 200 }));
+    const client = createPostClient(config, { fetch: fetch as typeof globalThis.fetch, now: () => 0 });
+    await expect(client.autocomplete({ street: 'A' })).rejects.toMatchObject({ reason: 'token' });
   });
 
   it('stops waiting for a token when the caller gives up', async () => {

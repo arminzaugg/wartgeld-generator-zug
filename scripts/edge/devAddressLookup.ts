@@ -16,6 +16,9 @@ const loadHandler = async (server: ViteDevServer, env: Record<string, string>): 
   });
 };
 
+const isLoopback = (address: string | undefined) =>
+  address === "127.0.0.1" || address === "::1" || address === "::ffff:127.0.0.1";
+
 const toRequest = async (req: IncomingMessage): Promise<Request> => {
   const chunks: Buffer[] = [];
   for await (const chunk of req) chunks.push(chunk as Buffer);
@@ -51,10 +54,19 @@ export const devAddressLookup = (mode: string): Plugin => ({
     const env = loadEnv(mode, server.config.root, "POST_APIM_");
     let handler: Promise<Handler> | undefined;
     server.middlewares.use("/api/address", (req, res, next) => {
+      // The dev server listens on all interfaces; only this machine may spend the Post credentials.
+      if (!isLoopback(req.socket.remoteAddress)) {
+        res.statusCode = 403;
+        res.end();
+        return;
+      }
       handler ??= loadHandler(server, env);
       handler
         .then(async handle => send(await handle(await toRequest(req)), res))
-        .catch(next);
+        .catch(error => {
+          handler = undefined; // load again on the next request
+          next(error);
+        });
     });
   },
 });

@@ -17,7 +17,7 @@ export const buildAddressLookup = () => build({
   conditions: ['deno', 'import'],
   mainFields: ['module', 'main'],
   external: ['node:*'],
-  tsconfig: 'tsconfig.json',
+  tsconfig: 'tsconfig.edge.json',
   logLevel: 'warning',
 });
 
