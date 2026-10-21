@@ -165,3 +165,35 @@ GLM: approve; GPT: revise. Fixed: keep Netlify previews allowed (PREVIEW_SITE un
 ## Architecture Review
 GPT: revise (option 1, but provision once instead of a reconciling controller) — **adopted**: no setup script, one-time provisioning documented in `docs/bunny-hosting.md`.
 GLM: revise (option 4, the address script also serves the static files; drop Shield) — **declined, put to the user**: it would ship the PDF/React bundle inside the script that holds the Swiss Post credentials, make every page view a script execution, lose CDN-cached immutable assets, and its in-script IP counting is per instance (the reason a per-visitor limit needs Shield). Shield stays because the user asked for a per-visitor limit and it costs nothing. Driver recorded: a real per-IP limit and the user's own domain on Bunny, not cost.
+
+## Confidence Calibration
+- **Boundaries touched:** browser → wartgeld.nidea.ch (Bunny pull zone → storage zone); `/api/address` → edge rule → address service → Swiss Post; deploy scripts → Bunny account/Storage/Shield/DNS APIs; browser file download/upload; GitHub Actions runner.
+- **Empirical probes run (live, 2026-10-21):**
+  - Edge rule "change origin" on a storage-zone pull zone: POST body + Origin reach the service; the service sees its own host (a site origin is refused until allowed) → Option 1 works, no middleware needed.
+  - Shield (Basic plan confirmed by readback, 2 rules max): request 51 within 10 s → 429, pages keep loading while blocked.
+  - Requests forwarded by the site reach the service zone from Bunny addresses (site traffic did not add to the visitor's counter there) → service-zone rule now applies only to requests without the site's secret marker; verified: 45 via site + 55 direct (with a forged marker) → direct calls 429 from #51, site calls unaffected.
+  - DNS: the new CNAME took ~1 h to be served by Bunny's nameservers (no account issue); certificate issued, HTTP → 301 HTTPS, b-cdn → 301 wartgeld.nidea.ch.
+  - Headers live: nosniff, no-referrer, DENY, HSTS; index `no-cache`, assets `public, max-age=31536000, immutable`.
+  - `deploy:edge` smoke: site origin 200 (10 results), Netlify origin 200, foreign 403. `deploy:site` smoke: new bundle live, lookup 200 with 10 results, foreign 403, b-cdn 301.
+  - Real browser on https://wartgeld.nidea.ch: typing "Bahnhofstr 1" sends 1 same-origin lookup, 10 Zug suggestions (Baar/Steinhausen/Zug first); settings page shows both transfer buttons; no moved notice on the new address.
+- **Test Completeness Ledger:**
+
+| # | Behavior (AC) | Status | Evidence |
+|---|---|---|---|
+| 1 | AC1 site served on wartgeld.nidea.ch, TLS, b-cdn → 301 | tested | live probe + `deploy:site` smoke test |
+| 2 | AC2 same-origin lookup reaches the service; new origin allowed, Netlify + previews still allowed | tested | `config.test.ts` defaults; `request.test.ts` previews; `deploy:edge` smoke; live browser |
+| 3 | AC3 per-visitor limit 50/10 s → 429 (site + direct) | tested | live Shield probes (see above) |
+| 4 | AC3 one lookup after a 250 ms pause; stale suggestions hidden | tested | `StreetLookup.test.tsx` "while typing" (2 tests) |
+| 5 | AC4 cache headers + purge, assets kept | tested | live header probe; `deploy:site` (bundle check after purge) |
+| 6 | AC5 deploy:site upload order, content types, entry bundle detection | tested | `scripts/site/__tests__/siteFiles.test.ts` (13) |
+| 7 | AC5 deploy guards (dirty tree, branch, untracked public/src), secret check incl. forward secret | tested | run live (`--from-branch`), `npm run build` secret check 7 rules |
+| 8 | AC6 security headers | tested | live header probe |
+| 9 | AC7 settings file format, validation, hostile inputs, `__proto__` | tested | `settingsFile.test.ts` (22) |
+| 10 | AC7 export saved values, import with confirm/cancel/error/size/quota, form remount | tested | `Settings.test.tsx` (7), `presetStorage.unit.test.ts` (4 new) |
+| 11 | AC7 end-to-end move to a fresh browser profile + invoice uses imported sender | tested | `e2e/settingsTransfer.spec.ts` |
+| 12 | Moved notice only on *.netlify.app | tested | `MovedNotice.test.tsx` (4) |
+| 13 | AC8 CI e2e job (read-only, built bundle, report on failure) | tested | `E2E_PREVIEW=1 npx playwright test` locally green; CI run on the PR |
+| 14 | AC9 privacy text + docs | tested | `Info.test.tsx` (3 new) |
+| 15 | AC10 cost within $1 minimum | untestable | requires-external-nondeterministic-service (monthly invoice; checked against the price list, Shield Basic plan read back) |
+
+- **Confidence-pattern check:** depth — every Bunny assumption was probed live before relying on it (routing, Host, Shield plan, IP counting, DNS, certificate, headers), one assumption (service-zone counting) was falsified and the design adjusted; breadth — every AC has a row; no cross-component Shipwright machinery touched.

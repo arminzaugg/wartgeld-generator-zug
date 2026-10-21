@@ -4,13 +4,13 @@
   "reviews": {
     "self": {
       "review_type": "self",
-      "status": "pending",
+      "status": "completed",
       "findings_count": 0,
       "findings": [],
       "provider": null,
-      "completed_at": null,
+      "completed_at": "2026-10-21T21:12:53.255183+00:00",
       "disposition": null,
-      "recorded_by": null,
+      "recorded_by": "self",
       "parse_status": null,
       "raw_excerpt": null
     },

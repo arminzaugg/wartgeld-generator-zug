@@ -1,0 +1,9 @@
+{"items":[
+ {"name":"Spec Compliance","verdict":"pass","note":"AC1-AC10 implemented; AC1-AC6 verified live on https://wartgeld.nidea.ch (deploy:site + deploy:edge smoke tests, Shield probes, real-browser lookup). Netlify forwarding deliberately out of scope (triage card)."},
+ {"name":"Error Handling","verdict":"pass","note":"Import: size checked before reading, parse/validation errors shown in German, storage quota failure leaves settings unchanged; deploy scripts fail with status-only messages; smoke test retries then fails loudly."},
+ {"name":"Security Basics","verdict":"pass","note":"Import is a whitelist parser (unknown keys incl. __proto__ refused, PNG magic, length caps); no secrets in git or dist (secret check covers the new forward secret); storage password only in memory; CI e2e job read-only with persist-credentials false; direct service calls limited per IP."},
+ {"name":"Tests","verdict":"pass","note":"218 unit tests + 3 e2e green; new behaviour tagged @FR-01.02/.06/.08/.10/.11; red-first for settingsFile, presetStorage, Settings page, MovedNotice, debounce, siteFiles."},
+ {"name":"Code Quality","verdict":"pass","note":"Small pure modules (settingsFile, siteFiles, useDebouncedValue); no new dependencies; matches existing deploy-script style; no provisioning code (one-time setup documented)."},
+ {"name":"Documentation","verdict":"pass","note":"README hosting/deploy/rollback, docs/bunny-hosting.md (resources, rule order, Shield, re-create checklist, move steps), CLAUDE.md/AGENTS.md WHAT, spec FR rows + (E) criteria, privacy text."},
+ {"name":"Affected Boundaries","verdict":"pass","note":"Browser→Bunny site, site→service edge rule (Host/body/Origin probed), Bunny APIs, file download/upload, CI runner; each listed in Confidence Calibration with its probe."}
+]}
