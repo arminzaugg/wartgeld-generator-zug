@@ -17,7 +17,8 @@ under a `VITE_` name; the deploy refuses a `main` that is ahead of `origin/main`
 
 ## Edge rules on the site pull zone (in this order)
 
-1. **api** — URL `*/api/address`: change origin to `https://wartgeld-address-lookup.bunny.run`,
+1. **api** — exactly `https://wartgeld.nidea.ch/api/address` (no wildcard: the Shield rule
+   below counts only this path, and the service answers 404 on any other path): change origin to `https://wartgeld-address-lookup.bunny.run`,
    cache time 0, request header `X-Wartgeld-Site: <BUNNY_SITE_FORWARD_SECRET>`.
 2. **headers: security** — every URL: `X-Content-Type-Options: nosniff`,
    `Referrer-Policy: no-referrer`, `X-Frame-Options: DENY`,
@@ -38,6 +39,9 @@ under a `VITE_` name; the deploy refuses a `main` that is ahead of `origin/main`
   `X-Wartgeld-Site` marker. Requests forwarded by the site reach the service from Bunny's own
   addresses, so counting them there would lump all visitors together; they are already limited
   per visitor on the site zone. A forged marker value is limited like any direct call.
+- "Per visitor" means per IP address. Someone rotating through many addresses (easy with
+  IPv6) is not stopped by Shield; the service's own cap (600 lookups/min per running
+  instance) is the backstop. Accepted for a one-midwife app; revisit if Post quota alarms fire.
 - Old-Netlify traffic reaches the service from Netlify's addresses and shares their counters
   until Netlify forwards to wartgeld.nidea.ch.
 - Free plan limits: at most 2 rate-limit rules per zone, windows up to 10 s.

@@ -129,6 +129,21 @@ describe('StreetLookup while typing', () => {
     expect(screen.queryByRole('option'), 'stale suggestions are not offered').not.toBeInTheDocument();
   });
 
+  it('does not keep a highlighted row when a new list arrives', async () => {
+    const onChange = renderLookup();
+    const input = screen.getByRole('combobox');
+    fireEvent.change(input, { target: { value: 'Allenwinden' } });
+    await screen.findByRole('option');
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+
+    fireEvent.change(input, { target: { value: 'Allenwinden 1' } });
+    await screen.findByRole('option');
+    fireEvent.keyDown(input, { key: 'Enter' });
+
+    const picked = onChange.mock.calls.filter(([, zipCode]) => zipCode !== undefined);
+    expect(picked, 'Enter picks nothing until a row of the new list is highlighted').toEqual([]);
+  });
+
   it('hides the error of the previous text once the user types again', async () => {
     fetchSpy.mockImplementationOnce(async () => new Response('{}', { status: 500 }));
     renderLookup();

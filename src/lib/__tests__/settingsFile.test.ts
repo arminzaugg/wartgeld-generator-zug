@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { MAX_SETTINGS_FILE_BYTES, parseSettingsFile, serializeSettings } from '../settingsFile';
+import { MAX_SETTINGS_FILE_BYTES, invalidFields, parseSettingsFile, serializeSettings } from '../settingsFile';
 
 const PNG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
 
@@ -50,6 +50,15 @@ describe('settings file', () => {
     const result = parseSettingsFile(text);
     expect(result.ok, 'the file must be refused').toBe(false);
     if (!result.ok) expect(result.error).toMatch(/\S/);
+  });
+
+  it('names the field that makes a file invalid', () => {
+    expect(parseSettingsFile(fileWith({ senderInfo: 'Anna', signature: 'data:image/jpeg;base64,/9j/4AAQ' })))
+      .toEqual({ ok: false, error: 'Die Datei enthält ungültige Angaben: Unterschrift.' });
+  });
+
+  it('finds the stored fields an import would refuse, so export can name them', () => {
+    expect(invalidFields({ senderInfo: 'Anna', ortRechnungssteller: 'x'.repeat(101), signature: PNG })).toEqual(['ortRechnungssteller']);
   });
 
   it('rejects a file larger than the limit before parsing it', () => {

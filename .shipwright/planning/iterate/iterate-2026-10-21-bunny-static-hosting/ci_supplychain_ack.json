@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "run_id": "iterate-2026-10-21-bunny-static-hosting",
+  "ci_supplychain_ack": {
+    "run_id": "iterate-2026-10-21-bunny-static-hosting",
+    "paths_fingerprint": "b370a6f6e66166d3c83576b5250974af706c79b59db4a9af1071ba047ac453cc",
+    "consistent_with": "iterate-2026-10-21-bunny-static-hosting",
+    "statement": "Adds an e2e job to test.yml: permissions contents:read, checkout with persist-credentials:false, only GitHub-owned actions (checkout, setup-node, upload-artifact) on tags as before, no secrets, no new third-party action. Playwright browsers come from npm ci (lockfile-pinned). Trust boundary unchanged; pinning of the existing third-party lcov-reporter action is filed as a triage card.",
+    "ci_paths": [
+      ".github/workflows/test.yml"
+    ],
+    "provenance": "commit",
+    "provenance_ref": "1cd84867f1481bcc358ebb5d72781f88b19177d9"
+  }
+}

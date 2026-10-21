@@ -176,6 +176,14 @@ GLM: approve; GPT: revise. Fixed: keep Netlify previews allowed (PREVIEW_SITE un
 GPT: revise (option 1, but provision once instead of a reconciling controller) — **adopted**: no setup script, one-time provisioning documented in `docs/bunny-hosting.md`.
 GLM: revise (option 4, the address script also serves the static files; drop Shield) — **declined, put to the user**: it would ship the PDF/React bundle inside the script that holds the Swiss Post credentials, make every page view a script execution, lose CDN-cached immutable assets, and its in-script IP counting is per instance (the reason a per-visitor limit needs Shield). Shield stays because the user asked for a per-visitor limit and it costs nothing. Driver recorded: a real per-IP limit and the user's own domain on Bunny, not cost.
 
+## Doubt Review (doubt-reviewer)
+
+Verdict: concerns. Each answered:
+1. **high — `/x/api/address` skipped the per-visitor limit** (edge rule `*/api/address` vs Shield "begins with `/api/address`", service had no path check). **Fixed:** the service answers 404 on any path but `/api/address` (handler tests for 5 variants), and the edge rule is anchored to `https://wartgeld.nidea.ch/api/address`. Re-probed live: `/x/api/address`, `/API/address`, `/api/address/` → 405/404 on the site, 404 on bunny.run. `/%61pi/address` is decoded by Bunny and reaches the service, but Shield counts it too (429 from about request 50 on both hosts).
+2. **medium — per IP is not per visitor (IPv6 rotation).** **Accepted and documented** in `docs/bunny-hosting.md`: the limit is per IP address, and the backstop is the service's per-instance cap. This is proportionate for a one-user app.
+3. **medium — a stored value that import refuses (large or JPEG signature, over-long text) made the whole move fail with no reason given.** **Fixed:** export leaves such fields out and names them ("Nicht gesichert, weil ungültig: Unterschrift…"); import names the failing field.
+4. **low — highlighted row kept across lists.** **Fixed:** the highlight resets when a new list arrives, and Enter needs an existing row (test).
+
 ## Confidence Calibration
 - **Boundaries touched:** browser → wartgeld.nidea.ch (Bunny pull zone → storage zone); `/api/address` → edge rule → address service → Swiss Post; deploy scripts → Bunny account/Storage/Shield/DNS APIs; browser file download/upload; GitHub Actions runner.
 - **Empirical probes run (live, 2026-10-21):**

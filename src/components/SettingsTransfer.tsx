@@ -2,7 +2,9 @@ import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { getStoredSettings, replaceSettings } from "@/lib/presetStorage";
-import { MAX_SETTINGS_FILE_BYTES, parseSettingsFile, serializeSettings, type StoredSettings } from "@/lib/settingsFile";
+import {
+  FIELD_LABELS, MAX_SETTINGS_FILE_BYTES, invalidFields, parseSettingsFile, serializeSettings, type StoredSettings,
+} from "@/lib/settingsFile";
 
 const FILE_NAME = "wartgeld-einstellungen.json";
 
@@ -13,13 +15,6 @@ const readText = (file: File) =>
     reader.onerror = () => reject(reader.error);
     reader.readAsText(file);
   });
-
-const FIELD_LABELS: Record<keyof StoredSettings, string> = {
-  senderInfo: "Angaben Rechnungsstellerin",
-  ortRechnungssteller: "Ort",
-  rechnungsDatum: "Rechnungsdatum",
-  signature: "Unterschrift",
-};
 
 const FIELDS = Object.keys(FIELD_LABELS) as (keyof StoredSettings)[];
 
@@ -48,7 +43,15 @@ export const SettingsTransfer = ({ onImported }: SettingsTransferProps) => {
   const { toast } = useToast();
 
   const handleExport = () => {
-    const blob = new Blob([serializeSettings(getStoredSettings())], { type: "application/json" });
+    // Fields the import would refuse are left out and named, so the rest still moves.
+    const settings = getStoredSettings();
+    const skipped = invalidFields(settings);
+    for (const field of skipped) delete settings[field];
+    setError(skipped.length > 0
+      ? `Nicht gesichert, weil ungültig: ${skipped.map(field => FIELD_LABELS[field]).join(", ")}. ` +
+        "Bitte diese Angaben nach dem Laden neu erfassen."
+      : null);
+    const blob = new Blob([serializeSettings(settings)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;

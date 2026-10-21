@@ -64,6 +64,18 @@ describe('Settings export and import', () => {
     vi.useRealTimers();
   });
 
+  it('leaves out and names a stored signature that a settings file would refuse', async () => {
+    updateSettings({ senderInfo: 'Anna Muster', signature: 'data:image/jpeg;base64,/9j/4AAQ' });
+    renderWithProviders(<Settings />);
+
+    await userEvent.click(screen.getByRole('button', { name: 'Einstellungen sichern' }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Nicht gesichert, weil ungültig: Unterschrift');
+    const file = JSON.parse(await readBlob(exported[0]));
+    expect(file.settings, 'the rest of the settings still move').toMatchObject({ senderInfo: 'Anna Muster' });
+    expect(file.settings).not.toHaveProperty('signature');
+  });
+
   it('warns that the file holds bank details and signature', () => {
     renderWithProviders(<Settings />);
     expect(screen.getByText(/Bankverbindung und Unterschrift/)).toBeInTheDocument();

@@ -35,6 +35,11 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   
   const { toast } = useToast();
 
+  // A highlighted row belongs to the list it was chosen in; a new list starts unselected.
+  useEffect(() => {
+    setSelectedIndex(-1);
+  }, [suggestions]);
+
   // Reset component when value prop is empty (form reset)
   useEffect(() => {
     if (!value) {
@@ -137,7 +142,7 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       setSelectedIndex(prev => (prev > 0 ? prev - 1 : suggestions.length - 1));
-    } else if (e.key === 'Enter' && selectedIndex >= 0) {
+    } else if (e.key === 'Enter' && suggestions[selectedIndex]) {
       e.preventDefault();
       handleSuggestionClick(suggestions[selectedIndex]);
     }

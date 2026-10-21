@@ -50,6 +50,18 @@ const FIELDS: Record<keyof Settings, FieldCheck> = {
   signature: value => value.length <= MAX_SIGNATURE && PNG_DATA_URL.test(value) && isCompletePng(value),
 };
 
+export const FIELD_LABELS: Record<keyof Settings, string> = {
+  senderInfo: 'Angaben Rechnungsstellerin',
+  ortRechnungssteller: 'Ort',
+  rechnungsDatum: 'Rechnungsdatum',
+  signature: 'Unterschrift',
+};
+
+/** Stored fields a settings file would refuse, e.g. an uploaded signature that is too large. */
+export const invalidFields = (settings: StoredSettings): (keyof Settings)[] =>
+  (Object.keys(FIELDS) as (keyof Settings)[])
+    .filter(field => typeof settings[field] === 'string' && !FIELDS[field](settings[field]));
+
 const invalid = (error: string): ParsedSettingsFile => ({ ok: false, error });
 
 export const serializeSettings = (settings: StoredSettings): string => {
@@ -88,7 +100,7 @@ export const parseSettingsFile = (text: string): ParsedSettingsFile => {
     }
     const field = key as keyof Settings;
     if (typeof value !== 'string' || !FIELDS[field](value)) {
-      return invalid('Die Datei enthält ungültige Angaben.');
+      return invalid(`Die Datei enthält ungültige Angaben: ${FIELD_LABELS[field]}.`);
     }
     settings[field] = value;
   }

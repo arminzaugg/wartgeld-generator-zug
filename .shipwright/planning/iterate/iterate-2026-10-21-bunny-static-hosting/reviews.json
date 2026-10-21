@@ -192,15 +192,53 @@
     },
     "doubt": {
       "review_type": "doubt",
-      "status": "pending",
-      "findings_count": 0,
-      "findings": [],
+      "status": "completed",
+      "findings_count": 4,
+      "findings": [
+        {
+          "severity": "high",
+          "category": "boundary & contract",
+          "file": "edge/address-lookup/handler.ts",
+          "line": null,
+          "finding": "Claim under doubt: per-visitor limit cannot be bypassed — /x/api/address matched edge rule */api/address (marker added) but not Shield 'begins with /api/address'; service had no path check",
+          "suggestion": "FIXED: service 404 on other paths + edge rule anchored; re-probed live",
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "medium",
+          "category": "hidden coupling",
+          "file": "docs/bunny-hosting.md",
+          "line": null,
+          "finding": "Claim under doubt: per-IP limit is per-visitor — IPv6 /64 rotation defeats per-IP counting",
+          "suggestion": "ACCEPTED: documented as per-IP with per-instance cap backstop",
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "medium",
+          "category": "reversibility",
+          "file": "src/components/SettingsTransfer.tsx",
+          "line": null,
+          "finding": "Claim under doubt: settings move works — export accepts stored values that import rejects (large/JPEG signature, long text) -> whole file refused without reason",
+          "suggestion": "FIXED: export skips and names invalid fields; import names the failing field",
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "concurrency & ordering",
+          "file": "src/components/StreetLookup.tsx",
+          "line": null,
+          "finding": "Claim under doubt: debounce never selects wrong address — selectedIndex not reset when list changes; Enter picks row of new list",
+          "suggestion": "FIXED: reset on new list, guard Enter",
+          "source": "doubt-reviewer"
+        }
+      ],
       "provider": null,
-      "completed_at": null,
+      "completed_at": "2026-10-21T21:23:48.107949+00:00",
       "disposition": null,
-      "recorded_by": null,
+      "recorded_by": "doubt-reviewer",
       "parse_status": null,
-      "raw_excerpt": null
+      "raw_excerpt": null,
+      "model_tier": "inherit"
     },
     "external_code": {
       "review_type": "external_code",
