@@ -1,0 +1,42 @@
+{
+  "review_schema": 2,
+  "success": true,
+  "provider": "codex",
+  "degraded": false,
+  "reviews_succeeded": 2,
+  "reviewed": true,
+  "reviews": {
+    "openai": {
+      "feedback": "1. **Category:** edge-case  \n   **Severity:** high  \n   **Finding:** The postcode fallback combines municipalities from several localities, but still applies the \u201ctop share \u2265 80%\u201d pre-selection rule. Shares describe individual localities, so a municipality with 100% of the first locality could be selected even though other localities in that postcode belong elsewhere. The fallback\u2019s outside-canton hint is also undefined.  \n   **Suggestion:** Define fallback behavior separately: when the town does not match and the postcode spans several municipalities, leave the selection empty and show the shared-locality hint. Do not apply a locality\u2019s percentage to the postcode union. Specify how outside-canton coverage affects this fallback, and test a postcode containing multiple localities with different dominant municipalities.\n\n2. **Category:** risk  \n   **Severity:** medium  \n   **Finding:** The E2E test exempts the stubbed address-lookup endpoint from its external-request assertion throughout the journey. That could conceal a regression where invoice generation calls that endpoint, despite AC5 requiring generation to contact only the app\u2019s origin.  \n   **Suggestion:** Finish address selection and settle pending lookup activity before starting a separate request-observation window around invoice generation. During that window, assert that no external request occurs, including requests to the stubbed endpoint.\n\nThe approach is otherwise well scoped: bundled recipient data, a native select, and a synchronous PDF lookup fit this change without unnecessary infrastructure. Clarify the postcode fallback and tighten the network assertion before implementation.\n\nSHIPWRIGHT_VERDICT: revise",
+      "via": "codex",
+      "status": "success"
+    },
+    "glm": {
+      "feedback": "## Findings\n\n**1. Category: dependency | Severity: high**\n**Finding:** The entire proposal-rule machinery (80 % pre-select, \u2265 5 % hints, `outsideShare`) depends on the source CSV containing per-municipality address shares. The swisstopo AMTOVZ (official locality register) maps localities to municipalities but, to my knowledge, does not carry address-count shares; Post's public postcode files don't either. Neither internal review appears to have verified this. If the chosen CSV lacks a share column, thresholds are unimplementable as specified.\n**Suggestion:** Before F0, fetch the actual CSV and confirm the share field exists (or identify the Post product that does carry it, e.g. the building-level postcode data, and name it in the provenance header). If no share source exists, the rules must be re-derived (e.g. locality-count based) \u2014 better to discover now than mid-implementation.\n\n**2. Category: risk | Severity: medium**\n**Finding:** Deleting `src/lib/administrationData.ts` assumes its only consumer is the PDF path. If `UnknownPlzError` or the Supabase lookup is imported by validation, the Info page, or tests elsewhere, the removal breaks them. Also, the live Netlify site shares this codebase until step 3 \u2014 confirm this change can be deployed independently without stranding the currently-deployed version's imports.\n**Suggestion:** Run an import-graph check on `administrationData` before deletion; it's cheap and rules out surprise breakage.\n\n**3. Category: edge-case | Severity: medium**\n**Finding:** AC9's \"keep the choice\" logic compares postcode + town, but the town string arrives from the address-suggestion service while the stored state may have different Unicode composition or whitespace than the freshly typed value. The plan normalises inside `proposeMunicipality` but the change-detection in `Index.handleAddressChange` must apply the same normalisation, or a house-number edit that re-fires the suggestion with a slightly different town string (e.g. NFC vs NFD) will wipe the user's manual choice \u2014 exactly the bug AC9 was written to prevent.\n**Suggestion:** Extract and reuse one normalisation helper for both the proposal input and the postcode/town change comparison; add a unit test with an NFD-composed \"Neu\u00e4geri\".\n\n**4. Category: edge-case | Severity: low**\n**Finding:** Spec allows both a pre-select (\u2265 80 %) and a shared hint (\u2265 2 municipalities \u2265 5 %) for the same locality \u2014 e.g. a locality split 85/10/5 gets a pre-selection *and* the \"mehrere Gemeinden\" hint. That's probably desirable, but the plan's step 2 test list doesn't cover this combination, so behaviour may drift.\n**Suggestion:** Add one explicit unit test for the combined pre-select + hint case so the intended behaviour is pinned.\n\n**5. Category: approach | Severity: low**\n**Finding:** AC5's E2E assertion (\"no request to any other host\") is measured only during the generation action, since step 1 legitimately still calls the Supabase edge function for address suggestions. The plan handles this by stubbing, but the assertion should be scoped precisely (from address-pick to invoice render) or it will flake against the stubbed route.\n**Suggestion:** Make the no-external-request assertion window explicit in the test (start listening after the suggestion is picked).\n\n## Overall assessment\n\nThe approach is sound and unusually well-debated \u2014 two internal reviews already closed the major statefulness and correctness gaps. The one genuinely open question is whether the chosen federal CSV actually contains the address-share data the proposal rules require; verify that before starting, and tighten the town-normalisation reuse, and this is ready.\n\nSHIPWRIGHT_VERDICT: revise",
+      "via": "openrouter",
+      "status": "success"
+    }
+  },
+  "driver": "claude",
+  "driver_requested": "claude",
+  "codextender_active": false,
+  "mode": "iterate",
+  "capture": {
+    "run_id": "iterate-2026-10-21-zug-municipality-data",
+    "at": "2026-10-21T17:20:14.789106+00:00"
+  },
+  "verdicts": {
+    "openai": "revise",
+    "glm": "revise"
+  },
+  "statuses": {
+    "openai": "success",
+    "glm": "success"
+  },
+  "contradiction": {
+    "detected": false,
+    "comparable": true,
+    "requires_resolution": false,
+    "reason": "verdicts agree within one step: glm=revise, openai=revise"
+  }
+}

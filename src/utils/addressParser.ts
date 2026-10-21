@@ -17,6 +17,9 @@ export const parseAddressInput = (input: string) => {
     streetName = input.replace(zipCityPattern, '').trim();
   }
 
+  // Drop commas first so "Strasse 4, 6300 Zug" still yields house number 4
+  streetName = streetName.replace(/,/g, '').trim();
+
   // Extract house number if present
   const houseNumberMatch = streetName.match(houseNumberPattern);
   if (houseNumberMatch) {
@@ -28,9 +31,6 @@ export const parseAddressInput = (input: string) => {
       streetName = streetName.replace(houseNumberPattern, '').trim();
     }
   }
-
-  // Clean up any remaining commas
-  streetName = streetName.replace(/,/g, '').trim();
 
   return {
     streetName,

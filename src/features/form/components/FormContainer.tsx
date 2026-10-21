@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PersonalInfoFields } from "./PersonalInfoFields";
 import { AddressFields } from "./AddressFields";
 import { DateAndMunicipalityFields } from "./DateAndMunicipalityFields";
@@ -32,6 +32,11 @@ export const FormContainer = ({
   const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+
+  // A new address brings a new municipality proposal; old address errors no longer apply.
+  useEffect(() => {
+    setErrors(({ plz, gemeindeBfs, ...rest }) => rest);
+  }, [values.plz, values.ort]);
 
   const handleInputChange = (field: string, value: string | boolean) => {
     const error = formValidationService.validateField(field, value);
@@ -88,7 +93,10 @@ export const FormContainer = ({
 
           <DateAndMunicipalityFields
             values={{
-              geburtsdatum: values.geburtsdatum
+              geburtsdatum: values.geburtsdatum,
+              plz: values.plz,
+              ort: values.ort,
+              gemeindeBfs: values.gemeindeBfs,
             }}
             errors={errors}
             onChange={handleInputChange}

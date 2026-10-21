@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { generatePDF } from '../pdfGenerator';
-import type { AdministrationData } from '../administrationData';
+import type { MunicipalityRecipient } from '@/data/types';
 import { createFormValues } from './factories/formFactory';
 
 vi.mock('../presetStorage', () => ({
@@ -12,20 +12,16 @@ vi.mock('../presetStorage', () => ({
   })
 }));
 
-const administration: AdministrationData = {
-  id: '1',
-  municipality: 'Zug',
+const administration: MunicipalityRecipient = {
   title: 'Test Administration',
-  name: 'Test Name',
+  department: 'Test Name',
   address: 'Test Address',
   city: '6300 Zug',
-  plz: '6300',
-  created_at: '',
-  updated_at: '',
 };
 
 const decode = (dataUri: string) => atob(dataUri.split(',')[1]);
 
+// @covers FR-01.03
 describe('pdfGenerator', () => {
   it('renders the given administration and form data', async () => {
     const result = await generatePDF(

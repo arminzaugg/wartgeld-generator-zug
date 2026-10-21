@@ -1,11 +1,13 @@
 import { generatePDF } from '@/lib/pdfGenerator';
-import { getAdministrationData } from '@/lib/administrationData';
+import { getMunicipality, UnknownMunicipalityError } from '@/lib/municipality';
 import type { FormValues } from '@/types/form';
 
 export const pdfGenerationService = {
-  /** Looks up the responsible administration for the PLZ once and renders the invoice. */
+  /** Renders the invoice for the municipality chosen on the form; needs no network. */
   async generatePDF(formData: FormValues): Promise<string> {
-    const administration = await getAdministrationData(formData.plz);
-    return generatePDF(formData, administration);
+    const bfs = Number(formData.gemeindeBfs);
+    const municipality = getMunicipality(bfs);
+    if (!municipality) throw new UnknownMunicipalityError(bfs);
+    return generatePDF(formData, municipality.recipient);
   }
 };

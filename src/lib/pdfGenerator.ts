@@ -1,9 +1,9 @@
-import type { AdministrationData } from './administrationData';
+import type { MunicipalityRecipient } from '@/data/types';
 import { getSettings } from './presetStorage';
 import { formatSwissDate, todayIso } from './date';
 import type { FormValues } from '@/types/form';
 
-export const generatePDF = async (data: FormValues, administration: AdministrationData): Promise<string> => {
+export const generatePDF = async (data: FormValues, recipient: MunicipalityRecipient): Promise<string> => {
   // Loaded on demand so jsPDF (and html2canvas) stay out of the initial bundle.
   const { default: jsPDF } = await import('jspdf');
   const doc = new jsPDF();
@@ -16,17 +16,17 @@ export const generatePDF = async (data: FormValues, administration: Administrati
     doc.text(line, 25, 25 + (index * 5));
   });
   
-  // Add recipient information (administration)
-  doc.text(administration.title, 120, 65);
+  // Add recipient information (municipal administration)
+  doc.text(recipient.title, 120, 65);
   // Dynamically calculate y-positions to avoid empty lines
   let recipientY = 70;
-  if (administration.name) {
-    doc.text(administration.name, 120, recipientY);
+  if (recipient.department) {
+    doc.text(recipient.department, 120, recipientY);
     recipientY += 5;
   }
-  doc.text(administration.address, 120, recipientY);
+  doc.text(recipient.address, 120, recipientY);
   recipientY += 5;
-  doc.text(`${administration.city}`, 120, recipientY);
+  doc.text(`${recipient.city}`, 120, recipientY);
   
   // Add invoice title with larger font and bold
   doc.setFontSize(18);

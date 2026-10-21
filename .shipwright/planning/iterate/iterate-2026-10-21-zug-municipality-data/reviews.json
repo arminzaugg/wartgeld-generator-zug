@@ -1,0 +1,349 @@
+{
+  "schema_version": 1,
+  "run_id": "iterate-2026-10-21-zug-municipality-data",
+  "reviews": {
+    "self": {
+      "review_type": "self",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-21T17:27:13.623479+00:00",
+      "disposition": null,
+      "recorded_by": "self-review",
+      "parse_status": null,
+      "raw_excerpt": null
+    },
+    "plan": {
+      "review_type": "plan",
+      "status": "completed",
+      "findings_count": 7,
+      "findings": [
+        {
+          "severity": null,
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "The entire proposal-rule machinery (80 % pre-select, ≥ 5 % hints, `outsideShare`) depends on the source CSV containing per-municipality address shares. The swisstopo AMTOVZ (official locality register) maps localities to municipalities but, to my knowledge, does not carry address-count shares; Post's public postcode files don't either. Neither internal review appears to have verified this. If the chosen CSV lacks a share column, thresholds are unimplementable as specified.",
+          "suggestion": "Before F0, fetch the actual CSV and confirm the share field exists (or identify the Post product that does carry it, e.g. the building-level postcode data, and name it in the provenance header). If no share source exists, the rules must be re-derived (e.g. locality-count based) — better to discover now than mid-implementation.  2. Category: risk | Severity: medium",
+          "source": "external-review"
+        },
+        {
+          "severity": null,
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "Deleting `src/lib/administrationData.ts` assumes its only consumer is the PDF path. If `UnknownPlzError` or the Supabase lookup is imported by validation, the Info page, or tests elsewhere, the removal breaks them. Also, the live Netlify site shares this codebase until step 3 — confirm this change can be deployed independently without stranding the currently-deployed version's imports.",
+          "suggestion": "Run an import-graph check on `administrationData` before deletion; it's cheap and rules out surprise breakage.  3. Category: edge-case | Severity: medium",
+          "source": "external-review"
+        },
+        {
+          "severity": null,
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "AC9's \"keep the choice\" logic compares postcode + town, but the town string arrives from the address-suggestion service while the stored state may have different Unicode composition or whitespace than the freshly typed value. The plan normalises inside `proposeMunicipality` but the change-detection in `Index.handleAddressChange` must apply the same normalisation, or a house-number edit that re-fires the suggestion with a slightly different town string (e.g. NFC vs NFD) will wipe the user's manual choice — exactly the bug AC9 was written to prevent.",
+          "suggestion": "Extract and reuse one normalisation helper for both the proposal input and the postcode/town change comparison; add a unit test with an NFD-composed \"Neuägeri\".  4. Category: edge-case | Severity: low",
+          "source": "external-review"
+        },
+        {
+          "severity": null,
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "Spec allows both a pre-select (≥ 80 %) and a shared hint (≥ 2 municipalities ≥ 5 %) for the same locality — e.g. a locality split 85/10/5 gets a pre-selection and the \"mehrere Gemeinden\" hint. That's probably desirable, but the plan's step 2 test list doesn't cover this combination, so behaviour may drift.",
+          "suggestion": "Add one explicit unit test for the combined pre-select + hint case so the intended behaviour is pinned.  5. Category: approach | Severity: low",
+          "source": "external-review"
+        },
+        {
+          "severity": null,
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "AC5's E2E assertion (\"no request to any other host\") is measured only during the generation action, since step 1 legitimately still calls the Supabase edge function for address suggestions. The plan handles this by stubbing, but the assertion should be scoped precisely (from address-pick to invoice render) or it will flake against the stubbed route.",
+          "suggestion": "Make the no-external-request assertion window explicit in the test (start listening after the suggestion is picked).",
+          "source": "external-review"
+        },
+        {
+          "severity": "high",
+          "category": "edge-case",
+          "file": null,
+          "line": null,
+          "finding": "The postcode fallback combines municipalities from several localities, but still applies the “top share ≥ 80%” pre-selection rule. Shares describe individual localities, so a municipality with 100% of the first locality could be selected even though other localities in that postcode belong elsewhere. The fallback’s outside-canton hint is also undefined.",
+          "suggestion": "Define fallback behavior separately: when the town does not match and the postcode spans several municipalities, leave the selection empty and show the shared-locality hint. Do not apply a locality’s percentage to the postcode union. Specify how outside-canton coverage affects this fallback, and test a postcode containing multiple localities with different dominant municipalities.",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "risk",
+          "file": null,
+          "line": null,
+          "finding": "The E2E test exempts the stubbed address-lookup endpoint from its external-request assertion throughout the journey. That could conceal a regression where invoice generation calls that endpoint, despite AC5 requiring generation to contact only the app’s origin.",
+          "suggestion": "Finish address selection and settle pending lookup activity before starting a separate request-observation window around invoice generation. During that window, assert that no external request occurs, including requests to the stubbed endpoint.  The approach is otherwise well scoped: bundled recipient data, a native select, and a synchronous PDF lookup fit this change without unnecessary infrastructure. Clarify the postcode fallback and tighten the network assertion before implementation.  SHIPWRIGHT_VERDICT: revise",
+          "source": "external-review"
+        }
+      ],
+      "provider": "openrouter",
+      "completed_at": "2026-10-21T17:21:11.244653+00:00",
+      "disposition": null,
+      "recorded_by": "external-review-json",
+      "parse_status": "structured",
+      "raw_excerpt": "[glm] ## Findings\n\n**1. Category: dependency | Severity: high**\n**Finding:** The entire proposal-rule machinery (80 % pre-select, ≥ 5 % hints, `outsideShare`) depends on the source CSV containing per-municipality address shares. The swisstopo AMTOVZ (official locality register) maps localities to municipalities but, to my knowledge, does not carry address-count shares; Post's public postcode files don't either. Neither internal review appears to have verified this. If the chosen CSV lacks a share column, thresholds are unimplementable as specified.\n**Suggestion:** Before F0, fetch the actual CSV and confirm the share field exists (or identify the Post product that does carry it, e.g. the building-level postcode data, and name it in the provenance header). If no share source exists, the rules must be re-derived (e.g. locality-count based) — better to discover now than mid-implementation.\n\n**2. Category: risk | Severity: medium**\n**Finding:** Deleting `src/lib/administrationData.ts` assumes its only consumer is the PDF path. If `UnknownPlzError` or the Supabase lookup is imported by validation, the Info page, or tests elsewhere, the removal breaks them. Also, the live Netlify site shares this codebase until step 3 — confirm this change can be deployed independently without stranding the currently-deployed version's imports.\n**Suggestion:** Run an import-graph check on `administrationData` before deletion; it's cheap and rules out surprise breakage.\n\n**3. Category: edge-case | Severity: medium**\n**Finding:** AC9's \"keep the choice\" logic compares postcode + town, but the town string arrives from the address-suggestion service while the stored state may have different Unicode composition or whitespace than the freshly typed value. The plan normalises inside `proposeMunicipality` but the change-detection in `Index.handleAddressChange` must apply the same normalisation, or a house-number edit that re-fires the suggestion with a slightly different town string (e.g.  […truncated]\n\n[openai] 1. **Category:** edge-case  \n   **Severity:** high  \n   **Finding:** The postcode fallback combines municipalities from several localities, but still applies the “top share ≥ 80%” pre-selection rule. Shares describe individual localities, so a municipality with 100% of the first locality could be selected even though other localities in that postcode belong elsewhere. The fallback’s outside-canton hint is also undefined.  \n   **Suggestion:** Define fallback behavior separately: when the town does not match and the postcode spans several municipalities, leave the selection empty and show the shared-locality hint. Do not apply a locality’s percentage to the postcode union. Specify how outside-canton coverage affects this fallback, and test a postcode containing multiple localities with different dominant municipalities.\n\n2. **Category:** risk  \n   **Severity:** medium  \n   **Finding:** The E2E test exempts the stubbed address-lookup endpoint from its external-request assertion throughout the journey. That could conceal a regression where invoice generation calls that endpoint, despite AC5 requiring generation to contact only the app’s origin.  \n   **Suggestion:** Finish address selection and settle pending lookup activity before starting a separate request-observation window around invoice generation. During that window, assert that no external request occurs, including requests to the stubbed endpoint.\n\nThe approach is otherwise well scoped: bundled recipient data, a native select, and a synchronous PDF lookup fit this change without unnecessary infrastructure. Clarify the postcode fallback and tighten the network assertion before implementation.\n\nSHIPWRIGHT_VERDICT: revise",
+      "verdicts": {
+        "openai": "revise",
+        "glm": "revise"
+      }
+    },
+    "code": {
+      "review_type": "code",
+      "status": "completed",
+      "findings_count": 7,
+      "findings": [
+        {
+          "severity": "low",
+          "category": "correctness",
+          "file": "src/features/form/components/FormContainer.tsx",
+          "line": null,
+          "finding": "Stale plz/gemeindeBfs errors survive an address change",
+          "suggestion": "fixed: useEffect on values.plz/ort drops both errors; FormContainer test added",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "test",
+          "file": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx",
+          "line": null,
+          "finding": "Keep-branch test did not prove onChange re-reports postcode/town",
+          "suggestion": "fixed: fixture has house number 4, test asserts onChange(full, '6319', 'Allenwinden'); exposed parser bug (house number not parsed before ', zip city') which is fixed in addressParser.ts",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "correctness",
+          "file": "src/components/StreetLookup.tsx",
+          "line": null,
+          "finding": "startsWith keeps a longer different street",
+          "suggestion": "fixed: equality compare + test for 'Allenwindenstrassenweg'",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "readability",
+          "file": "src/components/StreetLookup.tsx",
+          "line": null,
+          "finding": "normalizeTown used for street names; nested ternary",
+          "suggestion": "fixed: doc note on shared normalisation; ternary split in addressChange.ts",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "architecture",
+          "file": "src/features/form/components/DateAndMunicipalityFields.tsx",
+          "line": null,
+          "finding": "template-string classes instead of cn; no aria-invalid",
+          "suggestion": "fixed: cn + aria-invalid",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "architecture",
+          "file": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx",
+          "line": null,
+          "finding": "wrong FR tag FR-01.03",
+          "suggestion": "fixed: tagged FR-01.01",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "architecture",
+          "file": "package.json",
+          "line": null,
+          "finding": "Playwright suite not run in CI",
+          "suggestion": "deferred: CI workflow change needs a supply-chain ack; filed as triage follow-up",
+          "source": "code-reviewer"
+        }
+      ],
+      "provider": null,
+      "completed_at": "2026-10-21T17:37:08.424347+00:00",
+      "disposition": null,
+      "recorded_by": "code-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit",
+      "verdict": "pass",
+      "reviewed_commit": "3c000f6ec2a1de35eb7871e9f1e9390cc00f5b1d"
+    },
+    "doubt": {
+      "review_type": "doubt",
+      "status": "completed",
+      "findings_count": 5,
+      "findings": [
+        {
+          "severity": "medium",
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "Same-street house-number edit never reached the form (4 -> 6 left 4 on the invoice)",
+          "suggestion": null,
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "medium",
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "Parser comma fix let a typed number override the clicked suggestion's number",
+          "suggestion": null,
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "Print/save could use a PDF generated before the municipality was corrected",
+          "suggestion": null,
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "Up to <5 % of a pre-selected locality may belong to another municipality without a hint (e.g. 6315 Alosen)",
+          "suggestion": null,
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "Out-of-canton localities (Bennau, Sattel, Rothenthurm, Mühlau) are accepted with only a hint once step 2 changes suggestion filtering",
+          "suggestion": null,
+          "source": "doubt-reviewer"
+        }
+      ],
+      "provider": null,
+      "completed_at": "2026-10-21T17:41:31.974123+00:00",
+      "disposition": null,
+      "recorded_by": "doubt-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit",
+      "reviewed_commit": "3c000f6ec2a1de35eb7871e9f1e9390cc00f5b1d"
+    },
+    "external_code": {
+      "review_type": "external_code",
+      "status": "completed",
+      "findings_count": 6,
+      "findings": [
+        {
+          "severity": "low",
+          "category": "edge-case",
+          "file": "src/features/form/addressChange.ts — `sameLocality` branch",
+          "line": null,
+          "finding": "When postcode and town are unchanged, `prev.gemeindeBfs` is kept verbatim even if it is not a municipality of that locality (only possible if state was corrupted or the postcode's municipality set changed after a data update). Harmless today, but the kept value is never validated against the proposal's candidates.",
+          "suggestion": "Optionally keep `prev.gemeindeBfs` only when it appears in `proposal.candidates`, otherwise fall back to `proposedBfs`. Low priority.",
+          "source": "external-review"
+        },
+        {
+          "severity": "low",
+          "category": "edge-case",
+          "file": "src/lib/municipality.ts — fallback `onlyOne` condition",
+          "line": null,
+          "finding": "For an unknown town spelling where the postcode's union is a single municipality (e.g. 5642 Mühlau typed as \"Muehlau\", or 6343 with a misspelled town), the pre-select additionally requires every locality's leader to hold ≥80 %, so 5642 with a misspelled town gets no pre-selection while the correctly spelled town also gets none (share 0.645 %). This is conservative and arguably correct (shares are never applied across localities), but it's an inconsistency worth being aware of, not clearly a spec violation.",
+          "suggestion": "Document the intended behaviour or drop the per-locality ≥80 % requirement in the single-municipality union case if the product owner wants a pre-select there.",
+          "source": "external-review"
+        },
+        {
+          "severity": "low",
+          "category": "bug",
+          "file": "src/services/pdf/pdfGenerationService.ts — `Number(formData.gemeindeBfs)",
+          "line": null,
+          "finding": "Number('')` is `NaN`, so a direct call with an empty `gemeindeBfs` throws `UnknownMunicipalityError(NaN)`, whose message reads \"municipality NaN\". Validation gates this in the UI, and the test asserts the type, but the message is user-meaningless if it ever surfaces.",
+          "suggestion": "Guard `if (!formData.gemeindeBfs)` before converting, or special-case the empty string in the error message.",
+          "source": "external-review"
+        },
+        {
+          "severity": "low",
+          "category": "test",
+          "file": "src/features/form/components/__tests__/FormContainer.test.tsx:51 — `findAllByText(...).not.toHaveLength(0)",
+          "line": null,
+          "finding": "The assertion would pass if the error text appeared anywhere (including multiple times or in the wrong place); it doesn't assert the error is tied to the municipality select or that submission is blocked by that specific error. Weak but consistent with the file's existing style.",
+          "suggestion": "Assert a single occurrence and, ideally, that the red helper text sits within the municipality field's container.  Security: no issues — generated data is emitted via `JSON.stringify`, no new network surface (the Supabase DB path is deleted), and the remaining Supabase call is the pre-existing stubbed edge function. AC5 is covered both in unit (fetch/supabase spies) and e2e (origin-filtered request log). No regressions found: the only removed export (`administrationData.ts`) has all its consumers updated in this diff, and `emptyFormValues`/factory defaults were extended consistently.  Overall: ship-as-is; the implementation is faithful to the spec and well-tested, and the findings above are refinements rather than defects blocking the change.  SHIPWRIGHT_VERDICT: approve",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "spec",
+          "file": "src/lib/municipality.ts",
+          "line": 46,
+          "finding": "Postcodes are compared verbatim, although the spec requires the shared NFC/trim/case-insensitive normalization for both postcode and town. For example, `\" 6319 \"` with `\"Allenwinden\"` is treated as unknown. `applyAddressChange` also compares raw postcodes, so equivalent postcode spellings can overwrite a manually chosen municipality.",
+          "suggestion": "Normalize postcodes consistently before proposal lookup and locality-change detection. Add tests for whitespace-equivalent postcodes preserving a manual choice.",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "spec",
+          "file": ".shipwright/adopt/derived-catalogue.json",
+          "line": 6,
+          "finding": "The catalogue now records 12 confirmed requirements, but the diff contains no resolution of the `adopt-derived-catalogue-confirmation` triage follow-up. That leaves the final part of AC8 unimplemented.",
+          "suggestion": "Record the follow-up as resolved in the triage store, referencing this confirmation run.  Ship-with-fixes: the main municipality proposal, selection, and recipient flow appears sound, with meaningful behavioral tests. Complete the normalization requirement and triage resolution before shipping.  SHIPWRIGHT_VERDICT: revise",
+          "source": "external-review"
+        }
+      ],
+      "provider": null,
+      "completed_at": "2026-10-21T17:32:51.555377+00:00",
+      "disposition": null,
+      "recorded_by": "external-review-json",
+      "parse_status": "structured",
+      "raw_excerpt": "[glm] ## Review\n\nI checked the diff against all 13 ACs, the proposal rules, the shared-normalisation requirement, and the deleted Supabase path. The core logic (`proposeMunicipality`, `applyAddressChange`, validation, PDF service) matches the spec, including the tricky cases: no cross-locality share sums, ≥80 % pre-select, ≥5 % hints, Bennau/Rothenthurm outside shares kept, union fallback without pre-selection, NFD town spelling, typed-over clearing, and reset. The data tests pin the generated snapshot to hand-verified CSV rows and the committed Supabase export. Findings:\n\n- Category: edge-case\n  Severity: low\n  File: src/features/form/addressChange.ts — `sameLocality` branch\n  Finding: When postcode and town are unchanged, `prev.gemeindeBfs` is kept verbatim even if it is not a municipality of that locality (only possible if state was corrupted or the postcode's municipality set changed after a data update). Harmless today, but the kept value is never validated against the proposal's candidates.\n  Suggestion: Optionally keep `prev.gemeindeBfs` only when it appears in `proposal.candidates`, otherwise fall back to `proposedBfs`. Low priority.\n\n- Category: edge-case\n  Severity: low\n  File: src/lib/municipality.ts — fallback `onlyOne` condition\n  Finding: For an unknown town spelling where the postcode's union is a single municipality (e.g. 5642 Mühlau typed as \"Muehlau\", or 6343 with a misspelled town), the pre-select additionally requires every locality's leader to hold ≥80 %, so 5642 with a misspelled town gets no pre-selection while the correctly spelled town also gets none (share 0.645 %). This is conservative and arguably correct (shares are never applied across localities), but it's an inconsistency worth being aware of, not clearly a spec violation.\n  Suggestion: Document the intended behaviour or drop the per-locality ≥80 % requirement in the single-municipality union case if the product owner wants a pre-select there.\n\n- Category: bug\n  Severity: low\n  […truncated]\n\n[openai] - Category: spec\n- Severity: medium\n- File: src/lib/municipality.ts:46\n- Finding: Postcodes are compared verbatim, although the spec requires the shared NFC/trim/case-insensitive normalization for both postcode and town. For example, `\" 6319 \"` with `\"Allenwinden\"` is treated as unknown. `applyAddressChange` also compares raw postcodes, so equivalent postcode spellings can overwrite a manually chosen municipality.\n- Suggestion: Normalize postcodes consistently before proposal lookup and locality-change detection. Add tests for whitespace-equivalent postcodes preserving a manual choice.\n\n- Category: spec\n- Severity: medium\n- File: .shipwright/adopt/derived-catalogue.json:6\n- Finding: The catalogue now records 12 confirmed requirements, but the diff contains no resolution of the `adopt-derived-catalogue-confirmation` triage follow-up. That leaves the final part of AC8 unimplemented.\n- Suggestion: Record the follow-up as resolved in the triage store, referencing this confirmation run.\n\nShip-with-fixes: the main municipality proposal, selection, and recipient flow appears sound, with meaningful behavioral tests. Complete the normalization requirement and triage resolution before shipping.\n\nSHIPWRIGHT_VERDICT: revise",
+      "verdicts": {
+        "openai": "revise",
+        "glm": "approve"
+      }
+    },
+    "spec": {
+      "review_type": "spec",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-21T17:33:52.201710+00:00",
+      "disposition": null,
+      "recorded_by": "spec-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit",
+      "verdict": "pass",
+      "reviewed_commit": "3c000f6ec2a1de35eb7871e9f1e9390cc00f5b1d"
+    },
+    "plan_internal": {
+      "review_type": "plan_internal",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-21T17:19:16.607208+00:00",
+      "disposition": null,
+      "recorded_by": "opus-plan-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit"
+    },
+    "architecture_internal": {
+      "review_type": "architecture_internal",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-21T17:18:03.134489+00:00",
+      "disposition": null,
+      "recorded_by": "architecture-internal-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit"
+    }
+  }
+}

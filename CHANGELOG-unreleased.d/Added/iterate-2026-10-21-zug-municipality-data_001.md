@@ -1,0 +1,1 @@
+Invoice form: "Zuständige Gemeinde" selection, pre-filled from the official Swiss locality list and correctable by the midwife, with hints for localities shared between municipalities or partly outside canton Zug

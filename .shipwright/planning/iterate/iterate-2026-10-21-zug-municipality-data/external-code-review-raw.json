@@ -1,0 +1,42 @@
+{
+  "review_schema": 2,
+  "success": true,
+  "provider": "codex",
+  "degraded": false,
+  "reviews_succeeded": 2,
+  "reviewed": true,
+  "reviews": {
+    "openai": {
+      "feedback": "- Category: spec\n- Severity: medium\n- File: src/lib/municipality.ts:46\n- Finding: Postcodes are compared verbatim, although the spec requires the shared NFC/trim/case-insensitive normalization for both postcode and town. For example, `\" 6319 \"` with `\"Allenwinden\"` is treated as unknown. `applyAddressChange` also compares raw postcodes, so equivalent postcode spellings can overwrite a manually chosen municipality.\n- Suggestion: Normalize postcodes consistently before proposal lookup and locality-change detection. Add tests for whitespace-equivalent postcodes preserving a manual choice.\n\n- Category: spec\n- Severity: medium\n- File: .shipwright/adopt/derived-catalogue.json:6\n- Finding: The catalogue now records 12 confirmed requirements, but the diff contains no resolution of the `adopt-derived-catalogue-confirmation` triage follow-up. That leaves the final part of AC8 unimplemented.\n- Suggestion: Record the follow-up as resolved in the triage store, referencing this confirmation run.\n\nShip-with-fixes: the main municipality proposal, selection, and recipient flow appears sound, with meaningful behavioral tests. Complete the normalization requirement and triage resolution before shipping.\n\nSHIPWRIGHT_VERDICT: revise",
+      "via": "codex",
+      "status": "success"
+    },
+    "glm": {
+      "feedback": "## Review\n\nI checked the diff against all 13 ACs, the proposal rules, the shared-normalisation requirement, and the deleted Supabase path. The core logic (`proposeMunicipality`, `applyAddressChange`, validation, PDF service) matches the spec, including the tricky cases: no cross-locality share sums, \u226580 % pre-select, \u22655 % hints, Bennau/Rothenthurm outside shares kept, union fallback without pre-selection, NFD town spelling, typed-over clearing, and reset. The data tests pin the generated snapshot to hand-verified CSV rows and the committed Supabase export. Findings:\n\n- Category: edge-case\n  Severity: low\n  File: src/features/form/addressChange.ts \u2014 `sameLocality` branch\n  Finding: When postcode and town are unchanged, `prev.gemeindeBfs` is kept verbatim even if it is not a municipality of that locality (only possible if state was corrupted or the postcode's municipality set changed after a data update). Harmless today, but the kept value is never validated against the proposal's candidates.\n  Suggestion: Optionally keep `prev.gemeindeBfs` only when it appears in `proposal.candidates`, otherwise fall back to `proposedBfs`. Low priority.\n\n- Category: edge-case\n  Severity: low\n  File: src/lib/municipality.ts \u2014 fallback `onlyOne` condition\n  Finding: For an unknown town spelling where the postcode's union is a single municipality (e.g. 5642 M\u00fchlau typed as \"Muehlau\", or 6343 with a misspelled town), the pre-select additionally requires every locality's leader to hold \u226580 %, so 5642 with a misspelled town gets no pre-selection while the correctly spelled town also gets none (share 0.645 %). This is conservative and arguably correct (shares are never applied across localities), but it's an inconsistency worth being aware of, not clearly a spec violation.\n  Suggestion: Document the intended behaviour or drop the per-locality \u226580 % requirement in the single-municipality union case if the product owner wants a pre-select there.\n\n- Category: bug\n  Severity: low\n  File: src/services/pdf/pdfGenerationService.ts \u2014 `Number(formData.gemeindeBfs)`\n  Finding: `Number('')` is `NaN`, so a direct call with an empty `gemeindeBfs` throws `UnknownMunicipalityError(NaN)`, whose message reads \"municipality NaN\". Validation gates this in the UI, and the test asserts the type, but the message is user-meaningless if it ever surfaces.\n  Suggestion: Guard `if (!formData.gemeindeBfs)` before converting, or special-case the empty string in the error message.\n\n- Category: test\n  Severity: low\n  File: src/features/form/components/__tests__/FormContainer.test.tsx:51 \u2014 `findAllByText(...).not.toHaveLength(0)`\n  Finding: The assertion would pass if the error text appeared anywhere (including multiple times or in the wrong place); it doesn't assert the error is tied to the municipality select or that submission is blocked by that specific error. Weak but consistent with the file's existing style.\n  Suggestion: Assert a single occurrence and, ideally, that the red helper text sits within the municipality field's container.\n\nSecurity: no issues \u2014 generated data is emitted via `JSON.stringify`, no new network surface (the Supabase DB path is deleted), and the remaining Supabase call is the pre-existing stubbed edge function. AC5 is covered both in unit (fetch/supabase spies) and e2e (origin-filtered request log). No regressions found: the only removed export (`administrationData.ts`) has all its consumers updated in this diff, and `emptyFormValues`/factory defaults were extended consistently.\n\nOverall: ship-as-is; the implementation is faithful to the spec and well-tested, and the findings above are refinements rather than defects blocking the change.\n\nSHIPWRIGHT_VERDICT: approve",
+      "via": "openrouter",
+      "status": "success"
+    }
+  },
+  "driver": "claude",
+  "driver_requested": "claude",
+  "codextender_active": false,
+  "mode": "code",
+  "capture": {
+    "run_id": "iterate-2026-10-21-zug-municipality-data",
+    "at": "2026-10-21T17:28:13.683902+00:00"
+  },
+  "verdicts": {
+    "openai": "revise",
+    "glm": "approve"
+  },
+  "statuses": {
+    "openai": "success",
+    "glm": "success"
+  },
+  "contradiction": {
+    "detected": false,
+    "comparable": true,
+    "requires_resolution": false,
+    "reason": "verdicts agree within one step: glm=approve, openai=revise"
+  }
+}

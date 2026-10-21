@@ -1,0 +1,83 @@
+{
+  "source": "Supabase project kdyultegduvfggjovban, table public.administration_addresses",
+  "exported": "2026-10-21",
+  "rows": [
+    {
+      "municipality": "Baar",
+      "title": "Einwohnergemeinde Baar",
+      "name": "Fachstelle Gesundheit/Alter",
+      "address": "Rathausgasse 6 Postfach",
+      "city": "6341 Baar"
+    },
+    {
+      "municipality": "Cham",
+      "title": "Einwohnergemeinde Cham",
+      "name": "Sozialdienst",
+      "address": "Mandelhof",
+      "city": "6330 Cham"
+    },
+    {
+      "municipality": "Hünenberg",
+      "title": "Gemeindeverwaltung",
+      "name": "",
+      "address": "Postfach 261",
+      "city": "6331 Hünenberg"
+    },
+    {
+      "municipality": "Menzingen",
+      "title": "Gemeindeverwaltung",
+      "name": "Soziales und Gesundheit",
+      "address": "Postfach",
+      "city": "6313 Menzingen"
+    },
+    {
+      "municipality": "Neuheim",
+      "title": "Gemeindeverwaltung",
+      "name": "",
+      "address": "Postfach 161",
+      "city": "6345 Neuheim"
+    },
+    {
+      "municipality": "Oberägeri",
+      "title": "Sozialdienst Oberägeri",
+      "name": "",
+      "address": "Alosenstrasse 2",
+      "city": "6315 Oberägeri"
+    },
+    {
+      "municipality": "Risch",
+      "title": "Gemeinde Risch",
+      "name": "Abteilung Soziales/Gesundheit",
+      "address": "Zentrum Dorfmatt",
+      "city": "6343 Rotkreuz"
+    },
+    {
+      "municipality": "Steinhausen",
+      "title": "Sozialdienst Steinhausen",
+      "name": "",
+      "address": "Rathaus",
+      "city": "6312 Steinhausen"
+    },
+    {
+      "municipality": "Unterägeri",
+      "title": "Einwohnergemeinde Unterägeri",
+      "name": "Abteilung Soziales/Gesundheit",
+      "address": "Postfach 79",
+      "city": "6314 Unterägeri"
+    },
+    {
+      "municipality": "Walchwil",
+      "title": "Gemeindekanzlei Walchwil",
+      "name": "",
+      "address": "Postfach 93",
+      "city": "6318 Walchwil"
+    },
+    {
+      "municipality": "Zug",
+      "title": "Stadtverwaltung Zug",
+      "name": "Fachstelle Alter und Gesundheit Stadt Zug",
+      "address": "Gubelstrasse 22 Postfach",
+      "city": "6301 Zug"
+    }
+  ]
+}

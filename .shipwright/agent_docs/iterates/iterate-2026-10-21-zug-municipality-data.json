@@ -1,0 +1,155 @@
+{
+  "run_id": "iterate-2026-10-21-zug-municipality-data",
+  "date": "2026-10-21T17:43:08.894124Z",
+  "type": "change",
+  "complexity": "medium",
+  "prior_source": "keyword",
+  "branch": "iterate/zug-municipality-data",
+  "spec": ".shipwright/planning/iterate/2026-10-21-zug-municipality-data.md",
+  "tests_passed": true,
+  "adr": "iterate-2026-10-21-zug-municipality-data",
+  "test_completeness": {
+    "status": "complete",
+    "behaviors": [
+      {
+        "behavior": "Allenwinden proposes Baar (AC1)",
+        "disposition": "tested",
+        "evidence": "municipality.test.ts::pre-selects Baar\u2026; e2e::proposes Baar for an Allenwinden address PASSED"
+      },
+      {
+        "behavior": "Neu\u00e4geri empty + candidates + hint; Menzingen invoice (AC2)",
+        "disposition": "tested",
+        "evidence": "municipality.test.ts::leaves 6314 Neu\u00e4geri unselected\u2026; DateAndMunicipalityFields.test.tsx::lists the locality's\u2026; e2e::a Neu\u00e4geri invoice\u2026 PASSED"
+      },
+      {
+        "behavior": "6300 Zug proposes Zug, no hint (AC3)",
+        "disposition": "tested",
+        "evidence": "municipality.test.ts::pre-selects Zug\u2026; DateAndMunicipalityFields.test.tsx::shows the proposed\u2026 PASSED"
+      },
+      {
+        "behavior": "Submit blocked without municipality (AC4)",
+        "disposition": "tested",
+        "evidence": "formValidationService.test.ts::requires a municipality\u2026; FormContainer.test.tsx::does not submit until\u2026 PASSED"
+      },
+      {
+        "behavior": "No request to Supabase/off-origin while generating (AC5)",
+        "disposition": "tested",
+        "evidence": "pdfGenerationService.test.ts::generates the invoice without contacting\u2026; e2e external==[] PASSED"
+      },
+      {
+        "behavior": "Every locality maps to a recipient; 11 recipients (AC6)",
+        "disposition": "tested",
+        "evidence": "zugMunicipalityData.test.ts (2 cases) PASSED"
+      },
+      {
+        "behavior": "Reset clears municipality (AC7)",
+        "disposition": "tested",
+        "evidence": "e2e::a Neu\u00e4geri invoice\u2026 (reset step) PASSED"
+      },
+      {
+        "behavior": "Requirements recorded as confirmed (AC8)",
+        "disposition": "untestable",
+        "reason_code": "requires-manual-visual-judgment",
+        "reason": "Confirmation of requirements by the product owner is a recorded human decision (spec.md Basis column + derived-catalogue.json), not runtime behaviour"
+      },
+      {
+        "behavior": "Hand-picked municipality survives same-locality edits; replaced on new locality (AC9)",
+        "disposition": "tested",
+        "evidence": "addressChange.test.ts (2 cases, incl. NFD town) PASSED"
+      },
+      {
+        "behavior": "Typed-over address clears postcode/town/municipality (AC10)",
+        "disposition": "tested",
+        "evidence": "addressChange.test.ts::clears postcode\u2026; StreetLookup.test.tsx::clears postcode and town when a different address\u2026 / \u2026a longer street name\u2026 PASSED"
+      },
+      {
+        "behavior": "Non-Zug postcode blocked (AC11)",
+        "disposition": "tested",
+        "evidence": "formValidationService.test.ts::rejects a postcode outside\u2026; DateAndMunicipalityFields.test.tsx::is disabled and explains\u2026 PASSED"
+      },
+      {
+        "behavior": "Bennau: no pre-selection + outside hint (AC12)",
+        "disposition": "tested",
+        "evidence": "municipality.test.ts::leaves 8836 Bennau\u2026; DateAndMunicipalityFields.test.tsx::warns for 8836 Bennau\u2026 PASSED"
+      },
+      {
+        "behavior": "Recipient lines equal the export for all 11 (AC13)",
+        "disposition": "tested",
+        "evidence": "zugMunicipalityData.test.ts::prints the same recipient lines\u2026; pdfGenerationService.test.ts::addresses the invoice for $municipality (11 cases) PASSED"
+      },
+      {
+        "behavior": "Town fallback combines localities without pre-selecting",
+        "disposition": "tested",
+        "evidence": "municipality.test.ts::combines all localities\u2026 PASSED"
+      },
+      {
+        "behavior": "Pre-select + shared hint together",
+        "disposition": "tested",
+        "evidence": "municipality.test.ts::pre-selects and still shows\u2026 PASSED"
+      },
+      {
+        "behavior": "Unknown BFS \u2192 typed error",
+        "disposition": "tested",
+        "evidence": "pdfGenerationService.test.ts::refuses to generate\u2026 PASSED"
+      },
+      {
+        "behavior": "Postcode with surrounding spaces treated like the trimmed one",
+        "disposition": "tested",
+        "evidence": "municipality.test.ts::ignores spaces around the postcode; addressChange.test.ts::keeps a hand-picked municipality when the postcode differs only by spaces PASSED"
+      },
+      {
+        "behavior": "House-number edits on the picked street reach the form",
+        "disposition": "tested",
+        "evidence": "StreetLookup.test.tsx::keeps postcode and town when the picked street is typed with a house number / passes a changed house number on to the form PASSED"
+      },
+      {
+        "behavior": "Clicked single-building suggestion keeps its own house number",
+        "disposition": "tested",
+        "evidence": "StreetLookup.test.tsx::uses the house number of the clicked suggestion\u2026 PASSED"
+      },
+      {
+        "behavior": "Address errors disappear after a new address",
+        "disposition": "tested",
+        "evidence": "FormContainer.test.tsx::drops the municipality error once a different address is picked PASSED"
+      },
+      {
+        "behavior": "Correcting the municipality discards the generated invoice",
+        "disposition": "tested",
+        "evidence": "e2e::a Neu\u00e4geri invoice\u2026 (re-select step: preview removed) PASSED"
+      }
+    ],
+    "counts": {
+      "testable": 20,
+      "tested": 20,
+      "untestable": 1,
+      "untested_testable": 0
+    },
+    "enumeration_basis": {
+      "acs": 13,
+      "covered_acs": 13
+    }
+  },
+  "surface_verification": {
+    "surface": "web",
+    "runner": "npx playwright test e2e/municipality.spec.ts",
+    "exit_code": 0,
+    "tests_run": 2,
+    "evidence_path": "/Users/openclaw/Engineering/nidea-invoice/.worktrees/zug-municipality-data/.shipwright/runs/iterate-2026-10-21-zug-municipality-data/surface_verification.log",
+    "timestamp": "2026-10-21T17:41:47.811Z"
+  },
+  "declared_removals": [
+    {
+      "path": "src/lib/administrationData.ts",
+      "reason": "Supabase recipient lookup replaced by bundled municipality data"
+    }
+  ],
+  "exemptions": {
+    "count": 0,
+    "items": []
+  },
+  "risk_flags": [
+    "touches_billing",
+    "touches_shared_infra",
+    "touches_build"
+  ]
+}

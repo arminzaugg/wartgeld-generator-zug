@@ -15,7 +15,8 @@ import {
 } from "@/components/ui/tooltip";
 import { pdfGenerationService } from "@/services/pdf/pdfGenerationService";
 import { emptyFormValues, type FormValues } from "@/types/form";
-import { UnknownPlzError } from "@/lib/administrationData";
+import { UnknownMunicipalityError } from "@/lib/municipality";
+import { applyAddressChange } from "@/features/form/addressChange";
 import { getSettings } from "@/lib/presetStorage";
 import { formatSwissDate } from "@/lib/date";
 
@@ -27,6 +28,8 @@ const Index = () => {
   const fixedInvoiceDate = getSettings().rechnungsDatum;
 
   const handleFieldChange = (field: string, value: string | boolean) => {
+    // The invoice names the municipality; a new choice makes the generated one outdated.
+    if (field === "gemeindeBfs") setPdfData("");
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -35,14 +38,8 @@ const Index = () => {
 
   // Stable identity: StreetLookup lists it as an effect dependency.
   const handleAddressChange = useCallback((street: string, zipCode?: string, city?: string) => {
-    setFormData(prev => ({
-      ...prev,
-      address: street,
-      // Only default to previous value if the new value is explicitly undefined.
-      // Empty string should be respected to allow clearing.
-      plz: zipCode !== undefined ? zipCode : prev.plz,
-      ort: city !== undefined ? city : prev.ort
-    }));
+    setFormData(prev => applyAddressChange(prev, street, zipCode, city));
+    setPdfData("");
   }, []);
 
   const handleClearForm = () => {
@@ -61,8 +58,8 @@ const Index = () => {
       console.error("Error generating PDF:", error);
       toast({
         title: "Fehler",
-        description: error instanceof UnknownPlzError
-          ? `Für die PLZ ${error.plz} ist keine Gemeinde im Kanton Zug hinterlegt. Bitte prüfen Sie die Adresse.`
+        description: error instanceof UnknownMunicipalityError
+          ? "Für die gewählte Gemeinde ist keine Rechnungsadresse hinterlegt. Bitte wählen Sie die Gemeinde erneut."
           : "PDF konnte nicht generiert werden. Bitte versuchen Sie es erneut.",
         variant: "destructive",
       });
