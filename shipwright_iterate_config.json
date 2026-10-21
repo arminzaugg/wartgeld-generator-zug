@@ -1,0 +1,16 @@
+{
+  "external_review": {
+    "feedback_iterations": 1,
+    "gpt_leg": {
+      "provider": "codex"
+    }
+  },
+  "external_code_review": {
+    "enabled": true
+  },
+  "events_context": {
+    "mode": "compact"
+  },
+  "seeded_by_adopt": true,
+  "updated_at": "2026-10-20T20:46:12.840073+00:00"
+}

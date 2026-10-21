@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "generated_by": "shipwright-adopt",
+  "adopted_at": "2026-10-20T20:46:41.709484+00:00",
+  "baseline_observed": true,
+  "baseline_source": "adopt baseline run (vitest, 9 files, 39 tests)",
+  "known_failures": [],
+  "baseline_failure_count": 0,
+  "inherited_coverage_gaps": {
+    "requirements_without_tests": [
+      "FR-01.01",
+      "FR-01.02",
+      "FR-01.03",
+      "FR-01.04",
+      "FR-01.05",
+      "FR-01.06",
+      "FR-01.07",
+      "FR-01.08",
+      "FR-01.09",
+      "FR-01.10",
+      "FR-01.11",
+      "FR-01.12"
+    ],
+    "disabled_tests": [],
+    "counts": {
+      "requirements_without_tests": 12,
+      "disabled_tests": 0
+    }
+  }
+}

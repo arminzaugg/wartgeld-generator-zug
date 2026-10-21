@@ -1,0 +1,23 @@
+# Shipwright append-log union merge driver (managed block — do not hand-edit).
+# shipwright_events.jsonl and .shipwright/triage.jsonl are append-only JSONL logs
+# written concurrently by parallel iterates. `merge=union` is git's built-in
+# line-union driver: it keeps BOTH sides' appended lines automatically (no
+# per-clone `git config`; honored by GitHub's server-side PR merge too) instead
+# of emitting conflict markers. The churn resolver (shared/scripts/tools/
+# resolve_churn_conflicts.py) remains the second-line authority that dedups +
+# validates the union'd log. SSoT: shared/scripts/lib/gitattributes_union.py.
+shipwright_events.jsonl merge=union
+.shipwright/triage.jsonl merge=union
+# architecture.md + conventions.md are CURATED agent-docs (NOT regenerated churn):
+# parallel iterates each PREPEND a bullet to their `## …Updates` / `## Learnings`
+# sections, which collide at the same anchor. `merge=union` keeps both prepended
+# bullets (server-side too), so these curated docs stop cascading DIRTY / merging
+# stale. Caveat: union is line-based + silent — two iterates editing the SAME
+# non-append line would merge both silently instead of conflicting; in practice
+# ~all parallel edits are append-section prepends. Escalate to per-run drop-files
+# if that ever bites. See docs/hooks-and-pipeline.md.
+.shipwright/agent_docs/architecture.md merge=union
+.shipwright/agent_docs/conventions.md merge=union
+# Immutable per-run test evidence preserves the exact source byte buffer. Disable
+# Git text normalization so core.autocrlf cannot rewrite CRLF snapshots on add.
+/.shipwright/agent_docs/iterates/*.test-results.json -text -diff

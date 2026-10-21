@@ -1,0 +1,244 @@
+---
+description: Testing conventions — TDD, assertion style, mock boundaries
+globs: "**/tests/**,**/*.test.*,**/*.spec.*,**/e2e/**"
+---
+
+## Testing Rules
+
+- Follow TDD: write failing tests first, then implement, then refactor
+- Each test covers one behavior — name tests after the behavior, not the method
+- Use descriptive assertion messages: `expect(result).toBe(expected)` with context
+- Mock at system boundaries only (HTTP calls, database) — do not mock internal modules
+- Test edge cases: empty input, null values, boundary conditions, error paths
+- Keep test files co-located or in a parallel `tests/` directory matching source structure
+
+## Requirement traceability tags (`@FR`)
+
+Tag a test with the requirement(s) it exercises using the canonical token `@FR-XX.YY`
+(two-digit.two-digit). One concept, one idiom per runner — the compliance `test_links`
+collector reads them all and emits `.shipwright/compliance/test-traceability.json`
+(the backward `test → FR` link and the per-layer coverage the aggregate test count cannot
+express). A tag on a `describe`/suite applies to every test inside it; multiple tags per
+test are allowed; a malformed token (`@FR-1.3`) is ignored, never bound to coverage.
+
+| Runner | Idiom | Example |
+|---|---|---|
+| pytest | `@pytest.mark.covers("FR-…")` (register the `covers` marker in `pyproject.toml`) | `@pytest.mark.covers("FR-01.03", "FR-01.04")` |
+| Playwright | native tag array | `test('signs in', { tag: ['@FR-01.03'] }, …)` |
+| Vitest | title suffix, or a `// @covers` comment on the line above | `it('writes the row @FR-01.03', …)` / `// @covers FR-01.03` |
+
+Tags are additive metadata: they do not change what a test asserts, and naming a test
+after its behavior (above) still holds — the `@FR` token is a machine link, not the name.
+A tagged test only counts as *covering* a layer when it is enabled AND observed passing.
+
+## Example: Correct boundary mocking
+
+```typescript
+import { describe, it, expect, vi } from 'vitest'
+import { createClient } from '@supabase/supabase-js'
+import { getUserProfile } from '@/lib/users'
+
+// Mock at system boundary (Supabase client), not internal functions
+vi.mock('@supabase/supabase-js', () => ({
+  createClient: vi.fn(() => ({
+    from: vi.fn(() => ({
+      select: vi.fn(() => ({
+        eq: vi.fn(() => ({
+          single: vi.fn(() => ({ data: { id: '1', name: 'Test User' }, error: null })),
+        })),
+      })),
+    })),
+  })),
+}))
+
+describe('getUserProfile', () => {
+  it('should return user data for valid id', async () => {
+    const profile = await getUserProfile('1')
+    expect(profile).toEqual({ id: '1', name: 'Test User' })
+  })
+
+  it('should throw on missing user', async () => {
+    // Override mock for error path
+    vi.mocked(createClient).mockReturnValueOnce({
+      from: vi.fn(() => ({
+        select: vi.fn(() => ({
+          eq: vi.fn(() => ({
+            single: vi.fn(() => ({ data: null, error: { message: 'Not found' } })),
+          })),
+        })),
+      })),
+    } as any)
+    await expect(getUserProfile('999')).rejects.toThrow('Not found')
+  })
+})
+```
+
+## Integration Tests (Real Database)
+
+Integration tests verify the full wiring: API route / server action → service layer → real database.
+They run against a **local Supabase instance only** (localhost/127.0.0.1) with **NO mocks**.
+
+### When to write integration tests
+
+| What you're testing | Test type | Why |
+|---|---|---|
+| Service function logic (no DB) | Unit (mocked boundary) | Fast, isolated |
+| API route → real DB row created/updated/deleted | **Integration** | Catches schema mismatches, broken queries |
+| RLS policy blocks unauthorized access | **Integration + pgTAP** | Cannot be tested with mocks |
+| Complex query (joins, filters, aggregations) | **Integration** | Mock would just restate the query |
+| Input validation rejects bad data | Unit | No DB needed |
+| Component renders with props | Unit | No DB needed |
+| User journey across pages | E2E (Playwright) | Needs browser |
+
+**Rule: Every CRUD operation gets an integration test. This is not complexity-gated.**
+
+### When NOT to write integration tests (use unit tests instead)
+
+- Pure functions with no database interaction
+- Input validation logic
+- UI component rendering
+- Client-side state management
+
+### Safety rules
+
+- **Service-role client is for setup/teardown ONLY** — never use it for assertions
+- **Never weaken RLS policies to make integration tests pass** — fix the test or the auth context instead
+- **URL safety check**: Integration tests must only run against localhost/127.0.0.1. The setup file throws if the URL points elsewhere
+
+### File location and config
+
+- Place in `tests/integration/` mirroring the source structure
+- Name files `*.integration.test.ts`
+- Config: `vitest.integration.config.ts` (separate from unit test config — sequential, no mocks, 30s timeout)
+- Env: `.env.test` (points to local Supabase only)
+
+### Test data lifecycle — cascade delete via test user
+
+Instead of tagging rows or truncating tables, use Postgres `ON DELETE CASCADE`:
+
+1. In `beforeAll`: create a unique test user via `createTestUser(suiteId)` (service-role, Admin API)
+2. In each test: create data owned by / linked to this test user
+3. In `afterAll`: delete the test user via `deleteTestUser(userId)` — all linked data cascades away
+
+**All integration tests MUST include an `afterAll` block that deletes the test user.**
+
+### Example: Integration test for course CRUD + RLS
+
+```typescript
+import { describe, it, expect, beforeAll, afterAll } from 'vitest'
+import {
+  getServiceClient,
+  getAuthenticatedClient,
+  getAnonClient,
+  createTestUser,
+  deleteTestUser,
+} from './helpers/supabase-clients'
+
+describe('courses CRUD (integration)', () => {
+  const suiteId = crypto.randomUUID().slice(0, 8)
+  let serviceClient: ReturnType<typeof getServiceClient>
+  let testUserId: string
+
+  beforeAll(async () => {
+    serviceClient = getServiceClient()
+    // Create a test user — all data will cascade-delete when user is removed
+    const user = await createTestUser(`test-${suiteId}@integration.local`, 'TestPass123!')
+    testUserId = user.id
+  })
+
+  afterAll(async () => {
+    // Cascade-delete all test data by removing the test user
+    await deleteTestUser(testUserId)
+  })
+
+  it('creates a course row in the database when called by an authenticated user', async () => {
+    const authClient = await getAuthenticatedClient('admin')
+    const title = `Integration Test Course ${suiteId}`
+
+    const { data, error } = await authClient.from('courses').insert({
+      title,
+      description: 'Integration test course',
+      status: 'draft',
+      created_by: testUserId,
+    }).select().single()
+
+    expect(error).toBeNull()
+    expect(data).toMatchObject({ title, status: 'draft' })
+    expect(data.id).toBeDefined()
+
+    // Verify row exists independently via service client (setup/teardown use only)
+    const { data: verify } = await serviceClient
+      .from('courses').select().eq('id', data.id).single()
+    expect(verify?.title).toBe(title)
+  })
+
+  it('blocks anon users from creating courses (RLS negative test)', async () => {
+    const anonClient = getAnonClient()
+
+    const { data, error } = await anonClient.from('courses').insert({
+      title: `Anon attempt ${suiteId}`,
+      description: 'Should be blocked by RLS',
+      status: 'draft',
+    }).select().single()
+
+    expect(error).not.toBeNull()
+    expect(data).toBeNull()
+  })
+})
+```
+
+### Helper: `tests/integration/helpers/supabase-clients.ts`
+
+Create this helper in each target project (scaffolded from template). Provides:
+- `getServiceClient()` — bypasses RLS, **setup/teardown only**
+- `getAnonClient()` — anonymous, subject to RLS
+- `getAuthenticatedClient(role)` — signs in as test user, subject to RLS
+- `createTestUser(email, password)` — creates user via Admin API
+- `deleteTestUser(userId)` — deletes user, cascading all associated data
+
+---
+
+## pgTAP Database Tests
+
+pgTAP tests verify RLS policies, constraints, and DB functions at the schema level using `supabase test db`.
+
+### When to write pgTAP tests
+
+- New RLS policies added via migrations
+- New database functions or triggers
+- Complex constraint logic
+
+### File location
+
+- `supabase/tests/database/*.test.sql`
+- Setup: `supabase/tests/database/000-setup-tests-hooks.sql` (installs pgTAP + supabase-test-helpers)
+
+### Example: RLS test with supabase-test-helpers
+
+```sql
+BEGIN;
+SELECT plan(2);
+
+-- Create test users
+SELECT tests.create_supabase_user('admin@test.local', 'admin');
+SELECT tests.create_supabase_user('member@test.local', 'member');
+
+-- Test: admin can insert courses
+SELECT tests.authenticate_as('admin@test.local');
+SELECT lives_ok(
+  $$ INSERT INTO public.courses (title, status) VALUES ('Admin Course', 'draft') $$,
+  'Admin can insert courses'
+);
+
+-- Test: member cannot insert courses (RLS blocks)
+SELECT tests.authenticate_as('member@test.local');
+SELECT throws_ok(
+  $$ INSERT INTO public.courses (title, status) VALUES ('Member Course', 'draft') $$,
+  '42501',
+  'new row violates row-level security policy',
+  'Member cannot insert courses'
+);
+
+SELECT * FROM finish();
+ROLLBACK;
+```

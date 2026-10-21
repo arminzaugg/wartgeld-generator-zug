@@ -1,0 +1,196 @@
+{
+  "areas": [
+    {
+      "cross_cutting_tags": [],
+      "id": "changelog-unreleased-d",
+      "path_patterns": [
+        "CHANGELOG-unreleased.d/**"
+      ],
+      "planned_paths": [],
+      "priority": 0,
+      "realized_paths": [],
+      "requirements": [],
+      "source": "deterministic",
+      "status": "active"
+    },
+    {
+      "cross_cutting_tags": [],
+      "id": "claude",
+      "path_patterns": [
+        ".claude/**"
+      ],
+      "planned_paths": [],
+      "priority": 0,
+      "realized_paths": [],
+      "requirements": [],
+      "source": "deterministic",
+      "status": "active"
+    },
+    {
+      "cross_cutting_tags": [],
+      "id": "docs",
+      "path_patterns": [
+        "docs/**"
+      ],
+      "planned_paths": [],
+      "priority": 0,
+      "realized_paths": [],
+      "requirements": [],
+      "source": "deterministic",
+      "status": "active"
+    },
+    {
+      "cross_cutting_tags": [],
+      "id": "github",
+      "path_patterns": [
+        ".github/**"
+      ],
+      "planned_paths": [],
+      "priority": 0,
+      "realized_paths": [],
+      "requirements": [],
+      "source": "deterministic",
+      "status": "active"
+    },
+    {
+      "cross_cutting_tags": [
+        "repository"
+      ],
+      "id": "root",
+      "path_patterns": [
+        ".gitattributes",
+        ".gitignore",
+        ".gitleaks.toml",
+        "AGENTS.md",
+        "AUTOMERGE_SETUP.md",
+        "CLAUDE.md",
+        "README.md",
+        "components.json",
+        "eslint.config.js",
+        "index.html",
+        "package-lock.json",
+        "package.json",
+        "postcss.config.js",
+        "shipwright_bloat_baseline.json",
+        "shipwright_build_config.json",
+        "shipwright_compliance_config.json",
+        "shipwright_events.jsonl",
+        "shipwright_iterate_config.json",
+        "shipwright_plan_config.json",
+        "shipwright_project_config.json",
+        "shipwright_run_config.json",
+        "shipwright_sync_config.json",
+        "tailwind.config.ts",
+        "tsconfig.app.json",
+        "tsconfig.json",
+        "tsconfig.node.json",
+        "vite.config.ts",
+        "vitest.config.ts"
+      ],
+      "planned_paths": [],
+      "priority": -100,
+      "realized_paths": [],
+      "requirements": [],
+      "source": "deterministic",
+      "status": "active"
+    },
+    {
+      "cross_cutting_tags": [],
+      "id": "shipwright-webui",
+      "path_patterns": [
+        ".shipwright-webui/**"
+      ],
+      "planned_paths": [],
+      "priority": 0,
+      "realized_paths": [],
+      "requirements": [],
+      "source": "deterministic",
+      "status": "active"
+    },
+    {
+      "cross_cutting_tags": [],
+      "id": "src",
+      "path_patterns": [
+        "src/**"
+      ],
+      "planned_paths": [],
+      "priority": 0,
+      "realized_paths": [],
+      "requirements": [],
+      "source": "deterministic",
+      "status": "active"
+    },
+    {
+      "cross_cutting_tags": [],
+      "id": "src-features-form",
+      "path_patterns": [
+        "src/features/form/**"
+      ],
+      "planned_paths": [],
+      "priority": 0,
+      "realized_paths": [],
+      "requirements": [],
+      "source": "deterministic",
+      "status": "active"
+    },
+    {
+      "cross_cutting_tags": [],
+      "id": "src-services-api",
+      "path_patterns": [
+        "src/services/api/**"
+      ],
+      "planned_paths": [],
+      "priority": 0,
+      "realized_paths": [],
+      "requirements": [],
+      "source": "deterministic",
+      "status": "active"
+    },
+    {
+      "cross_cutting_tags": [],
+      "id": "src-services-form",
+      "path_patterns": [
+        "src/services/form/**"
+      ],
+      "planned_paths": [],
+      "priority": 0,
+      "realized_paths": [],
+      "requirements": [],
+      "source": "deterministic",
+      "status": "active"
+    },
+    {
+      "cross_cutting_tags": [],
+      "id": "src-services-pdf",
+      "path_patterns": [
+        "src/services/pdf/**"
+      ],
+      "planned_paths": [],
+      "priority": 0,
+      "realized_paths": [],
+      "requirements": [],
+      "source": "deterministic",
+      "status": "active"
+    },
+    {
+      "cross_cutting_tags": [],
+      "id": "supabase",
+      "path_patterns": [
+        "supabase/**"
+      ],
+      "planned_paths": [],
+      "priority": 0,
+      "realized_paths": [],
+      "requirements": [],
+      "source": "deterministic",
+      "status": "active"
+    }
+  ],
+  "catalogue_version": 1,
+  "path_fingerprint": "b777e3a0a212b1a19c333ffa97357a7a61514424e455d78e42658eb35d1b35d8",
+  "producer": "shared/scripts/tools/area_catalog.py",
+  "schema_version": 1,
+  "sources": [
+    "adopt"
+  ]
+}

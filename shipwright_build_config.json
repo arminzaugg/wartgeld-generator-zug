@@ -1,0 +1,17 @@
+{
+  "status": "adopted",
+  "dev_url": null,
+  "profile": "generic",
+  "test_cmd": "npm run test",
+  "sections": [
+    {
+      "name": "adopted-baseline",
+      "status": "adopted",
+      "commit": "49c0ddaa837e1a13c067188022b8db4f627aa448",
+      "tests_total": 0,
+      "tests_passed": 0
+    }
+  ],
+  "current_split": null,
+  "updated_at": "2026-10-20T20:46:12.839970+00:00"
+}

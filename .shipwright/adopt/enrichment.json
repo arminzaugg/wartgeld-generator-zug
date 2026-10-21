@@ -1,0 +1,76 @@
+{
+  "product_description": "Wartgeld Generator Zug is a small single-page web app that lets midwives in the Canton of Zug (Switzerland) create the invoice for the cantonal midwife standby allowance (\"Hebammenwartgeld\"). The midwife enters the mother's name, home address and date of birth, ticks which of the two reimbursable services she provided (care during a home birth, care of the mother at home after birth; CHF 400 each), and the app produces a ready-to-send PDF invoice addressed to the municipal administration responsible for the mother's place of residence. The invoice can be previewed, printed or saved.\n\nThe midwife's own details (sender block with contact and IBAN, place of issue, an optional fixed invoice date, and a hand-drawn signature) are entered once on a settings page and reused for every invoice. These settings and all patient data stay in the user's browser; nothing about the patient is stored on a server. The only data that leaves the browser is the street text typed into the address field, which is sent to the Swiss Post address autocomplete service (via the project's own lookup service) and used to look up which municipality is responsible for a postcode.\n\nThe UI is German-only. The app is deployed as a static site on Netlify; its backend consists of a Supabase database holding the postcode-to-municipality mapping and the municipality addresses, and one Supabase edge function that proxies the Swiss Post autocomplete API with origin restriction and rate limiting.",
+  "features": [
+    {
+      "route": "/ · FormContainer",
+      "label": "Invoice entry form",
+      "description": "The midwife enters the mother's first and last name, home address, date of birth, and which reimbursable services were provided. Missing or too-short entries are flagged before an invoice can be produced, and the address must be chosen from the suggestion list so that the postcode is known.",
+      "acceptance_draft": "Given the invoice form is open, when the midwife submits with a first or last name shorter than 2 characters, no address, an address without a selected postcode, or no date of birth, then no invoice is produced and each problem is shown in German next to the form."
+    },
+    {
+      "route": "/ · StreetLookup",
+      "label": "Address suggestions for the Canton of Zug",
+      "description": "While the midwife types a street, matching addresses are suggested, limited to postcodes in the Canton of Zug and ranked so the closest street-name matches come first. Choosing a suggestion fills in street, house number, postcode and town. If the lookup fails, the midwife is told to try again later.",
+      "acceptance_draft": "Given the midwife has typed at least 2 characters of a street name, when suggestions arrive, then only addresses with a Zug postcode are listed and selecting one fills the address, postcode and town fields."
+    },
+    {
+      "route": "/ · pdfGenerationService",
+      "label": "Invoice PDF generation",
+      "description": "From valid form data the app produces a one-page PDF invoice addressed to the administration of the municipality responsible for the mother's postcode. It contains the midwife's sender details, the legal basis, the mother's details, the ticked services at CHF 400 each with the total, place and date, the stored signature, and payment terms. If no municipality is known for the postcode, the midwife is told to check the address instead of getting a wrong invoice.",
+      "acceptance_draft": "Given a valid form with a Zug postcode and both services ticked, when the midwife clicks 'Rechnung Generieren', then exactly one PDF is produced, shown in the preview, addressed to that municipality's administration, and totalling CHF 800."
+    },
+    {
+      "route": "/ · FormActions",
+      "label": "Print and save the invoice",
+      "description": "Once an invoice has been generated, the midwife can print it directly or save it as a PDF file named after the mother.",
+      "acceptance_draft": "Given an invoice has been generated for 'Anna Muster', when the midwife clicks 'Speichern', then a file named 'Anna_Muster.pdf' is downloaded; when she clicks 'Drucken', the browser print dialog opens for that invoice."
+    },
+    {
+      "route": "/ · Index reset",
+      "label": "Reset the form",
+      "description": "The midwife can clear all entered patient data and the generated invoice in one step to start the next invoice.",
+      "acceptance_draft": "Given the form is filled and an invoice was generated, when the midwife clicks 'Formular Zurücksetzen', then all fields, the address search and the preview are cleared and a confirmation is shown."
+    },
+    {
+      "route": "/settings",
+      "label": "Invoice issuer details",
+      "description": "The midwife stores her sender details (name, address, contact, IBAN), the place shown on the invoice, and optionally a fixed invoice date; left empty, each invoice carries the current date. The details are kept in the browser and reused for every invoice, and the form page shows when a fixed date is in effect.",
+      "acceptance_draft": "Given the midwife saved sender details and a fixed invoice date on the settings page, when she generates an invoice, then the PDF shows those sender details and that date; when the date is cleared, the PDF shows today's date."
+    },
+    {
+      "route": "/settings · SignaturePad",
+      "label": "Handwritten signature",
+      "description": "The midwife draws her signature once; it is stored in the browser and placed on every invoice. Saving other settings never removes the signature, and it can be cleared on purpose.",
+      "acceptance_draft": "Given a signature was saved, when the midwife changes and saves her sender details, then the signature is still present on the next generated invoice; when she clears the signature, the next invoice has none."
+    },
+    {
+      "route": "/info",
+      "label": "About, privacy and contact information",
+      "description": "Explains what the app does, how to use it, what data leaves the browser (only the typed street text, for address suggestions), the best-effort service disclaimer, and whom to contact.",
+      "acceptance_draft": "Given the user opens the information page, then the purpose, usage steps, privacy statement, disclaimer and contact address are shown in German, with a way back to the form."
+    },
+    {
+      "route": "/ · ThemeToggle",
+      "label": "Light and dark appearance",
+      "description": "The user can switch between light, dark and system appearance; the choice is remembered in the browser.",
+      "acceptance_draft": "Given the user selects dark mode, when the page is reloaded, then the app is still shown in dark mode."
+    },
+    {
+      "route": "/functions/v1/address-lookup",
+      "label": "Protected address lookup service",
+      "description": "The address lookup service only answers the app's own web origins, rejects malformed or oversized requests, and limits how often a single client and all clients together may call it, so the Swiss Post quota cannot be used up by others. It never logs the addresses it handles.",
+      "acceptance_draft": "Given a request from an origin not on the allow-list, then it is refused; given more than the per-client limit of lookups in one minute, then further lookups are refused until the window passes."
+    }
+  ],
+  "architecture_prose": "The product is a static React single-page app (Vite build, hash-based routing with three pages: form, settings, info) served from Netlify. All patient data lives only in React state for the current invoice; issuer settings (sender block, place, fixed invoice date, signature image) and the theme preference live in the browser's localStorage. The invoice PDF is rendered entirely in the browser with jsPDF, which is loaded on demand.\n\nTwo things reach Supabase. (1) Address suggestions: the StreetLookup component, via a TanStack Query hook and addressService, invokes the `address-lookup` edge function with the anon key. The Deno function checks the origin allow-list, validates the request body, applies per-IP and global fixed-window rate limits through the `check_rate_limit` SQL function, loads the Zug postcode list and the Swiss Post credentials from the database (cached per instance for 10 minutes), calls the Swiss Post autocomplete4 API, filters results to Zug postcodes and ranks them by street-name match. (2) Invoice recipient: on submit, pdfGenerationService resolves the postcode through the `plz_mappings` table to a municipality and its administration postcode, then reads that municipality's row from `administration_addresses`, and passes it into the PDF renderer. An unknown postcode raises a typed UnknownPlzError shown to the user.\n\nLayering: pages (src/pages) compose feature components (src/features/form, src/components), which call domain services (src/services, src/lib) that are the only code touching Supabase or localStorage. shadcn/ui primitives live in src/components/ui and are treated as vendored code. CI (GitHub Actions) runs lint, typecheck+build and Vitest with coverage on every PR and on main.",
+  "architecture_diagram": "```\n┌────────────────────────────── Browser (Netlify static SPA) ──────────────────────────────┐\n│                                                                                          │\n│  ┌──────────────┐   ┌──────────────────┐   ┌──────────────┐                              │\n│  │  #/  Index   │   │ #/settings       │   │  #/info      │      HashRouter (App.tsx)    │\n│  │  invoice form│   │ issuer details,  │   │  about,      │                              │\n│  │  + preview   │   │ date, signature  │   │  privacy     │                              │\n│  └──────┬───────┘   └────────┬─────────┘   └──────────────┘                              │\n│         │                    │                                                           │\n│  ┌──────▼───────────────┐    │       ┌──────────────────────────┐                        │\n│  │ features/form/*      │    │       │ lib/presetStorage        │                        │\n│  │ FormContainer        │    └──────▶│ getSettings/updateSettings│──▶ localStorage       │\n│  │ StreetLookup         │            └────────────▲─────────────┘   (form-settings,      │\n│  └──┬────────────┬──────┘                         │                  app-theme)          │\n│     │            │ submit (validated)             │                                      │\n│     │ typing     ▼                                │                                      │\n│     │   ┌────────────────────────┐   ┌────────────┴───────────┐                          │\n│     │   │ services/pdf           │──▶│ lib/pdfGenerator       │──▶ PDF data URI          │\n│     │   │ pdfGenerationService   │   │ (jsPDF, lazy-loaded)   │    preview/print/save    │\n│     │   └──────────┬─────────────┘   └────────────────────────┘                          │\n│     │              │ getAdministrationData(plz)                                          │\n│     ▼              ▼                                                                     │\n│  ┌──────────────────────────────────────────────┐                                        │\n│  │ integrations/supabase/client (anon key)      │                                        │\n│  └──────┬───────────────────────────┬───────────┘                                        │\n└─────────┼───────────────────────────┼────────────────────────────────────────────────────┘\n          │ functions.invoke          │ REST select\n          ▼                           ▼\n┌──────────────────────────── Supabase project ────────────────────────────────────────────┐\n│                                                                                          │\n│  ┌───────────────────────────────────┐      ┌──────────────────────────────────────┐     │\n│  │ Edge function: address-lookup     │      │ Postgres                             │     │\n│  │  1. origin allow-list (403)       │      │  plz_mappings                        │     │\n│  │  2. body validation (400/413)     │─────▶│  administration_addresses            │     │\n│  │  3. rate limit per IP + global    │ rpc  │  cantons, canton_zip_codes           │     │\n│  │     (429)                         │      │  api_credentials                     │     │\n│  │  4. filter to Zug PLZ, rank       │      │  check_rate_limit() + rate table     │     │\n│  └───────────────┬───────────────────┘      └──────────────────────────────────────┘     │\n└──────────────────┼───────────────────────────────────────────────────────────────────────┘\n                   │ HTTPS Basic auth\n                   ▼\n        ┌──────────────────────────────────┐\n        │ Swiss Post autocomplete4 API     │\n        └──────────────────────────────────┘\n```",
+  "conventions_prose": "TypeScript in strict mode (tsconfig.app.json) with React 18 function components and hooks; the `@/` import alias maps to `src/`. ESLint 9 flat config with react-hooks and react-refresh plugins, run with `--max-warnings 0`; two rules are relaxed only for the vendored shadcn files under `src/components/ui/`. No formatter config is checked in; existing code uses double quotes in components and mostly single quotes in services and lib. All user-facing text is German (Swiss spelling, e.g. 'ss' instead of 'ß'); code identifiers are English except domain fields that mirror the invoice (vorname, nachname, plz, ort, geburtsdatum, rechnungsDatum). Supabase access is confined to `src/services` and `src/lib`; components never call Supabase directly. Errors are surfaced to the user with the shared toast (`use-toast`) in German. Tests use Vitest with jsdom and Testing Library, live next to the code in `__tests__/` folders, and use factories in `src/lib/__tests__/factories`; edge-function logic that needs testing is extracted into pure modules (request.ts, sort.ts) with sibling tests. Commits follow Conventional Commits (feat/fix/refactor/chore/docs). CI must stay green on lint, build and tests before merge.",
+  "adrs": [
+    {
+      "commit_sha": "7ac7ddc03da91f596cdb9bc61323572d3ce16e2f",
+      "context": "The initial JavaScript bundle was about 900 kB, above Vite's 500 kB chunk warning, because jsPDF, the secondary pages and all vendor code shipped in one chunk. Base64-to-Blob conversion for print and save was duplicated, and TypeScript ran in non-strict mode, hiding type errors.",
+      "decision": "Load jsPDF and the Settings and Info pages on demand, split react/react-dom/react-router-dom and supabase-js into their own long-lived vendor chunks, extract a shared dataUriToBlob helper, and enable TypeScript strict mode.",
+      "consequences": "Initial JS dropped to about 520 kB with no chunk over 500 kB, and vendor chunks cache across deploys. The first PDF generation and the first visit to Settings or Info incur an extra network fetch. New code must type-check under strict mode, which `npm run build` enforces in CI."
+    }
+  ]
+}

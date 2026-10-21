@@ -1,0 +1,7 @@
+{
+  "status": "adopted",
+  "sections": [],
+  "manifest": null,
+  "note": "This project was adopted into Shipwright. Split '01-adopted' has no planned sections \u2014 existing code is treated as retroactively complete. Use /shipwright-iterate for all future changes.",
+  "updated_at": "2026-10-20T20:46:12.839784+00:00"
+}

@@ -1,0 +1,151 @@
+{
+  "schema_version": "1.0",
+  "project_root": "/Users/openclaw/Engineering/nidea-invoice",
+  "excludes": [],
+  "stack": {
+    "primary_language": "typescript",
+    "runtime": {
+      "typescript": "^5.5.3"
+    },
+    "frontend": {
+      "react": "React@^18.3.1",
+      "react-dom": "React@^18.3.1",
+      "vite": "Vite@^6.3.5"
+    },
+    "backend": {},
+    "database": {
+      "@supabase/supabase-js": "Supabase@^2.49.4"
+    },
+    "auth": {},
+    "signals": [
+      "has-package-json",
+      "has-supabase-dir"
+    ],
+    "multi_service": {
+      "detected": false,
+      "confidence": "low",
+      "services": [],
+      "evidence": []
+    }
+  },
+  "profile": {
+    "matched": "vite-hono",
+    "confidence": 0.444,
+    "candidates": [
+      {
+        "name": "vite-hono",
+        "score": 0.444,
+        "matched_deps": [
+          "react",
+          "react-dom",
+          "typescript",
+          "vite"
+        ]
+      },
+      {
+        "name": "supabase-nextjs",
+        "score": 0.25,
+        "matched_deps": [
+          "react",
+          "react-dom",
+          "typescript"
+        ]
+      },
+      {
+        "name": "python-plugin-monorepo",
+        "score": 0.0,
+        "matched_deps": []
+      }
+    ]
+  },
+  "conventions": {
+    "linter": "eslint-flat",
+    "formatter": null,
+    "tsconfig_strict": false,
+    "editorconfig": null,
+    "python_style": null,
+    "typescript": true
+  },
+  "test_frameworks": {
+    "unit": {
+      "framework": "vitest",
+      "command": "npx vitest run"
+    },
+    "integration": null,
+    "e2e": null,
+    "db": null,
+    "coverage_tool": "vitest-coverage"
+  },
+  "ci_pipeline": {
+    "provider": "github-actions",
+    "workflows": [
+      ".github/workflows/test.yml"
+    ]
+  },
+  "folders": {
+    "layers": [
+      {
+        "name": "data",
+        "paths": [
+          "supabase"
+        ]
+      },
+      {
+        "name": "docs",
+        "paths": [
+          "docs"
+        ]
+      },
+      {
+        "name": "domain",
+        "paths": [
+          "src/lib",
+          "src/services"
+        ]
+      },
+      {
+        "name": "presentation",
+        "paths": [
+          "src/components",
+          "src/pages"
+        ]
+      }
+    ],
+    "loc_by_layer": {
+      "docs": 0,
+      "data": 408,
+      "presentation": 1855,
+      "domain": 557
+    }
+  },
+  "nested_projects": [],
+  "features": [],
+  "git": {
+    "commits_total": 537,
+    "first_commit": "2026-09-28T11:50:23+02:00",
+    "contributors": [
+      "Armin Zaugg",
+      "Claude",
+      "armin zaugg",
+      "arminzaugg",
+      "dependabot[bot]",
+      "gpt-engineer-app[bot]"
+    ],
+    "contributors_total": 6,
+    "major_refactor_commits": [
+      {
+        "sha": "7ac7ddc03da91f596cdb9bc61323572d3ce16e2f",
+        "subject": "refactor: share PDF blob helper, split bundle, enable strict TypeScript",
+        "date": "2026-09-28 09:00:06 +0000",
+        "author": "Claude",
+        "files_changed": 10
+      }
+    ]
+  },
+  "commands": {
+    "dev": "npm run dev",
+    "build": "npm run build",
+    "test": "npm run test",
+    "lint": "npm run lint"
+  }
+}
