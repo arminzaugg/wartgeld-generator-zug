@@ -52,6 +52,18 @@ describe('Settings export and import', () => {
     expect(file.settings).toEqual({ senderInfo: 'Anna Muster', ortRechnungssteller: 'Zug', rechnungsDatum: '', signature: PNG });
   });
 
+  it('keeps the download link valid until the browser has started the download', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    renderWithProviders(<Settings />);
+
+    await userEvent.click(screen.getByRole('button', { name: 'Einstellungen sichern' }));
+    expect(URL.revokeObjectURL, 'not revoked during the click (Safari downloads afterwards)').not.toHaveBeenCalled();
+
+    vi.advanceTimersByTime(1000);
+    expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:settings');
+    vi.useRealTimers();
+  });
+
   it('warns that the file holds bank details and signature', () => {
     renderWithProviders(<Settings />);
     expect(screen.getByText(/Bankverbindung und Unterschrift/)).toBeInTheDocument();

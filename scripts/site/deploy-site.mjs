@@ -8,7 +8,7 @@
 // up once by hand; see docs/bunny-hosting.md. Old assets are never deleted, so an open
 // tab keeps working and deploying an earlier commit is the rollback.
 import { execSync } from 'node:child_process';
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { contentTypeFor, entryScriptOf, uploadOrder } from './siteFiles.mjs';
@@ -30,6 +30,12 @@ const branch = git('rev-parse --abbrev-ref HEAD');
 if (branch !== 'main' && !process.argv.includes('--from-branch')) {
   fail(`on branch ${branch}: this publishes to production; pass --from-branch to do it anyway`);
 }
+if (branch === 'main') {
+  git('fetch --quiet origin main');
+  if (git('rev-list --count origin/main..HEAD') !== '0') fail('main has commits that are not on origin/main; push or merge them first');
+}
+
+if (!existsSync(join(root, '.env.local'))) fail('.env.local not found');
 
 const env = {};
 for (const line of readFileSync(join(root, '.env.local'), 'utf8').split('\n')) {
@@ -89,7 +95,7 @@ const smokeTest = async () => {
         headers: { Origin: SITE, 'Content-Type': 'application/json' },
         body: JSON.stringify({ searchTerm: 'Bahnhofstr 1' }),
       });
-      const { results = [] } = lookup.ok ? await lookup.json() : {};
+      const { results = [] } = lookup.ok ? await lookup.json().catch(() => ({})) : {};
       const foreign = await fetch(`${SITE}/api/address`, {
         method: 'POST',
         headers: { Origin: 'https://evil.example', 'Content-Type': 'application/json' },

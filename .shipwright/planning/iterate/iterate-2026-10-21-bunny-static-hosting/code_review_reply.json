@@ -1,0 +1,55 @@
+{
+ "stage": "code-quality",
+ "verdict": "pass",
+ "summary": "Pass, no critical/high. 1 medium + 7 low findings; all addressed in the follow-up commit except the e2e extension (low, signature/date round-trip stays covered by unit tests): export revokes the object URL after 1 s and attaches the link (Safari); getSettings shares the safe parse; deploy:site refuses main ahead of origin/main, checks .env.local exists, tolerates non-JSON smoke response; VITE_ secrets note in docs; forbidOnly in CI; autocomplete hides previous error/loading state; dead fragment removed.",
+ "review": [
+  {
+   "severity": "medium",
+   "file": "src/components/SettingsTransfer.tsx",
+   "finding": "revokeObjectURL right after click can break Safari download",
+   "suggestion": "fixed"
+  },
+  {
+   "severity": "low",
+   "file": "src/lib/presetStorage.ts",
+   "finding": "getSettings throws on corrupted storage",
+   "suggestion": "fixed"
+  },
+  {
+   "severity": "low",
+   "file": "scripts/site/deploy-site.mjs",
+   "finding": "no origin/main ahead check; VITE_ vars in .env files",
+   "suggestion": "fixed (ahead check + docs note)"
+  },
+  {
+   "severity": "low",
+   "file": "scripts/site/deploy-site.mjs",
+   "finding": "raw ENOENT / unhandled JSON parse",
+   "suggestion": "fixed"
+  },
+  {
+   "severity": "low",
+   "file": "playwright.config.ts",
+   "finding": "no forbidOnly",
+   "suggestion": "fixed"
+  },
+  {
+   "severity": "low",
+   "file": "src/hooks/useStreetAutocomplete.ts",
+   "finding": "stale error shown during typing pause",
+   "suggestion": "fixed"
+  },
+  {
+   "severity": "low",
+   "file": "e2e/settingsTransfer.spec.ts",
+   "finding": "e2e carries only sender block",
+   "suggestion": "declined: other fields covered by unit round-trip tests"
+  },
+  {
+   "severity": "low",
+   "file": "src/pages/Settings.tsx",
+   "finding": "useless fragment",
+   "suggestion": "fixed"
+  }
+ ]
+}

@@ -128,4 +128,15 @@ describe('StreetLookup while typing', () => {
 
     expect(screen.queryByRole('option'), 'stale suggestions are not offered').not.toBeInTheDocument();
   });
+
+  it('hides the error of the previous text once the user types again', async () => {
+    fetchSpy.mockImplementationOnce(async () => new Response('{}', { status: 500 }));
+    renderLookup();
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Allenwinden' } });
+    await screen.findByText('Ein Fehler ist aufgetreten');
+
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Seestrasse' } });
+
+    expect(screen.queryByText('Ein Fehler ist aufgetreten'), 'the old error is not shown for the new text').not.toBeInTheDocument();
+  });
 });

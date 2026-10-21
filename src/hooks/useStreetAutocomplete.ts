@@ -16,7 +16,11 @@ export const useStreetAutocomplete = (searchTerm: string, zipCode?: string) => {
     enabled: debouncedTerm.length > 0
   });
 
-  // Suggestions for an earlier text are never offered while a newer lookup is pending.
+  // Results and errors for an earlier text are never shown while a newer lookup is pending.
   const suggestions: StreetSummary[] = settled ? data : [];
-  return { suggestions, isLoading: (!settled && searchTerm.length > 0) || isLoading, error };
+  return {
+    suggestions,
+    isLoading: searchTerm.length > 0 && (!settled || isLoading),
+    error: settled ? error : null,
+  };
 };

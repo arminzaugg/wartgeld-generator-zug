@@ -2,7 +2,9 @@
 
 The site is served from Bunny at **https://wartgeld.nidea.ch**. These resources were created
 once by hand (2026-10-21) and are not managed by a script; `npm run deploy:site` only uploads
-the build into them. Ids used by the deploy script: `site/bunny-site.json`.
+the build into them. Ids used by the deploy script: `site/bunny-site.json`. Vite puts every
+`VITE_*` variable from `.env*` files into the public bundle, so those files hold no secrets
+under a `VITE_` name; the deploy refuses a `main` that is ahead of `origin/main`.
 
 | Resource | Name / id | Settings |
 |---|---|---|

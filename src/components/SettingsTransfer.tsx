@@ -53,8 +53,11 @@ export const SettingsTransfer = ({ onImported }: SettingsTransferProps) => {
     const link = document.createElement("a");
     link.href = url;
     link.download = FILE_NAME;
+    document.body.append(link);
     link.click();
-    URL.revokeObjectURL(url);
+    link.remove();
+    // Some browsers (Safari) start the download after this handler returns.
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
 
   const clearPicker = () => {

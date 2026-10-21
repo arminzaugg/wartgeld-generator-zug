@@ -69,6 +69,11 @@ describe('stored settings for export and import', () => {
     expect(getStoredSettings().senderInfo).toBeUndefined();
   });
 
+  it('falls back to the defaults when the stored settings are unreadable', () => {
+    localStorage.setItem('form-settings', '{broken');
+    expect(getSettings().ortRechnungssteller, 'the page still opens, so a backup can be loaded').toBe('Kanton Zug');
+  });
+
   it('treats unreadable stored settings as nothing saved', () => {
     localStorage.setItem('form-settings', '{broken');
     expect(getStoredSettings()).toEqual({});

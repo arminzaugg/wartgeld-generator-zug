@@ -9,6 +9,8 @@ export default defineConfig({
   testDir: ".",
   testMatch: "e2e/**/*.spec.ts",
   fullyParallel: true,
+  // A committed test.only would otherwise run one test and report green.
+  forbidOnly: !!process.env.CI,
   reporter: [["list"], ["json", { outputFile: "test-results/e2e-results.json" }], ["html", { open: "never" }]],
   use: {
     baseURL: `http://localhost:${PORT}`,

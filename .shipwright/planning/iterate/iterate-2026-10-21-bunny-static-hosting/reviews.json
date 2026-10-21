@@ -105,15 +105,90 @@
     },
     "code": {
       "review_type": "code",
-      "status": "pending",
-      "findings_count": 0,
-      "findings": [],
+      "status": "completed",
+      "findings_count": 8,
+      "findings": [
+        {
+          "severity": "medium",
+          "category": null,
+          "file": "src/components/SettingsTransfer.tsx",
+          "line": null,
+          "finding": "revokeObjectURL right after click can break Safari download",
+          "suggestion": "fixed",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": null,
+          "file": "src/lib/presetStorage.ts",
+          "line": null,
+          "finding": "getSettings throws on corrupted storage",
+          "suggestion": "fixed",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": null,
+          "file": "scripts/site/deploy-site.mjs",
+          "line": null,
+          "finding": "no origin/main ahead check; VITE_ vars in .env files",
+          "suggestion": "fixed (ahead check + docs note)",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": null,
+          "file": "scripts/site/deploy-site.mjs",
+          "line": null,
+          "finding": "raw ENOENT / unhandled JSON parse",
+          "suggestion": "fixed",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": null,
+          "file": "playwright.config.ts",
+          "line": null,
+          "finding": "no forbidOnly",
+          "suggestion": "fixed",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": null,
+          "file": "src/hooks/useStreetAutocomplete.ts",
+          "line": null,
+          "finding": "stale error shown during typing pause",
+          "suggestion": "fixed",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": null,
+          "file": "e2e/settingsTransfer.spec.ts",
+          "line": null,
+          "finding": "e2e carries only sender block",
+          "suggestion": "declined: other fields covered by unit round-trip tests",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": null,
+          "file": "src/pages/Settings.tsx",
+          "line": null,
+          "finding": "useless fragment",
+          "suggestion": "fixed",
+          "source": "code-reviewer"
+        }
+      ],
       "provider": null,
-      "completed_at": null,
+      "completed_at": "2026-10-21T21:18:03.696808+00:00",
       "disposition": null,
-      "recorded_by": null,
+      "recorded_by": "code-reviewer",
       "parse_status": null,
-      "raw_excerpt": null
+      "raw_excerpt": null,
+      "model_tier": "inherit",
+      "verdict": "pass"
     },
     "doubt": {
       "review_type": "doubt",
@@ -129,27 +204,97 @@
     },
     "external_code": {
       "review_type": "external_code",
-      "status": "pending",
-      "findings_count": 0,
-      "findings": [],
-      "provider": null,
-      "completed_at": null,
-      "disposition": null,
-      "recorded_by": null,
-      "parse_status": null,
-      "raw_excerpt": null
+      "status": "completed",
+      "findings_count": 7,
+      "findings": [
+        {
+          "severity": "medium",
+          "category": "bug",
+          "file": "src/components/SettingsTransfer.tsx (~line 60, `handleFile`)",
+          "line": null,
+          "finding": "The hidden `<input type=\"file\">`'s value is only cleared in `handleCancel`. After a successful import (`handleConfirm`), or after an error/cancel without pressing Abbrechen, selecting the same file again fires no `change` event, so the import silently does nothing. A midwife who exports on the old site, then picks the file a second time (e.g. to retry after a mistake, or re-import after editing storage) gets no feedback at all.",
+          "suggestion": "Reset `fileInput.current.value = \"\"` in `handleConfirm` (after success) and at the end of `handleFile`, so every selection is treated as a fresh event.",
+          "source": "external-review"
+        },
+        {
+          "severity": "low",
+          "category": "bug",
+          "file": "src/lib/presetStorage.ts:~50 (`getStoredSettings`)",
+          "line": null,
+          "finding": "Only the placeholder sender block (`DEFAULT_SENDER_INFO`) is stripped, but the default `ortRechnungssteller` (e.g. `'Kanton Zug'`, visible in the unit test where `updateSettings({ senderInfo: 'Anna' })` yields it) is exported as if the user had saved it. The stated goal \"exports only the saved values, without placeholder defaults\" is only half-true, and the test that claims to cover placeholders (`'ignores stored placeholder text'`) only checks `senderInfo`, so it passes despite the gap.",
+          "suggestion": "Strip the default place the same way as the default sender block, and extend the test to assert both.",
+          "source": "external-review"
+        },
+        {
+          "severity": "low",
+          "category": "edge-case",
+          "file": "src/lib/presetStorage.ts:~48 / src/components/SettingsTransfer.tsx (`handleExport`)",
+          "line": null,
+          "finding": "getStoredSettings` does `JSON.parse(stored)` without a try/catch. If `localStorage` ever contains non-JSON under the settings key (manual tampering, prior bug, storage migration), clicking \"Einstellungen sichern\" throws inside the click handler — the button appears dead with no error shown. `getSettings` in the same file guards for this (existing code reads via `JSON.parse` too — worth checking), but the export path is new user-facing surface.",
+          "suggestion": "Wrap in try/catch and fall back to `{}` (or surface the German error message) when the stored value is unparseable.",
+          "source": "external-review"
+        },
+        {
+          "severity": "low",
+          "category": "test",
+          "file": "scripts/site/__tests__/siteFiles.test.ts",
+          "line": 14,
+          "finding": "The upload-order test asserts on the specific sorted output but never asserts the guarantee it's named for in `siteFiles.mjs` — that `index.html` is last even when other files sort after it alphabetically (nothing does in the fixture; `og-image.svg` sorts before `index.html` only incidentally). A regression that, say, sorts everything including index.html would still place it last with this fixture by luck of lexicographic order.",
+          "suggestion": "Add a file name that sorts after `index.html` (e.g. `zz-legacy.txt`) to make the ordering property actually load-bearing.  Everything else checks out well against the spec: origins updated with Netlify retained (AC2), debounce + stale-suggestion suppression with tests (AC3), upload order/content types/secret guard in `deploy:site` (AC4/AC5), the moved notice gated to `.netlify.app` (AC's Netlify fallback), hardened settings-file parser including `__proto__` and PNG-magic checks (AC7), CI e2e job with read-only permissions, built-bundle preview and report upload (AC8), docs (AC9). The Bunny-side items (Shield rules, edge rules, headers, 301) are documented in `docs/bunny-hosting.md` with live-probe evidence, which matches the \"provision once by hand\" decision.  Overall: ship-with-fixes — the work is sound and spec-complete, but the file-input reset (silent no-op on re-import) should be fixed before merge; the other items are small hardening/tests.  SHIPWRIGHT_VERDICT: revise",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "bug",
+          "file": "src/components/SettingsTransfer.tsx:119–122",
+          "line": null,
+          "finding": "The confirmation lists only fields present in the imported file, but `replaceSettings` replaces the entire settings object. Importing `{ senderInfo: \"Anna\" }` therefore also deletes the existing signature, place and invoice date without identifying those changes in the confirmation.",
+          "suggestion": "List all settings that will be replaced or cleared, explicitly marking omitted fields as reset.",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "bug",
+          "file": "src/lib/settingsFile.ts",
+          "line": 38,
+          "finding": "Signature validation checks only a base64-shaped string beginning with the PNG signature. For example, `data:image/png;base64,iVBORw0KGgo` passes despite containing no usable PNG image. Such a file can overwrite a working signature and leave invoice generation with an invalid image.",
+          "suggestion": "Validate the decoded PNG structure before accepting the import, and add a test for truncated PNG data with the correct prefix.",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "edge-case",
+          "file": "src/components/SettingsTransfer.tsx:56–63",
+          "line": null,
+          "finding": "Concurrent file reads can update the import confirmation out of order. If the user selects file A and then file B before A finishes reading, A’s later completion can replace B’s preview—or restore a confirmation after B was rejected.",
+          "suggestion": "Track a selection identifier and discard results from older reads, including their errors.  The change broadly implements the revised hosting plan, but the import flow needs these fixes before shipping. The workspace is empty, so this review is based on the supplied diff; tests and live infrastructure were not independently verified.  SHIPWRIGHT_VERDICT: revise",
+          "source": "external-review"
+        }
+      ],
+      "provider": "openrouter",
+      "completed_at": "2026-10-21T21:14:52.006151+00:00",
+      "disposition": "GPT+GLM revise: 6 fixed (import reset wording, complete-PNG check, latest-file-wins, picker reset, unreadable storage, load-bearing upload-order test); 1 declined (default place 'Kanton Zug' is a real value, exporting it is harmless)",
+      "recorded_by": "external-review-json",
+      "parse_status": "structured",
+      "raw_excerpt": "[glm] ## Findings\n\n**Category:** bug\n**Severity:** medium\n**File:** src/components/SettingsTransfer.tsx (~line 60, `handleFile`)\n**Finding:** The hidden `<input type=\"file\">`'s value is only cleared in `handleCancel`. After a successful import (`handleConfirm`), or after an error/cancel without pressing Abbrechen, selecting the *same file again* fires no `change` event, so the import silently does nothing. A midwife who exports on the old site, then picks the file a second time (e.g. to retry after a mistake, or re-import after editing storage) gets no feedback at all.\n**Suggestion:** Reset `fileInput.current.value = \"\"` in `handleConfirm` (after success) and at the end of `handleFile`, so every selection is treated as a fresh event.\n\n**Category:** bug\n**Severity:** low\n**File:** src/lib/presetStorage.ts:~50 (`getStoredSettings`)\n**Finding:** Only the placeholder *sender block* (`DEFAULT_SENDER_INFO`) is stripped, but the default `ortRechnungssteller` (e.g. `'Kanton Zug'`, visible in the unit test where `updateSettings({ senderInfo: 'Anna' })` yields it) is exported as if the user had saved it. The stated goal \"exports only the saved values, without placeholder defaults\" is only half-true, and the test that claims to cover placeholders (`'ignores stored placeholder text'`) only checks `senderInfo`, so it passes despite the gap.\n**Suggestion:** Strip the default place the same way as the default sender block, and extend the test to assert both.\n\n**Category:** edge-case\n**Severity:** low\n**File:** src/lib/presetStorage.ts:~48 / src/components/SettingsTransfer.tsx (`handleExport`)\n**Finding:** `getStoredSettings` does `JSON.parse(stored)` without a try/catch. If `localStorage` ever contains non-JSON under the settings key (manual tampering, prior bug, storage migration), clicking \"Einstellungen sichern\" throws inside the click handler — the button appears dead with no error shown. `getSettings` in the same file guards for this (existing code reads via `JSON.pars […truncated]\n\n[openai] - Category: bug\n- Severity: medium\n- File: src/components/SettingsTransfer.tsx:119–122\n- Finding: The confirmation lists only fields present in the imported file, but `replaceSettings` replaces the entire settings object. Importing `{ senderInfo: \"Anna\" }` therefore also deletes the existing signature, place and invoice date without identifying those changes in the confirmation.\n- Suggestion: List all settings that will be replaced or cleared, explicitly marking omitted fields as reset.\n\n- Category: bug\n- Severity: medium\n- File: src/lib/settingsFile.ts:38\n- Finding: Signature validation checks only a base64-shaped string beginning with the PNG signature. For example, `data:image/png;base64,iVBORw0KGgo` passes despite containing no usable PNG image. Such a file can overwrite a working signature and leave invoice generation with an invalid image.\n- Suggestion: Validate the decoded PNG structure before accepting the import, and add a test for truncated PNG data with the correct prefix.\n\n- Category: edge-case\n- Severity: medium\n- File: src/components/SettingsTransfer.tsx:56–63\n- Finding: Concurrent file reads can update the import confirmation out of order. If the user selects file A and then file B before A finishes reading, A’s later completion can replace B’s preview—or restore a confirmation after B was rejected.\n- Suggestion: Track a selection identifier and discard results from older reads, including their errors.\n\nThe change broadly implements the revised hosting plan, but the import flow needs these fixes before shipping. The workspace is empty, so this review is based on the supplied diff; tests and live infrastructure were not independently verified.\n\nSHIPWRIGHT_VERDICT: revise",
+      "verdicts": {
+        "openai": "revise",
+        "glm": "revise"
+      }
     },
     "spec": {
       "review_type": "spec",
-      "status": "pending",
+      "status": "completed",
       "findings_count": 0,
       "findings": [],
       "provider": null,
-      "completed_at": null,
+      "completed_at": "2026-10-21T21:15:17.410427+00:00",
       "disposition": null,
-      "recorded_by": null,
+      "recorded_by": "spec-reviewer",
       "parse_status": null,
-      "raw_excerpt": null
+      "raw_excerpt": null,
+      "model_tier": "inherit",
+      "verdict": "pass"
     },
     "plan_internal": {
       "review_type": "plan_internal",
