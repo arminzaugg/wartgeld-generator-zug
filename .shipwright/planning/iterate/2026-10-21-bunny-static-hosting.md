@@ -212,6 +212,9 @@ Verdict: concerns. Each answered:
 | 12 | Moved notice only on *.netlify.app | tested | `MovedNotice.test.tsx` (4) |
 | 13 | AC8 CI e2e job (read-only, built bundle, report on failure) | tested | `E2E_PREVIEW=1 npx playwright test` locally green; CI run on the PR |
 | 14 | AC9 privacy text + docs | tested | `Info.test.tsx` (3 new) |
+| 16 | AC3 lookup service refuses any path but `/api/address` (limit bypass closed) | tested | `handler.test.ts` (5 path variants); live re-probe after deploy:edge |
+| 17 | AC7 export names and skips values the import would refuse; import names the field | tested | `Settings.test.tsx`, `settingsFile.test.ts` |
+| 18 | Code review hardening: Safari-safe export, tolerant storage read, stale error hidden, highlight reset | tested | `Settings.test.tsx`, `presetStorage.unit.test.ts`, `StreetLookup.test.tsx` |
 | 15 | AC10 cost within $1 minimum | untestable | requires-external-nondeterministic-service (monthly invoice; checked against the price list, Shield Basic plan read back) |
 
 - **Confidence-pattern check:** depth — every Bunny assumption was probed live before relying on it (routing, Host, Shield plan, IP counting, DNS, certificate, headers), one assumption (service-zone counting) was falsified and the design adjusted; breadth — every AC has a row; no cross-component Shipwright machinery touched.

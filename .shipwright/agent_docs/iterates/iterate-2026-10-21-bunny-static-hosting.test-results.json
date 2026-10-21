@@ -1,0 +1,150 @@
+{
+  "iterate_latest": {
+    "run_id": "iterate-2026-10-21-bunny-static-hosting",
+    "date": "2026-10-21",
+    "unit": {
+      "status": "passed",
+      "passed": 236,
+      "total": 236
+    },
+    "integration": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "pgtap": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "e2e": {
+      "status": "passed",
+      "passed": 3,
+      "total": 3
+    },
+    "design_fidelity": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "smoke": {
+      "status": "passed"
+    },
+    "degraded": [],
+    "test_completeness": {
+      "status": "complete",
+      "behaviors": [
+        {
+          "behavior": "AC1 site served on wartgeld.nidea.ch, TLS, b-cdn 301",
+          "disposition": "tested",
+          "evidence": "live probe + deploy:site smoke test"
+        },
+        {
+          "behavior": "AC2 same-origin lookup; new and Netlify origins allowed",
+          "disposition": "tested",
+          "evidence": "config.test.ts, request.test.ts, deploy:edge smoke, live browser"
+        },
+        {
+          "behavior": "AC3 per-visitor limit 50/10 s -> 429 (site + direct)",
+          "disposition": "tested",
+          "evidence": "live Shield probes incl. encoded path"
+        },
+        {
+          "behavior": "AC3 one lookup after 250 ms pause; stale suggestions/errors hidden",
+          "disposition": "tested",
+          "evidence": "StreetLookup.test.tsx while typing"
+        },
+        {
+          "behavior": "AC4 cache headers + purge, assets kept",
+          "disposition": "tested",
+          "evidence": "live header probe; deploy:site bundle check"
+        },
+        {
+          "behavior": "AC5 deploy:site upload order, content types, entry bundle",
+          "disposition": "tested",
+          "evidence": "scripts/site/__tests__/siteFiles.test.ts"
+        },
+        {
+          "behavior": "AC5 deploy guards and secret check",
+          "disposition": "tested",
+          "evidence": "live run --from-branch; build secret check 7 rules"
+        },
+        {
+          "behavior": "AC6 security headers",
+          "disposition": "tested",
+          "evidence": "live header probe"
+        },
+        {
+          "behavior": "AC7 settings file format, validation, hostile inputs",
+          "disposition": "tested",
+          "evidence": "settingsFile.test.ts"
+        },
+        {
+          "behavior": "AC7 export/import confirm, cancel, error, size, quota, remount",
+          "disposition": "tested",
+          "evidence": "Settings.test.tsx, presetStorage.unit.test.ts"
+        },
+        {
+          "behavior": "AC7 end-to-end move to fresh profile, invoice uses sender",
+          "disposition": "tested",
+          "evidence": "e2e/settingsTransfer.spec.ts PASSED"
+        },
+        {
+          "behavior": "Moved notice only on *.netlify.app",
+          "disposition": "tested",
+          "evidence": "MovedNotice.test.tsx"
+        },
+        {
+          "behavior": "AC8 CI e2e job on built bundle",
+          "disposition": "tested",
+          "evidence": "CI=1 E2E_PREVIEW=1 playwright 3 passed"
+        },
+        {
+          "behavior": "AC9 privacy text + docs",
+          "disposition": "tested",
+          "evidence": "Info.test.tsx"
+        },
+        {
+          "behavior": "AC3 service refuses other paths (bypass closed)",
+          "disposition": "tested",
+          "evidence": "handler.test.ts path variants; live re-probe"
+        },
+        {
+          "behavior": "AC7 export names/skips refused values; import names field",
+          "disposition": "tested",
+          "evidence": "Settings.test.tsx, settingsFile.test.ts"
+        },
+        {
+          "behavior": "Code-review hardening (Safari export, tolerant read, highlight reset)",
+          "disposition": "tested",
+          "evidence": "Settings/presetStorage/StreetLookup tests"
+        },
+        {
+          "behavior": "AC10 cost within the Bunny $1 monthly minimum",
+          "disposition": "untestable",
+          "reason_code": "requires-external-nondeterministic-service",
+          "reason": "monthly invoice; checked against price list, Shield Basic plan read back"
+        }
+      ],
+      "counts": {
+        "testable": 17,
+        "tested": 17,
+        "untestable": 1,
+        "untested_testable": 0
+      },
+      "enumeration_basis": {
+        "acs": 10,
+        "covered_acs": 10
+      }
+    },
+    "surface_verification": {
+      "surface": "web",
+      "runner": "env CI=1 E2E_PREVIEW=1 npx playwright test",
+      "exit_code": 0,
+      "tests_run": 3,
+      "evidence_path": "/Users/openclaw/Engineering/nidea-invoice/.worktrees/bunny-static-hosting/.shipwright/runs/iterate-2026-10-21-bunny-static-hosting/surface_verification.log",
+      "timestamp": "2026-10-21T21:24:46.931Z",
+      "attempts": 1
+    }
+  }
+}
