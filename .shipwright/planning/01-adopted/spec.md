@@ -41,11 +41,12 @@ The UI is German-only. The app is deployed as a static site on Netlify; its back
 _Source: enrichment._
 
 - Given the invoice form is open, when the midwife submits with a first or last name shorter than 2 characters, no address, an address without a selected postcode, or no date of birth, then no invoice is produced and each problem is shown in German next to the form.
-- (E) Given an address in 6319 Allenwinden is picked, then `Zuständige Gemeinde` shows Baar; given 6300 Zug, it shows Zug without a hint (iterate-2026-10-21-zug-municipality-data).
-- (E) Given an address in 6314 Neuägeri is picked, then no municipality is pre-selected, its four municipalities are listed first and a hint asks the midwife to choose; submitting before choosing shows `Bitte wählen Sie die zuständige Gemeinde` and produces no invoice.
-- (E) Given an address in 8836 Bennau is picked, then nothing is pre-selected and a hint says the locality lies partly outside the Canton of Zug.
+- (E) Given an address in 6319 Allenwinden, when it is picked, then `Zuständige Gemeinde` shows Baar without a hint (iterate-2026-10-21-zug-municipality-data).
+- (E) Given an address in 6300 Zug, when it is picked, then `Zuständige Gemeinde` shows Zug without a hint.
+- (E) Given an address in 6314 Neuägeri, when it is picked, then no municipality is pre-selected, its four municipalities are listed first and a hint asks the midwife to choose; submitting before choosing shows `Bitte wählen Sie die zuständige Gemeinde` and produces no invoice.
+- (E) Given an address in 8836 Bennau, when it is picked, then nothing is pre-selected and a hint says the locality lies partly outside the Canton of Zug.
 - (E) Given a municipality was chosen by hand, when only the house number changes, then the choice is kept; when an address in another locality is picked, the new proposal replaces it; when the address is typed over instead of picked, postcode, town and municipality are cleared.
-- (E) Given a postcode without any Zug locality (e.g. 8001 Zürich), then the form shows `Diese PLZ liegt nicht im Kanton Zug` and produces no invoice.
+- (E) Given a postcode without any Zug locality (e.g. 8001 Zürich), when the midwife submits, then the form shows `Diese PLZ liegt nicht im Kanton Zug` and produces no invoice.
 
 ### FR-01.02 — Address suggestions for the Canton of Zug
 
@@ -59,7 +60,7 @@ _Source: enrichment._
 
 - Given a valid form with a Zug postcode and both services ticked, when the midwife clicks 'Rechnung Generieren', then exactly one PDF is produced, shown in the preview, addressed to that municipality's administration, and totalling CHF 800.
 - (E) Given the midwife chose Menzingen for a Neuägeri address, when she generates the invoice, then it is addressed to Gemeindeverwaltung, Soziales und Gesundheit, Postfach, 6313 Menzingen, and no request goes to Supabase or any other server (iterate-2026-10-21-zug-municipality-data).
-- (E) For each of the 11 Zug municipalities, the recipient lines on the invoice equal the administration addresses used before the change (Supabase export of 2026-10-21).
+- (E) Given any of the 11 Zug municipalities is chosen, when the invoice is generated, then its recipient lines equal the administration addresses used before the change (Supabase export of 2026-10-21).
 
 ### FR-01.04 — Print and save the invoice
 
