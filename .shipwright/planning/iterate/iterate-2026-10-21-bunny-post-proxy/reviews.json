@@ -1,0 +1,208 @@
+{
+  "schema_version": 1,
+  "run_id": "iterate-2026-10-21-bunny-post-proxy",
+  "reviews": {
+    "self": {
+      "review_type": "self",
+      "status": "pending",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": null,
+      "disposition": null,
+      "recorded_by": null,
+      "parse_status": null,
+      "raw_excerpt": null
+    },
+    "plan": {
+      "review_type": "plan",
+      "status": "completed",
+      "findings_count": 11,
+      "findings": [
+        {
+          "severity": null,
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "The `` wildcard origin label for Netlify deploy previews is effectively an open-origin hole. Netlify preview hostnames are arbitrary (`<branch>--<site>.netlify.app`), so a label wildcard like `.netlify.app` (or worse, ``) lets any Netlify-hosted site call your Post API through your credentials. Since the proxy is same-origin from the browser's perspective, the CORS layer is your only credential-abuse barrier.",
+          "suggestion": "Restrict the wildcard to your site's preview pattern specifically (e.g. `--<site-slug>.netlify.app`), confirm the matcher only allows a single wildcard segment, and document that `` alone is rejected by validation. Add a test asserting `https://evil--someone-else.netlify.app` gets 403.  2. Category: dependency — Severity: medium",
+          "source": "external-review"
+        },
+        {
+          "severity": null,
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "The plan assumes Bunny standalone Edge Scripts can be created and served via the Compute API without being attached to a pull zone, and that a Bunny-hostname URL is directly callable with an `Origin` check. If standalone scripts require zone attachment or a custom hostname, the deploy script and the \"own origin\" rule both change shape.",
+          "suggestion": "Verify this against the Bunny API before writing the deploy script (it's the plan's step-5 probe moved earlier). If a zone is required, note it now — it changes AC5's \"own origin\" value.  3. Category: risk — Severity: medium",
+          "source": "external-review"
+        },
+        {
+          "severity": null,
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "Netlify's proxy (redirect rule with `200!` status) has its own timeout (~10s on the platform). The Post client timeout is 8s, leaving ~2s for OAuth token fetch plus first-token acquisition. First requests after a cold isolate (token fetch + autocomplete) could exceed the Netlify budget and surface as Netlify errors rather than your clean 502.",
+          "suggestion": "Tune the token fetch timeout as well (e.g. 3s), so worst-case total stays under ~8s, and have the handler degrade to 502 cleanly if the token can't be fetched in time.  4. Category: edge-case — Severity: low",
+          "source": "external-review"
+        },
+        {
+          "severity": null,
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "Single-flight token cache is per-isolate; Bunny edge scripts run in multiple isolates, so a burst after cold start can stampede Post's token endpoint (multiple parallel client-credential grants). Not a correctness bug — Post tokens coexist fine — but could hit Post-side rate limits or trigger alarm bells on their side.",
+          "suggestion": "Acceptable to leave as-is; optionally cache the token in Bunny's per-script storage if it exists, or just note it as a known limitation.  5. Category: risk — Severity: low",
+          "source": "external-review"
+        },
+        {
+          "severity": null,
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "AC10 removes `@supabase/supabase-js` and the `supabase/` folder, but the plan doesn't include a verification step that nothing else (auth, other edge functions, env vars in Netlify, `VITE_SUPABASE_` references in code or Netlify config) still references Supabase. A stale import or env reference fails only at build or runtime.",
+          "suggestion": "Add an explicit grep/CI check step (`grep -r supabase src edge netlify.toml`) as part of step 3, and remember to remove Supabase env vars from the Netlify site settings (manual, add to the triage card alongside project deletion).  6. Category: edge-case — Severity: low",
+          "source": "external-review"
+        },
+        {
+          "severity": null,
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "The `postcode4` `63`-prefix restriction means the service never returns non-Zug postcodes — good — but AC9's flow (user types a non-Zug postcode and gets the form-level error) depends on the client-side municipality snapshot staying in sync with the service filter. The plan correctly shares `isOfferedLocality`, which mitigates this — just confirm the browser also validates on submit, not only on suggestion pick (AC9 implies it but the file list doesn't name where that check lives).",
+          "suggestion": "Confirm the submit-time postcode check uses `isOfferedLocality` and has a test; the spec text implies it exists from step 1.  7. Category: edge-case — Severity: low",
+          "source": "external-review"
+        },
+        {
+          "severity": null,
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "Rate limiter is fixed-window (60/min per client, 3000/h total). Fixed windows allow 2× bursts at window boundaries, and in-memory state resets on isolate restart — acknowledged as \"per-instance\" in FR-01.10, so this is documented, but the 3000/h global limit is also per-isolate, meaning the real ceiling is `3000 × N` isolates.",
+          "suggestion": "Fine for this step; consider noting in the FR text that limits are per-isolate so the number isn't read as a hard guarantee.  Overall assessment: Sound, well-scoped plan with good shared-logic reuse (parser, municipality rule) and a sensible migration path. The two items to resolve before/during implementation are the origin-wildcard scope and confirming Bunny's standalone-script hosting model; everything else is refinement.  SHIPWRIGHT_VERDICT: revise",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "security ·",
+          "file": null,
+          "line": null,
+          "finding": "The per-client limiter has no defined client-IP source across Netlify → Bunny. Using the connection address could group visitors under Netlify’s proxy IP; trusting arbitrary forwarded headers could let direct callers bypass limits.",
+          "suggestion": "Define which platform-supplied IP information is trustworthy on each path and how proxy traffic is authenticated. Test distinct visitors through Netlify and spoofed forwarding headers against Bunny directly. Bound and expire the limiter’s client map.",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "edge-case ·",
+          "file": null,
+          "line": null,
+          "finding": "The eight-second timeout is specified only for autocomplete. OAuth acquisition, waiting for a shared token refresh, and the retry after a 401 can extend the request substantially or leave it waiting indefinitely.",
+          "suggestion": "Apply an overall request deadline covering token acquisition and both autocomplete attempts. Ensure failed token refresh clears the single-flight promise so subsequent requests can recover. Test OAuth timeout and repeated 401 responses.",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "security ·",
+          "file": null,
+          "line": null,
+          "finding": "The preview-origin wildcard is underspecified. A rule accepting arbitrary Netlify preview hosts would allow unrelated deployments to consume the Post quota. Also, browser origin restrictions do not authenticate callers: direct clients can forge `Origin`.",
+          "suggestion": "Anchor the wildcard to this Netlify site’s exact preview hostname pattern and test deceptive suffixes and unrelated sites. Specify handling of missing and `null` origins, and keep quota protection independent of origin checks.",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "edge-case ·",
+          "file": null,
+          "line": null,
+          "finding": "AC9 requires blocking invoice creation, but the plan only explicitly changes municipality proposals. That does not establish whether a manually entered postcode, or a previously selected municipality followed by an edit, can bypass the restriction.",
+          "suggestion": "Verify that invoice submission validates the current postcode against the shared offered-locality rule. Add browser coverage for direct entry of an excluded postcode and editing a valid address to an excluded postcode before submission.  The shared handler and staged Netlify proxy rollout are sound and appropriately scoped. Define the proxy trust boundary, complete timeout behavior, and verify the invoice submission guard before proceeding; the supplied workspace contains no source files, so existing implementation safeguards could not be checked.  SHIPWRIGHT_VERDICT: revise",
+          "source": "external-review"
+        }
+      ],
+      "provider": null,
+      "completed_at": "2026-10-21T18:29:06.125673+00:00",
+      "disposition": null,
+      "recorded_by": "external-review-json",
+      "parse_status": "structured",
+      "raw_excerpt": "[glm] ## Review Findings\n\n**1. Category: security — Severity: medium**\n**Finding:** The `*` wildcard origin label for Netlify deploy previews is effectively an open-origin hole. Netlify preview hostnames are arbitrary (`<branch>--<site>.netlify.app`), so a label wildcard like `*.netlify.app` (or worse, `*`) lets *any* Netlify-hosted site call your Post API through your credentials. Since the proxy is same-origin from the browser's perspective, the CORS layer is your only credential-abuse barrier.\n**Suggestion:** Restrict the wildcard to your site's preview pattern specifically (e.g. `*--<site-slug>.netlify.app`), confirm the matcher only allows a single wildcard segment, and document that `*` alone is rejected by validation. Add a test asserting `https://evil--someone-else.netlify.app` gets 403.\n\n**2. Category: dependency — Severity: medium**\n**Finding:** The plan assumes Bunny standalone Edge Scripts can be created and served via the Compute API without being attached to a pull zone, and that a Bunny-hostname URL is directly callable with an `Origin` check. If standalone scripts require zone attachment or a custom hostname, the deploy script and the \"own origin\" rule both change shape.\n**Suggestion:** Verify this against the Bunny API before writing the deploy script (it's the plan's step-5 probe moved earlier). If a zone is required, note it now — it changes AC5's \"own origin\" value.\n\n**3. Category: risk — Severity: medium**\n**Finding:** Netlify's proxy (redirect rule with `200!` status) has its own timeout (~10s on the platform). The Post client timeout is 8s, leaving ~2s for OAuth token fetch plus first-token acquisition. First requests after a cold isolate (token fetch + autocomplete) could exceed the Netlify budget and surface as Netlify errors rather than your clean 502.\n**Suggestion:** Tune the token fetch timeout as well (e.g. 3s), so worst-case total stays under ~8s, and have the handler degrade to 502 cleanly if the token can't be fetched in time.\n […truncated]\n\n[openai] 1. **Category: security · Severity: medium**  \n   **Finding:** The per-client limiter has no defined client-IP source across Netlify → Bunny. Using the connection address could group visitors under Netlify’s proxy IP; trusting arbitrary forwarded headers could let direct callers bypass limits.  \n   **Suggestion:** Define which platform-supplied IP information is trustworthy on each path and how proxy traffic is authenticated. Test distinct visitors through Netlify and spoofed forwarding headers against Bunny directly. Bound and expire the limiter’s client map.\n\n2. **Category: edge-case · Severity: medium**  \n   **Finding:** The eight-second timeout is specified only for autocomplete. OAuth acquisition, waiting for a shared token refresh, and the retry after a 401 can extend the request substantially or leave it waiting indefinitely.  \n   **Suggestion:** Apply an overall request deadline covering token acquisition and both autocomplete attempts. Ensure failed token refresh clears the single-flight promise so subsequent requests can recover. Test OAuth timeout and repeated 401 responses.\n\n3. **Category: security · Severity: medium**  \n   **Finding:** The preview-origin wildcard is underspecified. A rule accepting arbitrary Netlify preview hosts would allow unrelated deployments to consume the Post quota. Also, browser origin restrictions do not authenticate callers: direct clients can forge `Origin`.  \n   **Suggestion:** Anchor the wildcard to this Netlify site’s exact preview hostname pattern and test deceptive suffixes and unrelated sites. Specify handling of missing and `null` origins, and keep quota protection independent of origin checks.\n\n4. **Category: edge-case · Severity: medium**  \n   **Finding:** AC9 requires blocking invoice creation, but the plan only explicitly changes municipality proposals. That does not establish whether a manually entered postcode, or a previously selected municipality followed by an edit, can bypass the restriction.  \n  […truncated]",
+      "verdicts": {
+        "glm": "revise",
+        "openai": "revise"
+      }
+    },
+    "code": {
+      "review_type": "code",
+      "status": "pending",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": null,
+      "disposition": null,
+      "recorded_by": null,
+      "parse_status": null,
+      "raw_excerpt": null
+    },
+    "doubt": {
+      "review_type": "doubt",
+      "status": "pending",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": null,
+      "disposition": null,
+      "recorded_by": null,
+      "parse_status": null,
+      "raw_excerpt": null
+    },
+    "external_code": {
+      "review_type": "external_code",
+      "status": "pending",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": null,
+      "disposition": null,
+      "recorded_by": null,
+      "parse_status": null,
+      "raw_excerpt": null
+    },
+    "spec": {
+      "review_type": "spec",
+      "status": "pending",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": null,
+      "disposition": null,
+      "recorded_by": null,
+      "parse_status": null,
+      "raw_excerpt": null
+    },
+    "plan_internal": {
+      "review_type": "plan_internal",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-21T18:29:06.187043+00:00",
+      "disposition": null,
+      "recorded_by": "external-prose",
+      "parse_status": "unstructured",
+      "raw_excerpt": "## Internal Plan Review\n\nopus-plan-reviewer, severity high. Findings and resolution:\n- 50 % rule silently excluded Sihlbrugg → asked the user; Sihlbrugg stays,\n  threshold 90 %, per (postcode, town) (Decision 3).\n- Per-client limit unreliable behind Netlify (forwarded IP spoofable) →\n  total per-instance cap only (Decision 4), FR-01.10 reworded.\n- Missing timeouts / single-flight failure handling → AC6 deadlines, design\n  note on token cache.\n- Logging could leak Post error text → AC5 fixed-message logging + test.\n- Missed Supabase users (pdfGenerationService test, README, AGENTS.md,\n  IMPROVEMENT_PLAN, SuggestionsList key, `STRID` type) → added to mini-plan.\n- Credentials in bundle → AC3 post-build grep; dev plugin reads only\n  `POST_APIM_*`, off under e2e (AC7).\n\n",
+      "model_tier": "opus"
+    },
+    "architecture_internal": {
+      "review_type": "architecture_internal",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-21T18:29:06.246041+00:00",
+      "disposition": null,
+      "recorded_by": "external-prose",
+      "parse_status": "unstructured",
+      "raw_excerpt": "## Internal Architecture Review\n\narchitecture-internal-reviewer: build option A (standalone Bunny script behind\nthe Netlify proxy), severity medium — rate-limit identity (resolved by\nDecision 4) and origin wildcard breadth (resolved by the exact preview\npattern in AC5).\n\n",
+      "model_tier": "opus"
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "review_schema": 2,
+  "success": true,
+  "provider": "codex",
+  "degraded": false,
+  "reviews_succeeded": 2,
+  "reviewed": true,
+  "reviews": {
+    "glm": {
+      "feedback": "## Review Findings\n\n**1. Category: security \u2014 Severity: medium**\n**Finding:** The `*` wildcard origin label for Netlify deploy previews is effectively an open-origin hole. Netlify preview hostnames are arbitrary (`<branch>--<site>.netlify.app`), so a label wildcard like `*.netlify.app` (or worse, `*`) lets *any* Netlify-hosted site call your Post API through your credentials. Since the proxy is same-origin from the browser's perspective, the CORS layer is your only credential-abuse barrier.\n**Suggestion:** Restrict the wildcard to your site's preview pattern specifically (e.g. `*--<site-slug>.netlify.app`), confirm the matcher only allows a single wildcard segment, and document that `*` alone is rejected by validation. Add a test asserting `https://evil--someone-else.netlify.app` gets 403.\n\n**2. Category: dependency \u2014 Severity: medium**\n**Finding:** The plan assumes Bunny standalone Edge Scripts can be created and served via the Compute API without being attached to a pull zone, and that a Bunny-hostname URL is directly callable with an `Origin` check. If standalone scripts require zone attachment or a custom hostname, the deploy script and the \"own origin\" rule both change shape.\n**Suggestion:** Verify this against the Bunny API before writing the deploy script (it's the plan's step-5 probe moved earlier). If a zone is required, note it now \u2014 it changes AC5's \"own origin\" value.\n\n**3. Category: risk \u2014 Severity: medium**\n**Finding:** Netlify's proxy (redirect rule with `200!` status) has its own timeout (~10s on the platform). The Post client timeout is 8s, leaving ~2s for OAuth token fetch plus first-token acquisition. First requests after a cold isolate (token fetch + autocomplete) could exceed the Netlify budget and surface as Netlify errors rather than your clean 502.\n**Suggestion:** Tune the token fetch timeout as well (e.g. 3s), so worst-case total stays under ~8s, and have the handler degrade to 502 cleanly if the token can't be fetched in time.\n\n**4. Category: edge-case \u2014 Severity: low**\n**Finding:** Single-flight token cache is per-isolate; Bunny edge scripts run in multiple isolates, so a burst after cold start can stampede Post's token endpoint (multiple parallel client-credential grants). Not a correctness bug \u2014 Post tokens coexist fine \u2014 but could hit Post-side rate limits or trigger alarm bells on their side.\n**Suggestion:** Acceptable to leave as-is; optionally cache the token in Bunny's per-script storage if it exists, or just note it as a known limitation.\n\n**5. Category: risk \u2014 Severity: low**\n**Finding:** AC10 removes `@supabase/supabase-js` and the `supabase/` folder, but the plan doesn't include a verification step that nothing else (auth, other edge functions, env vars in Netlify, `VITE_SUPABASE_*` references in code or Netlify config) still references Supabase. A stale import or env reference fails only at build or runtime.\n**Suggestion:** Add an explicit grep/CI check step (`grep -r supabase src edge netlify.toml`) as part of step 3, and remember to remove Supabase env vars from the Netlify site settings (manual, add to the triage card alongside project deletion).\n\n**6. Category: edge-case \u2014 Severity: low**\n**Finding:** The `postcode4` `63`-prefix restriction means the service never returns non-Zug postcodes \u2014 good \u2014 but AC9's flow (user types a non-Zug postcode and gets the form-level error) depends on the client-side municipality snapshot staying in sync with the service filter. The plan correctly shares `isOfferedLocality`, which mitigates this \u2014 just confirm the browser also validates on submit, not only on suggestion pick (AC9 implies it but the file list doesn't name where that check lives).\n**Suggestion:** Confirm the submit-time postcode check uses `isOfferedLocality` and has a test; the spec text implies it exists from step 1.\n\n**7. Category: edge-case \u2014 Severity: low**\n**Finding:** Rate limiter is fixed-window (60/min per client, 3000/h total). Fixed windows allow 2\u00d7 bursts at window boundaries, and in-memory state resets on isolate restart \u2014 acknowledged as \"per-instance\" in FR-01.10, so this is documented, but the 3000/h global limit is also per-isolate, meaning the real ceiling is `3000 \u00d7 N` isolates.\n**Suggestion:** Fine for this step; consider noting in the FR text that limits are per-isolate so the number isn't read as a hard guarantee.\n\n**Overall assessment:** Sound, well-scoped plan with good shared-logic reuse (parser, municipality rule) and a sensible migration path. The two items to resolve before/during implementation are the origin-wildcard scope and confirming Bunny's standalone-script hosting model; everything else is refinement.\n\nSHIPWRIGHT_VERDICT: revise",
+      "via": "openrouter",
+      "status": "success"
+    },
+    "openai": {
+      "feedback": "1. **Category: security \u00b7 Severity: medium**  \n   **Finding:** The per-client limiter has no defined client-IP source across Netlify \u2192 Bunny. Using the connection address could group visitors under Netlify\u2019s proxy IP; trusting arbitrary forwarded headers could let direct callers bypass limits.  \n   **Suggestion:** Define which platform-supplied IP information is trustworthy on each path and how proxy traffic is authenticated. Test distinct visitors through Netlify and spoofed forwarding headers against Bunny directly. Bound and expire the limiter\u2019s client map.\n\n2. **Category: edge-case \u00b7 Severity: medium**  \n   **Finding:** The eight-second timeout is specified only for autocomplete. OAuth acquisition, waiting for a shared token refresh, and the retry after a 401 can extend the request substantially or leave it waiting indefinitely.  \n   **Suggestion:** Apply an overall request deadline covering token acquisition and both autocomplete attempts. Ensure failed token refresh clears the single-flight promise so subsequent requests can recover. Test OAuth timeout and repeated 401 responses.\n\n3. **Category: security \u00b7 Severity: medium**  \n   **Finding:** The preview-origin wildcard is underspecified. A rule accepting arbitrary Netlify preview hosts would allow unrelated deployments to consume the Post quota. Also, browser origin restrictions do not authenticate callers: direct clients can forge `Origin`.  \n   **Suggestion:** Anchor the wildcard to this Netlify site\u2019s exact preview hostname pattern and test deceptive suffixes and unrelated sites. Specify handling of missing and `null` origins, and keep quota protection independent of origin checks.\n\n4. **Category: edge-case \u00b7 Severity: medium**  \n   **Finding:** AC9 requires blocking invoice creation, but the plan only explicitly changes municipality proposals. That does not establish whether a manually entered postcode, or a previously selected municipality followed by an edit, can bypass the restriction.  \n   **Suggestion:** Verify that invoice submission validates the current postcode against the shared offered-locality rule. Add browser coverage for direct entry of an excluded postcode and editing a valid address to an excluded postcode before submission.\n\nThe shared handler and staged Netlify proxy rollout are sound and appropriately scoped. Define the proxy trust boundary, complete timeout behavior, and verify the invoice submission guard before proceeding; the supplied workspace contains no source files, so existing implementation safeguards could not be checked.\n\nSHIPWRIGHT_VERDICT: revise",
+      "via": "codex",
+      "status": "success"
+    }
+  },
+  "driver": "claude",
+  "driver_requested": "claude",
+  "codextender_active": false,
+  "mode": "iterate",
+  "capture": {
+    "run_id": "iterate-2026-10-21-bunny-post-proxy",
+    "at": "2026-10-21T18:23:57.849635+00:00"
+  },
+  "verdicts": {
+    "glm": "revise",
+    "openai": "revise"
+  },
+  "statuses": {
+    "glm": "success",
+    "openai": "success"
+  },
+  "contradiction": {
+    "detected": false,
+    "comparable": true,
+    "requires_resolution": false,
+    "reason": "verdicts agree within one step: glm=revise, openai=revise"
+  }
+}

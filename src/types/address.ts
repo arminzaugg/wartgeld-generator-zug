@@ -1,19 +1,3 @@
-export interface AutocompleteRequest {
-  request: {
-    ONRP: number;
-    ZipCode: string;
-    ZipAddition: string;
-    TownName: string;
-    STRID: number;
-    StreetName: string;
-    HouseKey: number;
-    HouseNo: string;
-    HouseNoAddition: string;
-  };
-  zipOrderMode: number;
-  zipFilterMode: number;
-}
-
 export interface ZipSummary {
   zip: string;
   city18: string;
@@ -22,7 +6,6 @@ export interface ZipSummary {
 }
 
 export interface StreetSummary {
-  STRID: number;
   streetName: string;
   zipCode: string;
   city: string;
@@ -34,22 +17,15 @@ export interface HouseNumber {
   addition?: string;
 }
 
-export interface ApiResponse {
-  QueryAutoComplete4Result: {
-    AutoCompleteResult: Array<{
-      Canton: string;
-      CountryCode: string;
-      HouseKey: string;
-      HouseNo: string;
-      HouseNoAddition: string;
-      ONRP: string;
-      STRID: string;
-      StreetName: string;
-      TownName: string;
-      ZipAddition: string;
-      ZipCode: string;
-    }>;
-  };
+/** Answer of `/api/address` (see edge/address-lookup/handler.ts). */
+export interface AddressLookupResponse {
+  results?: Array<{
+    street: string;
+    houseNumber: string;
+    houseNumberAddition: string;
+    postcode: string;
+    town: string;
+  }>;
 }
 
 export interface AddressSearchParams {

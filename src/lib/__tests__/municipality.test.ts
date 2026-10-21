@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   getMunicipality,
+  isOfferedLocality,
   normalizeTown,
   proposeMunicipality,
 } from '../municipality';
@@ -29,15 +30,21 @@ describe('proposeMunicipality', () => {
     expect(bfsOf(proposal)).toEqual([UNTERAEGERI, MENZINGEN, BAAR, ZUG]);
   });
 
-  it('leaves 8836 Bennau unselected and warns that it lies mostly outside canton Zug', () => {
-    expect(proposeMunicipality('8836', 'Bennau')).toMatchObject({
-      known: true, proposedBfs: null, sharedHint: false, outsideHint: true,
+  it.each([
+    ['8836', 'Bennau'], ['6417', 'Sattel'], ['6418', 'Rothenthurm'], ['5642', 'Mühlau'],
+  ])('treats %s %s, which lies more than 90 %% outside canton Zug, as unknown', (postcode, town) => {
+    expect(proposeMunicipality(postcode, town)).toEqual({
+      known: false, proposedBfs: null, candidates: [], sharedHint: false, outsideHint: false,
     });
   });
 
-  it('flags 6340 Sihlbrugg as partly outside canton Zug', () => {
+  it('treats a mostly-outside postcode as unknown also when the town is misspelled', () => {
+    expect(proposeMunicipality('8836', 'Benau').known).toBe(false);
+  });
+
+  it('offers 6340 Sihlbrugg (67.5 % outside) and flags it as partly outside canton Zug', () => {
     expect(proposeMunicipality('6340', 'Sihlbrugg')).toMatchObject({
-      proposedBfs: null, outsideHint: true,
+      known: true, proposedBfs: null, outsideHint: true,
     });
   });
 
@@ -72,6 +79,24 @@ describe('proposeMunicipality', () => {
     expect(proposeMunicipality('8000', 'Zürich')).toEqual({
       known: false, proposedBfs: null, candidates: [], sharedHint: false, outsideHint: false,
     });
+  });
+});
+
+// @covers FR-01.02
+describe('isOfferedLocality', () => {
+  it('offers Zug localities including Sihlbrugg', () => {
+    expect(isOfferedLocality('6300', 'Zug')).toBe(true);
+    expect(isOfferedLocality(' 6340 ', 'sihlbrugg')).toBe(true);
+  });
+
+  it('does not offer border villages that lie more than 90 % outside canton Zug', () => {
+    expect(isOfferedLocality('8836', 'Bennau')).toBe(false);
+    expect(isOfferedLocality('5642', 'Mühlau')).toBe(false);
+  });
+
+  it('does not offer a town that is not a Zug locality of that postcode', () => {
+    expect(isOfferedLocality('6340', 'Zug')).toBe(false);
+    expect(isOfferedLocality('8000', 'Zürich')).toBe(false);
   });
 });
 

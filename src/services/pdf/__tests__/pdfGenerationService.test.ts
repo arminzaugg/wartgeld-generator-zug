@@ -2,12 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { pdfGenerationService } from '../pdfGenerationService';
 import { UnknownMunicipalityError } from '@/lib/municipality';
 import { createFormValues } from '@/lib/__tests__/factories/formFactory';
-import { supabase } from '@/integrations/supabase/client';
 import supabaseExport from '../../../../scripts/municipality-data/supabase-export-2026-10-21.json';
-
-vi.mock('@/integrations/supabase/client', () => ({
-  supabase: { from: vi.fn(), rpc: vi.fn(), functions: { invoke: vi.fn() } },
-}));
 
 vi.mock('@/lib/presetStorage', () => ({
   getSettings: () => ({ senderInfo: 'Hebamme Test', ortRechnungssteller: 'Zug', signature: undefined, rechnungsDatum: '2026-10-21' }),
@@ -40,10 +35,8 @@ describe('pdfGenerationService', () => {
     expect(pdf).not.toContain('Unterägeri)');
   });
 
-  it('generates the invoice without contacting Supabase or any server', async () => {
+  it('generates the invoice without contacting any server', async () => {
     await pdfGenerationService.generatePDF(createFormValues());
-    expect(supabase.from).not.toHaveBeenCalled();
-    expect(supabase.functions.invoke).not.toHaveBeenCalled();
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 

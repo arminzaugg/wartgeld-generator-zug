@@ -38,7 +38,7 @@ export const SuggestionsList = ({
           <ul className="py-1">
             {suggestions.map((suggestion, index) => (
               <li
-                key={`${suggestion.STRID}-${index}`}
+                key={`${suggestion.streetName}|${suggestion.houseNumbers?.[0]?.number ?? ''}${suggestion.houseNumbers?.[0]?.addition ?? ''}|${suggestion.zipCode}|${suggestion.city}|${index}`}
                 role="option"
                 aria-selected={index === selectedIndex}
                 className={cn(

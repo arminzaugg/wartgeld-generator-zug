@@ -38,8 +38,8 @@ describe('DateAndMunicipalityFields — municipality', () => {
     expect(screen.getByText(SHARED)).toBeInTheDocument();
   });
 
-  it('warns for 8836 Bennau that the locality lies partly outside canton Zug', () => {
-    renderFields('8836', 'Bennau');
+  it('warns for 6340 Sihlbrugg that the locality lies partly outside canton Zug', () => {
+    renderFields('6340', 'Sihlbrugg');
     expect(screen.getByText(OUTSIDE)).toBeInTheDocument();
   });
 

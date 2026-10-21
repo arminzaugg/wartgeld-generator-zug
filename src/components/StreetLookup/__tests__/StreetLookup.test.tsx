@@ -1,18 +1,10 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StreetLookup } from '../../StreetLookup';
 
-const { invoke } = vi.hoisted(() => ({ invoke: vi.fn() }));
-
-// System boundary: the address-lookup edge function.
-vi.mock('@/integrations/supabase/client', () => ({
-  supabase: { functions: { invoke } },
-}));
-
 const allenwinden = {
-  STRID: 1, StreetName: 'Allenwindenstrasse', ZipCode: '6319', TownName: 'Allenwinden',
-  HouseNo: '4', HouseNoAddition: '',
+  street: 'Allenwindenstrasse', houseNumber: '4', houseNumberAddition: '', postcode: '6319', town: 'Allenwinden',
 };
 
 const renderLookup = () => {
@@ -35,8 +27,10 @@ const pickAllenwinden = async (onChange: ReturnType<typeof vi.fn>) => {
 // @covers FR-01.01
 describe('StreetLookup typed over a picked address', () => {
   beforeEach(() => {
-    invoke.mockResolvedValue({ data: { QueryAutoComplete4Result: { AutoCompleteResult: [allenwinden] } }, error: null });
+    // System boundary: the same-origin lookup service.
+    vi.spyOn(globalThis, 'fetch').mockImplementation(async () => new Response(JSON.stringify({ results: [allenwinden] })));
   });
+  afterEach(() => vi.restoreAllMocks());
 
   it('clears postcode and town when a different address is typed over the pick', async () => {
     const onChange = renderLookup();

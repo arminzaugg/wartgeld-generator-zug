@@ -46,10 +46,12 @@ const Info = () => {
         <section>
           <h2 className="text-2xl font-semibold mb-4">Datenschutz</h2>
           <p className="text-muted-foreground leading-relaxed">
-            Diese Anwendung speichert alle Daten ausschliesslich lokal in Ihrem Browser. Es werden keine sensiblen Daten an externe Server gesendet. 
-            Die einzigen gespeicherten Informationen sind Ihre Einstellungen, die im lokalen Speicher (Local Storage) Ihres Browsers gespeichert werden.
-            Die automatische Vervollständigung der Adresse wird durch eine Schnittstelle der Schweizer Post bereitgestellt. Dazu wird die Eingabe
-            des Strassennamens an die API der Schweizer Post gesendet. Es werden keine weiteren Daten an die Schweizer Post übermittelt.
+            Diese Anwendung speichert alle Daten ausschliesslich lokal in Ihrem Browser. Die einzigen gespeicherten Informationen
+            sind Ihre Einstellungen, die im lokalen Speicher (Local Storage) Ihres Browsers gespeichert werden.
+            Für die automatische Vervollständigung der Adresse wird der Text, den Sie ins Adressfeld eingeben (Strasse, Hausnummer,
+            PLZ und Ort, soweit eingegeben), über unseren Adressdienst an eine Schnittstelle der Schweizerischen Post gesendet.
+            Die Anfrage läuft dabei über unsere Hosting-Anbieter Netlify und bunny.net, die wie bei jedem Webseitenaufruf Ihre
+            IP-Adresse sehen. Weitere Daten werden nicht übermittelt; der Adressdienst speichert keine Adressen.
           </p>
         </section>
 

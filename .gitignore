@@ -85,3 +85,6 @@ coverage
 # Playwright
 /test-results/
 /playwright-report/
+
+# Bunny edge script bundle
+dist-edge/
