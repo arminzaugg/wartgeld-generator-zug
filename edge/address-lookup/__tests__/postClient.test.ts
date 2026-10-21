@@ -136,6 +136,15 @@ describe('createPostClient — token handling', () => {
     await expect(client.autocomplete({ street: 'A' })).resolves.toEqual([]);
   });
 
+  it('stops waiting for a token when the caller gives up', async () => {
+    const fetch = vi.fn(() => new Promise<Response>(() => {}));
+    const client = createPostClient(config, { fetch: fetch as typeof globalThis.fetch, now: () => 0, tokenTimeoutMs: 60_000 });
+    const controller = new AbortController();
+    const pending = client.autocomplete({ street: 'A' }, controller.signal);
+    controller.abort();
+    await expect(pending).rejects.toMatchObject({ reason: 'timeout' });
+  });
+
   it('gives up on a token request that takes too long', async () => {
     const fetch = vi.fn((_url: string | URL | Request, init?: RequestInit) =>
       new Promise<Response>((_, reject) => init?.signal?.addEventListener('abort', () => reject(new Error('aborted')))));

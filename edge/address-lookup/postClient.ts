@@ -131,11 +131,13 @@ export const createPostClient = (config: PostConfig, deps: PostClientDeps) => {
 
   return {
     async autocomplete(fields: CompletionFields, signal?: AbortSignal): Promise<PostAddress[]> {
-      let used = await currentToken();
+      // A token request shared with other lookups keeps running; only this lookup stops waiting.
+      const tokenWithin = () => withDeadline(undefined, signal, currentToken);
+      let used = await tokenWithin();
       let response = await query(fields, used.value, signal);
       if (response.status === 401) {
         if (token === used) token = null;
-        used = await currentToken();
+        used = await tokenWithin();
         response = await query(fields, used.value, signal);
       }
       if (!response.ok) throw new PostError('status', response.status);

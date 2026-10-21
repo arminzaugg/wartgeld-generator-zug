@@ -45,7 +45,8 @@ working and exercises the new path in real use before step 3.
 - [ ] AC2 — Suggestions only contain offered Zug localities: never a
   (postcode, town) outside the Zug locality snapshot, never
   Bennau/Sattel/Rothenthurm/Mühlau, at most 10 results, closest street-name
-  matches first; Sihlbrugg is offered.
+  matches first; Sihlbrugg is offered. Parcel pickup points (`PickMup`, `MP …`)
+  are left out and an address Swiss Post lists for several buildings appears once.
 - [ ] AC3 — The browser only talks to its own origin (`/api/address`); no
   Supabase request, no Swiss Post request; the built `dist/` contains no
   `POST_APIM`, `client_secret` or `supabase.co`.

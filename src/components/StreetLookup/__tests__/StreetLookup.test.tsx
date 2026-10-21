@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StreetLookup } from '../../StreetLookup';
+import { Toaster } from '@/components/ui/toaster';
 
 const allenwinden = {
   street: 'Allenwindenstrasse', houseNumber: '4', houseNumberAddition: '', postcode: '6319', town: 'Allenwinden',
@@ -13,6 +14,7 @@ const renderLookup = () => {
   render(
     <QueryClientProvider client={client}>
       <StreetLookup value="x" onChange={onChange} />
+      <Toaster />
     </QueryClientProvider>,
   );
   return onChange;
@@ -77,5 +79,21 @@ describe('StreetLookup typed over a picked address', () => {
     fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Allenwindenstrassenweg 4, 6319 Allenwinden' } });
 
     expect(onChange).toHaveBeenLastCalledWith('Allenwindenstrassenweg 4, 6319 Allenwinden', undefined, undefined);
+  });
+});
+
+// @covers FR-01.02
+describe('StreetLookup when the lookup service fails', () => {
+  afterEach(() => vi.restoreAllMocks());
+
+  it('tells the midwife the address search failed and shows no suggestion', async () => {
+    vi.spyOn(globalThis, 'fetch').mockImplementation(async () =>
+      new Response(JSON.stringify({ error: 'Address lookup failed' }), { status: 502 }));
+    renderLookup();
+
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Bahnhofstr' } });
+
+    expect(await screen.findByText('Fehler bei der Adresssuche')).toBeInTheDocument();
+    expect(screen.queryByRole('option')).toBeNull();
   });
 });

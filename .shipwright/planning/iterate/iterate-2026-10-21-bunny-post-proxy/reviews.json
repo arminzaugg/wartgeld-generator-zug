@@ -168,15 +168,17 @@
     },
     "spec": {
       "review_type": "spec",
-      "status": "pending",
+      "status": "completed",
       "findings_count": 0,
       "findings": [],
       "provider": null,
-      "completed_at": null,
+      "completed_at": "2026-10-21T18:58:34.949411+00:00",
       "disposition": null,
-      "recorded_by": null,
+      "recorded_by": "spec-reviewer",
       "parse_status": null,
-      "raw_excerpt": null
+      "raw_excerpt": null,
+      "verdict": "pass",
+      "reviewed_commit": "a88ac04d760dcc0ee5858dd567d22238872779c4"
     },
     "plan_internal": {
       "review_type": "plan_internal",
