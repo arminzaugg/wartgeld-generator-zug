@@ -57,7 +57,7 @@ describe('isAllowedOrigin', () => {
     ['plain http', 'http://deploy-preview-1--wartgeld-generator-zug.netlify.app'],
     ['explicit port', 'https://deploy-preview-1--wartgeld-generator-zug.netlify.app:8443'],
     ['configured origin over http', 'http://app.example.ch'],
-  ])('rejects %s', (_, origin) => {
+  ])('refuses the origin: %s', (_, origin) => {
     expect(isAllowedOrigin(origin, policy)).toBe(false);
   });
 
@@ -67,6 +67,7 @@ describe('isAllowedOrigin', () => {
   });
 });
 
+// @covers FR-01.10
 describe('corsHeadersFor', () => {
   it('echoes the origin and varies on it', () => {
     expect(corsHeadersFor('https://app.example.ch')).toMatchObject({
