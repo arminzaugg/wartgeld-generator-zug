@@ -69,6 +69,11 @@ describe('stored settings for export and import', () => {
     expect(getStoredSettings().senderInfo).toBeUndefined();
   });
 
+  it('treats unreadable stored settings as nothing saved', () => {
+    localStorage.setItem('form-settings', '{broken');
+    expect(getStoredSettings()).toEqual({});
+  });
+
   it('replaces all stored settings with the imported ones', () => {
     updateSettings({ senderInfo: 'Old', signature: 'old-signature' });
     replaceSettings({ senderInfo: 'New', ortRechnungssteller: 'Baar' });

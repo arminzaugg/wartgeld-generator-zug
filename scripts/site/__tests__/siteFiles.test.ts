@@ -5,8 +5,8 @@ import { contentTypeFor, entryScriptOf, uploadOrder } from '../siteFiles.mjs';
 // @covers FR-01.11
 describe('site upload helpers', () => {
   it('uploads assets first and index.html last, skipping hidden files', () => {
-    expect(uploadOrder(['index.html', 'assets/index-a1.js', '.DS_Store', 'assets/.keep', 'og-image.svg', 'assets/index-b2.css']))
-      .toEqual(['assets/index-a1.js', 'assets/index-b2.css', 'og-image.svg', 'index.html']);
+    expect(uploadOrder(['index.html', 'assets/index-a1.js', '.DS_Store', 'assets/.keep', 'zz-robots.txt', 'og-image.svg', 'assets/index-b2.css']))
+      .toEqual(['assets/index-a1.js', 'assets/index-b2.css', 'og-image.svg', 'zz-robots.txt', 'index.html']);
   });
 
   it.each([

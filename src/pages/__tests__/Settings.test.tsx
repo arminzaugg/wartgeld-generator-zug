@@ -74,6 +74,52 @@ describe('Settings export and import', () => {
     expect(getSettings()).toMatchObject({ senderInfo: 'Anna Muster', ortRechnungssteller: 'Baar', signature: PNG });
   });
 
+  it('names the settings that the import clears', async () => {
+    updateSettings({ senderInfo: 'Old sender', signature: PNG });
+    renderWithProviders(<Settings />);
+
+    await userEvent.upload(screen.getByLabelText('Einstellungsdatei auswählen'),
+      settingsFile(serializeSettings({ senderInfo: 'Anna Muster' })));
+
+    expect(await screen.findByText(/werden ersetzt: Angaben Rechnungsstellerin/)).toBeInTheDocument();
+    expect(screen.getByText(/zurückgesetzt: Ort, Rechnungsdatum, Unterschrift/)).toBeInTheDocument();
+  });
+
+  it('loads the same file again after an import', async () => {
+    renderWithProviders(<Settings />);
+    const file = settingsFile(serializeSettings({ senderInfo: 'Anna Muster' }));
+    const input = screen.getByLabelText<HTMLInputElement>('Einstellungsdatei auswählen');
+
+    await userEvent.upload(input, file);
+    await userEvent.click(await screen.findByRole('button', { name: 'Übernehmen' }));
+    expect(input.value, 'the picker is cleared so the same file triggers again').toBe('');
+
+    await userEvent.upload(input, file);
+    expect(await screen.findByRole('button', { name: 'Übernehmen' })).toBeInTheDocument();
+  });
+
+  it('shows only the result of the most recently chosen file', async () => {
+    renderWithProviders(<Settings />);
+    const input = screen.getByLabelText('Einstellungsdatei auswählen');
+    let finishSlowRead: () => void = () => undefined;
+    const realReadAsText = FileReader.prototype.readAsText;
+    vi.spyOn(FileReader.prototype, 'readAsText').mockImplementation(function (this: FileReader, blob: Blob) {
+      if ((blob as File).name === 'slow.json') {
+        finishSlowRead = () => realReadAsText.call(this, blob);
+        return;
+      }
+      realReadAsText.call(this, blob);
+    });
+
+    await userEvent.upload(input, settingsFile(serializeSettings({ senderInfo: 'Slow' }), 'slow.json'));
+    await userEvent.upload(input, settingsFile('not json', 'fast.json'));
+    expect(await screen.findByText('Die Datei ist keine gültige Einstellungsdatei.')).toBeInTheDocument();
+
+    finishSlowRead();
+    await new Promise(resolve => setTimeout(resolve, 20));
+    expect(screen.queryByRole('button', { name: 'Übernehmen' }), 'the older file does not come back').not.toBeInTheDocument();
+  });
+
   it('keeps the current settings when the import is cancelled', async () => {
     updateSettings({ senderInfo: 'Old sender' });
     renderWithProviders(<Settings />);

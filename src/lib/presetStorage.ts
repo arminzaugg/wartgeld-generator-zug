@@ -46,8 +46,12 @@ export const updateSettings = (update: SettingsUpdate): void => {
 
 /** The settings as saved, without filled-in defaults; the placeholder sender block counts as unsaved. */
 export const getStoredSettings = (): Partial<Settings> => {
-  const stored = localStorage.getItem(SETTINGS_KEY);
-  const settings: Partial<Settings> = stored ? JSON.parse(stored) : {};
+  let settings: Partial<Settings> = {};
+  try {
+    settings = JSON.parse(localStorage.getItem(SETTINGS_KEY) ?? '{}') ?? {};
+  } catch {
+    // Unreadable data counts as nothing saved.
+  }
   const result: Partial<Settings> = {};
   for (const field of ['senderInfo', 'ortRechnungssteller', 'rechnungsDatum', 'signature'] as const) {
     if (typeof settings[field] === 'string') result[field] = settings[field];

@@ -18,6 +18,18 @@ const MAX_SIGNATURE = 900_000;
 const PNG_DATA_URL = /^data:image\/png;base64,iVBORw0KGgo[A-Za-z0-9+/]*={0,2}$/;
 const ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
 
+// A complete PNG: signature, IHDR as first chunk, and the fixed IEND chunk at the very end.
+const PNG_END = '\0\0\0\0IEND\xAE\x42\x60\x82';
+const isCompletePng = (dataUrl: string) => {
+  let bytes: string;
+  try {
+    bytes = atob(dataUrl.slice(dataUrl.indexOf(',') + 1));
+  } catch {
+    return false;
+  }
+  return bytes.length >= 45 && bytes.slice(12, 16) === 'IHDR' && bytes.endsWith(PNG_END);
+};
+
 const isPlainObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
@@ -35,7 +47,7 @@ const FIELDS: Record<keyof Settings, FieldCheck> = {
   senderInfo: value => value.length <= MAX_SENDER_INFO,
   ortRechnungssteller: value => value.length <= MAX_ORT,
   rechnungsDatum: value => value === '' || isRealDate(value),
-  signature: value => value.length <= MAX_SIGNATURE && PNG_DATA_URL.test(value),
+  signature: value => value.length <= MAX_SIGNATURE && PNG_DATA_URL.test(value) && isCompletePng(value),
 };
 
 const invalid = (error: string): ParsedSettingsFile => ({ ok: false, error });

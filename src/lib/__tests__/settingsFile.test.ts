@@ -44,6 +44,8 @@ describe('settings file', () => {
     ['a JPEG signature', fileWith({ signature: 'data:image/jpeg;base64,/9j/4AAQ' })],
     ['a PNG label on non-PNG data', fileWith({ signature: 'data:image/png;base64,R0lGODlh' })],
     ['a signature with characters outside base64', fileWith({ signature: `${PNG}"><script>` })],
+    ['a PNG signature cut off after the header', fileWith({ signature: 'data:image/png;base64,iVBORw0KGgo=' })],
+    ['a PNG signature missing its end', fileWith({ signature: PNG.slice(0, -16) })],
   ])('rejects %s', (_, text) => {
     const result = parseSettingsFile(text);
     expect(result.ok, 'the file must be refused').toBe(false);

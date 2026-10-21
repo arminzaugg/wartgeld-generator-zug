@@ -30,6 +30,13 @@ midwife has moved her settings (she needs the old site to export them).
    `.env.local`; nothing secret in GitHub).
 4. **Netlify:** forwards to the new address once the Bunny site is verified
    (follow-up PR, see Out of Scope).
+5. **Site marker moved into this run (probe-driven, 2026-10-21):** requests the
+   site forwards reach the address service from Bunny's own IP addresses, so a
+   plain per-IP rule on the service's zone would lump all visitors together.
+   The site's edge rule therefore adds a secret `X-Wartgeld-Site` header
+   (`BUNNY_SITE_FORWARD_SECRET`, only in Bunny and `.env.local`) and the
+   service-zone rule limits only requests without it. The follow-up PR still
+   removes the Netlify origins and makes the service refuse unmarked requests.
 
 ## Acceptance Criteria
 
@@ -51,14 +58,16 @@ midwife has moved her settings (she needs the old site to export them).
   `index.html` is never served stale (browser `no-cache`, CDN cache purged on
   deploy); hashed files under `/assets/` are cached long-term (immutable) and
   earlier builds' assets stay available, so an open tab keeps working.
-- [ ] AC5 — `npm run deploy:site` (manual, from a clean `main`, or
-  `--from-branch`): builds, refuses a build that fails the secret check,
-  creates the Bunny storage zone / pull zone / hostname / certificate / DNS
-  record / Shield zone + rate-limit rule / edge rules on first run (ids
-  recorded in a tracked JSON file), uploads `index.html` last, purges the
-  cache, and smoke-tests the live address (page 200 with the new bundle name,
-  lookup 200 with results, foreign origin 403). Prints names, ids and status
-  codes only — never a key or password.
+- [ ] AC5 — The Bunny resources (storage zone, pull zone, hostname + certificate,
+  DNS record, edge rules, Shield zones + rate-limit rules) are created **once by
+  hand** (decision after the external architecture review), documented in
+  `docs/bunny-hosting.md` with a re-create checklist; their ids are in
+  `site/bunny-site.json`. `npm run deploy:site` (manual, from a clean `main`, or
+  `--from-branch`; refuses untracked files under `public/`/`src/`) builds with the
+  secret check, uploads assets first and `index.html` last, purges `/` and
+  `/index.html` on both hostnames, and smoke-tests the live address (page loads
+  the new bundle, lookup 200 with results, foreign origin 403, b-cdn → 301). It
+  prints names, ids and status codes only — never a key or password.
 - [ ] AC6 — Responses carry `X-Content-Type-Options: nosniff`,
   `Referrer-Policy: no-referrer` and `X-Frame-Options: DENY` (edge rules).
 - [ ] AC7 — Settings page: "Einstellungen sichern" downloads
@@ -72,8 +81,9 @@ midwife has moved her settings (she needs the old site to export them).
   and on `main`; a failing e2e test fails the workflow; the HTML report is
   uploaded on failure. No new third-party GitHub Action.
 - [ ] AC9 — The Info page privacy text names bunny.net as host (and Netlify
-  only for the old address while it still exists); README/CLAUDE.md/AGENTS.md
-  describe Bunny hosting, `deploy:site`, and the rollback.
+  only for the old address while it still exists); README describes Bunny
+  hosting, `deploy:site` and the rollback; CLAUDE.md/AGENTS.md describe the
+  hosting and point to `docs/bunny-hosting.md`.
 - [ ] AC10 — Monthly cost stays within Bunny's $1 account minimum
   (storage zone in one region, no replication; Shield free plan; pull zone
   Standard tier) — checked against Bunny's price list in the plan, not
