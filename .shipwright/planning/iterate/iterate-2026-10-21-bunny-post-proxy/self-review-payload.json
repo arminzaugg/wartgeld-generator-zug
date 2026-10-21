@@ -1,0 +1,10 @@
+{"items":[
+ {"name":"Spec Compliance","verdict":"pass","note":"AC1-AC11 implemented with tests; AC1/AC8 also probed live (dev server, Bunny direct, Netlify deploy preview #176). Spec-reviewer PASS."},
+ {"name":"Error Handling","verdict":"pass","note":"Post failure/timeout -> 502 without address data; missing config -> 503; token single-flight cleared on failure; exactly one 401 retry; deadlines race the request so a hung call cannot hold a lookup; UI shows 'Fehler bei der Adresssuche' (component test)."},
+ {"name":"Security Basics","verdict":"pass","note":"Post credentials only in Bunny secrets and git-ignored .env.local; build fails if dist/ has POST_APIM/client_secret/supabase.co or the local secret values; exact origin rules incl. negative cases; body capped at 1 KB before parsing; logs carry counts/status/duration only (tested); scripts print ids/status only."},
+ {"name":"Test Quality","verdict":"pass","note":"Behaviour-named tests tagged @FR-01.01/02/08/10; fetch mocked only at the Swiss Post and /api/address boundaries; e2e stubs /api/address with the dev service off."},
+ {"name":"Performance Basics","verdict":"pass","note":"Edge bundle 28 KB with no runtime deps beyond node:process; lookups 30-400 ms live; token reused for ~270 s; Supabase chunk removed from the app bundle."},
+ {"name":"Naming & Structure","verdict":"pass","note":"Edge modules <= 150 LOC each; runtime-agnostic handler shared by Bunny entry and Vite dev middleware; locality rule lives once in src/lib/municipality.ts."},
+ {"name":"Affected Boundaries","verdict":"pass","note":"Browser->/api/address (Netlify proxy, Vite dev) and service->Post OAuth/autocomplete probed live; Bunny Compute API exercised by create and update deploys with smoke test."},
+ {"name":"Test Hygiene Probe","verdict":"pass","note":"scan_test_hygiene.py --diff: 1 finding, missing_file for supabase/functions/address-lookup/request.test.ts, which this change deletes on purpose (moved to edge/address-lookup/__tests__/request.test.ts); no real hygiene issue."}
+]}

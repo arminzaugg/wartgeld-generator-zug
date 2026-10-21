@@ -1,0 +1,95 @@
+{
+  "run_id": "iterate-2026-10-21-bunny-post-proxy",
+  "date": "2026-10-21T19:12:02.101722Z",
+  "event_at": "2026-10-21T17:43:10.385467+00:00",
+  "type": "change",
+  "complexity": "medium",
+  "branch": "iterate/bunny-post-proxy",
+  "spec": ".shipwright/planning/iterate/2026-10-21-bunny-post-proxy.md",
+  "tests_passed": true,
+  "adr": "iterate-2026-10-21-bunny-post-proxy",
+  "test_completeness": {
+    "status": "complete",
+    "behaviors": [
+      {
+        "behavior": "Bahnhofstr 1 offers Zug addresses, exact house numbers first; pick fills fields (AC1)",
+        "disposition": "tested",
+        "evidence": "handler.test.ts::keeps only offered Zug localities, exact house numbers first; addressService.test.ts::maps its suggestions; StreetLookup.test.tsx (6 pick cases) PASSED; live probe dev/Bunny/Netlify preview"
+      },
+      {
+        "behavior": "Only offered Zug localities, max 10, pickup points/duplicates dropped, Sihlbrugg kept (AC2)",
+        "disposition": "tested",
+        "evidence": "handler.test.ts::keeps only offered\u2026/leaves out parcel pickup points\u2026/shows an address only once\u2026/skips malformed entries\u2026; municipality.test.ts::isOfferedLocality (3) PASSED"
+      },
+      {
+        "behavior": "Browser talks only to /api/address; dist has no credentials (AC3)",
+        "disposition": "tested",
+        "evidence": "addressService.test.ts::asks the own-origin lookup service PASSED; scripts/check-dist-secrets.mjs in npm run build: 6 rules, none found; negative check with planted file exits 1"
+      },
+      {
+        "behavior": "Token: client credentials, reuse until 30 s before expiry, single flight, one 401 retry, fallback on failed early refresh (AC4)",
+        "disposition": "tested",
+        "evidence": "postClient.test.ts::token handling (8 cases) PASSED"
+      },
+      {
+        "behavior": "Origin/method/size/JSON/field checks, per-minute cap, safe logs, no-store (AC5)",
+        "disposition": "tested",
+        "evidence": "request.test.ts (26 cases); handler.test.ts::request checks incl. streamed >1 KB body, 429, no-store; ::logs neither the search text\u2026 PASSED; rateLimit.test.ts (3) PASSED"
+      },
+      {
+        "behavior": "Post failure/timeout -> 502, app shows Fehler bei der Adresssuche (AC6)",
+        "disposition": "tested",
+        "evidence": "handler.test.ts::answers 502\u2026 (2); postClient.test.ts::timeouts (3); StreetLookup.test.tsx::tells the midwife the address search failed PASSED"
+      },
+      {
+        "behavior": "npm run dev serves /api/address from .env.local; 503 without config; off under E2E (AC7)",
+        "disposition": "tested",
+        "evidence": "handler.test.ts::answers 503\u2026; config.test.ts (3) PASSED; live dev-server probe 2026-10-21; playwright webServer env E2E=1, e2e 2 PASSED with stubbed lookup"
+      },
+      {
+        "behavior": "Netlify site and previews forward /api/address to Bunny (AC8)",
+        "disposition": "untestable",
+        "reason_code": "requires-prod-credential",
+        "reason": "Needs the deployed Bunny service and a Netlify deploy; probed manually on deploy-preview-176 (200 with Zug results, 403 foreign origin, 405 GET), not automatable in CI"
+      },
+      {
+        "behavior": "Border villages >90 % outside Zug rejected, no proposal (AC9)",
+        "disposition": "tested",
+        "evidence": "municipality.test.ts::treats 8836/6417/6418/5642 \u2026 as unknown (4) + misspelled; formValidationService.test.ts::rejects a border village PASSED"
+      },
+      {
+        "behavior": "Supabase removed; build, lint, tests pass (AC10)",
+        "disposition": "tested",
+        "evidence": "pdfGenerationService.test.ts::generates the invoice without contacting any server PASSED; npm run build + eslint green; supabase/ and src/integrations/supabase deleted"
+      },
+      {
+        "behavior": "Privacy text names typed address text, Netlify, bunny.net, IP, Swiss Post (AC11)",
+        "disposition": "tested",
+        "evidence": "Info.test.tsx (3) PASSED"
+      },
+      {
+        "behavior": "Postcode typed after comma without town is searched as postcode (doubt review)",
+        "disposition": "tested",
+        "evidence": "addressParser.test.ts (3) PASSED; live probe 'Bahnhofstr 1, 6300' -> Bahnhofstrasse 1, 6300 Zug"
+      }
+    ],
+    "counts": {
+      "testable": 11,
+      "tested": 11,
+      "untestable": 1,
+      "untested_testable": 0
+    },
+    "enumeration_basis": {
+      "acs": 11,
+      "covered_acs": 11
+    }
+  },
+  "surface_verification": {
+    "surface": "web",
+    "runner": "npx playwright test e2e/municipality.spec.ts",
+    "exit_code": 0,
+    "tests_run": 2,
+    "evidence_path": "/Users/openclaw/Engineering/nidea-invoice/.worktrees/bunny-post-proxy/.shipwright/runs/iterate-2026-10-21-bunny-post-proxy/surface_verification.log",
+    "timestamp": "2026-10-21T19:11:43.129931Z"
+  }
+}

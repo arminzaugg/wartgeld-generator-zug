@@ -1,5 +1,5 @@
 interface Named {
-  StreetName: string;
+  street: string;
 }
 
 /**
@@ -9,8 +9,8 @@ interface Named {
 export const compareStreets = (query: string) => {
   const q = query.toLowerCase();
   return (a: Named, b: Named): number => {
-    const nameA = a.StreetName.toLowerCase();
-    const nameB = b.StreetName.toLowerCase();
+    const nameA = a.street.toLowerCase();
+    const nameB = b.street.toLowerCase();
 
     const exactA = nameA === q;
     const exactB = nameB === q;
@@ -20,6 +20,6 @@ export const compareStreets = (query: string) => {
     const prefixB = nameB.startsWith(q);
     if (prefixA !== prefixB) return prefixA ? -1 : 1;
 
-    return a.StreetName.length - b.StreetName.length;
+    return a.street.length - b.street.length;
   };
 };

@@ -32,7 +32,6 @@ dist-ssr
 backup.sql
 
 
-supabase/.temp/*
 # Test coverage output
 coverage
 
@@ -85,3 +84,6 @@ coverage
 # Playwright
 /test-results/
 /playwright-report/
+
+# Bunny edge script bundle
+dist-edge/

@@ -6,12 +6,14 @@
   "scripts": {
     "build:dev": "vite build --mode development",
     "dev": "vite",
-    "typecheck": "tsc -p tsconfig.app.json",
-    "build": "npm run typecheck && vite build",
+    "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.edge.json",
+    "build": "npm run typecheck && vite build && node scripts/check-dist-secrets.mjs",
     "lint": "eslint . --max-warnings 0",
     "preview": "vite preview",
     "test": "vitest run --coverage",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "build:edge": "node scripts/edge/build-address-lookup.mjs",
+    "deploy:edge": "node scripts/edge/deploy-address-lookup.mjs"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "^1.1.1",
@@ -21,7 +23,6 @@
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-toast": "^1.2.11",
     "@radix-ui/react-tooltip": "^1.2.4",
-    "@supabase/supabase-js": "^2.49.4",
     "@tanstack/react-query": "^5.60.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -35,6 +36,7 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@bunny.net/edgescript-sdk": "0.13.0",
     "@eslint/js": "^9.14.0",
     "@playwright/test": "^1.64.1",
     "@testing-library/jest-dom": "^6.6.3",
@@ -47,6 +49,7 @@
     "@vitejs/plugin-react": "^4.5.2",
     "@vitest/coverage-v8": "^3.2.3",
     "autoprefixer": "^10.4.20",
+    "esbuild": "0.25.0",
     "eslint": "^9.9.0",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.9",

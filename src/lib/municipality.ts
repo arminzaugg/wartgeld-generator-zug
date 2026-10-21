@@ -6,6 +6,12 @@ import type { Municipality, ZugLocality } from "@/data/types";
 export const PRESELECT_SHARE = 80;
 /** Share (%) from which another municipality or another canton is worth a hint. */
 export const HINT_SHARE = 5;
+/**
+ * Share (%) of addresses outside canton Zug above which a locality is not offered.
+ * Swiss Post reports the canton per locality, not per building, so the Zug part
+ * of such a border village cannot be told apart (ADR: bunny-post-proxy).
+ */
+export const MAX_OUTSIDE_SHARE = 90;
 
 export interface MunicipalityProposal {
   /** The postcode has at least one locality in canton Zug. */
@@ -35,6 +41,19 @@ export const normalizeTown = (town: string): string =>
 export const getMunicipality = (bfs: number): Municipality | undefined =>
   MUNICIPALITIES.find(m => m.bfs === bfs);
 
+const isOffered = (locality: ZugLocality): boolean => locality.outsideShare <= MAX_OUTSIDE_SHARE;
+
+/** The (postcode, town) pair is a Zug locality the app offers. */
+export const isOfferedLocality = (
+  postcode: string,
+  town: string,
+  localities: readonly ZugLocality[] = ZUG_LOCALITIES,
+): boolean => {
+  const code = postcode.trim();
+  const wanted = normalizeTown(town);
+  return localities.some(l => l.postcode === code && normalizeTown(l.locality) === wanted && isOffered(l));
+};
+
 const toMunicipalities = (bfsNumbers: number[]): Municipality[] =>
   bfsNumbers.flatMap(bfs => getMunicipality(bfs) ?? []);
 
@@ -44,7 +63,7 @@ export const proposeMunicipality = (
   localities: readonly ZugLocality[] = ZUG_LOCALITIES,
 ): MunicipalityProposal => {
   const code = postcode.trim();
-  const forPostcode = localities.filter(l => l.postcode === code);
+  const forPostcode = localities.filter(l => l.postcode === code && isOffered(l));
   if (forPostcode.length === 0) {
     return { known: false, proposedBfs: null, candidates: [], sharedHint: false, outsideHint: false };
   }

@@ -1,9 +1,11 @@
+// @vitest-environment node
 import { describe, it, expect } from 'vitest';
-import { compareStreets } from './sort.ts';
+import { compareStreets } from '../sort';
 
 const names = (list: string[], query: string) =>
-  list.map(StreetName => ({ StreetName })).sort(compareStreets(query)).map(s => s.StreetName);
+  list.map(street => ({ street })).sort(compareStreets(query)).map(s => s.street);
 
+// @covers FR-01.02
 describe('compareStreets', () => {
   it('puts an exact match first regardless of input order', () => {
     expect(names(['Baarerstrasse', 'Baar'], 'baar')[0]).toBe('Baar');

@@ -3,15 +3,15 @@
 ## WHAT
 Wartgeld Generator Zug is a small single-page web app that lets midwives in the Canton of Zug (Switzerland) create the invoice for the cantonal midwife standby allowance ("Hebammenwartgeld"). The midwife enters the mother's name, home address and date of birth, ticks which of the two reimbursable services she provided (care during a home birth, care of the mother at home after birth; CHF 400 each), and the app produces a ready-to-send PDF invoice addressed to the municipal administration responsible for the mother's place of residence. The invoice can be previewed, printed or saved.
 
-The midwife's own details (sender block with contact and IBAN, place of issue, an optional fixed invoice date, and a hand-drawn signature) are entered once on a settings page and reused for every invoice. These settings and all patient data stay in the user's browser; nothing about the patient is stored on a server. The only data that leaves the browser is the street text typed into the address field, which is sent to the Swiss Post address autocomplete service (via the project's own lookup service). The responsible municipality is proposed in the browser from the official locality list shipped with the app (`src/data/`).
+The midwife's own details (sender block with contact and IBAN, place of issue, an optional fixed invoice date, and a hand-drawn signature) are entered once on a settings page and reused for every invoice. These settings and all patient data stay in the user's browser; nothing about the patient is stored on a server. The only data that leaves the browser is the text typed into the address field, which goes via the hosting providers (Netlify, bunny.net) and the project's own lookup service to the Swiss Post address API. The responsible municipality is proposed in the browser from the official locality list shipped with the app (`src/data/`).
 
-The UI is German-only. The app is deployed as a static site on Netlify; its backend is one Supabase edge function that proxies the Swiss Post autocomplete API with origin restriction and rate limiting.
+The UI is German-only. The app is deployed as a static site on Netlify, which forwards `/api/address` to the lookup service (`edge/address-lookup/`) on Bunny Edge Scripting; that service holds the Swiss Post APIM credentials and applies origin restriction and a request cap. There is no database.
 
 ## Stack
 - **Runtime**: typescript
 - **Frontend**: react, react-dom, vite
-- **Backend**: —
-- **Database**: @supabase/supabase-js
+- **Backend**: Bunny Edge Scripting (`edge/address-lookup/`, `npm run deploy:edge`)
+- **Database**: —
 - **Auth**: —
 - **Profile**: `generic`
 

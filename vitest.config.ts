@@ -11,18 +11,20 @@ export default defineConfig({
     include: [
       "src/**/__tests__/**/*.{test,spec}.{ts,tsx}",
       "src/**/*.{test,spec}.{ts,tsx}",
-      "supabase/functions/**/*.test.ts"
+      "edge/**/__tests__/**/*.test.ts"
     ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
-      include: ['src/**/*.{ts,tsx}'],
+      include: ['src/**/*.{ts,tsx}', 'edge/**/*.ts'],
       exclude: [
         'src/main.tsx', 
         'src/vite-env.d.ts', 
         'src/components/ui/**',
         'src/**/*.{test,spec}.{ts,tsx}',
-        'src/**/__tests__/**'
+        'src/**/__tests__/**',
+        'edge/**/__tests__/**',
+        'edge/address-lookup/main.ts'
       ],
       thresholds: {
         global: {

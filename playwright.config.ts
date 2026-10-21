@@ -17,5 +17,7 @@ export default defineConfig({
     command: `npx vite --port ${PORT} --strictPort`,
     url: `http://localhost:${PORT}`,
     reuseExistingServer: false,
+    // Turns off the dev address service: tests stub /api/address and never call Swiss Post.
+    env: { E2E: "1" },
   },
 });

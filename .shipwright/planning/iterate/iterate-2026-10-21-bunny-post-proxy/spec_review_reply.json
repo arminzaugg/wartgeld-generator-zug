@@ -1,0 +1,6 @@
+{
+ "stage": "spec-compliance",
+ "verdict": "PASS",
+ "spec_citations": [],
+ "summary": "AC1-AC11, Decisions 1-4 and Design Notes implemented as written; FR-01.01/02/08/10 rows match. AC8 configured; preview probe passed separately. Low notes: pickup/dedupe filter not in iterate spec; post-401 token fetch not bound to 8 s deadline; list key includes index; no component test for 502 message, no dev-plugin test; leftover supabase/.temp gitignore line; Steinhausen-first only live-probed."
+}

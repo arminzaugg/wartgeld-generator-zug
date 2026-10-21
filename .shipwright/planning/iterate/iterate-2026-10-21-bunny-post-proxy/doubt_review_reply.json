@@ -1,0 +1,49 @@
+{
+ "stage": "doubt",
+ "gating": "advisory-must-address",
+ "verdict": "pass",
+ "doubts": [
+  {
+   "severity": "medium",
+   "claim_under_doubt": "rollback = remove netlify.toml rule",
+   "resolution": "fixed: comments/README/spec now say republish previous Bunny release; Netlify previous deploy only while Supabase runs; never remove the rule alone",
+   "blocks_merge": false
+  },
+  {
+   "severity": "medium",
+   "claim_under_doubt": "edge changes reach production only through merge",
+   "resolution": "fixed: deploy:edge refuses dirty trees and non-main branches without --from-branch; header states publish is live at once and smoke test only detects",
+   "blocks_merge": false
+  },
+  {
+   "severity": "medium",
+   "claim_under_doubt": "Post city equals snapshot locality names",
+   "resolution": "disproved by live probe: all 29 snapshot localities across 19 postcodes match Post's city strings exactly (incl. 'Oberwil b. Zug', 'Holzh\u00e4usern ZG')",
+   "blocks_merge": false
+  },
+  {
+   "severity": "low",
+   "claim_under_doubt": "600/min cap sufficient; client retries/no debounce",
+   "resolution": "accepted per Decision 4; triage card for per-visitor limiting in step 3",
+   "blocks_merge": false
+  },
+  {
+   "severity": "low",
+   "claim_under_doubt": "appendix case",
+   "resolution": "disproved live: '3a' and '3A' both return Seestrasse 3A",
+   "blocks_merge": false
+  },
+  {
+   "severity": "low",
+   "claim_under_doubt": "'Bahnhofstr 1, 6300' typing",
+   "resolution": "fixed: parser reads a comma-separated postcode without town; tests + live probe return Bahnhofstrasse 1, 6300 Zug",
+   "blocks_merge": false
+  },
+  {
+   "severity": "info",
+   "claim_under_doubt": "dev credentials via DNS rebinding",
+   "resolution": "fixed: dev lookup requires a localhost Host name",
+   "blocks_merge": false
+  }
+ ]
+}

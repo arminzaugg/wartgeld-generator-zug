@@ -1,15 +1,13 @@
 import { test, expect, type Page } from "@playwright/test";
 
-// Swiss Post suggestions as the address-lookup function returns them; stubbed
-// so the test needs neither Supabase nor Swiss Post.
-const suggestion = (street: string, zip: string, town: string) => ({
-  Canton: "ZG", CountryCode: "CH", HouseKey: "", HouseNo: "", HouseNoAddition: "",
-  ONRP: "1", STRID: "1", StreetName: street, TownName: town, ZipAddition: "00", ZipCode: zip,
+// Suggestions as the /api/address service returns them; stubbed so the test
+// never calls Swiss Post.
+const suggestion = (street: string, postcode: string, town: string) => ({
+  street, houseNumber: "", houseNumberAddition: "", postcode, town,
 });
 
 const stubAddressLookup = (page: Page, results: ReturnType<typeof suggestion>[]) =>
-  page.route("**/functions/v1/address-lookup", route =>
-    route.fulfill({ json: { QueryAutoComplete4Result: { AutoCompleteResult: results } } }));
+  page.route("**/api/address", route => route.fulfill({ json: { results } }));
 
 const pickAddress = async (page: Page, typed: string, option: RegExp) => {
   await page.getByPlaceholder(/Adresse eingeben/).fill(typed);

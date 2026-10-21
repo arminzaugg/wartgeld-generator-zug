@@ -34,20 +34,28 @@ npm run build      # typecheck + production build
 npm test           # Vitest with coverage
 ```
 
-## Supabase: `address-lookup` edge function
+## Address lookup service (`/api/address`)
 
-The function proxies the Swiss Post autocomplete API. It only answers requests from allowed origins,
-requires the anon JWT (`verify_jwt = true`), and is rate limited per client IP and globally
-(see `supabase/migrations/*_address_lookup_rate_limit.sql`).
+Address suggestions come from the Swiss Post APIM Address Query API through a small service
+(`edge/address-lookup/`) that runs on Bunny Edge Scripting. The Post client id/secret live only
+as Bunny secrets and in the git-ignored `.env.local` (`POST_APIM_*`); they never reach the browser.
+The service answers only the site's own origins (production, Netlify deploy previews, itself),
+caps requests per minute and never logs addresses.
 
-Deploy after changes (requires the Supabase CLI and access to the project):
+- **Locally:** `npm run dev` serves `/api/address` from the same code using `.env.local`.
+  Without the `POST_APIM_*` values the lookup answers 503 and the app shows an error.
+- **Live:** Netlify forwards `/api/address` to the Bunny service (`netlify.toml`) until the site
+  itself moves to Bunny.
+
+Deploy after changes (needs `BUNNY_API_KEY` and the `POST_APIM_*` values in `.env.local`):
 
 ```sh
-supabase link --project-ref kdyultegduvfggjovban
-supabase db push                                    # creates the rate-limit table and function
-supabase secrets set ALLOWED_ORIGINS="https://wartgeld-generator-zug.netlify.app,http://localhost:8080"
-# optional: RATE_LIMIT_PER_MINUTE (default 60), RATE_LIMIT_GLOBAL_PER_HOUR (default 3000)
-supabase functions deploy address-lookup
+npm run deploy:edge   # build, upload, set secrets/variables, publish, smoke test
 ```
 
-Deploy in this order: the function calls `check_rate_limit`, so the migration must exist first.
+One Bunny script serves production and all deploy previews, so a deploy changes the live
+site at once. The script refuses uncommitted changes and branches other than `main`
+(`npm run deploy:edge -- --from-branch` to check a PR's deploy preview before merging).
+Rollback: republish the previous release in the Bunny dashboard
+(Edge Scripting → wartgeld-address-lookup → Releases). Do not just remove the
+`netlify.toml` rule: the app calls `/api/address`, so every lookup would fail.

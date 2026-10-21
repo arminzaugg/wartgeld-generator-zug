@@ -1,5 +1,8 @@
 # Improvement plan: findings 1–5
 
+> **Historical.** The Supabase parts below were superseded on 2026-10-21: the address lookup now runs on
+> Bunny Edge Scripting against the Swiss Post APIM API, and Supabase is no longer used (see README).
+
 Branch: `claude/adoring-allen-imnhi9`, with one commit per step so each can be reviewed and reverted on its own.
 Steps are ordered so tooling is fixed first. Every later step can then be checked with `npm run lint && npm test && npm run build`.
 

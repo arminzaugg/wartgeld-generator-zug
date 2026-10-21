@@ -74,6 +74,12 @@ describe('formValidationService', () => {
       expect(errors).not.toHaveProperty('gemeindeBfs');
     });
 
+    it('rejects a border village that lies mostly outside canton Zug @FR-01.01', () => {
+      const errors = formValidationService.validateForm(
+        createFormValues({ address: 'Dorfstrasse 1, 8836 Bennau', plz: '8836', ort: 'Bennau', gemeindeBfs: '' }));
+      expect(errors).toMatchObject({ plz: 'Diese PLZ liegt nicht im Kanton Zug' });
+    });
+
     it('clears the municipality error once one is selected', () => {
       expect(formValidationService.validateField('gemeindeBfs', '')).toBe('Bitte wählen Sie die zuständige Gemeinde');
       expect(formValidationService.validateField('gemeindeBfs', '1704')).toBe('');
