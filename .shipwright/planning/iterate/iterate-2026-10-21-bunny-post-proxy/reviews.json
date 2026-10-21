@@ -239,15 +239,81 @@
     },
     "doubt": {
       "review_type": "doubt",
-      "status": "pending",
-      "findings_count": 0,
-      "findings": [],
+      "status": "completed",
+      "findings_count": 7,
+      "findings": [
+        {
+          "severity": "medium",
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "rollback = remove netlify.toml rule",
+          "suggestion": null,
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "medium",
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "edge changes reach production only through merge",
+          "suggestion": null,
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "medium",
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "Post city equals snapshot locality names",
+          "suggestion": null,
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "600/min cap sufficient; client retries/no debounce",
+          "suggestion": null,
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "appendix case",
+          "suggestion": null,
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "'Bahnhofstr 1, 6300' typing",
+          "suggestion": null,
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": null,
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "dev credentials via DNS rebinding",
+          "suggestion": null,
+          "source": "doubt-reviewer"
+        }
+      ],
       "provider": null,
-      "completed_at": null,
+      "completed_at": "2026-10-21T19:10:48.550628+00:00",
       "disposition": null,
-      "recorded_by": null,
+      "recorded_by": "doubt-reviewer",
       "parse_status": null,
-      "raw_excerpt": null
+      "raw_excerpt": null,
+      "verdict": "pass",
+      "reviewed_commit": "e03de262fc68ba1922e38d52e3caa8142443437b"
     },
     "external_code": {
       "review_type": "external_code",
