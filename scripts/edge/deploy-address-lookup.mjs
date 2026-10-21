@@ -2,10 +2,13 @@
 // developer machine). Reads credentials from .env.local; prints ids, hostnames
 // and status codes only — never a secret value.
 //
-//   npm run deploy:edge            build, upload, set secrets/variables, publish, smoke test
+//   npm run deploy:edge                    from a clean main checkout
+//   npm run deploy:edge -- --from-branch   from a clean feature branch (before its PR merges)
 //
-// Rollback: republish the previous release in the Bunny dashboard
-// (Edge Scripting → wartgeld-address-lookup → Releases), or revert netlify.toml.
+// One Bunny script serves production and every deploy preview: publishing changes
+// the live site immediately. The smoke test runs after publishing and only detects
+// problems. Rollback: republish the previous release in the Bunny dashboard
+// (Edge Scripting → wartgeld-address-lookup → Releases).
 import { execSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -86,6 +89,13 @@ const smokeTest = async hostname => {
   fail('smoke test: the service did not answer 200');
 };
 
+const git = args => execSync(`git ${args}`, { cwd: root }).toString().trim();
+if (git('status --porcelain --untracked-files=no')) fail('commit your changes first: the release must match a commit');
+const branch = git('rev-parse --abbrev-ref HEAD');
+if (branch !== 'main' && !process.argv.includes('--from-branch')) {
+  fail(`on branch ${branch}: this publishes to production; pass --from-branch to do it anyway`);
+}
+
 const env = readEnv();
 const call = bunny(env.BUNNY_API_KEY);
 
@@ -120,7 +130,7 @@ for (const [name, value] of Object.entries(VARIABLES)) {
 }
 console.log(`set ${SECRETS.length} secrets and ${Object.keys(VARIABLES).length} variables`);
 
-const commit = execSync('git rev-parse --short HEAD', { cwd: root }).toString().trim();
+const commit = git('rev-parse --short HEAD');
 await call('POST', `/compute/script/${state.scriptId}/publish`, { Note: `deploy ${commit}` });
 console.log(`published release for ${commit}`);
 

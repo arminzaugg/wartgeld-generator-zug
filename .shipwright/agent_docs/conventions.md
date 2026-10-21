@@ -24,3 +24,4 @@ TypeScript in strict mode (tsconfig.app.json) with React 18 function components 
 ## Learnings
 
 - (2026-10-21) iterate — Swiss Post town names equal the official locality names, but Post's canton field differs at the border (8836 Bennau = SZ): filter Zug addresses by the locality snapshot, not by Post's canton. [→ ADR iterate-2026-10-21-zug-municipality-data]
+- (2026-10-21) iterate — Swiss Post APIM `/autocomplete` lists parcel points as streets (`PickMup …`, `MP …`) even with DOMICILE filtering; Bunny returns script hostnames with `https://` and presents `no-store` as `no-cache`. [→ ADR iterate-2026-10-21-bunny-post-proxy]

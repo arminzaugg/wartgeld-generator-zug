@@ -134,15 +134,108 @@
     },
     "code": {
       "review_type": "code",
-      "status": "pending",
-      "findings_count": 0,
-      "findings": [],
+      "status": "completed",
+      "findings_count": 10,
+      "findings": [
+        {
+          "severity": "medium",
+          "category": "security",
+          "file": "edge/address-lookup/handler.ts",
+          "line": 99,
+          "finding": "request.text() buffered an unbounded chunked body before the 1 KB check",
+          "suggestion": "fixed: streamed read with byte counter, test with ReadableStream; live 413 up to 5 KB, Bunny gateway 502 above ~50 KB",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "medium",
+          "category": "correctness",
+          "file": "edge/address-lookup/__tests__/postClient.test.ts",
+          "line": 71,
+          "finding": "abort test aborted during the token wait, not the autocomplete request",
+          "suggestion": "fixed: waits for the autocomplete fetch before aborting",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "correctness",
+          "file": "edge/address-lookup/handler.ts",
+          "line": 58,
+          "finding": "malformed Post entries / non-JSON token answer logged as network and fail the lookup",
+          "suggestion": "fixed: entries skipped, token parse failure = PostError token, tests added",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "performance",
+          "file": "edge/address-lookup/postClient.ts",
+          "line": 138,
+          "finding": "401/non-OK bodies not released",
+          "suggestion": "fixed: body cancelled",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "correctness",
+          "file": "edge/address-lookup/postClient.ts",
+          "line": 113,
+          "finding": "failed early refresh fails lookups although token still valid",
+          "suggestion": "fixed: falls back to unexpired token, test added",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "security",
+          "file": "scripts/edge/devAddressLookup.ts",
+          "line": 28,
+          "finding": "dev server on all interfaces lets the network spend Post credentials",
+          "suggestion": "fixed: loopback clients only",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "correctness",
+          "file": "scripts/edge/devAddressLookup.ts",
+          "line": 54,
+          "finding": "failed handler load kept forever",
+          "suggestion": "fixed: reset on failure",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "readability",
+          "file": "src/components/StreetLookup/SuggestionsList.tsx",
+          "line": 41,
+          "finding": "index in list key",
+          "suggestion": "fixed: removed",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "architecture",
+          "file": "src/types/address.ts",
+          "line": 21,
+          "finding": "response shape defined twice",
+          "suggestion": "fixed: one shared AddressSuggestion type",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "readability",
+          "file": "src/types/address.ts",
+          "line": 1,
+          "finding": "dead types",
+          "suggestion": "fixed: removed",
+          "source": "code-reviewer"
+        }
+      ],
       "provider": null,
-      "completed_at": null,
+      "completed_at": "2026-10-21T19:05:36.731822+00:00",
       "disposition": null,
-      "recorded_by": null,
+      "recorded_by": "code-reviewer",
       "parse_status": null,
-      "raw_excerpt": null
+      "raw_excerpt": null,
+      "verdict": "pass",
+      "reviewed_commit": "4c1cb5826c46217e3d2be40f87f0e56109182735"
     },
     "doubt": {
       "review_type": "doubt",
@@ -158,15 +251,92 @@
     },
     "external_code": {
       "review_type": "external_code",
-      "status": "pending",
-      "findings_count": 0,
-      "findings": [],
+      "status": "completed",
+      "findings_count": 8,
+      "findings": [
+        {
+          "severity": "high",
+          "category": "bug",
+          "file": "scripts/edge/build-address-lookup.mjs:16` (with `edge/address-lookup/handler.ts:2-3`)",
+          "line": null,
+          "finding": "The esbuild bundle is built with `tsconfig: 'tsconfig.json'`, but the new `tsconfig.edge.json` (which defines the `@/` path alias) is not used. The handler imports `src/lib/municipality.ts`, which imports `@/data/types` (visible in the unchanged import at the top of `municipality.ts`). Typical Vite root `tsconfig.json` files only carry project references, not `paths`, so esbuild will fail to resolve `@/data/types` when bundling for Bunny — and even if the root tsconfig happens to work today, the alias is only guaranteed by the edge tsconfig.",
+          "suggestion": "Point esbuild at `tsconfig: 'tsconfig.edge.json'` (or add the `@/` paths mapping to the build call), so the bundle resolves the app-internal alias deterministically.",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "spec",
+          "file": "edge/address-lookup/request.ts:14-31",
+          "line": null,
+          "finding": "AC5 requires \"invalid JSON / fields → 400\", but `parseLookupRequest` accepts arbitrary unknown extra fields (e.g. `{\"searchTerm\":\"Dorf\",\"evil\":\"…\"}`). The old Supabase version also validated a `type` field; the new one validates nothing beyond the two known keys, so a body with unexpected fields is passed through as valid. This is a mild loosening versus the spec's \"anything unexpected is rejected\" contract comment right above it.",
+          "suggestion": "Reject bodies containing keys other than `searchTerm` and `zipCode` (a simple `Object.keys` check).",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "edge-case",
+          "file": "edge/address-lookup/handler.ts:74-77",
+          "line": null,
+          "finding": "The 1 KB limit is enforced by `Content-Length` or by buffering the entire body via `await request.text()` first. A chunked request with no Content-Length (trivial to send) is fully read into memory before the 413 check, so a hostile client can make the instance buffer an arbitrarily large body. Bunny may cap this upstream, but the code itself does not.",
+          "suggestion": "Stream the body (read chunks with a running byte count and abort at `MAX_BODY_BYTES`), or rely on an explicit platform limit and document it.",
+          "source": "external-review"
+        },
+        {
+          "severity": "low",
+          "category": "bug",
+          "file": "edge/address-lookup/main.ts:3,9",
+          "line": null,
+          "finding": "import process from 'node:process'` and `process.env[name]` assume the Bunny Edge Scripting runtime exposes Node-style `process.env` for script variables/secrets. This is unverifiable from the diff (the SDK is loaded with `deno` conditions, suggesting a Deno-like runtime). If Bunny exposes variables differently (e.g. via a SDK API), the service would answer 503 for every lookup in production. The smoke test in the deploy script would catch it, but only after publish.",
+          "suggestion": "Verify during the first deploy that `process.env` actually carries the Bunny variables/secrets (the smoke test asserts `results.length > 0`, which requires a real Post answer, so this is covered — just be aware the publish happens before the check).",
+          "source": "external-review"
+        },
+        {
+          "severity": "low",
+          "category": "spec",
+          "file": "src/components/StreetLookup/SuggestionsList.tsx",
+          "line": 41,
+          "finding": "The spec/design notes say React list keys come from `street|houseNumber|postcode|town`. The implementation appends `|${index}` and reads the house number via `houseNumbers?.[0]`, making the key effectively positional. Two different suggestion objects at the same index across refetches share a key, and reordering remounts instead of moves. The handler already dedupes, so the index suffix is unnecessary.",
+          "suggestion": "Drop the `|${index}` suffix (or keep it only as a fallback if the composite key can genuinely collide).",
+          "source": "external-review"
+        },
+        {
+          "severity": "low",
+          "category": "test",
+          "file": "edge/address-lookup/__tests__/handler.test.ts:69-71` (and setup)",
+          "line": null,
+          "finding": "The \"does not answer in time\" test runs with the default vitest real timers and a 50 ms `lookupTimeoutMs`, plus `now: () => 0` makes the logged duration always 0 — the deadline path is exercised but the \"8 s overall budget shared with a 3 s token budget\" interaction (token slow, then lookup slow) is never tested at the handler level. The postClient tests cover each deadline in isolation, so this is a gap rather than a false positive.",
+          "suggestion": "Optionally add a test where the token resolves after 2 s (fake timers) and the autocomplete hangs, asserting one 502 within the total budget.  Verified as sound (no findings): origin policy incl. the exact preview regex and negative cases (suffix/prefix/port/http/other-site all tested); token single-flight, 30 s refresh margin, exactly-one 401 retry; per-instance fixed-window limiter; no body/Post-text in logs (test asserts absence); `Cache-Control: no-store` on every answer incl. errors; dev plugin off under `E2E=1` and reading only `POST_APIM_`; dist secret scan wired into `npm run build`; Supabase fully removed (deps, code, config, docs); `proposeMunicipality` border-village change matches AC9 and the new tests; the changed Bennau behavior is intentional per the updated spec and no stale caller remains.",
+          "source": "external-review"
+        },
+        {
+          "severity": "high",
+          "category": "spec",
+          "file": "package.json:39 — added `@bunny.net/edgescript-sdk",
+          "line": null,
+          "finding": "The dependency changes have no corresponding lockfile update in the supplied diff. A checkout using `npm ci` will fail because the new SDK is absent from the lockfile, and the specification’s requirement to pin it there is unmet.",
+          "suggestion": "Regenerate and commit the lockfile, including the Supabase removal. Verify installation and required checks from a clean checkout.",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "security",
+          "file": "edge/address-lookup/handler.ts",
+          "line": 98,
+          "finding": "request.text()` buffers the entire body before enforcing the 1 KB limit when `Content-Length` is absent or understated. A large chunked request from an allowed origin can consume substantial memory before receiving 413; the rate limiter runs only afterward.",
+          "suggestion": "Read the request stream with a byte counter and cancel it immediately when it exceeds 1,024 bytes. Add a test for an oversized streamed body without `Content-Length`.  Ship-with-fixes. The service follows most of the specified design, but the dependency lockfile and effective request-size enforcement need correction before shipping.  SHIPWRIGHT_VERDICT: revise",
+          "source": "external-review"
+        }
+      ],
       "provider": null,
-      "completed_at": null,
+      "completed_at": "2026-10-21T19:05:36.789959+00:00",
       "disposition": null,
-      "recorded_by": null,
-      "parse_status": null,
-      "raw_excerpt": null
+      "recorded_by": "external-review-json",
+      "parse_status": "structured",
+      "raw_excerpt": "[glm] ## Findings\n\n- Category: bug\n  Severity: high\n  File: `scripts/edge/build-address-lookup.mjs:16` (with `edge/address-lookup/handler.ts:2-3`)\n  Finding: The esbuild bundle is built with `tsconfig: 'tsconfig.json'`, but the new `tsconfig.edge.json` (which defines the `@/*` path alias) is not used. The handler imports `src/lib/municipality.ts`, which imports `@/data/types` (visible in the unchanged import at the top of `municipality.ts`). Typical Vite root `tsconfig.json` files only carry project references, not `paths`, so esbuild will fail to resolve `@/data/types` when bundling for Bunny — and even if the root tsconfig happens to work today, the alias is only guaranteed by the edge tsconfig.\n  Suggestion: Point esbuild at `tsconfig: 'tsconfig.edge.json'` (or add the `@/*` paths mapping to the build call), so the bundle resolves the app-internal alias deterministically.\n\n- Category: spec\n  Severity: medium\n  File: `edge/address-lookup/request.ts:14-31`\n  Finding: AC5 requires \"invalid JSON / fields → 400\", but `parseLookupRequest` accepts arbitrary unknown extra fields (e.g. `{\"searchTerm\":\"Dorf\",\"evil\":\"…\"}`). The old Supabase version also validated a `type` field; the new one validates nothing beyond the two known keys, so a body with unexpected fields is passed through as valid. This is a mild loosening versus the spec's \"anything unexpected is rejected\" contract comment right above it.\n  Suggestion: Reject bodies containing keys other than `searchTerm` and `zipCode` (a simple `Object.keys` check).\n\n- Category: edge-case\n  Severity: medium\n  File: `edge/address-lookup/handler.ts:74-77`\n  Finding: The 1 KB limit is enforced by `Content-Length` or by buffering the entire body via `await request.text()` first. A chunked request with no Content-Length (trivial to send) is fully read into memory before the 413 check, so a hostile client can make the instance buffer an arbitrarily large body. Bunny may cap this upstream, but the code itself does not.\n  Sugg […truncated]\n\n[openai] - Category: spec\n- Severity: high\n- File: package.json:39 — added `@bunny.net/edgescript-sdk`\n- Finding: The dependency changes have no corresponding lockfile update in the supplied diff. A checkout using `npm ci` will fail because the new SDK is absent from the lockfile, and the specification’s requirement to pin it there is unmet.\n- Suggestion: Regenerate and commit the lockfile, including the Supabase removal. Verify installation and required checks from a clean checkout.\n\n- Category: security\n- Severity: medium\n- File: edge/address-lookup/handler.ts:98\n- Finding: `request.text()` buffers the entire body before enforcing the 1 KB limit when `Content-Length` is absent or understated. A large chunked request from an allowed origin can consume substantial memory before receiving 413; the rate limiter runs only afterward.\n- Suggestion: Read the request stream with a byte counter and cancel it immediately when it exceeds 1,024 bytes. Add a test for an oversized streamed body without `Content-Length`.\n\nShip-with-fixes. The service follows most of the specified design, but the dependency lockfile and effective request-size enforcement need correction before shipping.\n\nSHIPWRIGHT_VERDICT: revise",
+      "verdicts": {
+        "openai": "revise",
+        "glm": "revise"
+      }
     },
     "spec": {
       "review_type": "spec",

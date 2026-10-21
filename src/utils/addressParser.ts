@@ -1,6 +1,7 @@
 export const parseAddressInput = (input: string) => {
   // Match patterns for different address components
   const zipCityPattern = /(\d{4})\s+([^,]+)/;
+  const zipOnlyPattern = /,\s*(\d{4})\s*$/;
   const houseNumberPattern = /(\d+[a-zA-Z]?)\s*$/;
   
   let streetName = input;
@@ -11,10 +12,15 @@ export const parseAddressInput = (input: string) => {
 
   // Extract ZIP and city if present
   const zipCityMatch = input.match(zipCityPattern);
+  // A postcode typed after a comma, before the town: "Bahnhofstr 1, 6300"
+  const zipOnlyMatch = input.match(zipOnlyPattern);
   if (zipCityMatch) {
     zipCode = zipCityMatch[1];
     city = zipCityMatch[2].trim();
     streetName = input.replace(zipCityPattern, '').trim();
+  } else if (zipOnlyMatch) {
+    zipCode = zipOnlyMatch[1];
+    streetName = input.replace(zipOnlyPattern, '').trim();
   }
 
   // Drop commas first so "Strasse 4, 6300 Zug" still yields house number 4

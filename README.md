@@ -53,6 +53,9 @@ Deploy after changes (needs `BUNNY_API_KEY` and the `POST_APIM_*` values in `.en
 npm run deploy:edge   # build, upload, set secrets/variables, publish, smoke test
 ```
 
-Order for a change: deploy the service, check the PR deploy preview, then merge.
+One Bunny script serves production and all deploy previews, so a deploy changes the live
+site at once. The script refuses uncommitted changes and branches other than `main`
+(`npm run deploy:edge -- --from-branch` to check a PR's deploy preview before merging).
 Rollback: republish the previous release in the Bunny dashboard
-(Edge Scripting → wartgeld-address-lookup → Releases), or revert `netlify.toml`.
+(Edge Scripting → wartgeld-address-lookup → Releases). Do not just remove the
+`netlify.toml` rule: the app calls `/api/address`, so every lookup would fail.

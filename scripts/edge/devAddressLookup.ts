@@ -16,6 +16,9 @@ const loadHandler = async (server: ViteDevServer, env: Record<string, string>): 
   });
 };
 
+/** Rejects DNS-rebinding pages, which reach loopback under a foreign Host name. */
+const LOCAL_HOST = /^(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/;
+
 const isLoopback = (address: string | undefined) =>
   address === "127.0.0.1" || address === "::1" || address === "::ffff:127.0.0.1";
 
@@ -55,7 +58,7 @@ export const devAddressLookup = (mode: string): Plugin => ({
     let handler: Promise<Handler> | undefined;
     server.middlewares.use("/api/address", (req, res, next) => {
       // The dev server listens on all interfaces; only this machine may spend the Post credentials.
-      if (!isLoopback(req.socket.remoteAddress)) {
+      if (!isLoopback(req.socket.remoteAddress) || !LOCAL_HOST.test(req.headers.host ?? "")) {
         res.statusCode = 403;
         res.end();
         return;

@@ -1,0 +1,86 @@
+{
+ "section": "iterate-2026-10-21-bunny-post-proxy",
+ "verdict": "pass",
+ "review": [
+  {
+   "severity": "medium",
+   "category": "security",
+   "file": "edge/address-lookup/handler.ts",
+   "line": 99,
+   "finding": "request.text() buffered an unbounded chunked body before the 1 KB check",
+   "suggestion": "fixed: streamed read with byte counter, test with ReadableStream; live 413 up to 5 KB, Bunny gateway 502 above ~50 KB"
+  },
+  {
+   "severity": "medium",
+   "category": "correctness",
+   "file": "edge/address-lookup/__tests__/postClient.test.ts",
+   "line": 71,
+   "finding": "abort test aborted during the token wait, not the autocomplete request",
+   "suggestion": "fixed: waits for the autocomplete fetch before aborting"
+  },
+  {
+   "severity": "low",
+   "category": "correctness",
+   "file": "edge/address-lookup/handler.ts",
+   "line": 58,
+   "finding": "malformed Post entries / non-JSON token answer logged as network and fail the lookup",
+   "suggestion": "fixed: entries skipped, token parse failure = PostError token, tests added"
+  },
+  {
+   "severity": "low",
+   "category": "performance",
+   "file": "edge/address-lookup/postClient.ts",
+   "line": 138,
+   "finding": "401/non-OK bodies not released",
+   "suggestion": "fixed: body cancelled"
+  },
+  {
+   "severity": "low",
+   "category": "correctness",
+   "file": "edge/address-lookup/postClient.ts",
+   "line": 113,
+   "finding": "failed early refresh fails lookups although token still valid",
+   "suggestion": "fixed: falls back to unexpired token, test added"
+  },
+  {
+   "severity": "low",
+   "category": "security",
+   "file": "scripts/edge/devAddressLookup.ts",
+   "line": 28,
+   "finding": "dev server on all interfaces lets the network spend Post credentials",
+   "suggestion": "fixed: loopback clients only"
+  },
+  {
+   "severity": "low",
+   "category": "correctness",
+   "file": "scripts/edge/devAddressLookup.ts",
+   "line": 54,
+   "finding": "failed handler load kept forever",
+   "suggestion": "fixed: reset on failure"
+  },
+  {
+   "severity": "low",
+   "category": "readability",
+   "file": "src/components/StreetLookup/SuggestionsList.tsx",
+   "line": 41,
+   "finding": "index in list key",
+   "suggestion": "fixed: removed"
+  },
+  {
+   "severity": "low",
+   "category": "architecture",
+   "file": "src/types/address.ts",
+   "line": 21,
+   "finding": "response shape defined twice",
+   "suggestion": "fixed: one shared AddressSuggestion type"
+  },
+  {
+   "severity": "low",
+   "category": "readability",
+   "file": "src/types/address.ts",
+   "line": 1,
+   "finding": "dead types",
+   "suggestion": "fixed: removed"
+  }
+ ]
+}

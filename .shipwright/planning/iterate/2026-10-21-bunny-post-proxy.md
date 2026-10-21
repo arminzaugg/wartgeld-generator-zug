@@ -137,8 +137,12 @@ working and exercises the new path in real use before step 3.
   secrets/variables, upload code, publish, smoke test (allowed Origin → 200,
   foreign → 403). Prints ids/hostnames/status only.
 - `netlify.toml` holds only the proxy rule, commented as temporary until
-  step 3. Order: deploy Bunny → check the PR deploy preview → merge.
-  Rollback: republish the previous Bunny release, or revert `netlify.toml`.
+  step 3. Order: deploy Bunny (`--from-branch`) → check the PR deploy preview
+  → merge. One script serves production and previews, so a deploy is live at
+  once; the deploy script refuses dirty trees and non-main branches without
+  `--from-branch`. Rollback: republish the previous Bunny release; publishing
+  the previous Netlify deploy works only while Supabase still runs. Removing
+  the `netlify.toml` rule alone would break every lookup.
 
 ## Affected Boundaries
 
