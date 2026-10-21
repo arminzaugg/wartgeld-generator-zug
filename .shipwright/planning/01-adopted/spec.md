@@ -94,7 +94,7 @@ _Source: enrichment._
 _Source: enrichment._
 
 - Given the user opens the information page, then the purpose, usage steps, privacy statement, disclaimer and contact address are shown in German, with a way back to the form.
-- (E) Given the user opens the information page, then the privacy statement says that the text typed into the address field (street, house number, postcode, town) goes via Netlify and bunny.net, which see the IP address, to Swiss Post, and that nothing else is sent (iterate-2026-10-21-bunny-post-proxy).
+- (E) Given the user opens the information page, when she reads the privacy statement, then it says that the text typed into the address field (street, house number, postcode, town) goes via Netlify and bunny.net, which see the IP address, to Swiss Post, and that nothing else is sent (iterate-2026-10-21-bunny-post-proxy).
 
 ### FR-01.09 — Light and dark appearance
 
@@ -106,7 +106,8 @@ _Source: enrichment._
 
 _Source: enrichment._
 
-- Given a request from an origin not on the allow-list, then it is refused; given more than the per-instance cap of lookups in one minute, then further lookups are refused until the window passes.
+- (E) Given a request from an origin not on the allow-list, when it reaches the service, then it is refused (iterate-2026-10-21-bunny-post-proxy).
+- (E) Given the per-instance cap of lookups in one minute is used up, when another lookup arrives, then it is refused until the minute is over (iterate-2026-10-21-bunny-post-proxy).
 - (E) Given a request with a missing origin, a look-alike of a deploy-preview origin (other site, extra label, http, other port), another method, a body over 1 KB or invalid fields, when it reaches the service, then it is refused with 403, 405, 413 or 400 and Swiss Post is not called (iterate-2026-10-21-bunny-post-proxy).
 - (E) Given any lookup, when the service logs it, then the log holds only counts, status and duration, never the typed text or Swiss Post's answer, and the response is marked not cacheable (iterate-2026-10-21-bunny-post-proxy).
 - (E) Given the built site, when its files are checked, then they contain no Swiss Post credential, no `POST_APIM` name and no Supabase address (iterate-2026-10-21-bunny-post-proxy).
