@@ -4,8 +4,15 @@ import { useToast } from "@/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import type { StreetSummary } from "@/types/address";
 import { parseAddressInput } from "@/utils/addressParser";
+import { normalizeTown } from "@/lib/municipality";
 import { StreetInput } from "./StreetLookup/StreetInput";
 import { SuggestionsList } from "./StreetLookup/SuggestionsList";
+
+/** The typed text still names the picked street, postcode and town (house number may change). Street names share the place-name normalisation. */
+const keepsSelectedStreet = (street: StreetSummary, typed: ReturnType<typeof parseAddressInput>) =>
+  typed.zipCode === street.zipCode
+  && normalizeTown(typed.city) === normalizeTown(street.city)
+  && normalizeTown(typed.streetName) === normalizeTown(street.streetName);
 
 interface StreetLookupProps {
   value: string;
@@ -70,24 +77,22 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   }, [inputRef]);
 
   const handleInputChange = (value: string) => {
-    const { streetName, houseNumber, addition } = parseAddressInput(value);
+    const parsed = parseAddressInput(value);
+    const { streetName, houseNumber, addition } = parsed;
     setSearchTerm(value);
-    
-    if (!selectedStreet) {
+
+    if (!selectedStreet || !keepsSelectedStreet(selectedStreet, parsed)) {
+      // Free text or a different address typed over the pick: postcode, town
+      // and municipality must not survive from the picked address.
+      setSelectedStreet(null);
       onChange(value, undefined, undefined);
       setShowSuggestions(streetName.length >= 2);
     } else {
+      // Same street, postcode and town: any house number edit must reach the invoice.
       const fullHouseNumber = houseNumber + (addition || '');
-      const matchingHouseNumber = selectedStreet.houseNumbers?.find(hn => {
-        const completeNumber = hn.number + (hn.addition || '');
-        return completeNumber.toLowerCase() === fullHouseNumber.toLowerCase();
-      });
-
-      if (matchingHouseNumber) {
-        const fullAddress = `${selectedStreet.streetName} ${fullHouseNumber}, ${selectedStreet.zipCode} ${selectedStreet.city}`;
-        onChange(fullAddress, selectedStreet.zipCode, selectedStreet.city);
-        setShowSuggestions(false);
-      }
+      const street = fullHouseNumber ? `${selectedStreet.streetName} ${fullHouseNumber}` : selectedStreet.streetName;
+      onChange(`${street}, ${selectedStreet.zipCode} ${selectedStreet.city}`, selectedStreet.zipCode, selectedStreet.city);
+      setShowSuggestions(false);
     }
   };
 
@@ -96,12 +101,13 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
     const { houseNumber, addition } = parseAddressInput(searchTerm);
     const fullHouseNumber = houseNumber + (addition || '');
     
+    // A suggestion for one building carries its own number; it wins over the typed one.
     let fullAddress = suggestion.streetName;
-    if (fullHouseNumber) {
+    if (suggestion.houseNumbers && suggestion.houseNumbers.length === 1) {
+      const suggestedHouseNumber = suggestion.houseNumbers[0];
+      fullAddress += ` ${suggestedHouseNumber.number}${suggestedHouseNumber.addition || ''}`;
+    } else if (fullHouseNumber) {
       fullAddress += ` ${fullHouseNumber}`;
-    } else if (suggestion.houseNumbers && suggestion.houseNumbers.length === 1) {
-      const defaultHouseNumber = suggestion.houseNumbers[0];
-      fullAddress += ` ${defaultHouseNumber.number}${defaultHouseNumber.addition || ''}`;
     }
     fullAddress += `, ${suggestion.zipCode} ${suggestion.city}`;
     

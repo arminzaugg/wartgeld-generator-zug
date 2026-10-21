@@ -1,0 +1,55 @@
+{
+ "section": "iterate-2026-10-21-zug-municipality-data",
+ "verdict": "PASS",
+ "review": [
+  {
+   "severity": "low",
+   "category": "correctness",
+   "file": "src/features/form/components/FormContainer.tsx",
+   "finding": "Stale plz/gemeindeBfs errors survive an address change",
+   "suggestion": "fixed: useEffect on values.plz/ort drops both errors; FormContainer test added"
+  },
+  {
+   "severity": "low",
+   "category": "test",
+   "file": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx",
+   "finding": "Keep-branch test did not prove onChange re-reports postcode/town",
+   "suggestion": "fixed: fixture has house number 4, test asserts onChange(full, '6319', 'Allenwinden'); exposed parser bug (house number not parsed before ', zip city') which is fixed in addressParser.ts"
+  },
+  {
+   "severity": "low",
+   "category": "correctness",
+   "file": "src/components/StreetLookup.tsx",
+   "finding": "startsWith keeps a longer different street",
+   "suggestion": "fixed: equality compare + test for 'Allenwindenstrassenweg'"
+  },
+  {
+   "severity": "low",
+   "category": "readability",
+   "file": "src/components/StreetLookup.tsx",
+   "finding": "normalizeTown used for street names; nested ternary",
+   "suggestion": "fixed: doc note on shared normalisation; ternary split in addressChange.ts"
+  },
+  {
+   "severity": "low",
+   "category": "architecture",
+   "file": "src/features/form/components/DateAndMunicipalityFields.tsx",
+   "finding": "template-string classes instead of cn; no aria-invalid",
+   "suggestion": "fixed: cn + aria-invalid"
+  },
+  {
+   "severity": "low",
+   "category": "architecture",
+   "file": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx",
+   "finding": "wrong FR tag FR-01.03",
+   "suggestion": "fixed: tagged FR-01.01"
+  },
+  {
+   "severity": "low",
+   "category": "architecture",
+   "file": "package.json",
+   "finding": "Playwright suite not run in CI",
+   "suggestion": "deferred: CI workflow change needs a supply-chain ack; filed as triage follow-up"
+  }
+ ]
+}

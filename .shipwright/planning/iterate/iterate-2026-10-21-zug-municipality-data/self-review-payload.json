@@ -1,0 +1,10 @@
+{"items":[
+ {"name":"Spec Compliance","verdict":"pass","note":"AC1-AC13 implemented; each has a unit/RTL or Playwright test; AC8 recorded in spec.md, derived-catalogue.json and triage."},
+ {"name":"Error Handling","verdict":"pass","note":"Unknown postcode blocked by validation; unknown BFS throws UnknownMunicipalityError with a German toast; select disabled until an address is picked."},
+ {"name":"Security Basics","verdict":"pass","note":"Invoice generation no longer contacts any server; generated data written via JSON.stringify; no secrets touched; patient data stays in the browser."},
+ {"name":"Test Quality","verdict":"pass","note":"Behaviour-named tests tagged @FR-01.01/@FR-01.03/@FR-01.05; boundaries mocked only at Supabase/fetch; E2E stubs only the address lookup and asserts no off-origin request."},
+ {"name":"Performance Basics","verdict":"pass","note":"Snapshot is 29 localities (~4 KB); proposal is a linear scan per render; build size unchanged within noise."},
+ {"name":"Naming & Structure","verdict":"pass","note":"All new files < 100 LOC; data in src/data, logic in src/lib/municipality.ts, state transition in src/features/form/addressChange.ts."},
+ {"name":"Affected Boundaries","verdict":"pass","note":"Generator->generated module->proposeMunicipality exercised on the real CSV; Swiss Post town spellings probed live for 6314/6319/6343/8836/6340/6315 and match the official names."},
+ {"name":"Test Hygiene Probe","verdict":"pass","note":"scan_test_hygiene.py --diff: no findings."}
+]}

@@ -5,6 +5,8 @@ export interface FormValues {
   plz: string;
   ort: string;
   geburtsdatum: string;
+  /** BFS number of the municipality the invoice is addressed to; '' until chosen. */
+  gemeindeBfs: string;
   betreuungGeburt: boolean;
   betreuungWochenbett: boolean;
 }
@@ -16,6 +18,7 @@ export const emptyFormValues: FormValues = {
   plz: "",
   ort: "",
   geburtsdatum: "",
+  gemeindeBfs: "",
   betreuungGeburt: false,
   betreuungWochenbett: false,
 };

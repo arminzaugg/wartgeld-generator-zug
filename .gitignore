@@ -81,3 +81,7 @@ coverage
 # Triage Inbox (shipwright)
 .shipwright/triage.jsonl.lock
 .shipwright/triage.jsonl.bak
+
+# Playwright
+/test-results/
+/playwright-report/

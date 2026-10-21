@@ -3,84 +3,86 @@
   "generated_by": "shipwright-adopt",
   "split_name": "01-adopted",
   "total": 12,
-  "confirmed": 0,
-  "unconfirmed": 12,
+  "confirmed": 12,
+  "unconfirmed": 0,
   "by_basis": {
-    "assumed": 2,
-    "code": 10
+    "interview": 12
   },
   "requirements": [
     {
       "fr_id": "FR-01.01",
       "name": "Invoice entry form",
-      "basis": "code",
-      "confirmed": false
+      "basis": "interview",
+      "confirmed": true
     },
     {
       "fr_id": "FR-01.02",
       "name": "Address suggestions for the Canton of Zug",
-      "basis": "code",
-      "confirmed": false
+      "basis": "interview",
+      "confirmed": true
     },
     {
       "fr_id": "FR-01.03",
       "name": "Invoice PDF generation",
-      "basis": "code",
-      "confirmed": false
+      "basis": "interview",
+      "confirmed": true
     },
     {
       "fr_id": "FR-01.04",
       "name": "Print and save the invoice",
-      "basis": "code",
-      "confirmed": false
+      "basis": "interview",
+      "confirmed": true
     },
     {
       "fr_id": "FR-01.05",
       "name": "Reset the form",
-      "basis": "code",
-      "confirmed": false
+      "basis": "interview",
+      "confirmed": true
     },
     {
       "fr_id": "FR-01.06",
       "name": "Invoice issuer details",
-      "basis": "code",
-      "confirmed": false
+      "basis": "interview",
+      "confirmed": true
     },
     {
       "fr_id": "FR-01.07",
       "name": "Handwritten signature",
-      "basis": "code",
-      "confirmed": false
+      "basis": "interview",
+      "confirmed": true
     },
     {
       "fr_id": "FR-01.08",
       "name": "About, privacy and contact information",
-      "basis": "code",
-      "confirmed": false
+      "basis": "interview",
+      "confirmed": true
     },
     {
       "fr_id": "FR-01.09",
       "name": "Light and dark appearance",
-      "basis": "code",
-      "confirmed": false
+      "basis": "interview",
+      "confirmed": true
     },
     {
       "fr_id": "FR-01.10",
       "name": "Protected address lookup service",
-      "basis": "code",
-      "confirmed": false
+      "basis": "interview",
+      "confirmed": true
     },
     {
       "fr_id": "FR-01.11",
       "name": "CI pipeline (github-actions) must pass on pull requests.",
-      "basis": "assumed",
-      "confirmed": false
+      "basis": "interview",
+      "confirmed": true
     },
     {
       "fr_id": "FR-01.12",
       "name": "Code passes eslint-flat without warnings.",
-      "basis": "assumed",
-      "confirmed": false
+      "basis": "interview",
+      "confirmed": true
     }
-  ]
+  ],
+  "confirmed_on": "2026-10-21",
+  "confirmed_by": "product owner",
+  "confirmed_in_run": "iterate-2026-10-21-zug-municipality-data"
 }

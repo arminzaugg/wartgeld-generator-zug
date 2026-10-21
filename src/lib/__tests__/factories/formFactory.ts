@@ -7,6 +7,7 @@ export const createFormValues = (overrides?: Partial<FormValues>): FormValues =>
   plz: '6300',
   ort: 'Zug',
   geburtsdatum: '2024-01-01',
+  gemeindeBfs: '1711',
   betreuungGeburt: false,
   betreuungWochenbett: false,
   ...overrides,

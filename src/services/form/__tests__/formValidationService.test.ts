@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { formValidationService } from '../formValidationService';
 import { createFormValues } from '@/lib/__tests__/factories/formFactory';
 
+// @covers FR-01.01
 describe('formValidationService', () => {
   describe('validateField', () => {
     it('should validate vorname field', () => {
@@ -57,6 +58,25 @@ describe('formValidationService', () => {
         .toHaveProperty('plz');
       expect(formValidationService.validateForm(createFormValues({ plz: '6300' })))
         .not.toHaveProperty('plz');
+    });
+
+    it('requires a municipality once a Zug address is picked', () => {
+      expect(formValidationService.validateForm(createFormValues({ gemeindeBfs: '' })))
+        .toMatchObject({ gemeindeBfs: 'Bitte wählen Sie die zuständige Gemeinde' });
+      expect(formValidationService.validateForm(createFormValues({ gemeindeBfs: '261' })))
+        .toHaveProperty('gemeindeBfs');
+    });
+
+    it('rejects a postcode outside canton Zug', () => {
+      const errors = formValidationService.validateForm(
+        createFormValues({ address: 'Bahnhofstrasse 1, 8001 Zürich', plz: '8001', ort: 'Zürich', gemeindeBfs: '' }));
+      expect(errors).toMatchObject({ plz: 'Diese PLZ liegt nicht im Kanton Zug' });
+      expect(errors).not.toHaveProperty('gemeindeBfs');
+    });
+
+    it('clears the municipality error once one is selected', () => {
+      expect(formValidationService.validateField('gemeindeBfs', '')).toBe('Bitte wählen Sie die zuständige Gemeinde');
+      expect(formValidationService.validateField('gemeindeBfs', '1704')).toBe('');
     });
 
     it('reports only the missing address when it is empty', () => {

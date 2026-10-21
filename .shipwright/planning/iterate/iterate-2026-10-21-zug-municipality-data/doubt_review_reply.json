@@ -1,0 +1,31 @@
+{
+ "stage": "doubt",
+ "verdict": "pass",
+ "doubts": [
+  {
+   "severity": "medium",
+   "claim_under_doubt": "Same-street house-number edit never reached the form (4 -> 6 left 4 on the invoice)",
+   "resolution": "fixed: keep branch always reports the rebuilt address with postcode/town; StreetLookup test 'passes a changed house number on to the form'"
+  },
+  {
+   "severity": "medium",
+   "claim_under_doubt": "Parser comma fix let a typed number override the clicked suggestion's number",
+   "resolution": "fixed: a single-building suggestion's own number wins; test 'uses the house number of the clicked suggestion over a different typed one'"
+  },
+  {
+   "severity": "low",
+   "claim_under_doubt": "Print/save could use a PDF generated before the municipality was corrected",
+   "resolution": "fixed: Index clears pdfData on municipality or address change; e2e asserts preview disappears after re-selecting"
+  },
+  {
+   "severity": "low",
+   "claim_under_doubt": "Up to <5 % of a pre-selected locality may belong to another municipality without a hint (e.g. 6315 Alosen)",
+   "resolution": "accepted: spec's 80 %/5 % rule chosen by the product owner (pre-select + let her correct); recorded in ADR"
+  },
+  {
+   "severity": "low",
+   "claim_under_doubt": "Out-of-canton localities (Bennau, Sattel, Rothenthurm, Mühlau) are accepted with only a hint once step 2 changes suggestion filtering",
+   "resolution": "deferred to step 2: triage card filed; today unreachable because suggestions are filtered to Zug postcodes"
+  }
+ ]
+}

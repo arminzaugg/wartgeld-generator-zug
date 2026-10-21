@@ -4,5 +4,8 @@
   },
   "status": "initial",
   "last_full_generation": "2026-10-20T20:46:12.840173+00:00",
-  "seeded_by_adopt": true
+  "seeded_by_adopt": true,
+  "phases_covered": [
+    "iterate"
+  ]
 }

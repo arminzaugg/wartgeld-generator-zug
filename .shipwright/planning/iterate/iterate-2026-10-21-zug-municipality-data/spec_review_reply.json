@@ -1,0 +1,6 @@
+{
+ "stage": "spec-compliance",
+ "verdict": "PASS",
+ "spec_citations": [],
+ "summary": "PASS on re-review: AC10 fixed in StreetLookup.keepsSelectedStreet (drops selection + onChange(value, undefined, undefined) when typed text no longer names picked street/postcode/town), pinned by StreetLookup.test.tsx; AC1-AC13 and proposal rules re-verified; postcode trim satisfies shared normalisation; triage trg-84562d80 dismissed. Note for stage 2: same-street unknown house number calls no onChange (pre-existing, out of spec)."
+}
