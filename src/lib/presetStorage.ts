@@ -43,3 +43,20 @@ export const updateSettings = (update: SettingsUpdate): void => {
   };
   localStorage.setItem(SETTINGS_KEY, JSON.stringify(next));
 };
+
+/** The settings as saved, without filled-in defaults; the placeholder sender block counts as unsaved. */
+export const getStoredSettings = (): Partial<Settings> => {
+  const stored = localStorage.getItem(SETTINGS_KEY);
+  const settings: Partial<Settings> = stored ? JSON.parse(stored) : {};
+  const result: Partial<Settings> = {};
+  for (const field of ['senderInfo', 'ortRechnungssteller', 'rechnungsDatum', 'signature'] as const) {
+    if (typeof settings[field] === 'string') result[field] = settings[field];
+  }
+  if (result.senderInfo === DEFAULT_SENDER_INFO) delete result.senderInfo;
+  return result;
+};
+
+/** Replaces all stored settings (import). Throws if the browser refuses to store them. */
+export const replaceSettings = (settings: Partial<Settings>): void => {
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+};

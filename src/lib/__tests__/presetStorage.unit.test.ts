@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { getSettings, updateSettings } from '../presetStorage';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { getSettings, getStoredSettings, replaceSettings, updateSettings } from '../presetStorage';
 
 describe('presetStorage', () => {
   beforeEach(() => {
@@ -49,5 +49,39 @@ describe('presetStorage', () => {
   it('keeps reading settings stored by older versions', () => {
     localStorage.setItem('form-settings', JSON.stringify({ senderInfo: 'Old', ortRechnungssteller: 'Zug' }));
     expect(getSettings()).toMatchObject({ senderInfo: 'Old', ortRechnungssteller: 'Zug', rechnungsDatum: '' });
+  });
+});
+
+// @covers FR-01.06
+describe('stored settings for export and import', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  it('returns only what the user saved, without placeholder defaults', () => {
+    expect(getStoredSettings()).toEqual({});
+    updateSettings({ senderInfo: 'Anna' });
+    expect(getStoredSettings()).toEqual({ senderInfo: 'Anna', ortRechnungssteller: 'Kanton Zug', rechnungsDatum: '' });
+  });
+
+  it('ignores stored placeholder text so it is never exported as real data', () => {
+    updateSettings({ ortRechnungssteller: 'Zug' });
+    expect(getStoredSettings().senderInfo).toBeUndefined();
+  });
+
+  it('replaces all stored settings with the imported ones', () => {
+    updateSettings({ senderInfo: 'Old', signature: 'old-signature' });
+    replaceSettings({ senderInfo: 'New', ortRechnungssteller: 'Baar' });
+    expect(getSettings()).toMatchObject({ senderInfo: 'New', ortRechnungssteller: 'Baar', signature: undefined });
+  });
+
+  it('leaves the stored settings unchanged when the browser refuses to store them', () => {
+    updateSettings({ senderInfo: 'Old' });
+    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('full', 'QuotaExceededError');
+    });
+    expect(() => replaceSettings({ senderInfo: 'New' })).toThrow();
+    setItem.mockRestore();
+    expect(getSettings().senderInfo).toBe('Old');
   });
 });

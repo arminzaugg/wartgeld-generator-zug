@@ -1,0 +1,42 @@
+{
+  "review_schema": 2,
+  "success": true,
+  "provider": "codex",
+  "degraded": false,
+  "reviews_succeeded": 2,
+  "reviewed": true,
+  "reviews": {
+    "openai": {
+      "feedback": "1. **Should it exist?** Yes: choose option 1 for the Bunny migration, but reduce the deploy script to publishing into resources provisioned once.\n\n2. **Smallest thing that would do.** Create the storage zone, pull zone, hostname, routing rules and Shield rule once; record their identifiers and setup instructions. Keep `deploy:site` responsible for building, checking, uploading assets before HTML, purging and smoke-testing. Route lookups to the existing address service. File-based settings transfer and Playwright in the existing workflow are proportionate additions.\n\n3. **What it costs to keep.** A maintainer must retain the deploy credential, maintain Bunny configuration and publishing compatibility, and respond to failed deployments and CI checks. Settings import adds a persistent file-format compatibility obligation.\n\n4. **What it forecloses.** Bunny-specific provisioning automation makes later hosting changes more expensive. Duplicating the address handler in middleware would also make future address-service changes require coordination across two deployments.\n\n5. **Findings**\n\nCategory: simpler-alternative\nSeverity: medium\nFinding: Making every deployment reconcile storage, CDN, DNS, certificates and Shield turns a one-time hosting setup into a permanent infrastructure controller. For one static site and one regular user, the brief establishes no recurring provisioning need that justifies maintaining that controller.\nSuggestion: Provision the resources once, document their configuration and identifiers, and make the deploy command publish to those existing resources. Add provisioning automation when repeated environment creation or rebuilding becomes an actual need.\n\nSHIPWRIGHT_VERDICT: revise",
+      "via": "codex",
+      "status": "success"
+    },
+    "glm": {
+      "feedback": "**1. The question, answered in one sentence.**\nSome new standing mechanism is unavoidable \u2014 the site must be hosted somewhere and the address lookup already lives on Bunny \u2014 but the proposed shape (storage zone + pull zone + edge rules + Shield zone + a multi-API idempotent provisioning script) is bigger than the problem, and option 4 is materially smaller.\n\n**2. The smallest thing that would do**\nExtend the *existing* address edge script (already live from step 2) to also serve the static files, and attach `wartgeld.nidea.ch` to it. That is option 4: no storage zone, no upload ordering, no cache-purge logic, no storage-zone password handling, no `*.b-cdn.net` redirect to maintain. Deploy becomes \"rebuild and redeploy the script,\" which the project already knows how to do. Cache headers (immutable `/assets/`, no-cache `index.html`) are set in the script. Rate limiting, if kept, goes in the same script \u2014 it already has the visitor's IP.\n\n**3. What it costs to keep (as proposed)**\nSix Bunny resource types plus a deploy script that talks to four Bunny APIs idempotently, records ids in a tracked JSON file, and must be kept working through every future Bunny API or pricing change. Plus a Shield zone and rate-limit rule that must be reasoned about whenever the lookup behaves unexpectedly. Plus the two-path `/api/address` routing (edge rule with a middleware fallback, decided by a probe) \u2014 a standing fork.\n\n**4. What it forecloses**\nThe tracked-ids provisioning script makes future Bunny console-side changes (zone renames, tier changes) something the script must absorb or it breaks. Option 4 forecloses little: static assets are small, and Bunny script size limits are generous relative to this bundle.\n\n**5. Findings**\n\n- Category: simpler-alternative\n- Severity: high\n- Finding: Option 4 \u2014 the existing address script serving the static files \u2014 eliminates the storage zone, the Storage API credential, the upload-ordering and purge logic, and the b-cdn redirect rule, with no loss for a single-user static site.\n- Suggestion: Take option 4; keep the deploy path that already exists for the address script and add an asset-bundling step to it.\n\n- Category: proportionality\n- Severity: medium\n- Finding: The Shield zone and per-IP rate-limit rule add a standing resource to defend a one-user app that already has a per-instance cap in the service; the 50-in-10-seconds scenario is not a problem this app has.\n- Suggestion: Drop the Shield zone; if a per-visitor limit is wanted, count IPs inside the address script (option 3's mechanism), which is already deployed and observable.\n\n- Category: proportionality\n- Severity: medium\n- Finding: The deploy script provisions DNS records, certificates, zones and rules idempotently with tracked ids \u2014 infrastructure-as-code weight for resources that will be created once and never recreated.\n- Suggestion: Create the zone, hostname, cert and DNS record once via the Bunny console; reduce `deploy:site` to build, upload, smoke-test.\n\n- Category: existence\n- Severity: low\n- Finding: If the migration's only driver is cost, option 3 (stay on Netlify, free tier, add rate limiting in the script) removes the entire migration including the settings export/import carry-over. The brief doesn't state the driver; if it is EU/Swiss hosting for patient-adjacent data, option 4 still satisfies it more cheaply than option 1.\n- Suggestion: Confirm the driver; if it is not privacy/jurisdiction, option 3 is the smaller move.\n\nSHIPWRIGHT_VERDICT: revise",
+      "via": "openrouter",
+      "status": "success"
+    }
+  },
+  "driver": "claude",
+  "driver_requested": "claude",
+  "codextender_active": false,
+  "mode": "architecture",
+  "capture": {
+    "run_id": "iterate-2026-10-21-bunny-static-hosting",
+    "at": "2026-10-21T20:03:21.449900+00:00"
+  },
+  "verdicts": {
+    "openai": "revise",
+    "glm": "revise"
+  },
+  "statuses": {
+    "openai": "success",
+    "glm": "success"
+  },
+  "contradiction": {
+    "detected": false,
+    "comparable": true,
+    "requires_resolution": false,
+    "reason": "verdicts agree within one step: glm=revise, openai=revise"
+  }
+}

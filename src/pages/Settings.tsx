@@ -9,8 +9,9 @@ import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
 import { updateSettings, getSettings } from "@/lib/presetStorage";
 import { SignaturePad } from "@/components/SignaturePad";
+import { SettingsTransfer } from "@/components/SettingsTransfer";
 
-const Settings = () => {
+const SettingsForm = () => {
   const [initialSettings] = useState(getSettings);
   const [senderInfo, setSenderInfo] = useState(initialSettings.senderInfo);
   const [ortRechnungssteller, setOrtRechnungssteller] = useState(initialSettings.ortRechnungssteller);
@@ -30,17 +31,7 @@ const Settings = () => {
   };
 
   return (
-    <div className="container py-8">
-      <div className="flex items-center justify-between mb-8">
-        <Link to="/">
-          <Button variant="ghost" size="icon" className="text-muted-foreground" aria-label="Zurück">
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        </Link>
-        <h1 className="text-3xl font-bold">Einstellungen</h1>
-        <div className="w-10"></div>
-      </div>
-
+    <>
       <div className="max-w-2xl space-y-8">
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Rechnungsstellerin</h2>
@@ -102,6 +93,34 @@ const Settings = () => {
             onSave={handleSaveSignature}
             initialSignature={initialSettings.signature}
           />
+        </Card>
+      </div>
+    </>
+  );
+};
+
+const Settings = () => {
+  // Remounting the form after an import makes it show the newly stored values.
+  const [formKey, setFormKey] = useState(0);
+
+  return (
+    <div className="container py-8">
+      <div className="flex items-center justify-between mb-8">
+        <Link to="/">
+          <Button variant="ghost" size="icon" className="text-muted-foreground" aria-label="Zurück">
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+        </Link>
+        <h1 className="text-3xl font-bold">Einstellungen</h1>
+        <div className="w-10"></div>
+      </div>
+
+      <SettingsForm key={formKey} />
+
+      <div className="max-w-2xl mt-8">
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold mb-4">Sichern &amp; Laden</h2>
+          <SettingsTransfer onImported={() => setFormKey(key => key + 1)} />
         </Card>
       </div>
     </div>

@@ -17,7 +17,7 @@ const rules = [
 const envFile = join(root, '.env.local');
 if (existsSync(envFile)) {
   for (const line of readFileSync(envFile, 'utf8').split('\n')) {
-    const match = line.match(/^\s*(POST_APIM_CLIENT_SECRET|POST_APIM_CLIENT_ID|BUNNY_API_KEY)\s*=\s*(.+?)\s*$/);
+    const match = line.match(/^\s*(POST_APIM_CLIENT_SECRET|POST_APIM_CLIENT_ID|BUNNY_API_KEY|BUNNY_SITE_FORWARD_SECRET)\s*=\s*(.+?)\s*$/);
     const value = match?.[2].replace(/^["']|["']$/g, '');
     if (value && value.length >= 8) rules.push([`value of ${match[1]}`, value]);
   }

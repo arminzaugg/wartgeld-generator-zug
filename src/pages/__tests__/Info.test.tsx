@@ -18,11 +18,18 @@ describe('Info privacy section', () => {
     expect(text).toMatch(/Weitere Daten werden nicht übermittelt/);
   });
 
-  it('names the hosting providers that forward the lookup and see the IP address', () => {
+  it('names bunny.net as host that forwards the lookup and sees the IP address', () => {
     const text = privacyText();
-    expect(text).toMatch(/Netlify/);
-    expect(text).toMatch(/bunny\.net/);
+    expect(text).toMatch(/Hosting-Anbieter bunny\.net/);
     expect(text).toMatch(/IP-Adresse/);
+  });
+
+  it('mentions Netlify only for the old address', () => {
+    expect(privacyText()).toMatch(/alte Adresse wartgeld-generator-zug\.netlify\.app[^.]*Netlify/);
+  });
+
+  it('says that saved settings files stay with the user', () => {
+    expect(privacyText()).toMatch(/Einstellungen sichern.*nur auf Ihrem Gerät/);
   });
 
   it('no longer claims that only the street name is sent', () => {

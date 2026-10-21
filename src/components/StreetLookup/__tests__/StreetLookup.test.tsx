@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach, type MockInstance } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StreetLookup } from '../../StreetLookup';
@@ -95,5 +95,37 @@ describe('StreetLookup when the lookup service fails', () => {
 
     expect(await screen.findByText('Fehler bei der Adresssuche')).toBeInTheDocument();
     expect(screen.queryByRole('option')).toBeNull();
+  });
+});
+
+// @covers FR-01.02
+describe('StreetLookup while typing', () => {
+  let fetchSpy: MockInstance<typeof fetch>;
+
+  beforeEach(() => {
+    fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation(async () => new Response(JSON.stringify({ results: [allenwinden] })));
+  });
+  afterEach(() => vi.restoreAllMocks());
+
+  it('looks up once after a pause instead of once per keystroke', async () => {
+    renderLookup();
+    for (const value of ['Al', 'All', 'Alle', 'Allen', 'Allenw']) {
+      fireEvent.change(screen.getByRole('combobox'), { target: { value } });
+    }
+
+    await screen.findByRole('option');
+
+    expect(fetchSpy, 'one request for the final text').toHaveBeenCalledTimes(1);
+    expect(JSON.parse(String(fetchSpy.mock.calls[0][1]?.body)).searchTerm).toBe('Allenw');
+  });
+
+  it('hides suggestions for the previous text until the new lookup is due', async () => {
+    renderLookup();
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Allenwinden' } });
+    await screen.findByRole('option');
+
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Seestrasse' } });
+
+    expect(screen.queryByRole('option'), 'stale suggestions are not offered').not.toBeInTheDocument();
   });
 });

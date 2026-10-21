@@ -18,14 +18,16 @@ const root = fileURLToPath(new URL('../..', import.meta.url));
 const STATE_FILE = `${root}edge/address-lookup/bunny.json`;
 const API = 'https://api.bunny.net';
 const SCRIPT_NAME = 'wartgeld-address-lookup';
-const SITE = 'https://wartgeld-generator-zug.netlify.app';
+const SITE = 'https://wartgeld.nidea.ch';
+// The old Netlify address stays allowed until it forwards to the Bunny site.
+const NETLIFY_SITE = 'https://wartgeld-generator-zug.netlify.app';
 
 const SECRETS = ['POST_APIM_CLIENT_ID', 'POST_APIM_CLIENT_SECRET'];
 const VARIABLES = {
   POST_APIM_TOKEN_URL: env => env.POST_APIM_TOKEN_URL,
   POST_APIM_BASE_URL: env => env.POST_APIM_BASE_URL,
   POST_APIM_SCOPE: env => env.POST_APIM_SCOPE,
-  ALLOWED_ORIGINS: () => SITE,
+  ALLOWED_ORIGINS: () => `${SITE},${NETLIFY_SITE}`,
   PREVIEW_SITE: () => 'wartgeld-generator-zug',
   MAX_REQUESTS_PER_MINUTE: () => '600',
 };
@@ -78,9 +80,10 @@ const smokeTest = async hostname => {
     const allowed = await lookup(hostname, SITE).catch(() => null);
     if (allowed?.status === 200) {
       const { results = [] } = await allowed.json();
+      const netlify = await lookup(hostname, NETLIFY_SITE);
       const foreign = await lookup(hostname, 'https://evil.example');
-      console.log(`smoke test: allowed origin → 200 with ${results.length} results; foreign origin → ${foreign.status}`);
-      if (results.length === 0 || foreign.status !== 403) fail('smoke test did not behave as expected');
+      console.log(`smoke test: site origin → 200 with ${results.length} results; Netlify origin → ${netlify.status}; foreign origin → ${foreign.status}`);
+      if (results.length === 0 || netlify.status !== 200 || foreign.status !== 403) fail('smoke test did not behave as expected');
       return;
     }
     console.log(`smoke test attempt ${attempt}: ${allowed ? `HTTP ${allowed.status}` : 'no answer'}, retrying`);

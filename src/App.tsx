@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { ThemeProvider } from "./components/ThemeProvider";
+import { MovedNotice } from "./components/MovedNotice";
 import { lazy, Suspense } from "react";
 import Index from "./pages/Index";
 
@@ -20,6 +21,7 @@ const App = () => (
         <TooltipProvider>
           <Toaster />
           <HashRouter>
+            <MovedNotice />
             <Suspense fallback={null}>
               <Routes>
                 <Route path="/" element={<Index />} />

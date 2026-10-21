@@ -1,0 +1,42 @@
+{
+  "review_schema": 2,
+  "success": true,
+  "provider": "codex",
+  "degraded": false,
+  "reviews_succeeded": 2,
+  "reviewed": true,
+  "reviews": {
+    "openai": {
+      "feedback": "1. **Category:** risk  \n   **Severity:** medium  \n   **Finding:** Step 3 replaces `ALLOWED_ORIGINS` with two production origins, but AC2 explicitly requires Netlify previews to remain allowed. If preview support currently comes from this configuration, publishing the service change will break preview address lookups.  \n   **Suggestion:** Preserve the existing preview-origin validation and add the Bunny origin. Include regression checks for Netlify production, a valid preview, and an unrelated origin.\n\n2. **Category:** edge-case  \n   **Severity:** medium  \n   **Finding:** The deploy smoke test now deliberately triggers the production rate limit. Sending more than 50 successful lookups can consume Swiss Post calls, encounter the service\u2019s total cap before Shield responds, and leave the deploying user\u2019s IP blocked during subsequent smoke checks or manual verification.  \n   **Suggestion:** Separate rate-limit verification from routine deployment. During setup verification, use requests rejected before Swiss Post is called, verify the rejection is specifically Shield\u2019s 429, and check recovery after 60 seconds. Keep routine deployment to a small number of successful lookups. Bunny documents that Shield enforcement happens before requests reach the origin. [Bunny rate limiting](https://bunny.net/blog/control-the-chaos-why-legacy-rate-limiting-isnt-enough-anymore/)\n\nThe architecture is sound, and the revised setup/deploy split keeps this change reasonably contained. Preserve preview compatibility and make production rate-limit verification safe before proceeding.\n\nSHIPWRIGHT_VERDICT: revise",
+      "via": "codex",
+      "status": "success"
+    },
+    "glm": {
+      "feedback": "## Review Findings\n\n- **Category:** edge-case / **Severity:** medium\n  **Finding:** The per-IP rate limit on the *service's* pull zone may count the *site* pull zone's egress IP, not the visitor's. When the site zone's edge rule forwards `/api/address` to the service's Bunny hostname, Bunny-to-Bunny traffic can present a Bunny edge IP to the second zone's Shield rule \u2014 in which case the \"per-visitor\" counter becomes a global counter: one visitor hitting 50 requests in 10 s blocks **all** visitors for 60 s. The probe step does test \"real client IP counted by Shield,\" but the plan has no stated fallback if that check fails.\n  **Suggestion:** Define the fallback explicitly before the probe: if the client IP isn't preserved through the Bunny\u2192Bunny hop (e.g., via `X-Forwarded-For`), skip the Shield rule on the service's zone for this PR (the site zone still enforces the per-visitor limit, which is what AC3 tests) and rely on the shared-secret header from the already-planned follow-up. A mis-counted global 429 is worse than no second line.\n\n- **Category:** edge-case / **Severity:** low\n  **Finding:** The deploy smoke test \"checks 429 after the limit\" by making 51+ requests from the deployer's machine. That triggers the 60-second block on the deployer's IP mid-smoke, which can make a subsequent smoke check (or an immediate re-run after a fix) fail confusingly.\n  **Suggestion:** Run the 429 check last in the smoke sequence, and either wait out the 60 s or note in the deploy output that the blocking IP is the runner's so re-runs aren't misread as a broken deploy.\n\n- **Category:** risk / **Severity:** low\n  **Finding:** Edge rules are matched \"by description so re-runs update instead of duplicating,\" but Bunny edge rules apply in priority order and the plan doesn't state the priorities. The `no-cache`/`never-cache-/api/address` and security-header rules must not be shadowed by the `/assets/*` cache rule (or vice versa), and a re-run must preserve ordering, not just existence.\n  **Suggestion:** Assign explicit priorities in the rule definitions and have the desired-vs-actual diff compare priority (and action body), not just presence.\n\n- **Category:** edge-case / **Severity:** low\n  **Finding:** Imported settings overwrite whatever is currently stored on the new origin with no export-first prompt. If the midwife experiments on the new site, saves placeholder values, then imports her real file, that's fine \u2014 but a mis-click on \"Einstellungen laden\" over existing data is unrecoverable (no undo).\n  **Suggestion:** Cheap mitigation: in the confirm dialog, offer \"aktuelle Einstellungen vorher sichern\" (a one-click export of current values alongside the import), or note that the pre-import state can be recovered by exporting first. One line of UX, no architecture change.\n\n- **Category:** dependency / **Severity:** low\n  **Finding:** AC1's b-cdn\u2192custom-host permanent redirect depends on the certificate being issued and DNS propagated before the redirect rule sends real traffic; the plan polls the certificate with a timeout, but the redirect rule is \"created last\" only in `setup:site` \u2014 a re-run of setup on an already-live site recreates/updates rules while live traffic flows. Find-or-create should make this a no-op, but the desired-vs-actual diff must not delete-and-recreate rules in place.\n  **Suggestion:** Assert in the diff logic that matched rules are updated in place (PUT) and never deleted-then-created; add a unit test for the \"rule exists with slightly different body\" case.\n\n- **Category:** approach / **Severity:** low\n  **Finding:** The settings export \"asks to save first if there are unsaved changes\" adds a stateful interaction to Settings.tsx that the internal review already flagged once (remount/defaults/unsaved edits). The simpler contract that satisfies AC7: export always exports the *saved* values and the dialog text says so (\"Ungespeicherte \u00c4nderungen werden nicht exportiert\"). No save-prompt flow, no new test matrix.\n  **Suggestion:** Replace the ask-to-save-first interaction with a static hint; AC7 only requires that the file contains the four fields and that the next invoice uses them.\n\n## Overall Assessment\n\nThe approach is sound and unusually well-hardened \u2014 two internal reviews already closed the substantive gaps (bypass, Host header, idempotency, import validation), and the remaining items are refinements. The one worth deciding *before* the probe runs is the fallback for client-IP propagation through the Bunny\u2192Bunny hop, since that determines whether the second Shield zone helps or actively harms.\n\nSHIPWRIGHT_VERDICT: approve",
+      "via": "openrouter",
+      "status": "success"
+    }
+  },
+  "driver": "claude",
+  "driver_requested": "claude",
+  "codextender_active": false,
+  "mode": "iterate",
+  "capture": {
+    "run_id": "iterate-2026-10-21-bunny-static-hosting",
+    "at": "2026-10-21T20:03:21.449900+00:00"
+  },
+  "verdicts": {
+    "openai": "revise",
+    "glm": "approve"
+  },
+  "statuses": {
+    "openai": "success",
+    "glm": "success"
+  },
+  "contradiction": {
+    "detected": false,
+    "comparable": true,
+    "requires_resolution": false,
+    "reason": "verdicts agree within one step: glm=approve, openai=revise"
+  }
+}

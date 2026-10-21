@@ -13,7 +13,8 @@
     "test": "vitest run --coverage",
     "test:e2e": "playwright test",
     "build:edge": "node scripts/edge/build-address-lookup.mjs",
-    "deploy:edge": "node scripts/edge/deploy-address-lookup.mjs"
+    "deploy:edge": "node scripts/edge/deploy-address-lookup.mjs",
+    "deploy:site": "node scripts/site/deploy-site.mjs"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "^1.1.1",

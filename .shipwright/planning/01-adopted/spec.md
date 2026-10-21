@@ -17,16 +17,16 @@ The UI is German-only. The app is deployed as a static site on Netlify; its back
 | ID | Area | Name | Priority | Description | Basis | Layers |
 |---|---|---|---|---|---|---|
 | FR-01.01 | Adopted | Invoice entry form | Must | The midwife enters the mother's first and last name, home address, date of birth, and which reimbursable services were provided. Missing or too-short entries are flagged before an invoice can be produced, the address must be chosen from the suggestion list so that the postcode is known, and the municipality responsible for the address must be chosen — the app proposes it when the locality clearly belongs to one municipality, points out localities shared by several municipalities or partly outside the canton, and refuses postcodes outside the Canton of Zug as well as border villages lying more than 90 % outside it. | interview | unit, e2e (inferred) |
-| FR-01.02 | Adopted | Address suggestions for the Canton of Zug | Must | While the midwife types a street, matching addresses are suggested by the Swiss Post address API through the project's own lookup service (`/api/address`), limited to offered Zug localities (not the border villages Bennau, Sattel, Rothenthurm and Mühlau) and ranked so exact house-number matches and the closest street-name matches come first; parcel pickup points are left out. Choosing a suggestion fills in street, house number, postcode and town. If the lookup fails, the midwife is told to try again later. | interview | unit, e2e (inferred) |
+| FR-01.02 | Adopted | Address suggestions for the Canton of Zug | Must | While the midwife types a street, matching addresses are suggested by the Swiss Post address API through the project's own lookup service (`/api/address`), limited to offered Zug localities (not the border villages Bennau, Sattel, Rothenthurm and Mühlau) and ranked so exact house-number matches and the closest street-name matches come first; parcel pickup points are left out. Choosing a suggestion fills in street, house number, postcode and town. The lookup starts once she pauses typing for ¼ second. If the lookup fails, the midwife is told to try again later. | interview | unit, e2e (inferred) |
 | FR-01.03 | Adopted | Invoice PDF generation | Must | From valid form data the app produces a one-page PDF invoice addressed to the administration of the municipality chosen on the form, using recipient addresses shipped with the app, without contacting any server. It contains the midwife's sender details, the legal basis, the mother's details, the ticked services at CHF 400 each with the total, place and date, the stored signature, and payment terms. If no municipality is known for the postcode, the midwife is told to check the address instead of getting a wrong invoice. | interview | unit, e2e (inferred) |
 | FR-01.04 | Adopted | Print and save the invoice | Must | Once an invoice has been generated, the midwife can print it directly or save it as a PDF file named after the mother. | interview | unit, e2e (inferred) |
 | FR-01.05 | Adopted | Reset the form | Must | The midwife can clear all entered patient data and the generated invoice in one step to start the next invoice. | interview | unit, e2e (inferred) |
-| FR-01.06 | Adopted | Invoice issuer details | Must | The midwife stores her sender details (name, address, contact, IBAN), the place shown on the invoice, and optionally a fixed invoice date; left empty, each invoice carries the current date. The details are kept in the browser and reused for every invoice, and the form page shows when a fixed date is in effect. | interview | unit, e2e (inferred) |
+| FR-01.06 | Adopted | Invoice issuer details | Must | The midwife stores her sender details (name, address, contact, IBAN), the place shown on the invoice, and optionally a fixed invoice date; left empty, each invoice carries the current date. The details are kept in the browser and reused for every invoice, and the form page shows when a fixed date is in effect. She can save these settings (including the signature) to a file and load them again, e.g. on a new web address; an invalid file is refused and changes nothing. | interview | unit, e2e (inferred) |
 | FR-01.07 | Adopted | Handwritten signature | Must | The midwife draws her signature once; it is stored in the browser and placed on every invoice. Saving other settings never removes the signature, and it can be cleared on purpose. | interview | unit, e2e (inferred) |
-| FR-01.08 | Adopted | About, privacy and contact information | Must | Explains what the app does, how to use it, what data leaves the browser (only the text typed into the address field, sent via the hosting providers Netlify and bunny.net to Swiss Post for address suggestions), the best-effort service disclaimer, and whom to contact. | interview | unit, e2e (inferred) |
+| FR-01.08 | Adopted | About, privacy and contact information | Must | Explains what the app does, how to use it, what data leaves the browser (only the text typed into the address field, sent via the hosting provider bunny.net — and Netlify for the old address — to Swiss Post for address suggestions), the best-effort service disclaimer, and whom to contact. | interview | unit, e2e (inferred) |
 | FR-01.09 | Adopted | Light and dark appearance | Must | The user can switch between light, dark and system appearance; the choice is remembered in the browser. | interview | unit, e2e (inferred) |
-| FR-01.10 | Adopted | Protected address lookup service | Must | The address lookup service (Bunny Edge Scripting) holds the Swiss Post credentials, only answers the app's own web origins (production, Netlify deploy previews, itself), rejects malformed or oversized requests, and caps the total number of lookups per minute per instance (best effort), so the Swiss Post quota cannot easily be used up by others. It never logs the addresses it handles. | interview | unit (inferred) |
-| FR-01.11 | Adopted | CI pipeline (github-actions) must pass on pull requests. | Must | CI pipeline (github-actions) must pass on pull requests. | interview | unit (inferred) |
+| FR-01.10 | Adopted | Protected address lookup service | Must | The address lookup service (Bunny Edge Scripting) holds the Swiss Post credentials, only answers the app's own web origins (wartgeld.nidea.ch, the old Netlify site and its deploy previews, itself), rejects malformed or oversized requests, caps the total number of lookups per minute per instance (best effort), and Bunny Shield limits each visitor to 50 lookups in 10 seconds, so the Swiss Post quota cannot easily be used up by others. It never logs the addresses it handles. | interview | unit (inferred) |
+| FR-01.11 | Adopted | CI pipeline (github-actions) must pass on pull requests. | Must | CI pipeline (github-actions) must pass on pull requests: lint, typecheck, build, unit tests, and the Playwright browser tests against the built site. | interview | unit (inferred) |
 | FR-01.12 | Adopted | Code passes eslint-flat without warnings. | Must | Code passes eslint-flat without warnings. | interview | unit (inferred) |
 
 ## Constraints
@@ -56,6 +56,7 @@ _Source: enrichment._
 - Given the midwife has typed at least 2 characters of a street name, when suggestions arrive, then only addresses with a Zug postcode are listed and selecting one fills the address, postcode and town fields.
 - (E) Given the midwife types `Bahnhofstr 1`, when suggestions arrive, then `Bahnhofstrasse 1` in Zug, Baar and Steinhausen come first, at most 10 suggestions are shown, and none is in Bennau, Sattel, Rothenthurm, Mühlau or outside the Zug locality list (iterate-2026-10-21-bunny-post-proxy).
 - (E) Given the lookup service fails or Swiss Post does not answer in time, when the midwife types, then `Fehler bei der Adresssuche` is shown and no suggestion appears (iterate-2026-10-21-bunny-post-proxy).
+- (E) Given the midwife types several letters quickly, when she pauses, then one lookup is sent for the full text, and suggestions for earlier text are not offered meanwhile (iterate-2026-10-21-bunny-static-hosting).
 
 ### FR-01.03 — Invoice PDF generation
 
@@ -82,6 +83,8 @@ _Source: enrichment._
 _Source: enrichment._
 
 - Given the midwife saved sender details and a fixed invoice date on the settings page, when she generates an invoice, then the PDF shows those sender details and that date; when the date is cleared, the PDF shows today's date.
+- (E) Given the midwife saved her settings to a file on one web address, when she loads that file on another and confirms, then her next invoice there shows the same sender details and signature (iterate-2026-10-21-bunny-static-hosting).
+- (E) Given a file that is not a settings file, is over 1 MB, has unknown fields or values of the wrong form, when she loads it, then a German message explains it and the stored settings stay unchanged (iterate-2026-10-21-bunny-static-hosting).
 
 ### FR-01.07 — Handwritten signature
 
@@ -95,6 +98,7 @@ _Source: enrichment._
 
 - Given the user opens the information page, then the purpose, usage steps, privacy statement, disclaimer and contact address are shown in German, with a way back to the form.
 - (E) Given the user opens the information page, when she reads the privacy statement, then it says that the text typed into the address field (street, house number, postcode, town) goes via Netlify and bunny.net, which see the IP address, to Swiss Post, and that nothing else is sent (iterate-2026-10-21-bunny-post-proxy).
+- (E) Given the user reads the privacy statement, then bunny.net is named as host, Netlify only for the old address, and saved settings files stay on the user's device (iterate-2026-10-21-bunny-static-hosting).
 
 ### FR-01.09 — Light and dark appearance
 
@@ -111,10 +115,12 @@ _Source: enrichment._
 - (E) Given a request with a missing origin, a look-alike of a deploy-preview origin (other site, extra label, http, other port), another method, a body over 1 KB or invalid fields, when it reaches the service, then it is refused with 403, 405, 413 or 400 and Swiss Post is not called (iterate-2026-10-21-bunny-post-proxy).
 - (E) Given any lookup, when the service logs it, then the log holds only counts, status and duration, never the typed text or Swiss Post's answer, and the response is marked not cacheable (iterate-2026-10-21-bunny-post-proxy).
 - (E) Given the built site, when its files are checked, then they contain no Swiss Post credential, no `POST_APIM` name and no Supabase address (iterate-2026-10-21-bunny-post-proxy).
+- (E) Given one visitor sends more than 50 lookups within 10 seconds, when the next lookup arrives, then Bunny answers 429 for 60 seconds while pages still load; calls straight to the service's own address are limited the same way (iterate-2026-10-21-bunny-static-hosting).
+- (E) Given the site at wartgeld.nidea.ch, when it sends a lookup, then the service accepts that origin, and the old Netlify site and its previews keep working (iterate-2026-10-21-bunny-static-hosting).
 
 ### FR-01.11 — CI pipeline (github-actions) must pass on pull requests.
 
-_TBD — refine via /shipwright-iterate._
+- (E) Given a pull request, when CI runs, then lint, typecheck, build, unit tests and the Playwright browser tests (against the built site, with the address lookup stubbed, without secrets and with read-only permissions) must all pass (iterate-2026-10-21-bunny-static-hosting).
 
 ### FR-01.12 — Code passes eslint-flat without warnings.
 
