@@ -1,0 +1,8 @@
+# Temporary until the site itself moves to Bunny (hosting migration step 3):
+# forward the address lookup to the Bunny edge service (edge/address-lookup/).
+# Rollback: remove this rule, or republish the previous release on Bunny.
+[[redirects]]
+  from = "/api/address"
+  to = "https://wartgeld-address-lookup.bunny.run/api/address"
+  status = 200
+  force = true

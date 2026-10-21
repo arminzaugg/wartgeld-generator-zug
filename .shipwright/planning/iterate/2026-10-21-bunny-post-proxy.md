@@ -61,7 +61,8 @@ working and exercises the new path in real use before step 3.
   bodies > 1 KB → 413, invalid JSON / fields → 400, more than the total
   per-instance cap per minute → 429. It logs fixed messages with status,
   duration and counts only — never request/response bodies or Post error
-  text — and answers with `Cache-Control: no-store`.
+  text — and answers with `Cache-Control: no-store` (Bunny's edge presents it as
+  `no-cache`; POST answers are never reused, verified 2026-10-21).
 - [ ] AC6 — If Swiss Post fails or does not answer within the deadline
   (token ≈ 3 s, whole lookup ≈ 8 s), the service answers 502 with no address
   data, and the app shows the existing `Fehler bei der Adresssuche` message.

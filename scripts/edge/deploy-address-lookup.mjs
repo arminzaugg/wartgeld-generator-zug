@@ -59,8 +59,10 @@ const bunny = apiKey => async (method, path, body) => {
   return text ? JSON.parse(text) : null;
 };
 
+// Bunny returns some hostnames with a scheme (e.g. "https://x.bunny.run"); keep the bare host.
 const hostnameOf = script =>
-  script?.LinkedPullZones?.[0]?.DefaultHostname ?? script?.DefaultHostname ?? script?.SystemHostname;
+  (script?.DefaultHostname ?? script?.LinkedPullZones?.[0]?.DefaultHostname ?? script?.SystemHostname)
+    ?.replace(/^https?:\/\//, '').replace(/\/$/, '');
 
 const lookup = (hostname, origin) => fetch(`https://${hostname}/api/address`, {
   method: 'POST',
@@ -92,6 +94,7 @@ const code = readFileSync(OUTFILE, 'utf8');
 console.log(`built ${OUTFILE.slice(root.length)} (${code.length} bytes)`);
 
 let state = existsSync(STATE_FILE) ? JSON.parse(readFileSync(STATE_FILE, 'utf8')) : null;
+if (state) state.hostname = hostnameOf({ DefaultHostname: state.hostname });
 if (!state) {
   const created = await call('POST', '/compute/script', {
     Name: SCRIPT_NAME,
