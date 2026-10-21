@@ -12,6 +12,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # The coverage report step comments on the pull request.
+      pull-requests: write
 
     steps:
     - uses: actions/checkout@v4
