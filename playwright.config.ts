@@ -3,7 +3,9 @@ import { defineConfig, devices } from "@playwright/test";
 const PORT = 5179;
 
 export default defineConfig({
-  testDir: "./e2e",
+  // Root as testDir so reports name files from the project root (e2e/…), as the evidence reader expects.
+  testDir: ".",
+  testMatch: "e2e/**/*.spec.ts",
   fullyParallel: true,
   reporter: [["list"], ["json", { outputFile: "test-results/e2e-results.json" }]],
   use: {
