@@ -88,12 +88,18 @@ const toSuggestions = (results: unknown[], fields: CompletionFields): AddressSug
     .slice(0, MAX_RESULTS);
 };
 
+const LOOKUP_PATH = '/api/address';
+
 export const createAddressHandler = (config: LookupConfig, deps: HandlerDeps) => {
   const { fetch, now, log, lookupTimeoutMs = 8_000 } = deps;
   const post = config.post && createPostClient(config.post, { fetch, now });
   const withinLimit = createRateLimiter(config.maxRequestsPerMinute, now);
 
   return async (request: Request): Promise<Response> => {
+    // Only the exact path: the site's per-visitor limit counts requests by this path.
+    if (new URL(request.url).pathname !== LOOKUP_PATH) {
+      return new Response(null, { status: 404, headers: { 'Cache-Control': 'no-store' } });
+    }
     const origin = request.headers.get('origin');
     const allowed = isAllowedOrigin(origin, {
       allowed: config.allowedOrigins,

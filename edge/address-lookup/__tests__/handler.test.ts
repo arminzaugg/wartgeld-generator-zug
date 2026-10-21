@@ -54,6 +54,18 @@ describe('address handler — request checks', () => {
     expect(response.headers.get('Access-Control-Allow-Origin')).toBeNull();
   });
 
+  it.each(['/x/api/address', '/api/address/', '/API/address', '/%61pi/address', '/'])(
+    'answers only the lookup path, not %s (the per-visitor limit counts that path only)', async path => {
+      const { handle, fetch } = setup();
+      const response = await handle(new Request(`${SELF}${path}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Origin: APP },
+        body: JSON.stringify({ searchTerm: 'Bahnhof' }),
+      }));
+      expect(response.status).toBe(404);
+      expect(fetch, 'Swiss Post is not called').not.toHaveBeenCalled();
+    });
+
   it('accepts a deploy preview and its own origin', async () => {
     const { handle } = setup();
     for (const origin of ['https://deploy-preview-7--wartgeld-generator-zug.netlify.app', SELF]) {
