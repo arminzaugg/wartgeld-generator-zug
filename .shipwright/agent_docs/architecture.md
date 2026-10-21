@@ -81,7 +81,7 @@ Layering: pages (src/pages) compose feature components (src/features/form, src/c
 
 ## Architecture Updates
 
-- **iterate-2026-10-21-zug-municipality-data** (2026-10-21): Data-flow — municipality data ships with the app; the recipient is chosen in the browser, no DB read. → decision-drops/iterate-2026-10-21-zug-municipality-data
+- **iterate-2026-10-21-zug-municipality-data** (2026-10-21): Data-flow — municipality data ships with the app; the recipient is chosen in the browser, no DB read. → decision_log.md (ADR via Run-ID: iterate-2026-10-21-zug-municipality-data)
 
 ## See also
 

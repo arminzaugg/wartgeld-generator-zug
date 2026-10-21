@@ -28,8 +28,7 @@ test("proposes Baar for an Allenwinden address", { tag: ["@FR-01.01"] }, async (
   await expect(page.getByText(/gehört zu mehreren Gemeinden/)).toHaveCount(0);
 });
 
-// @covers FR-01.01 FR-01.03 FR-01.05
-test("a Neuägeri invoice goes to the municipality the midwife chose, without leaving the app", { tag: ["@FR-01.01", "@FR-01.03", "@FR-01.05"] }, async ({ page }) => {
+test("a Neuägeri invoice goes to the municipality the midwife chose, without leaving the app", { tag: ["@FR-01.01", "@FR-01.03"] }, async ({ page }) => {
   await stubAddressLookup(page, [suggestion("Hauptstrasse", "6314", "Neuägeri")]);
   await page.goto("/");
   const origin = new URL(page.url()).origin;
