@@ -46,11 +46,13 @@ describe('Index', () => {
   });
   afterEach(() => vi.restoreAllMocks());
 
+  // @covers FR-01.01
   it('titles the page "Neue Rechnung" as its only main heading', () => {
     renderWithProviders(<Index />);
     expect(screen.getAllByRole('heading', { level: 1 }).map(h => h.textContent)).toEqual(['Neue Rechnung']);
   });
 
+  // @covers FR-01.01
   it('links to information and settings from the top bar', () => {
     renderWithProviders(<Index />);
     expect(screen.getByRole('link', { name: 'Information' })).toHaveAttribute('href', '/info');
@@ -65,11 +67,13 @@ describe('Index', () => {
     expect(screen.getByRole('link', { name: 'Mehr erfahren' })).toHaveAttribute('href', '/info');
   });
 
+  // @covers FR-01.04
   it('shows an empty preview before an invoice is generated', () => {
     renderWithProviders(<Index />);
     expect(screen.getByText('Noch keine Rechnung')).toBeInTheDocument();
   });
 
+  // @covers FR-01.01
   it('shows a notice with a link to change a fixed invoice date', () => {
     localStorage.setItem('form-settings', JSON.stringify({ rechnungsDatum: '2025-03-01' }));
     renderWithProviders(<Index />);
@@ -77,6 +81,7 @@ describe('Index', () => {
     expect(screen.getByRole('link', { name: 'Ändern' })).toHaveAttribute('href', '/settings');
   });
 
+  // @covers FR-01.01
   it('shows no notice when the invoice date is today', () => {
     renderWithProviders(<Index />);
     expect(screen.queryByText(/Rechnungsdatum fest eingestellt/)).not.toBeInTheDocument();

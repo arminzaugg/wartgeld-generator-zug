@@ -136,7 +136,7 @@ for (const width of [320, 390]) {
   test.describe(`phone ${width}px with a finished invoice`, () => {
     test.use({ viewport: { width, height: 740 }, hasTouch: true });
 
-    test("the bottom bar fits the screen and covers no content", { tag: ["@FR-01.04"] }, async ({ page }) => {
+    test(`the bottom bar fits the ${width}px screen and covers no content`, { tag: ["@FR-01.04"] }, async ({ page }) => {
       await stubAddressLookup(page);
       await page.goto("/");
       await fillValidForm(page);
