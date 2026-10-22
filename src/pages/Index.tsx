@@ -1,35 +1,49 @@
-import { useCallback, useState } from "react";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { AppHeader } from "@/components/AppHeader";
+import { PrivacyNote } from "@/components/PrivacyNote";
+import { PreviewPanel } from "@/components/PreviewPanel";
+import { PdfSheet } from "@/components/PdfSheet";
 import { FormContainer } from "@/features/form/components/FormContainer";
-import { PDFPreview } from "@/components/PDFPreview";
+import { recipientLabel } from "@/lib/recipient";
 import { useToast } from "@/components/ui/use-toast";
-import { Settings, Info } from "lucide-react";
-import { ThemeToggle } from "@/components/ThemeToggle";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { pdfGenerationService } from "@/services/pdf/pdfGenerationService";
 import { emptyFormValues, type FormValues } from "@/types/form";
+import type { GeneratedInvoice } from "@/types/invoice";
 import { UnknownMunicipalityError } from "@/lib/municipality";
 import { applyAddressChange } from "@/features/form/addressChange";
 import { getSettings } from "@/lib/presetStorage";
-import { formatSwissDate } from "@/lib/date";
+import { invoiceTotal } from "@/lib/invoiceTotal";
+import { pdfFileName } from "@/lib/pdfActions";
+import { isPhoneViewport, useIsPhone } from "@/hooks/useIsPhone";
 
 const Index = () => {
   const [formData, setFormData] = useState<FormValues>(emptyFormValues);
-  // PDF as data URI; used for the preview as well as print/save.
-  const [pdfData, setPdfData] = useState("");
+  // The generated PDF (as data URI) together with what it says; used for preview, print and save.
+  const [invoice, setInvoice] = useState<GeneratedInvoice | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [sheetRequested, setSheetRequested] = useState(false);
+  // Results of a generation started before the latest reset are dropped.
+  const generation = useRef(0);
   const { toast } = useToast();
+  const isPhone = useIsPhone();
   const fixedInvoiceDate = getSettings().rechnungsDatum;
+
+  // The sheet is a phone affordance; on a wider screen the preview panel shows the invoice instead.
+  useEffect(() => {
+    if (!isPhone) setSheetRequested(false);
+  }, [isPhone]);
+
+  // Outdates the shown invoice and any generation still running for the old entries.
+  const clearInvoice = useCallback(() => {
+    generation.current += 1;
+    setIsGenerating(false);
+    setInvoice(null);
+    setSheetRequested(false);
+  }, []);
 
   const handleFieldChange = (field: string, value: string | boolean) => {
     // The invoice names the municipality; a new choice makes the generated one outdated.
-    if (field === "gemeindeBfs") setPdfData("");
+    if (field === "gemeindeBfs") clearInvoice();
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -39,12 +53,12 @@ const Index = () => {
   // Stable identity: StreetLookup lists it as an effect dependency.
   const handleAddressChange = useCallback((street: string, zipCode?: string, city?: string) => {
     setFormData(prev => applyAddressChange(prev, street, zipCode, city));
-    setPdfData("");
-  }, []);
+    clearInvoice();
+  }, [clearInvoice]);
 
   const handleClearForm = () => {
     setFormData(emptyFormValues);
-    setPdfData("");
+    clearInvoice();
     toast({
       title: "Formular zurückgesetzt",
       description: "Alle Eingaben wurden gelöscht",
@@ -52,9 +66,21 @@ const Index = () => {
   };
 
   const handleGeneratePDF = async () => {
+    const run = ++generation.current;
+    setIsGenerating(true);
     try {
-      setPdfData(await pdfGenerationService.generatePDF(formData));
+      const pdfData = await pdfGenerationService.generatePDF(formData);
+      if (run !== generation.current) return;
+      setInvoice({
+        pdfData,
+        fileName: pdfFileName(formData),
+        recipient: recipientLabel(Number(formData.gemeindeBfs)),
+        total: invoiceTotal(formData),
+      });
+      // Checked now, not when generation started: the device may have rotated meanwhile.
+      setSheetRequested(isPhoneViewport());
     } catch (error) {
+      if (run !== generation.current) return;
       console.error("Error generating PDF:", error);
       toast({
         title: "Fehler",
@@ -63,81 +89,41 @@ const Index = () => {
           : "PDF konnte nicht generiert werden. Bitte versuchen Sie es erneut.",
         variant: "destructive",
       });
+    } finally {
+      if (run === generation.current) setIsGenerating(false);
     }
   };
 
   return (
-    <div className="container py-8">
-      <div className="flex justify-between items-center mb-8">
-        <div className="flex items-center gap-4">
-          <h1 className="text-3xl">Wartgeld Generator</h1>
-          <ThemeToggle />
-        </div>
-        <div className="flex items-center gap-4">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link to="/info">
-                  <Button variant="ghost" size="icon">
-                    <Info className="h-5 w-5" />
-                  </Button>
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Informationen</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link to="/settings">
-                  <Button variant="ghost" size="icon">
-                    <Settings className="h-5 w-5" />
-                  </Button>
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Einstellungen</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-      </div>
-
-      <div className="grid lg:grid-cols-2 gap-8">
-        <Card className="p-6" data-testid="invoice-form-card">
+    <div className="min-h-screen">
+      <AppHeader current="rechnung" />
+      <main className={`mx-auto grid max-w-[1280px] gap-10 px-5 ${invoice ? "pb-[calc(200px+env(safe-area-inset-bottom))]" : "pb-[calc(140px+env(safe-area-inset-bottom))]"} pt-6 md:px-10 md:pb-20 md:pt-12 lg:grid-cols-[minmax(0,1fr)_480px] lg:gap-14 lg:px-20`}>
+        <div className="flex min-w-0 flex-col gap-4 md:gap-6">
+          <div className="flex flex-col gap-2">
+            <h1 className="text-[30px] leading-[34px] tracking-[-0.01em] md:text-[40px] md:leading-[44px] md:tracking-[-0.015em]">Neue Rechnung</h1>
+            <p className="hidden text-base text-foreground-secondary md:block">
+              Angaben zur Wöchnerin erfassen, Leistungen wählen, fertig. Die Rechnung geht an die Wohngemeinde.
+            </p>
+          </div>
+          <PrivacyNote compact={isPhone} />
           <FormContainer
             values={formData}
             onChange={handleFieldChange}
             onAddressChange={handleAddressChange}
             onClear={handleClearForm}
             onSubmit={handleGeneratePDF}
-            hasGeneratedPDF={!!pdfData}
-            pdfData={pdfData}
+            isSubmitting={isGenerating}
+            isPhone={isPhone}
+            fixedInvoiceDate={fixedInvoiceDate || undefined}
+            onShowPdf={isPhone && invoice && !sheetRequested ? () => setSheetRequested(true) : undefined}
           />
-          {fixedInvoiceDate && (
-            <p className="mt-4 text-sm text-muted-foreground">
-              Rechnungsdatum fest eingestellt auf {formatSwissDate(fixedInvoiceDate)} (
-              <Link to="/settings" className="underline underline-offset-2">Einstellungen</Link>).
-            </p>
-          )}
-        </Card>
-
-        <div className="w-full">
-          {pdfData ? (
-            <PDFPreview pdfUrl={pdfData} />
-          ) : (
-            <div className="h-[80vh] flex items-center justify-center bg-muted rounded-lg border">
-              <div className="text-muted-foreground flex flex-col items-center space-y-2 px-4 text-center">
-                <p className="text-lg">Bitte füllen Sie das Formular aus</p>
-                <p className="text-sm">und klicken Sie auf "Rechnung Generieren"</p>
-                <p className="text-sm">um eine Vorschau zu sehen.</p>
-              </div>
-            </div>
-          )}
         </div>
-      </div>
+
+        {/* Not mounted on phones, so no hidden PDF frame loads there. */}
+        {!isPhone && <PreviewPanel invoice={invoice} isGenerating={isGenerating} />}
+      </main>
+
+      <PdfSheet invoice={invoice} open={sheetRequested && isPhone} onOpenChange={setSheetRequested} />
     </div>
   );
 };

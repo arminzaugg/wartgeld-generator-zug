@@ -1,0 +1,45 @@
+{
+  "review_schema": 2,
+  "success": true,
+  "provider": "codex",
+  "degraded": false,
+  "reviews_succeeded": 1,
+  "reviewed": true,
+  "reviews": {
+    "glm": {
+      "status": "error",
+      "reason": "openai package not installed"
+    },
+    "openai": {
+      "feedback": "1. **Category:** risk \u00b7 **Severity:** medium  \n   **Finding:** Moving PDF actions out of the form can separate the generated PDF from the values used for its filename, recipient, and total. After generating, editing the form could make the preview or sheet describe a different invoice from the PDF being saved.  \n   **Suggestion:** Keep a snapshot of the successfully generated values alongside the PDF, and use that snapshot for its filename and accompanying details. Keep the form\u2019s running total based on current values.\n\n2. **Category:** approach \u00b7 **Severity:** medium  \n   **Finding:** The proposed PDF verification does not establish AC11. Asserting extracted PDF contents can pass even when layout, metadata, or other bytes change.  \n   **Suggestion:** Compare PDF bytes before and after the change using identical inputs and a controlled date. If generation includes variable metadata, control it in the comparison fixture.\n\n3. **Category:** edge-case \u00b7 **Severity:** medium  \n   **Finding:** The toast viewport switches to bottom-right at 640px, while the specification defines phones as below 768px. Phones between 640px and 767px would therefore show bottom toasts, potentially overlapping the fixed action bar.  \n   **Suggestion:** Move the toast positioning breakpoint to 768px and verify a viewport in that interval.\n\n4. **Category:** edge-case \u00b7 **Severity:** medium  \n   **Finding:** A reactive `useIsPhone` value alone does not guarantee the required breakpoint check at generation completion. An async submit handler can retain the value from when generation started, opening the wrong presentation after a resize or rotation. The plan also leaves handling an already-open sheet across that breakpoint unspecified.  \n   **Suggestion:** Check `matchMedia` directly when generation succeeds. Define how an open sheet closes when switching to desktop, ensuring its overlay and focus trap are released and the generated PDF remains available.\n\nThe approach is sound overall, and Radix is a reasonable choice for the sheet\u2019s accessibility behavior. Address these state, breakpoint, and verification gaps before implementation; the workspace is empty, so existing implementation details could not be verified.\n\nSHIPWRIGHT_VERDICT: revise",
+      "via": "codex",
+      "status": "success"
+    }
+  },
+  "partially_degraded": true,
+  "partially_degraded_legs": [
+    "glm"
+  ],
+  "driver": "claude",
+  "driver_requested": "claude",
+  "codextender_active": false,
+  "mode": "iterate",
+  "capture": {
+    "run_id": "iterate-2026-10-22-redesign-invoice-page",
+    "at": "2026-10-22T17:36:06.895195+00:00"
+  },
+  "verdicts": {
+    "glm": "unavailable",
+    "openai": "revise"
+  },
+  "statuses": {
+    "glm": "error",
+    "openai": "success"
+  },
+  "contradiction": {
+    "detected": false,
+    "comparable": false,
+    "requires_resolution": true,
+    "reason": "only one reviewer answered \u2014 glm did not (glm=unavailable, openai=revise)"
+  }
+}

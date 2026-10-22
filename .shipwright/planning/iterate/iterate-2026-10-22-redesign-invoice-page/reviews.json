@@ -1,0 +1,315 @@
+{
+  "schema_version": 1,
+  "run_id": "iterate-2026-10-22-redesign-invoice-page",
+  "reviews": {
+    "self": {
+      "review_type": "self",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-22T17:53:55.389018+00:00",
+      "disposition": null,
+      "recorded_by": "self-review",
+      "parse_status": null,
+      "raw_excerpt": null
+    },
+    "plan": {
+      "review_type": "plan",
+      "status": "completed",
+      "findings_count": 4,
+      "findings": [
+        {
+          "severity": "medium",
+          "category": "risk ·",
+          "file": null,
+          "line": null,
+          "finding": "Moving PDF actions out of the form can separate the generated PDF from the values used for its filename, recipient, and total. After generating, editing the form could make the preview or sheet describe a different invoice from the PDF being saved.",
+          "suggestion": "Keep a snapshot of the successfully generated values alongside the PDF, and use that snapshot for its filename and accompanying details. Keep the form’s running total based on current values.",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "approach ·",
+          "file": null,
+          "line": null,
+          "finding": "The proposed PDF verification does not establish AC11. Asserting extracted PDF contents can pass even when layout, metadata, or other bytes change.",
+          "suggestion": "Compare PDF bytes before and after the change using identical inputs and a controlled date. If generation includes variable metadata, control it in the comparison fixture.",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "edge-case ·",
+          "file": null,
+          "line": null,
+          "finding": "The toast viewport switches to bottom-right at 640px, while the specification defines phones as below 768px. Phones between 640px and 767px would therefore show bottom toasts, potentially overlapping the fixed action bar.",
+          "suggestion": "Move the toast positioning breakpoint to 768px and verify a viewport in that interval.",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "edge-case ·",
+          "file": null,
+          "line": null,
+          "finding": "A reactive `useIsPhone` value alone does not guarantee the required breakpoint check at generation completion. An async submit handler can retain the value from when generation started, opening the wrong presentation after a resize or rotation. The plan also leaves handling an already-open sheet across that breakpoint unspecified.",
+          "suggestion": "Check `matchMedia` directly when generation succeeds. Define how an open sheet closes when switching to desktop, ensuring its overlay and focus trap are released and the generated PDF remains available.  The approach is sound overall, and Radix is a reasonable choice for the sheet’s accessibility behavior. Address these state, breakpoint, and verification gaps before implementation; the workspace is empty, so existing implementation details could not be verified.  SHIPWRIGHT_VERDICT: revise",
+          "source": "external-review"
+        }
+      ],
+      "provider": "codex",
+      "completed_at": "2026-10-22T17:41:04.707846+00:00",
+      "disposition": null,
+      "recorded_by": "external-review-json",
+      "parse_status": "partial",
+      "raw_excerpt": "[glm] <no review returned: openai package not installed>\n\n[openai] 1. **Category:** risk · **Severity:** medium  \n   **Finding:** Moving PDF actions out of the form can separate the generated PDF from the values used for its filename, recipient, and total. After generating, editing the form could make the preview or sheet describe a different invoice from the PDF being saved.  \n   **Suggestion:** Keep a snapshot of the successfully generated values alongside the PDF, and use that snapshot for its filename and accompanying details. Keep the form’s running total based on current values.\n\n2. **Category:** approach · **Severity:** medium  \n   **Finding:** The proposed PDF verification does not establish AC11. Asserting extracted PDF contents can pass even when layout, metadata, or other bytes change.  \n   **Suggestion:** Compare PDF bytes before and after the change using identical inputs and a controlled date. If generation includes variable metadata, control it in the comparison fixture.\n\n3. **Category:** edge-case · **Severity:** medium  \n   **Finding:** The toast viewport switches to bottom-right at 640px, while the specification defines phones as below 768px. Phones between 640px and 767px would therefore show bottom toasts, potentially overlapping the fixed action bar.  \n   **Suggestion:** Move the toast positioning breakpoint to 768px and verify a viewport in that interval.\n\n4. **Category:** edge-case · **Severity:** medium  \n   **Finding:** A reactive `useIsPhone` value alone does not guarantee the required breakpoint check at generation completion. An async submit handler can retain the value from when generation started, opening the wrong presentation after a resize or rotation. The plan also leaves handling an already-open sheet across that breakpoint unspecified.  \n   **Suggestion:** Check `matchMedia` directly when generation succeeds. Define how an open sheet closes when switching to desktop, ensuring its overlay and focus trap are released and the generated PDF remains available.\n\nThe approach is sound overa […truncated]",
+      "verdicts": {
+        "glm": "unavailable",
+        "openai": "revise"
+      },
+      "contradiction_resolution": "single reviewer (glm unavailable); openai revise findings all integrated"
+    },
+    "code": {
+      "review_type": "code",
+      "status": "completed",
+      "findings_count": 9,
+      "findings": [
+        {
+          "severity": "medium",
+          "category": "correctness",
+          "file": "src/components/PdfSheet.tsx",
+          "line": 17,
+          "finding": "Focus dropped to body when the trigger-less sheet closes.",
+          "suggestion": "onCloseAutoFocus to 'Rechnung anzeigen'.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "correctness",
+          "file": "src/pages/Index.tsx",
+          "line": 36,
+          "finding": "In-flight generation survives address/municipality change (pre-existing).",
+          "suggestion": "Bump counter in clearInvoice.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "readability",
+          "file": "src/features/form/components/ServiceSelectionFields.tsx",
+          "line": 120,
+          "finding": "Row ring on mouse focus.",
+          "suggestion": "has-[:focus-visible].",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "correctness",
+          "file": "src/components/StreetLookup/SuggestionsList.tsx",
+          "line": 33,
+          "finding": "Empty/loading states not announced.",
+          "suggestion": "role=status.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "correctness",
+          "file": "src/components/PreviewPanel.tsx",
+          "line": 48,
+          "finding": "Generation progress/finish not announced.",
+          "suggestion": "role=status around badge.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "architecture",
+          "file": "src/features/form/components/FormContainer.tsx",
+          "line": 91,
+          "finding": "useIsPhone subscribed twice.",
+          "suggestion": "Pass isPhone from Index.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "readability",
+          "file": "src/features/form/components/__tests__/ServiceSelectionFields.test.tsx",
+          "line": 30,
+          "finding": "Checkbox click test lacks call count.",
+          "suggestion": "toHaveBeenCalledTimes(1).",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "readability",
+          "file": "src/features/form/components/__tests__/RecipientSummary.test.tsx",
+          "line": 8,
+          "finding": "Pure-function tests in component suite.",
+          "suggestion": "Move to lib tests.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "readability",
+          "file": "src/pages/__tests__/Index.test.tsx",
+          "line": 979,
+          "finding": "No test for auto-close on resize or initial focus.",
+          "suggestion": "Drive matchMedia change listener; assert focus.",
+          "source": "code-reviewer"
+        }
+      ],
+      "provider": null,
+      "completed_at": "2026-10-22T18:04:46.604072+00:00",
+      "disposition": null,
+      "recorded_by": "code-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "transport": "agent",
+      "verdict": "pass"
+    },
+    "doubt": {
+      "review_type": "doubt",
+      "status": "completed",
+      "findings_count": 5,
+      "findings": [
+        {
+          "severity": "low",
+          "category": "boundary",
+          "file": "src/features/form/components/FormContainer.tsx",
+          "line": 53,
+          "finding": "Claim under doubt: Summary undercounts after typing over an address post-submit. — Constructed the failure scenario from the diff (see claim).",
+          "suggestion": "fixed (address re-validated while submitAttempted; unit test)",
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "concurrency",
+          "file": "src/features/form/components/FormActions.tsx",
+          "line": 30,
+          "finding": "Claim under doubt: Stalled jsPDF load locks reset (main never disabled reset). — Constructed the failure scenario from the diff (see claim).",
+          "suggestion": "fixed (reset stays enabled; counter drops the running run; unit tests FormContainer + Index)",
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "concurrency",
+          "file": "src/pages/Index.tsx",
+          "line": 72,
+          "finding": "Claim under doubt: Edits during generation also produce submit-time values. — Constructed the failure scenario from the diff (see claim).",
+          "suggestion": "rebutted/documented (known limitation widened to during or after)",
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "boundary",
+          "file": "src/components/PdfSheet.tsx",
+          "line": 25,
+          "finding": "Claim under doubt: Focus jumps to submit when sheet closes by growing past phone width. — Constructed the failure scenario from the diff (see claim).",
+          "suggestion": "fixed (no focus move when not phone; assertion in resize test)",
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "boundary",
+          "file": "src/services/form/formValidationService.ts",
+          "line": 28,
+          "finding": "Claim under doubt: Zero-service invoice can be generated. — Constructed the failure scenario from the diff (see claim).",
+          "suggestion": "out of scope (pre-existing; recorded as known limitation)",
+          "source": "doubt-reviewer"
+        }
+      ],
+      "provider": null,
+      "completed_at": "2026-10-22T18:10:24.480186+00:00",
+      "disposition": null,
+      "recorded_by": "doubt-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "transport": "agent",
+      "verdict": "pass"
+    },
+    "external_code": {
+      "review_type": "external_code",
+      "status": "completed",
+      "findings_count": 3,
+      "findings": [
+        {
+          "severity": "medium",
+          "category": "spec",
+          "file": "src/components/PreviewPanel.tsx",
+          "line": 65,
+          "finding": "The finished desktop preview shows the filename but never displays the generated recipient or total. AC8 explicitly requires these details next to the PDF; storing them in the snapshot alone does not satisfy that requirement.",
+          "suggestion": "Render `invoice.recipient` and the formatted `invoice.total` alongside the finished preview, using the snapshot values.",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "bug",
+          "file": "src/features/form/components/FormContainer.tsx",
+          "line": 55,
+          "finding": "Address errors survive a successful address correction. `AddressFields` calls `onAddressChange` directly, and this effect clears only `plz` and `gemeindeBfs`, leaving `errors.address` intact. After submitting an empty address and then choosing a valid suggestion, the field and summary can continue reporting the old address error—even after a successful generation.",
+          "suggestion": "Clear or revalidate `errors.address` when the address changes, and clear obsolete validation errors after a valid submit. Add a test covering failed submit → address selection → successful submit.",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "edge-case",
+          "file": "src/features/form/components/FormActions.tsx",
+          "line": 65,
+          "finding": "The phone bar cannot reliably fit its contents once “Rechnung anzeigen” appears. At narrow phone widths, the nonwrapping total, 52px reopen button, full “Rechnung generieren” button, gaps and horizontal padding exceed the viewport. The existing phone test checks reopening but does not check horizontal overflow after generation.",
+          "suggestion": "Give the generated-invoice state a layout that fits narrow phones, such as placing the total and reopen control on a separate row. Verify that all controls remain within the viewport at 320px and 390px after closing the sheet.  Overall assessment: ship-with-fixes. The approach is sound, but the missing desktop details, stale address errors and narrow-phone action layout need specific corrections before shipping.  SHIPWRIGHT_VERDICT: revise",
+          "source": "external-review"
+        }
+      ],
+      "provider": "codex",
+      "completed_at": "2026-10-22T18:06:09.556815+00:00",
+      "disposition": null,
+      "recorded_by": "external-review-json",
+      "parse_status": "partial",
+      "raw_excerpt": "[glm] <no review returned: openai package not installed>\n\n[openai] - Category: spec\n- Severity: medium\n- File: src/components/PreviewPanel.tsx:65\n- Finding: The finished desktop preview shows the filename but never displays the generated recipient or total. AC8 explicitly requires these details next to the PDF; storing them in the snapshot alone does not satisfy that requirement.\n- Suggestion: Render `invoice.recipient` and the formatted `invoice.total` alongside the finished preview, using the snapshot values.\n\n- Category: bug\n- Severity: medium\n- File: src/features/form/components/FormContainer.tsx:55\n- Finding: Address errors survive a successful address correction. `AddressFields` calls `onAddressChange` directly, and this effect clears only `plz` and `gemeindeBfs`, leaving `errors.address` intact. After submitting an empty address and then choosing a valid suggestion, the field and summary can continue reporting the old address error—even after a successful generation.\n- Suggestion: Clear or revalidate `errors.address` when the address changes, and clear obsolete validation errors after a valid submit. Add a test covering failed submit → address selection → successful submit.\n\n- Category: edge-case\n- Severity: medium\n- File: src/features/form/components/FormActions.tsx:65\n- Finding: The phone bar cannot reliably fit its contents once “Rechnung anzeigen” appears. At narrow phone widths, the nonwrapping total, 52px reopen button, full “Rechnung generieren” button, gaps and horizontal padding exceed the viewport. The existing phone test checks reopening but does not check horizontal overflow after generation.\n- Suggestion: Give the generated-invoice state a layout that fits narrow phones, such as placing the total and reopen control on a separate row. Verify that all controls remain within the viewport at 320px and 390px after closing the sheet.\n\nOverall assessment: ship-with-fixes. The approach is sound, but the missing desktop details, stale address errors and narrow-phone action layout need specific corrections be […truncated]",
+      "verdicts": {
+        "glm": "unavailable",
+        "openai": "revise"
+      },
+      "contradiction_resolution": "codex verdict revise; 3 findings (desktop recipient/total, stale address error, phone bar overflow) fixed with tests; re-verified green"
+    },
+    "spec": {
+      "review_type": "spec",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-22T18:00:38.094373+00:00",
+      "disposition": null,
+      "recorded_by": "spec-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "transport": "agent",
+      "verdict": "pass"
+    },
+    "plan_internal": {
+      "review_type": "plan_internal",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-22T17:40:59.802059+00:00",
+      "disposition": null,
+      "recorded_by": "external-prose",
+      "parse_status": "unstructured",
+      "raw_excerpt": "opus-plan-reviewer: approve-with-changes. 23 findings (3 high, 13 medium, 7 low); 22 fixed in spec/mini-plan, 1 confirmed. See spec section Internal Plan Review.\n",
+      "transport": "agent",
+      "verdict": "pass"
+    },
+    "architecture_internal": {
+      "review_type": "architecture_internal",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-22T17:40:59.863248+00:00",
+      "disposition": null,
+      "recorded_by": "external-prose",
+      "parse_status": "unstructured",
+      "raw_excerpt": "architecture-internal-reviewer: build-with-changes, option A. 8 findings; 3 fixed, 1 accepted, 2 disclosed, 2 confirmed. See spec section Internal Architecture Review.\n",
+      "transport": "agent",
+      "verdict": "pass"
+    }
+  }
+}

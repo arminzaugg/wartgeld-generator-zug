@@ -47,6 +47,8 @@
   }
 
   .dark {
+    /* Native controls (date picker icon, scrollbars) follow the dark palette. */
+    color-scheme: dark;
     --background: 140 7.7% 7.6%;
     --header: 150 8.3% 9.4%;
     --card: 150 7.1% 11%;

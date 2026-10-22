@@ -165,3 +165,51 @@ describe('StreetLookup while typing', () => {
     expect(screen.queryByText('Ein Fehler ist aufgetreten'), 'the old error is not shown for the new text').not.toBeInTheDocument();
   });
 });
+
+// @covers FR-01.02
+describe('StreetLookup closing the list with Escape', () => {
+  afterEach(() => vi.restoreAllMocks());
+  const respondWith = (results: unknown[]) =>
+    vi.spyOn(globalThis, 'fetch').mockImplementation(async () => new Response(JSON.stringify({ results })));
+
+  it('closes the suggestions', async () => {
+    respondWith([allenwinden]);
+    renderLookup();
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Allenwinden' } });
+    await screen.findByRole('option');
+
+    fireEvent.keyDown(screen.getByRole('combobox'), { key: 'Escape' });
+
+    expect(screen.queryByRole('listbox')).toBeNull();
+  });
+
+  it('closes the "no address found" message', async () => {
+    respondWith([]);
+    renderLookup();
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Xyzstrasse' } });
+    await screen.findByText('Keine Adresse gefunden');
+
+    fireEvent.keyDown(screen.getByRole('combobox'), { key: 'Escape' });
+
+    expect(screen.queryByText('Keine Adresse gefunden')).toBeNull();
+  });
+
+  it('leaves Escape alone when no list is open', () => {
+    respondWith([]);
+    renderLookup();
+
+    const notPrevented = fireEvent.keyDown(screen.getByRole('combobox'), { key: 'Escape' });
+
+    expect(notPrevented).toBe(true);
+  });
+
+  it('credits the Swiss Post below the suggestions, outside the list itself', async () => {
+    respondWith([allenwinden]);
+    renderLookup();
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Allenwinden' } });
+    await screen.findByRole('option');
+
+    const credit = screen.getByText('Adressdaten: Schweizerische Post');
+    expect(screen.getByRole('listbox')).not.toContainElement(credit);
+  });
+});

@@ -18,9 +18,13 @@ interface StreetLookupProps {
   value: string;
   zipCode?: string;
   onChange: (street: string, zipCode?: string, city?: string) => void;
+  /** The form found a problem with the address (not the lookup itself). */
+  invalid?: boolean;
+  /** Id of the help or error text under the field. */
+  describedBy?: string;
 }
 
-export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) => {
+export const StreetLookup = ({ value, zipCode, onChange, invalid = false, describedBy }: StreetLookupProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedStreet, setSelectedStreet] = useState<StreetSummary | null>(null);
@@ -126,6 +130,12 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Before the early return: the loading and "no address found" states have no suggestions but are open.
+    if (e.key === 'Escape' && showSuggestions) {
+      e.preventDefault();
+      setShowSuggestions(false);
+      return;
+    }
     if (!showSuggestions || suggestions.length === 0) return;
 
     if (e.key === 'Tab' && !e.shiftKey) {
@@ -166,11 +176,13 @@ export const StreetLookup = ({ value, zipCode, onChange }: StreetLookupProps) =>
         isLoading={isLoading}
         error={error}
         hasSelection={!!selectedStreet}
-        placeholder="Adresse eingeben (z.B. Dorfstrasse 1, 6312 Steinhausen)"
+        placeholder="Strasse und Hausnummer"
         onInputChange={handleInputChange}
         onKeyDown={handleKeyDown}
         onClear={clearSelection}
         inputRef={setInputRef}
+        invalid={invalid}
+        aria-describedby={describedBy}
         aria-expanded={showSuggestions}
         aria-controls="street-suggestions-list"
         aria-activedescendant={

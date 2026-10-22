@@ -24,6 +24,7 @@ TypeScript in strict mode (tsconfig.app.json) with React 18 function components 
 ## Convention Updates
 
 - **iterate-2026-10-22-redesign-papier-tanne** (2026-10-22): Convention — colours only via the "Papier & Tanne" tokens in `src/index.css` (channels as `hsl(var(--x))`, rgba tokens as `var(--x)`), fields share `ui/field-styles.ts`, fonts are bundled (`@fontsource`), and `index.html` loads nothing from other hosts (guarded by `src/styles/__tests__/theme.test.ts`). → decision_log.md (ADR via Run-ID: iterate-2026-10-22-redesign-papier-tanne)
+- **iterate-2026-10-22-redesign-invoice-page** (2026-10-22): Convention — the phone layout is decided once in `Index` (`useIsPhone`, breakpoint 767.98px = Tailwind `md`) and passed down as `isPhone`; a generated invoice is a snapshot (`GeneratedInvoice`) and any async result is checked against the `generation` counter before it is shown. In-page jumps use buttons + `focus()`, never `#` links (HashRouter). → decision_log.md (ADR via Run-ID: iterate-2026-10-22-redesign-invoice-page)
 
 ## Learnings
 

@@ -10,7 +10,7 @@ const stubAddressLookup = (page: Page, results: ReturnType<typeof suggestion>[])
   page.route("**/api/address", route => route.fulfill({ json: { results } }));
 
 const pickAddress = async (page: Page, typed: string, option: RegExp) => {
-  await page.getByPlaceholder(/Adresse eingeben/).fill(typed);
+  await page.getByPlaceholder("Strasse und Hausnummer").fill(typed);
   await page.getByRole("option", { name: option }).click();
 };
 
@@ -38,7 +38,7 @@ test("a Neuägeri invoice goes to the municipality the midwife chose, without le
   await expect(page.getByText(/gehört zu mehreren Gemeinden/)).toBeVisible();
 
   await municipality(page).selectOption({ label: "Menzingen" });
-  await page.getByLabel("Datum der Geburt").fill("2026-10-01");
+  await page.getByLabel("Geburtsdatum").fill("2026-10-01");
   await page.getByLabel(/Betreuung der Gebärenden/).check();
 
   // From here on the invoice is produced; nothing may leave the app's origin.
@@ -47,7 +47,7 @@ test("a Neuägeri invoice goes to the municipality the midwife chose, without le
     const url = request.url();
     if (!url.startsWith(origin) && !url.startsWith("data:") && !url.startsWith("blob:")) external.push(url);
   });
-  await page.getByRole("button", { name: "Rechnung Generieren" }).click();
+  await page.getByRole("button", { name: "Rechnung generieren" }).click();
 
   const preview = page.locator("iframe");
   await expect(preview).toHaveAttribute("src", /^data:application\/pdf/, { timeout: 15_000 });
@@ -60,9 +60,9 @@ test("a Neuägeri invoice goes to the municipality the midwife chose, without le
   // A corrected municipality makes the generated invoice outdated: no print/save of the old one.
   await municipality(page).selectOption({ label: "Unterägeri" });
   await expect(preview).toHaveCount(0);
-  await expect(page.getByText("Bitte füllen Sie das Formular aus")).toBeVisible();
+  await expect(page.getByText("Noch keine Rechnung")).toBeVisible();
 
-  await page.getByRole("button", { name: "Formular Zurücksetzen" }).click();
+  await page.getByRole("button", { name: "Zurücksetzen" }).click();
   await expect(municipality(page)).toHaveValue("");
   await expect(municipality(page)).toBeDisabled();
 });

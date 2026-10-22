@@ -1,0 +1,1 @@
+warning: external review PARTIALLY degraded — glm did not return a usable reply while at least one other reviewer succeeded. The gate still reports success (one opinion is enough to proceed), but glm's review is MISSING from this pass, silently, unless this warning is read.

@@ -11,7 +11,7 @@ export const highlightMatches = (text: string, searchTerms: string[]) => {
     <span>
       {text.split(matcher).map((part, i) =>
         i % 2 === 1
-          ? <mark key={i} className="bg-yellow-100 font-medium">{part}</mark>
+          ? <mark key={i} className="bg-transparent font-semibold text-foreground group-aria-selected:text-inherit">{part}</mark>
           : part
       )}
     </span>

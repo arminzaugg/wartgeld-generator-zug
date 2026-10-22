@@ -155,3 +155,20 @@ describe("focus indicators", () => {
     expect(offenders).toEqual([]);
   });
 });
+
+// @covers FR-01.01
+describe("invoice page colours", () => {
+  // Fixed palette utilities ignore the theme (and dark mode); the invoice page uses tokens only.
+  it("no invoice-page component uses a fixed grey, red, blue, yellow or white colour", () => {
+    const dirs = ["src/features/form/components", "src/components/StreetLookup"];
+    const files = [
+      "src/pages/Index.tsx", "src/components/StreetLookup.tsx", "src/components/AppHeader.tsx", "src/components/PrivacyNote.tsx",
+      "src/components/PreviewPanel.tsx", "src/components/PdfSheet.tsx", "src/components/PdfActionButtons.tsx",
+      ...dirs.flatMap(dir => readdirSync(path.join(root, dir)).filter(f => f.endsWith(".tsx")).map(f => `${dir}/${f}`)),
+    ];
+    const fixed = /\b(?:text|bg|border|ring|fill|stroke)-(?:(?:gray|red|blue|yellow|slate)-\d{2,3}|white|black)\b/g;
+    for (const file of files) {
+      expect(read(file).match(fixed), file).toBeNull();
+    }
+  });
+});

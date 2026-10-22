@@ -1,5 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { FieldError } from "./FieldError";
 
 interface PersonalInfoFieldsProps {
   values: {
@@ -12,36 +13,25 @@ interface PersonalInfoFieldsProps {
   onChange: (field: string, value: string) => void;
 }
 
-export const PersonalInfoFields = ({ values, errors = {}, onChange }: PersonalInfoFieldsProps) => {
-  return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="vorname">Vorname</Label>
-          <Input
-            id="vorname"
-            value={values.vorname}
-            onChange={(e) => onChange("vorname", e.target.value)}
-            className={errors.vorname ? "border-red-500" : ""}
-          />
-          {errors.vorname && (
-            <p className="text-sm text-red-500">{errors.vorname}</p>
-          )}
-        </div>
+const NAME_FIELDS = [
+  { id: "vorname", label: "Vorname" },
+  { id: "nachname", label: "Nachname" },
+] as const;
 
-        <div className="space-y-2">
-          <Label htmlFor="nachname">Nachname</Label>
-          <Input
-            id="nachname"
-            value={values.nachname}
-            onChange={(e) => onChange("nachname", e.target.value)}
-            className={errors.nachname ? "border-red-500" : ""}
-          />
-          {errors.nachname && (
-            <p className="text-sm text-red-500">{errors.nachname}</p>
-          )}
-        </div>
+export const PersonalInfoFields = ({ values, errors = {}, onChange }: PersonalInfoFieldsProps) => (
+  <div className="grid gap-5 md:grid-cols-2 md:gap-4">
+    {NAME_FIELDS.map(({ id, label }) => (
+      <div key={id} className="flex min-w-0 flex-col gap-2">
+        <Label htmlFor={id}>{label}</Label>
+        <Input
+          id={id}
+          value={values[id]}
+          onChange={(e) => onChange(id, e.target.value)}
+          aria-invalid={Boolean(errors[id])}
+          aria-describedby={errors[id] ? `${id}-error` : undefined}
+        />
+        <FieldError id={`${id}-error`} message={errors[id]} />
       </div>
-    </div>
-  );
-};
+    ))}
+  </div>
+);
