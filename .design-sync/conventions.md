@@ -40,7 +40,12 @@ Fonts are the system sans stack; there is no brand webfont.
 
 ## Where the truth lives
 
-- `styles.css` → `_ds_bundle.css`: the compiled Tailwind and token CSS (`--primary`, `--border`, `--radius`…).
+- `tokens/tokens.css`: the theme tokens, `:root` (light) and `.dark`. Colours are HSL
+  channels, so use them as `hsl(var(--border))`; `--radius` is a length.
+  Caveat: `bg-primary`/`text-primary` and `bg-secondary` render the fixed colours
+  #2563eb / #64748b, not `--primary`/`--secondary`. Use the classes for brand colour.
+- `styles.css` → `tokens/tokens.css`, then `_ds_bundle.css` (compiled Tailwind; its
+  `--tw-*` properties are Tailwind internals, never theme tokens).
 - `components/general/<Name>/<Name>.prompt.md` and `<Name>.d.ts`: per-component props and examples.
   `Button` variants: `default` `outline` `secondary` `destructive` `ghost` `link`; sizes `sm` `default` `lg` `icon`.
 

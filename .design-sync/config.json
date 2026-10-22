@@ -3,7 +3,7 @@
   "shape": "package",
   "pkg": "wartgeld-generator-zug",
   "globalName": "WartgeldUI",
-  "buildCmd": "npx tailwindcss -c .design-sync/tailwind.config.ts -i src/index.css -o .design-sync/.cache/ds.css --minify",
+  "buildCmd": "node .design-sync/build-css.mjs",
   "srcDir": "src/components/ui",
   "tsconfig": "tsconfig.app.json",
   "cssEntry": ".design-sync/.cache/ds.css",
@@ -52,5 +52,7 @@
       "cardMode": "column"
     }
   },
-  "readmeHeader": ".design-sync/conventions.md"
+  "readmeHeader": ".design-sync/conventions.md",
+  "tokensPkg": "../.design-sync/.cache/tokens",
+  "tokensGlob": "tokens.css"
 }
