@@ -158,3 +158,36 @@ for (const width of [320, 390]) {
     });
   });
 }
+
+test.describe("iPhone", () => {
+  test.use({
+    viewport: { width: 390, height: 844 },
+    userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1",
+  });
+
+  test("«Drucken» hands the invoice to the share menu instead of printing a blank page", { tag: ["@FR-01.04"] }, async ({ page }) => {
+    // The share menu is the iPhone's own; the stub records what the app hands to it.
+    await page.addInitScript(() => {
+      const shared: { name: string; type: string; size: number }[] = [];
+      Object.assign(window, { shared });
+      Object.defineProperty(navigator, "canShare", { value: () => true });
+      Object.defineProperty(navigator, "share", {
+        value: async ({ files }: ShareData) => { files?.forEach(f => shared.push({ name: f.name, type: f.type, size: f.size })); },
+      });
+    });
+    await stubAddressLookup(page);
+    await page.goto("/");
+    await fillValidForm(page);
+    await generateButton(page).click();
+
+    const sheet = page.getByRole("dialog", { name: "Rechnung bereit" });
+    await expect(sheet).toBeVisible({ timeout: 15_000 });
+    await sheet.getByRole("button", { name: "Drucken" }).click();
+
+    const shared = await page.evaluate(() => (window as unknown as { shared: { name: string; type: string; size: number }[] }).shared);
+    expect(shared).toHaveLength(1);
+    expect(shared[0]).toMatchObject({ name: "Anna_Muster.pdf", type: "application/pdf" });
+    expect(shared[0].size, "the real invoice, not an empty file").toBeGreaterThan(1000);
+    await expect(page.locator("body > iframe"), "no hidden print frame").toHaveCount(0);
+  });
+});

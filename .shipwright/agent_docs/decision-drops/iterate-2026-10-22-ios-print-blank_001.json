@@ -1,0 +1,14 @@
+{
+  "run_id": "iterate-2026-10-22-ios-print-blank",
+  "date": "2026-10-22",
+  "section": "Iterate — bug: iPhone print blank page",
+  "title": "Print on iPhone and iPad through the system share menu",
+  "context": "On iPhone Safari «Drucken» printed an empty page: printPdf loaded the PDF into a hidden (display:none) iframe and printed it, and iOS/iPadOS Safari never draws a PDF inside such a frame. Desktop browsers do, so tests stayed green.",
+  "decision": "On iOS/iPadOS (iPhone/iPad/iPod UA, or Macintosh with touch) «Drucken» calls navigator.share with the PDF file inside the tap; the share menu offers «Drucken». Cancel or a second tap does nothing; no file sharing or a failed share opens the PDF in a new tab; if Safari blocks that tab, a toast suggests «Speichern». Computers keep the hidden-frame print.",
+  "consequences": "Printing on iPhone takes one extra step (share menu → Drucken) but works. Real-device behaviour is verified by the user after deploy, not by automated tests. In-app browsers without file sharing may show a blank fallback tab (accepted).",
+  "rationale": "User chose the share menu over opening the PDF in a new tab (stays in the app, one step to the printer). Fixes the root cause (iOS never reaches the hidden-frame path) rather than retrying the frame.",
+  "rejected": "Opening the PDF in a new tab as the main path (user preferred the share menu); rendering the PDF to images for printing (heavy, new dependency); a visible iframe (iOS still prints only the page, not the PDF).",
+  "commit": "",
+  "architecture_impact": "none",
+  "spec_ref": ""
+}

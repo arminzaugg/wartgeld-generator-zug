@@ -1,0 +1,10 @@
+{"items":[
+{"name":"Spec Compliance","verdict":"pass","note":"Root cause: printPdf printed a hidden (display:none) iframe holding the PDF blob; iOS/iPadOS Safari never renders a PDF in such a frame, so the print is blank. Fix per user decision: on iOS/iPadOS Drucken opens the share sheet with the PDF file (named after the mother, else Rechnung.pdf); AbortError ignored; no file sharing or other share error → PDF in a new tab. Desktop path unchanged. Android not changed (not reported, its share sheet has no print entry)."},
+{"name":"Error Handling","verdict":"pass","note":"share() rejection handled: AbortError silent, others fall back to a new tab; canShare missing → new tab; object URL for the new tab revoked after 60 s so the tab can load."},
+{"name":"Security Basics","verdict":"pass","note":"The PDF goes only to the OS share sheet the user opens; nothing leaves the browser without the user's choice; no new dependencies or network calls."},
+{"name":"Test Quality","verdict":"pass","note":"7 unit tests written first (failed for the right reason): iPhone share with file name/type, iPad as Mac+touch, neutral name, cancel, share failure, no file sharing, desktop unchanged. Browser boundary mocked (UA, share, window.open, object URLs). E2E taps Drucken in the phone sheet with an iPhone UA and a recording share stub and checks the real PDF bytes reach it."},
+{"name":"Performance Basics","verdict":"pass","note":"One extra Blob→File wrap per tap; no bundle impact worth noting."},
+{"name":"Naming & Structure","verdict":"pass","note":"Change kept in src/lib/pdfActions.ts (helpers isIOS, openInNewTab, printOnIOS) plus one prop pass-through; files well under 300 lines."},
+{"name":"Affected Boundaries","verdict":"n/a","note":"No stored format, env or API contract changed."},
+{"name":"Test Hygiene Probe","verdict":"pass","note":"scan_test_hygiene --diff: no findings."}
+]}

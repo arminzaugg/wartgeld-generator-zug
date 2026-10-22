@@ -5,8 +5,46 @@ import type { FormValues } from '@/types/form';
 export const pdfFileName = (values: Pick<FormValues, 'vorname' | 'nachname'>): string | null =>
   values.vorname && values.nachname ? `${values.vorname}_${values.nachname}.pdf` : null;
 
-export const printPdf = (pdfData: string) => {
+// iPhone and iPad Safari never draw a PDF inside a hidden frame, so printing that frame gives a
+// blank page. iPadOS reports itself as a Mac; the touch points tell it apart.
+const isIOS = () =>
+  /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+  (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+
+// The new tab needs the object URL while it loads, so it is released later, not right away.
+// Returns false when the browser blocked the tab.
+const openInNewTab = (blob: Blob) => {
+  const url = URL.createObjectURL(blob);
+  const tab = window.open(url, '_blank');
+  setTimeout(() => URL.revokeObjectURL(url), 60_000);
+  return tab !== null;
+};
+
+/**
+ * On iOS the system share menu (which offers «Drucken») gets the invoice; without file sharing,
+ * the invoice opens in a new tab with Safari's own PDF view. Both must start within the tap.
+ * A tab opened after a failed share is no longer part of the tap and may be blocked: then
+ * `onFailed` lets the page tell the user.
+ */
+const printOnIOS = (blob: Blob, fileName: string, onFailed?: () => void) => {
+  const file = new File([blob], fileName, { type: 'application/pdf' });
+  if (!navigator.canShare?.({ files: [file] })) {
+    if (!openInNewTab(blob)) onFailed?.();
+    return;
+  }
+  navigator.share({ files: [file] }).catch((error: unknown) => {
+    // Closing the share menu without choosing, or a second tap while it opens, is not an error.
+    if (error instanceof DOMException && (error.name === 'AbortError' || error.name === 'InvalidStateError')) return;
+    if (!openInNewTab(blob)) onFailed?.();
+  });
+};
+
+export const printPdf = (pdfData: string, fileName: string | null, onFailed?: () => void) => {
   const blob = dataUriToBlob(pdfData);
+  if (isIOS()) {
+    printOnIOS(blob, fileName ?? 'Rechnung.pdf', onFailed);
+    return;
+  }
   const url = URL.createObjectURL(blob);
 
   // Create an iframe for printing
