@@ -1,0 +1,183 @@
+{
+  "schema_version": 1,
+  "run_id": "iterate-2026-10-22-ios-print-blank",
+  "reviews": {
+    "self": {
+      "review_type": "self",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-22T19:52:10.045774+00:00",
+      "disposition": null,
+      "recorded_by": "self-review",
+      "parse_status": null,
+      "raw_excerpt": null
+    },
+    "plan": {
+      "review_type": "plan",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-22T19:52:10.103497+00:00",
+      "disposition": "closed by reason_code complexity-below-threshold",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "complexity-below-threshold"
+    },
+    "code": {
+      "review_type": "code",
+      "status": "completed",
+      "findings_count": 3,
+      "findings": [
+        {
+          "severity": "medium",
+          "category": "correctness",
+          "file": "src/lib/pdfActions.ts",
+          "line": 31,
+          "finding": "After share() rejects (non-Abort), the new-tab fallback runs outside the tap and Safari's pop-up blocker likely returns null — the user would see nothing.",
+          "suggestion": "Check window.open's result and show a visible hint.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "correctness",
+          "file": "src/lib/__tests__/pdfActions.test.ts",
+          "line": 40,
+          "finding": "navigator overrides not undone between tests.",
+          "suggestion": "Symmetric cleanup.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "correctness",
+          "file": "src/lib/__tests__/pdfActions.test.ts",
+          "line": 42,
+          "finding": "No test for canShare returning false.",
+          "suggestion": "Add one.",
+          "source": "code-reviewer"
+        }
+      ],
+      "provider": null,
+      "completed_at": "2026-10-22T19:55:15.439084+00:00",
+      "disposition": null,
+      "recorded_by": "code-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit"
+    },
+    "doubt": {
+      "review_type": "doubt",
+      "status": "completed",
+      "findings_count": 5,
+      "findings": [
+        {
+          "severity": "medium",
+          "category": "boundary & contract",
+          "file": "e2e/invoice-page.spec.ts",
+          "line": 170,
+          "finding": "Claim under doubt: The real iPhone flow works: share sheet opens and offers «Drucken» — All automated checks stub navigator.share/canShare; real Safari behaviour unproven.",
+          "suggestion": "Manual check on a real iPhone.",
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "medium",
+          "category": "boundary & contract",
+          "file": "src/lib/pdfActions.ts",
+          "line": 31,
+          "finding": "Claim under doubt: Every iPhone UA behaves like Safari — Chrome/Firefox on iOS and in-app WebViews match; where canShare is false they get a blob tab that may stay blank without a toast.",
+          "suggestion": "Device test or documented limit.",
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "concurrency & ordering",
+          "file": "src/lib/pdfActions.ts",
+          "line": 35,
+          "finding": "Claim under doubt: Share rejection is handled by a single follow-up — A second tap rejects with InvalidStateError and opened an extra tab.",
+          "suggestion": "Ignore InvalidStateError.",
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "boundary & contract",
+          "file": "src/lib/pdfActions.ts",
+          "line": 96,
+          "finding": "Claim under doubt: The toast's «Speichern» recovery works on iOS — downloadPdf revokes immediately; Speichern disabled when fileName null.",
+          "suggestion": "Device check or wording.",
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "reversibility",
+          "file": "src/lib/pdfActions.ts",
+          "line": 19,
+          "finding": "Claim under doubt: 60 s is enough for the fallback tab — Safari may reload a discarded background tab after the URL was revoked.",
+          "suggestion": "Accept or skip revoke.",
+          "source": "doubt-reviewer"
+        }
+      ],
+      "provider": null,
+      "completed_at": "2026-10-22T19:56:40.540957+00:00",
+      "disposition": null,
+      "recorded_by": "doubt-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit"
+    },
+    "external_code": {
+      "review_type": "external_code",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-22T19:52:10.280090+00:00",
+      "disposition": "closed by reason_code complexity-below-threshold",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "complexity-below-threshold"
+    },
+    "spec": {
+      "review_type": "spec",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-22T19:52:56.500329+00:00",
+      "disposition": null,
+      "recorded_by": "spec-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit"
+    },
+    "plan_internal": {
+      "review_type": "plan_internal",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-22T19:52:10.162972+00:00",
+      "disposition": "closed by reason_code complexity-below-threshold",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "complexity-below-threshold"
+    },
+    "architecture_internal": {
+      "review_type": "architecture_internal",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-22T19:52:10.221250+00:00",
+      "disposition": "closed by reason_code complexity-below-threshold",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "complexity-below-threshold"
+    }
+  }
+}

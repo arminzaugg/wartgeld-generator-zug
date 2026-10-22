@@ -77,6 +77,7 @@ _Source: enrichment._
 - Given an invoice has been generated for 'Anna Muster', when the midwife clicks 'Speichern', then a file named 'Anna_Muster.pdf' is downloaded; when she clicks 'Drucken', the browser print dialog opens for that invoice.
 - (E) Given a screen at least 768px wide, when an invoice is generated, then the preview shows it with a `PDF bereit` badge, `Drucken` and `Speichern` beneath it and the file name; while it is made, the button reads `Rechnung wird erstellt …` and `Zurücksetzen` is disabled (iterate-2026-10-22-redesign-invoice-page).
 - (E) Given a phone (narrower than 768px), when an invoice is generated, then it opens in a panel from the bottom with recipient, total, `Drucken` and `Speichern`; closing it keeps the form, and `Rechnung anzeigen` in the bottom bar reopens it (iterate-2026-10-22-redesign-invoice-page).
+- (E) Given an iPhone or iPad, when the midwife taps `Drucken`, then the system share menu opens with the invoice as a PDF named after the mother (it offers «Drucken»); closing the menu does nothing, and where files cannot be shared or sharing fails, the invoice opens in a new tab, and if Safari blocks that tab a message suggests «Speichern»; computers keep the direct print dialog (iterate-2026-10-22-ios-print-blank).
 - (E) Given the form is edited after generating, when the midwife looks at the preview or panel, then file name, recipient and total still describe the generated PDF (iterate-2026-10-22-redesign-invoice-page).
 
 ### FR-01.05 — Reset the form

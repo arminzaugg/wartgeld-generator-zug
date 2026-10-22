@@ -1,0 +1,84 @@
+{
+  "run_id": "iterate-2026-10-22-ios-print-blank",
+  "date": "2026-10-22T19:57:29.003346Z",
+  "event_at": "2026-10-22T19:16:44.328965+00:00",
+  "type": "bug",
+  "complexity": "small",
+  "prior_source": "history",
+  "branch": "iterate/ios-print-blank",
+  "spec": ".shipwright/planning/01-adopted/spec.md",
+  "tests_passed": true,
+  "adr": "iterate-2026-10-22-ios-print-blank",
+  "test_completeness": {
+    "status": "complete",
+    "behaviors": [
+      {
+        "behavior": "iOS/iPadOS Drucken hands the PDF (named after the mother) to the share menu; no hidden frame",
+        "disposition": "tested",
+        "evidence": "src/lib/__tests__/pdfActions.test.ts::opens the share menu with the invoice as a PDF named after the mother, instead of printing a blank frame PASSED; e2e/invoice-page.spec.ts::\u00abDrucken\u00bb hands the invoice to the share menu instead of printing a blank page PASSED"
+      },
+      {
+        "behavior": "iPad reporting as Mac with touch is treated as iOS",
+        "disposition": "tested",
+        "evidence": "src/lib/__tests__/pdfActions.test.ts::treats an iPad, which reports itself as a Mac with touch, like an iPhone PASSED"
+      },
+      {
+        "behavior": "neutral file name when a name is missing",
+        "disposition": "tested",
+        "evidence": "src/lib/__tests__/pdfActions.test.ts::uses a neutral file name while the mother's name is incomplete PASSED"
+      },
+      {
+        "behavior": "closing the share menu or a second tap does nothing more",
+        "disposition": "tested",
+        "evidence": "src/lib/__tests__/pdfActions.test.ts::does nothing more when the share menu is closed without choosing PASSED; src/lib/__tests__/pdfActions.test.ts::ignores a second tap while the share menu is still opening PASSED"
+      },
+      {
+        "behavior": "share failure or no file sharing opens a new tab",
+        "disposition": "tested",
+        "evidence": "src/lib/__tests__/pdfActions.test.ts::opens the invoice in a new tab when the share menu fails PASSED; src/lib/__tests__/pdfActions.test.ts::opens the invoice in a new tab on iPhones that cannot share files PASSED; src/lib/__tests__/pdfActions.test.ts::opens the invoice in a new tab when the share menu cannot take PDF files PASSED"
+      },
+      {
+        "behavior": "blocked tab after failed share shows a message suggesting Speichern",
+        "disposition": "tested",
+        "evidence": "src/lib/__tests__/pdfActions.test.ts::reports the failure when Safari also blocks the new tab PASSED; src/components/__tests__/PdfActionButtons.test.tsx::tells the user to save instead when an iPhone can neither share nor open the invoice PASSED"
+      },
+      {
+        "behavior": "computers keep the hidden-frame print dialog",
+        "disposition": "tested",
+        "evidence": "src/lib/__tests__/pdfActions.test.ts::still prints through a hidden frame and never opens the share menu PASSED"
+      },
+      {
+        "behavior": "real iPhone Safari share sheet offers \u00abDrucken\u00bb and prints the invoice",
+        "disposition": "untestable",
+        "reason_code": "requires-physical-device",
+        "evidence": "user tests on a real iPhone after deploy"
+      }
+    ],
+    "counts": {
+      "testable": 7,
+      "tested": 7,
+      "untestable": 1,
+      "untested_testable": 0
+    },
+    "enumeration_basis": {
+      "acs": 1,
+      "covered_acs": 1
+    }
+  },
+  "surface_verification": {
+    "surface": "web",
+    "runner": "npx playwright test",
+    "exit_code": 0,
+    "tests_run": 26,
+    "evidence_path": "/Users/openclaw/Engineering/nidea-invoice/.worktrees/ios-print-blank/.shipwright/runs/iterate-2026-10-22-ios-print-blank/surface_verification.log",
+    "timestamp": "2026-10-22T19:57:00.624Z"
+  },
+  "declared_removals": [],
+  "exemptions": {
+    "count": 0,
+    "items": []
+  },
+  "risk_flags": [
+    "touches_shared_infra"
+  ]
+}
