@@ -48,6 +48,9 @@ _Source: enrichment._
 - (E) Given an address in 8836 Bennau, 6417 Sattel, 6418 Rothenthurm or 5642 Mühlau, when the midwife submits, then the form shows `Diese PLZ liegt nicht im Kanton Zug`, proposes no municipality and produces no invoice (iterate-2026-10-21-bunny-post-proxy).
 - (E) Given a municipality was chosen by hand, when only the house number changes, then the choice is kept; when an address in another locality is picked, the new proposal replaces it; when the address is typed over instead of picked, postcode, town and municipality are cleared.
 - (E) Given a postcode without any Zug locality (e.g. 8001 Zürich), when the midwife submits, then the form shows `Diese PLZ liegt nicht im Kanton Zug` and produces no invoice.
+- (E) Given the services are ticked, when the midwife looks at the form, then a total shows CHF 0.00, CHF 400.00 or CHF 800.00, the same amount the PDF prints (iterate-2026-10-22-redesign-invoice-page).
+- (E) Given a municipality is chosen, when the midwife looks below `Zuständige Gemeinde`, then `Rechnung geht an` names the recipient, with the municipality name added to a generic title (e.g. `Gemeindeverwaltung Menzingen`) (iterate-2026-10-22-redesign-invoice-page).
+- (E) Given the midwife submits invalid entries, when the form refuses, then a summary above the form counts the problems, each entry moves focus to its field without leaving the page, and each field shows its message below it; while she is still typing, no summary is shown (iterate-2026-10-22-redesign-invoice-page).
 
 ### FR-01.02 — Address suggestions for the Canton of Zug
 
@@ -57,6 +60,7 @@ _Source: enrichment._
 - (E) Given the midwife types `Bahnhofstr 1`, when suggestions arrive, then `Bahnhofstrasse 1` in Zug, Baar and Steinhausen come first, at most 10 suggestions are shown, and none is in Bennau, Sattel, Rothenthurm, Mühlau or outside the Zug locality list (iterate-2026-10-21-bunny-post-proxy).
 - (E) Given the lookup service fails or Swiss Post does not answer in time, when the midwife types, then `Fehler bei der Adresssuche` is shown and no suggestion appears (iterate-2026-10-21-bunny-post-proxy).
 - (E) Given the midwife types several letters quickly, when she pauses, then one lookup is sent for the full text, and suggestions for earlier text are not offered meanwhile (iterate-2026-10-21-bunny-static-hosting).
+- (E) Given the suggestion list is open (with results, while loading or with no result), when the midwife presses Escape, then the list closes; the list credits `Adressdaten: Schweizerische Post` (iterate-2026-10-22-redesign-invoice-page).
 
 ### FR-01.03 — Invoice PDF generation
 
@@ -71,12 +75,16 @@ _Source: enrichment._
 _Source: enrichment._
 
 - Given an invoice has been generated for 'Anna Muster', when the midwife clicks 'Speichern', then a file named 'Anna_Muster.pdf' is downloaded; when she clicks 'Drucken', the browser print dialog opens for that invoice.
+- (E) Given a screen at least 768px wide, when an invoice is generated, then the preview shows it with a `PDF bereit` badge, `Drucken` and `Speichern` beneath it and the file name; while it is made, the button reads `Rechnung wird erstellt …` and `Zurücksetzen` is disabled (iterate-2026-10-22-redesign-invoice-page).
+- (E) Given a phone (narrower than 768px), when an invoice is generated, then it opens in a panel from the bottom with recipient, total, `Drucken` and `Speichern`; closing it keeps the form, and `Rechnung anzeigen` in the bottom bar reopens it (iterate-2026-10-22-redesign-invoice-page).
+- (E) Given the form is edited after generating, when the midwife looks at the preview or panel, then file name, recipient and total still describe the generated PDF (iterate-2026-10-22-redesign-invoice-page).
 
 ### FR-01.05 — Reset the form
 
 _Source: enrichment._
 
 - Given the form is filled and an invoice was generated, when the midwife clicks 'Formular Zurücksetzen', then all fields, the address search and the preview are cleared and a confirmation is shown.
+- (E) Given the redesigned page, when the midwife clicks `Zurücksetzen` (formerly 'Formular Zurücksetzen'), then the same reset happens and any problem summary disappears (iterate-2026-10-22-redesign-invoice-page).
 
 ### FR-01.06 — Invoice issuer details
 
@@ -100,6 +108,7 @@ _Source: enrichment._
 - (E) Given the user opens the information page, when she reads the privacy statement, then it says that the text typed into the address field (street, house number, postcode, town) goes via Netlify and bunny.net, which see the IP address, to Swiss Post, and that nothing else is sent (iterate-2026-10-21-bunny-post-proxy).
 - (E) Given the user opens the information page, when she reads the privacy statement, then bunny.net is named as host, Netlify only for the old address, and saved settings files stay on the user's device (iterate-2026-10-21-bunny-static-hosting).
 - (E) Given the user opens the app, when the start page has loaded, then the browser has contacted no other website for scripts, styles or fonts (the fonts come with the app), so the privacy statement that nothing else is sent stays true (iterate-2026-10-22-redesign-papier-tanne).
+- (E) Given the user opens the invoice page, when she reads the note at the top, then it says patient data stays in the browser and only the entered address goes via the app's own address service to Swiss Post, with `Mehr erfahren` leading to the information page (iterate-2026-10-22-redesign-invoice-page).
 
 ### FR-01.09 — Light and dark appearance
 

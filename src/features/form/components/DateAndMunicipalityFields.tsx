@@ -4,6 +4,8 @@ import { Label } from "@/components/ui/label";
 import { MUNICIPALITIES } from "@/data/municipalities";
 import { proposeMunicipality } from "@/lib/municipality";
 import { cn } from "@/lib/utils";
+import { FieldError } from "./FieldError";
+import { RecipientSummary } from "./RecipientSummary";
 
 interface DateAndMunicipalityFieldsProps {
   values: {
@@ -28,22 +30,21 @@ export const DateAndMunicipalityFields = ({ values, errors = {}, onChange }: Dat
   const outsideZug = proposal !== null && !proposal.known;
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
-        <Label htmlFor="geburtsdatum">Datum der Geburt</Label>
+    <div className="flex flex-col gap-5 md:gap-6">
+      <div className="flex flex-col gap-2 md:max-w-[calc(50%-8px)]">
+        <Label htmlFor="geburtsdatum">Geburtsdatum</Label>
         <Input
           id="geburtsdatum"
           type="date"
           value={values.geburtsdatum}
           onChange={(e) => onChange("geburtsdatum", e.target.value)}
           aria-invalid={Boolean(errors.geburtsdatum)}
+          aria-describedby={errors.geburtsdatum ? "geburtsdatum-error" : undefined}
         />
-        {errors.geburtsdatum && (
-          <p className="text-sm text-red-500">{errors.geburtsdatum}</p>
-        )}
+        <FieldError id="geburtsdatum-error" message={errors.geburtsdatum} />
       </div>
 
-      <div className="space-y-2">
+      <div className="flex flex-col gap-2">
         <Label htmlFor="gemeindeBfs">Zuständige Gemeinde</Label>
         <select
           id="gemeindeBfs"
@@ -51,6 +52,7 @@ export const DateAndMunicipalityFields = ({ values, errors = {}, onChange }: Dat
           disabled={!proposal?.known}
           onChange={(e) => onChange("gemeindeBfs", e.target.value)}
           aria-invalid={Boolean(errors.gemeindeBfs) || outsideZug}
+          aria-describedby={outsideZug ? "gemeindeBfs-outside" : errors.gemeindeBfs ? "gemeindeBfs-error" : undefined}
           className={selectClassName}
         >
           <option value="">{proposal?.known ? "Bitte wählen" : "Zuerst Adresse auswählen"}</option>
@@ -69,22 +71,19 @@ export const DateAndMunicipalityFields = ({ values, errors = {}, onChange }: Dat
             </>
           )}
         </select>
-        {outsideZug && (
-          <p className="text-sm text-red-500">Diese PLZ liegt nicht im Kanton Zug</p>
-        )}
+        {outsideZug && <FieldError id="gemeindeBfs-outside" message="Diese PLZ liegt nicht im Kanton Zug" />}
         {proposal?.sharedHint && (
-          <p className="text-sm text-muted-foreground">
+          <p className="text-[13px] leading-[18px] text-muted-foreground">
             Diese Ortschaft gehört zu mehreren Gemeinden. Bitte wählen Sie die zuständige Gemeinde.
           </p>
         )}
         {proposal?.outsideHint && (
-          <p className="text-sm text-muted-foreground">
+          <p className="text-[13px] leading-[18px] text-muted-foreground">
             Diese Ortschaft liegt teilweise ausserhalb des Kantons Zug. Bitte prüfen Sie, ob die Adresse zu einer Zuger Gemeinde gehört.
           </p>
         )}
-        {errors.gemeindeBfs && !outsideZug && (
-          <p className="text-sm text-red-500">{errors.gemeindeBfs}</p>
-        )}
+        {!outsideZug && <FieldError id="gemeindeBfs-error" message={errors.gemeindeBfs} />}
+        <RecipientSummary gemeindeBfs={values.gemeindeBfs} plz={values.plz} ort={values.ort} />
       </div>
     </div>
   );

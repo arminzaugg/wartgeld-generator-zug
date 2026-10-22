@@ -1,0 +1,14 @@
+{
+  "run_id": "iterate-2026-10-22-redesign-invoice-page",
+  "date": "2026-10-22",
+  "section": "Iterate — change: invoice page redesign (redesign part 2)",
+  "title": "Redesign the invoice page with a live preview on desktop and a bottom sheet on phones",
+  "context": "Part 2 of the Papier & Tanne redesign. The invoice page had a single column, a modal-free inline PDF, generic error lists and no total or recipient before generating. The design shows a two-column desktop layout, a phone action bar and a PDF sheet.",
+  "decision": "Index owns the generated invoice as a snapshot (pdf, filename, recipient, total) and a generation counter that drops stale results; phone layout is decided once (useIsPhone, <768px) and passed down; desktop shows a sticky 480px preview panel, phones a Radix Dialog bottom sheet opened only when the viewport is a phone at success time. Error summary uses buttons + focus (HashRouter). Print/save moved verbatim to src/lib/pdfActions.ts; PDF generation untouched.",
+  "consequences": "Users see the CHF total and the receiving municipality before generating. One new dependency (@radix-ui/react-dialog). Reset stays usable during generation. iOS save/print fragility, iframe limits on mobile and keyboard-over-bar remain known limitations; zero-service invoices still allowed (out of scope).",
+  "rationale": "Matches the approved design with identical functionality; the snapshot keeps preview text consistent with the PDF; the counter makes reset/address change during generation safe; reviewers (spec, code, codex, doubt) passed after fixes.",
+  "rejected": "Preview panel hidden with CSS on phones (would still load an iframe); two submit buttons for phone/desktop (duplicate ids and focus confusion); hash links in the error summary (break HashRouter navigation); deriving preview text from live form values (drifts from the PDF).",
+  "commit": "",
+  "architecture_impact": "convention",
+  "spec_ref": ""
+}

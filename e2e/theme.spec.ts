@@ -1,6 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 
-const generateButton = (page: Page) => page.getByRole("button", { name: "Rechnung Generieren" });
+const generateButton = (page: Page) => page.getByRole("button", { name: "Rechnung generieren" });
 
 const computed = (page: Page, selector: string, property: string) =>
   page.locator(selector).first().evaluate((el, prop) => getComputedStyle(el).getPropertyValue(prop), property);
@@ -29,6 +29,8 @@ test("dark theme is remembered across a reload and uses the dark palette", { tag
   await expect(page.locator("html")).toHaveClass(/dark/);
   expect(await computed(page, "body", "background-color")).toBe("rgb(18, 21, 19)");
   await expect(generateButton(page)).toHaveCSS("background-color", "rgb(134, 201, 179)");
+  // Native controls such as the date picker icon follow the dark palette.
+  await expect(page.locator("html")).toHaveCSS("color-scheme", "dark");
 });
 
 test("headings use Newsreader and body text Instrument Sans, both actually loaded", { tag: ["@FR-01.09"] }, async ({ page }) => {
@@ -65,7 +67,7 @@ test("keyboard focus on the municipality select shows the green border and halo"
   ] } }));
   await page.goto("/");
   await chooseTheme(page, "Light");
-  await page.getByPlaceholder(/Adresse eingeben/).fill("Dorfstrasse 3");
+  await page.getByPlaceholder("Strasse und Hausnummer").fill("Dorfstrasse 3");
   await page.getByRole("option", { name: /Dorfstrasse/ }).click();
 
   // Reach the select by keyboard (Shift+Tab from the first service) so :focus-visible applies.

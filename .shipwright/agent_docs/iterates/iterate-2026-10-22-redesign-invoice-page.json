@@ -1,0 +1,142 @@
+{
+  "run_id": "iterate-2026-10-22-redesign-invoice-page",
+  "date": "2026-10-22T18:12:09.913303Z",
+  "event_at": "2026-10-22T14:17:15.268867+00:00",
+  "type": "change",
+  "complexity": "medium",
+  "prior_source": "keyword",
+  "branch": "iterate/redesign-invoice-page",
+  "spec": ".shipwright/planning/iterate/2026-10-22-redesign-invoice-page.md",
+  "tests_passed": true,
+  "adr": "iterate-2026-10-22-redesign-invoice-page",
+  "test_completeness": {
+    "status": "complete",
+    "behaviors": [
+      {
+        "behavior": "AC1 header: brand, Information/Einstellungen links, single h1",
+        "disposition": "tested",
+        "evidence": "src/pages/__tests__/Index.test.tsx::links to information and settings from the top bar PASSED; src/pages/__tests__/Index.test.tsx::titles the page \"Neue Rechnung\" as its only main heading PASSED"
+      },
+      {
+        "behavior": "AC2 wording: Geburtsdatum, Adresse label + help line, button labels",
+        "disposition": "tested",
+        "evidence": "src/features/form/components/__tests__/FormContainer.test.tsx::labels the address field \"Adresse\" and explains how to fill it PASSED; src/features/form/components/__tests__/FormContainer.test.tsx::labels the birth date field \"Geburtsdatum\" PASSED"
+      },
+      {
+        "behavior": "AC3 privacy note names the own address service and the Post",
+        "disposition": "tested",
+        "evidence": "src/pages/__tests__/Index.test.tsx::says patient data stays in the browser and only the address goes to the Post via the own service PASSED"
+      },
+      {
+        "behavior": "AC4 service rows toggle once anywhere; total follows",
+        "disposition": "tested",
+        "evidence": "e2e/invoice-page.spec.ts::each service row toggles once, wherever it is clicked, and the total follows PASSED; src/features/form/components/__tests__/ServiceSelectionFields.test.tsx PASSED"
+      },
+      {
+        "behavior": "AC4 page total equals PDF total for all tick combinations",
+        "disposition": "tested",
+        "evidence": "src/lib/__tests__/invoiceTotal.test.ts PASSED"
+      },
+      {
+        "behavior": "AC5 recipient shown below the municipality select",
+        "disposition": "tested",
+        "evidence": "src/features/form/components/__tests__/RecipientSummary.test.tsx PASSED; src/lib/__tests__/recipient.test.ts PASSED; src/pages/__tests__/Index.test.tsx::shows where the invoice goes once the address is picked PASSED"
+      },
+      {
+        "behavior": "AC6 error summary after submit, focus, jump to field without URL change",
+        "disposition": "tested",
+        "evidence": "src/features/form/components/__tests__/FormContainer.test.tsx::shows and focuses the problem summary after a failed submit PASSED; e2e/invoice-page.spec.ts::the problem summary jumps to a field without leaving the page PASSED; src/features/form/components/__tests__/ErrorSummary.test.tsx PASSED"
+      },
+      {
+        "behavior": "AC6 summary stays truthful when the address is typed over",
+        "disposition": "tested",
+        "evidence": "src/features/form/components/__tests__/FormContainer.test.tsx::keeps reporting an address problem when the address is typed over without picking a suggestion PASSED"
+      },
+      {
+        "behavior": "AC6 no fixed colour utilities in invoice-page files",
+        "disposition": "tested",
+        "evidence": "src/styles/__tests__/theme.test.ts PASSED"
+      },
+      {
+        "behavior": "AC7 suggestions: Escape closes in every state, footer outside listbox",
+        "disposition": "tested",
+        "evidence": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx PASSED"
+      },
+      {
+        "behavior": "AC8 preview states, busy state, snapshot of generated invoice",
+        "disposition": "tested",
+        "evidence": "src/pages/__tests__/Index.test.tsx::shows the busy state while the invoice is made, then the finished PDF with print and save PASSED; src/pages/__tests__/Index.test.tsx::keeps describing the generated invoice when the form is edited afterwards PASSED"
+      },
+      {
+        "behavior": "AC8 reset stays available while generating and drops that run",
+        "disposition": "tested",
+        "evidence": "src/features/form/components/__tests__/FormContainer.test.tsx::keeps reset available while the invoice is made, so a stalled generation never locks the form PASSED; src/pages/__tests__/Index.test.tsx::a reset while the invoice is being made clears the form and drops that invoice PASSED"
+      },
+      {
+        "behavior": "AC8 side-by-side layout, sticky 480px preview, download name",
+        "disposition": "tested",
+        "evidence": "e2e/invoice-page.spec.ts::form and preview sit side by side, the preview stays in view PASSED; e2e/invoice-page.spec.ts::shows the finished invoice with print and save, saved under the mother's name PASSED"
+      },
+      {
+        "behavior": "AC9 phone sheet opens, closes, reopens; focus handling",
+        "disposition": "tested",
+        "evidence": "src/pages/__tests__/Index.test.tsx::on a phone, opens the finished invoice in a panel that can be closed and reopened PASSED; src/pages/__tests__/Index.test.tsx::on a phone, focuses the close button when the panel opens and returns focus to \"Rechnung anzeigen\" when it closes PASSED; e2e/invoice-page.spec.ts::the finished invoice opens in a panel that closes and reopens, keeping the form PASSED"
+      },
+      {
+        "behavior": "AC9 sheet closes on growing past phone width, no focus jump",
+        "disposition": "tested",
+        "evidence": "src/pages/__tests__/Index.test.tsx::closes the panel and shows the preview when the screen grows past phone width PASSED"
+      },
+      {
+        "behavior": "AC9 bar fits 320/390px, covers no content; toasts at top",
+        "disposition": "tested",
+        "evidence": "e2e/invoice-page.spec.ts::the bottom bar fits the screen and covers no content (320, 390) PASSED; e2e/invoice-page.spec.ts::the action bar stays at the bottom without covering the form PASSED; e2e/invoice-page.spec.ts::messages appear at the top of the screen PASSED"
+      },
+      {
+        "behavior": "AC9 stale generation dropped on address change",
+        "disposition": "tested",
+        "evidence": "src/pages/__tests__/Index.test.tsx::drops an invoice still being made when the address changes meanwhile PASSED"
+      },
+      {
+        "behavior": "AC10 fixed invoice date notice with \u00c4ndern link",
+        "disposition": "tested",
+        "evidence": "src/pages/__tests__/Index.test.tsx::shows a notice with a link to change a fixed invoice date PASSED"
+      },
+      {
+        "behavior": "AC11 print/save moved verbatim, filename rule, suites green",
+        "disposition": "tested",
+        "evidence": "src/lib/__tests__/pdfActions.test.ts PASSED; src/components/__tests__/PdfActionButtons.test.tsx PASSED; vitest 307/307, playwright 18/18 (dev + built), lint/typecheck/build green"
+      }
+    ],
+    "counts": {
+      "testable": 19,
+      "tested": 19,
+      "untestable": 0,
+      "untested_testable": 0
+    },
+    "enumeration_basis": {
+      "acs": 11,
+      "covered_acs": 11
+    }
+  },
+  "surface_verification": {
+    "surface": "web",
+    "runner": "npx playwright test",
+    "exit_code": 0,
+    "tests_run": 18,
+    "evidence_path": "/Users/openclaw/Engineering/nidea-invoice/.worktrees/redesign-invoice-page/.shipwright/runs/iterate-2026-10-22-redesign-invoice-page/surface_verification.log",
+    "timestamp": "2026-10-22T18:11:26.477Z"
+  },
+  "declared_removals": [
+    "src/components/FormValidation.tsx",
+    "src/components/FormValidationDisplay.tsx"
+  ],
+  "exemptions": {
+    "count": 0,
+    "items": []
+  },
+  "risk_flags": [
+    "touches_build",
+    "touches_shared_infra"
+  ]
+}

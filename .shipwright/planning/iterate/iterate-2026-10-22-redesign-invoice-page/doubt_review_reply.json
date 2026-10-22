@@ -1,0 +1,57 @@
+{
+ "stage": "doubt",
+ "verdict": "PASS",
+ "summary": "0 high, 0 medium, 5 low; core concurrency design held",
+ "doubts": [
+  {
+   "severity": "low",
+   "file": "src/features/form/components/FormContainer.tsx",
+   "line": 53,
+   "disposition": "fixed (address re-validated while submitAttempted; unit test)",
+   "claim_under_doubt": "Summary undercounts after typing over an address post-submit.",
+   "disproof_attempt": "Constructed the failure scenario from the diff (see claim).",
+   "what_would_resolve_it": "fixed (address re-validated while submitAttempted; unit test)",
+   "lens": "boundary"
+  },
+  {
+   "severity": "low",
+   "file": "src/features/form/components/FormActions.tsx",
+   "line": 30,
+   "disposition": "fixed (reset stays enabled; counter drops the running run; unit tests FormContainer + Index)",
+   "claim_under_doubt": "Stalled jsPDF load locks reset (main never disabled reset).",
+   "disproof_attempt": "Constructed the failure scenario from the diff (see claim).",
+   "what_would_resolve_it": "fixed (reset stays enabled; counter drops the running run; unit tests FormContainer + Index)",
+   "lens": "concurrency"
+  },
+  {
+   "severity": "low",
+   "file": "src/pages/Index.tsx",
+   "line": 72,
+   "disposition": "rebutted/documented (known limitation widened to during or after)",
+   "claim_under_doubt": "Edits during generation also produce submit-time values.",
+   "disproof_attempt": "Constructed the failure scenario from the diff (see claim).",
+   "what_would_resolve_it": "rebutted/documented (known limitation widened to during or after)",
+   "lens": "concurrency"
+  },
+  {
+   "severity": "low",
+   "file": "src/components/PdfSheet.tsx",
+   "line": 25,
+   "disposition": "fixed (no focus move when not phone; assertion in resize test)",
+   "claim_under_doubt": "Focus jumps to submit when sheet closes by growing past phone width.",
+   "disproof_attempt": "Constructed the failure scenario from the diff (see claim).",
+   "what_would_resolve_it": "fixed (no focus move when not phone; assertion in resize test)",
+   "lens": "boundary"
+  },
+  {
+   "severity": "low",
+   "file": "src/services/form/formValidationService.ts",
+   "line": 28,
+   "disposition": "out of scope (pre-existing; recorded as known limitation)",
+   "claim_under_doubt": "Zero-service invoice can be generated.",
+   "disproof_attempt": "Constructed the failure scenario from the diff (see claim).",
+   "what_would_resolve_it": "out of scope (pre-existing; recorded as known limitation)",
+   "lens": "boundary"
+  }
+ ]
+}

@@ -28,11 +28,11 @@ test("settings saved to a file are used for invoices after loading them elsewher
   await newSite.goto("/#/");
   await newSite.getByLabel("Vorname").fill("Lea");
   await newSite.getByLabel("Nachname").fill("Muster");
-  await newSite.getByPlaceholder(/Adresse eingeben/).fill("Dorfstrasse 3");
+  await newSite.getByPlaceholder("Strasse und Hausnummer").fill("Dorfstrasse 3");
   await newSite.getByRole("option", { name: /Dorfstrasse/ }).click();
-  await newSite.getByLabel("Datum der Geburt").fill("2026-10-01");
+  await newSite.getByLabel("Geburtsdatum").fill("2026-10-01");
   await newSite.getByLabel(/Betreuung der Gebärenden/).check();
-  await newSite.getByRole("button", { name: "Rechnung Generieren" }).click();
+  await newSite.getByRole("button", { name: "Rechnung generieren" }).click();
 
   const preview = newSite.locator("iframe");
   await expect(preview).toHaveAttribute("src", /^data:application\/pdf/, { timeout: 15_000 });

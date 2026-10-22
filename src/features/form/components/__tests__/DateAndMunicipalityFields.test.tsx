@@ -71,6 +71,6 @@ describe('DateAndMunicipalityFields — birth date', () => {
         onChange={vi.fn()}
       />
     );
-    expect(screen.getByLabelText('Datum der Geburt')).toHaveAttribute('aria-invalid', 'true');
+    expect(screen.getByLabelText('Geburtsdatum')).toHaveAttribute('aria-invalid', 'true');
   });
 });
