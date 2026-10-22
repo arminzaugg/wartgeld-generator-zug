@@ -21,6 +21,10 @@ TypeScript in strict mode (tsconfig.app.json) with React 18 function components 
 - Keep files under 300 lines; split larger modules.
 - Tests live alongside implementation with `.test.*` / `_test.*` suffix OR in a `tests/` directory — whichever is consistent with the rest of the codebase.
 
+## Convention Updates
+
+- **iterate-2026-10-22-redesign-papier-tanne** (2026-10-22): Convention — colours only via the "Papier & Tanne" tokens in `src/index.css` (channels as `hsl(var(--x))`, rgba tokens as `var(--x)`), fields share `ui/field-styles.ts`, fonts are bundled (`@fontsource`), and `index.html` loads nothing from other hosts (guarded by `src/styles/__tests__/theme.test.ts`). → decision_log.md (ADR via Run-ID: iterate-2026-10-22-redesign-papier-tanne)
+
 ## Learnings
 
 - (2026-10-21) iterate — Swiss Post town names equal the official locality names, but Post's canton field differs at the border (8836 Bennau = SZ): filter Zug addresses by the locality snapshot, not by Post's canton. [→ ADR iterate-2026-10-21-zug-municipality-data]

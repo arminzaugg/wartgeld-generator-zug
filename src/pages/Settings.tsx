@@ -33,7 +33,7 @@ const SettingsForm = () => {
   return (
     <div className="max-w-2xl space-y-8">
       <Card className="p-6">
-        <h2 className="text-xl font-semibold mb-4">Rechnungsstellerin</h2>
+        <h2 className="text-xl mb-4">Rechnungsstellerin</h2>
         <div className="space-y-4">
           <Textarea
             aria-label="Angaben Rechnungsstellerin"
@@ -47,7 +47,7 @@ const SettingsForm = () => {
       </Card>
 
       <Card className="p-6">
-        <h2 className="text-xl font-semibold mb-4">Ort & Datum</h2>
+        <h2 className="text-xl mb-4">Ort & Datum</h2>
         <div className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="ortRechnungssteller">Ort Rechnungsstellerin</Label>
@@ -87,7 +87,7 @@ const SettingsForm = () => {
       </Card>
 
       <Card className="p-6">
-        <h2 className="text-xl font-semibold mb-4">Unterschrift</h2>
+        <h2 className="text-xl mb-4">Unterschrift</h2>
         <SignaturePad
           onSave={handleSaveSignature}
           initialSignature={initialSettings.signature}
@@ -109,7 +109,7 @@ const Settings = () => {
             <ArrowLeft className="h-4 w-4" />
           </Button>
         </Link>
-        <h1 className="text-3xl font-bold">Einstellungen</h1>
+        <h1 className="text-3xl">Einstellungen</h1>
         <div className="w-10"></div>
       </div>
 
@@ -117,7 +117,7 @@ const Settings = () => {
 
       <div className="max-w-2xl mt-8">
         <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Sichern &amp; Laden</h2>
+          <h2 className="text-xl mb-4">Sichern &amp; Laden</h2>
           <SettingsTransfer onImported={() => setFormKey(key => key + 1)} />
         </Card>
       </div>

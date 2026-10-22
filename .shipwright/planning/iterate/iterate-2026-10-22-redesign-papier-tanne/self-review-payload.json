@@ -1,0 +1,10 @@
+{"items":[
+{"name":"Spec Compliance","verdict":"pass","note":"AC1-AC7 implemented; scope limited to tokens, fonts, primitives, head cleanup and class-only caller fixes named in the mini-plan (heading weight fix extended to Settings/FormContainer h2s, same finding 9)."},
+{"name":"Error Handling","verdict":"pass","note":"No runtime logic changed; fonts use font-display swap with system fallbacks if a file fails."},
+{"name":"Security Basics","verdict":"pass","note":"Removed third-party gptengineer.js script; no external hosts remain; no secrets; check-dist-secrets passes."},
+{"name":"Test Quality","verdict":"pass","note":"Unit tests assert token values against the sheet and file contents; e2e asserts computed styles, real font loading and zero external requests; heading guard test was added after the fix (not test-first)."},
+{"name":"Performance Basics","verdict":"pass","note":"+~100 KB woff2 across 5 faces, fetched per face on use and cached immutable under /assets; CSS +gzip ~1 KB."},
+{"name":"Naming & Structure","verdict":"pass","note":"Keeps shadcn token names and every exported component/variant name; all files under 300 lines."},
+{"name":"Affected Boundaries","verdict":"n/a","note":"No serialized format, storage key, env or API contract changed."},
+{"name":"Test Hygiene Probe","verdict":"pass","note":"scan_test_hygiene --diff: no findings."}
+]}

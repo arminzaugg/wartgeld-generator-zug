@@ -70,7 +70,7 @@ const Index = () => {
     <div className="container py-8">
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center gap-4">
-          <h1 className="text-3xl font-bold">Wartgeld Generator</h1>
+          <h1 className="text-3xl">Wartgeld Generator</h1>
           <ThemeToggle />
         </div>
         <div className="flex items-center gap-4">
@@ -106,7 +106,7 @@ const Index = () => {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8">
-        <Card className="p-6">
+        <Card className="p-6" data-testid="invoice-form-card">
           <FormContainer
             values={formData}
             onChange={handleFieldChange}

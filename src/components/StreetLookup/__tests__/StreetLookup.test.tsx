@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach, type MockInstance } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StreetLookup } from '../../StreetLookup';
 import { Toaster } from '@/components/ui/toaster';
@@ -95,6 +95,16 @@ describe('StreetLookup when the lookup service fails', () => {
 
     expect(await screen.findByText('Fehler bei der Adresssuche')).toBeInTheDocument();
     expect(screen.queryByRole('option')).toBeNull();
+  });
+
+  it('marks the address field as invalid so its error styling also shows while focused', async () => {
+    vi.spyOn(globalThis, 'fetch').mockImplementation(async () =>
+      new Response(JSON.stringify({ error: 'Address lookup failed' }), { status: 502 }));
+    renderLookup();
+
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Bahnhofstr' } });
+
+    await waitFor(() => expect(screen.getByRole('combobox')).toHaveAttribute('aria-invalid', 'true'));
   });
 });
 

@@ -1,4 +1,5 @@
 import { Input } from "@/components/ui/input";
+import { fieldClassName } from "@/components/ui/field-styles";
 import { Label } from "@/components/ui/label";
 import { MUNICIPALITIES } from "@/data/municipalities";
 import { proposeMunicipality } from "@/lib/municipality";
@@ -17,8 +18,7 @@ interface DateAndMunicipalityFieldsProps {
   onChange: (field: string, value: string) => void;
 }
 
-const selectClassName =
-  "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
+const selectClassName = cn("flex h-12", fieldClassName);
 
 export const DateAndMunicipalityFields = ({ values, errors = {}, onChange }: DateAndMunicipalityFieldsProps) => {
   const hasAddress = /^\d{4}$/.test(values.plz);
@@ -36,7 +36,7 @@ export const DateAndMunicipalityFields = ({ values, errors = {}, onChange }: Dat
           type="date"
           value={values.geburtsdatum}
           onChange={(e) => onChange("geburtsdatum", e.target.value)}
-          className={errors.geburtsdatum ? "border-red-500" : ""}
+          aria-invalid={Boolean(errors.geburtsdatum)}
         />
         {errors.geburtsdatum && (
           <p className="text-sm text-red-500">{errors.geburtsdatum}</p>
@@ -51,7 +51,7 @@ export const DateAndMunicipalityFields = ({ values, errors = {}, onChange }: Dat
           disabled={!proposal?.known}
           onChange={(e) => onChange("gemeindeBfs", e.target.value)}
           aria-invalid={Boolean(errors.gemeindeBfs) || outsideZug}
-          className={cn(selectClassName, errors.gemeindeBfs && "border-red-500")}
+          className={selectClassName}
         >
           <option value="">{proposal?.known ? "Bitte wählen" : "Zuerst Adresse auswählen"}</option>
           {proposal?.known && (

@@ -1,0 +1,296 @@
+{
+  "schema_version": 1,
+  "run_id": "iterate-2026-10-22-redesign-papier-tanne",
+  "reviews": {
+    "self": {
+      "review_type": "self",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-22T14:07:16.126397+00:00",
+      "disposition": null,
+      "recorded_by": "self-review",
+      "parse_status": null,
+      "raw_excerpt": null
+    },
+    "plan": {
+      "review_type": "plan",
+      "status": "completed",
+      "findings_count": 5,
+      "findings": [
+        {
+          "severity": "medium",
+          "category": "approach ·",
+          "file": null,
+          "line": null,
+          "finding": "“Colours all via `hsl(var(--…))`” conflicts with the explicit exception for `--ring`, `--danger-ring`, and `--scrim`, which contain full colour values. Wrapping these values in `hsl()` would produce invalid CSS and could silently remove focus or validation indicators.",
+          "suggestion": "Map channel tokens through `hsl(var(--token))` and full colour tokens directly through `var(--token)`. Check valid, invalid, and keyboard focus states in both themes.",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "risk ·",
+          "file": null,
+          "line": null,
+          "finding": "Keeping component exports and props unchanged does not guarantee the required dimensions. Existing caller classes can override primitive defaults, particularly button sizes, input heights, card radii, and checkbox dimensions. The plan assumes callers can remain unchanged without checking them.",
+          "suggestion": "Audit the invoice page’s actual usages and class overrides before implementation. Include any necessary conflicting-class removals in scope, and run AC5 against the specific invoice controls.",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "edge-case ·",
+          "file": null,
+          "line": null,
+          "finding": "A ±0.5 tolerance when comparing HSL channels can admit colours that fail the exact RGB requirements in AC1 and AC2. It also weakens AC3’s requirement that every token match the handoff.",
+          "suggestion": "Preserve sufficient precision during conversion and compare resolved colours against the handoff’s expected RGB/RGBA values. Cover both channel tokens and full colour tokens, including alpha.",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "dependency ·",
+          "file": null,
+          "line": null,
+          "finding": "Asserting only the declared `font-family` cannot detect an invalid Bunny stylesheet URL, missing font weights, or failed font downloads. The page can pass while rendering fallback fonts throughout. The proposed network stub also lacks a defined font fixture.",
+          "suggestion": "Define deterministic font fixtures if requests are stubbed, and separately verify that the actual Bunny stylesheet supplies the requested families, weights, and italic face. Confirm font loading with the browser’s font API before checking the typography.",
+          "source": "external-review"
+        },
+        {
+          "severity": "low",
+          "category": "dependency ·",
+          "file": null,
+          "line": null,
+          "finding": "AC7 explicitly requires typechecking, but the verification commands omit it. A build does not necessarily run TypeScript checking.",
+          "suggestion": "Add the project’s typecheck command, or confirm that the existing build command already performs that check.  The approach is appropriately scoped and preserves the existing component architecture. Address the token handling and verification gaps before proceeding; the workspace contains no application files, so caller conflicts and build behavior could not be independently confirmed.  SHIPWRIGHT_VERDICT: revise",
+          "source": "external-review"
+        }
+      ],
+      "provider": "codex",
+      "completed_at": "2026-10-22T14:03:01.657500+00:00",
+      "disposition": null,
+      "recorded_by": "external-review-json",
+      "parse_status": "partial",
+      "raw_excerpt": "[glm] <no review returned: No OPENROUTER_API_KEY set>\n\n[openai] 1. **Category:** approach · **Severity:** medium  \n   **Finding:** “Colours all via `hsl(var(--…))`” conflicts with the explicit exception for `--ring`, `--danger-ring`, and `--scrim`, which contain full colour values. Wrapping these values in `hsl()` would produce invalid CSS and could silently remove focus or validation indicators.  \n   **Suggestion:** Map channel tokens through `hsl(var(--token))` and full colour tokens directly through `var(--token)`. Check valid, invalid, and keyboard focus states in both themes.\n\n2. **Category:** risk · **Severity:** medium  \n   **Finding:** Keeping component exports and props unchanged does not guarantee the required dimensions. Existing caller classes can override primitive defaults, particularly button sizes, input heights, card radii, and checkbox dimensions. The plan assumes callers can remain unchanged without checking them.  \n   **Suggestion:** Audit the invoice page’s actual usages and class overrides before implementation. Include any necessary conflicting-class removals in scope, and run AC5 against the specific invoice controls.\n\n3. **Category:** edge-case · **Severity:** medium  \n   **Finding:** A ±0.5 tolerance when comparing HSL channels can admit colours that fail the exact RGB requirements in AC1 and AC2. It also weakens AC3’s requirement that every token match the handoff.  \n   **Suggestion:** Preserve sufficient precision during conversion and compare resolved colours against the handoff’s expected RGB/RGBA values. Cover both channel tokens and full colour tokens, including alpha.\n\n4. **Category:** dependency · **Severity:** medium  \n   **Finding:** Asserting only the declared `font-family` cannot detect an invalid Bunny stylesheet URL, missing font weights, or failed font downloads. The page can pass while rendering fallback fonts throughout. The proposed network stub also lacks a defined font fixture.  \n   **Suggestion:** Define deterministic font fixtures if requests are stubbed, and separatel […truncated]",
+      "verdicts": {
+        "glm": "unavailable",
+        "openai": "revise"
+      },
+      "contradiction_resolution": "single reviewer (glm unavailable, no key); openai=revise findings all integrated into spec/mini-plan"
+    },
+    "code": {
+      "review_type": "code",
+      "status": "completed",
+      "findings_count": 14,
+      "findings": [
+        {
+          "severity": "high",
+          "category": "correctness",
+          "file": "src/features/form/components/DateAndMunicipalityFields.tsx",
+          "line": 21,
+          "finding": "Select focus ring built on translucent --ring became near-invisible; select 40px.",
+          "suggestion": "Shared field classes.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "medium",
+          "category": "correctness",
+          "file": "src/components/ui/input.tsx",
+          "line": 14,
+          "finding": "Focused error fields showed green border; errors not exposed via aria-invalid.",
+          "suggestion": "aria-invalid on error fields.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "medium",
+          "category": "correctness",
+          "file": "src/index.css",
+          "line": 34,
+          "finding": "Checkbox border token below 3:1 (WCAG 1.4.11); matches design sheet.",
+          "suggestion": "Raise with design.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "readability",
+          "file": "src/components/ui/toast.tsx",
+          "line": 78,
+          "finding": "ToastClose blue default ring.",
+          "suggestion": "focus-visible shadow.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "correctness",
+          "file": "src/components/ThemeToggle.tsx",
+          "line": 17,
+          "finding": "h-10 w-10 override defeats 44px icon size.",
+          "suggestion": "Remove override.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "correctness",
+          "file": "e2e/theme.spec.ts",
+          "line": 61,
+          "finding": "Fragile div.grid selector.",
+          "suggestion": "data-testid.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "architecture",
+          "file": "src/lib/utils.ts",
+          "line": 5,
+          "finding": "twMerge does not know custom shadow names.",
+          "suggestion": "extendTailwindMerge.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "correctness",
+          "file": "src/components/ui/button.tsx",
+          "line": 15,
+          "finding": "Dark destructive button white text low contrast.",
+          "suggestion": "dark text.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "correctness",
+          "file": "src/components/ui/dropdown-menu.tsx",
+          "line": 84,
+          "finding": "Dark dropdown focus bg faint.",
+          "suggestion": "Stronger focus.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "readability",
+          "file": "src/index.css",
+          "line": 47,
+          "finding": "Unused --radius.",
+          "suggestion": "Remove.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "readability",
+          "file": "src/components/ui/textarea.tsx",
+          "line": 13,
+          "finding": "py-3 placement.",
+          "suggestion": "Move.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "correctness",
+          "file": "src/styles/__tests__/theme.test.ts",
+          "line": 87,
+          "finding": "Normaliser strips non-leading zeros.",
+          "suggestion": "Lookbehind.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "correctness",
+          "file": "src/styles/__tests__/theme.test.ts",
+          "line": 1036,
+          "finding": "ring-ring guard used git ls-files.",
+          "suggestion": "readdirSync.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "architecture",
+          "file": "src/components/ui/input.tsx",
+          "line": 6,
+          "finding": "Non-component export in component module.",
+          "suggestion": "field-styles.ts.",
+          "source": "code-reviewer"
+        }
+      ],
+      "provider": null,
+      "completed_at": "2026-10-22T14:15:32.655148+00:00",
+      "disposition": null,
+      "recorded_by": "code-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit",
+      "verdict": "pass",
+      "reviewed_commit": "eba7cef1127dd67c4becac91223255dfb6776e8f"
+    },
+    "doubt": {
+      "review_type": "doubt",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-22T14:15:32.712378+00:00",
+      "disposition": "Stage 3 trigger not met: no migrations, async/concurrency, cross-plugin imports or irreversible ops (CSS/class/static-asset change only)",
+      "recorded_by": "self",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "diff-below-threshold"
+    },
+    "external_code": {
+      "review_type": "external_code",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": "codex",
+      "completed_at": "2026-10-22T14:08:19.882536+00:00",
+      "disposition": null,
+      "recorded_by": "external-review-json",
+      "parse_status": "unstructured",
+      "raw_excerpt": "[glm] <no review returned: No OPENROUTER_API_KEY set>\n\n[openai] No concrete defects found in the supplied diff. The changes cover the palette, self-hosted fonts, component dimensions, heading weights, and third-party script removal. The new tests check rendered styles, font loading, theme persistence, and network requests.\n\nShip-as-is based on static review. The workspace is empty, so I could not inspect the handoff token sheet or independently run the unit suite, Playwright, lint, or build.\n\nSHIPWRIGHT_VERDICT: approve",
+      "verdicts": {
+        "glm": "unavailable",
+        "openai": "approve"
+      },
+      "contradiction_resolution": "single reviewer (glm unavailable, no key); openai=approve"
+    },
+    "spec": {
+      "review_type": "spec",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-22T14:08:42.809718+00:00",
+      "disposition": null,
+      "recorded_by": "spec-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit",
+      "verdict": "pass",
+      "reviewed_commit": "eba7cef1127dd67c4becac91223255dfb6776e8f"
+    },
+    "plan_internal": {
+      "review_type": "plan_internal",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-22T14:03:01.544989+00:00",
+      "disposition": null,
+      "recorded_by": "opus-plan-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "opus",
+      "verdict": "pass"
+    },
+    "architecture_internal": {
+      "review_type": "architecture_internal",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-22T14:03:01.599800+00:00",
+      "disposition": null,
+      "recorded_by": "architecture-internal-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "opus",
+      "verdict": "pass"
+    }
+  }
+}

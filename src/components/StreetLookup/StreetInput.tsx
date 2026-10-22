@@ -45,9 +45,9 @@ export const StreetInput = ({
           placeholder={placeholder}
           className={cn(
             "w-full pl-9 pr-8 transition-colors",
-            (isLoading || value) && "pr-12",
-            !!error && "border-red-500 focus-visible:ring-red-500"
+            (isLoading || value) && "pr-12"
           )}
+          aria-invalid={!!error}
           autoComplete="off"
           role="combobox"
           {...ariaProps}
