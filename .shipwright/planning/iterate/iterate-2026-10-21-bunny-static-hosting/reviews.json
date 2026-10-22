@@ -1,0 +1,364 @@
+{
+  "schema_version": 1,
+  "run_id": "iterate-2026-10-21-bunny-static-hosting",
+  "reviews": {
+    "self": {
+      "review_type": "self",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-21T21:25:52.600384+00:00",
+      "disposition": null,
+      "recorded_by": "self-review",
+      "parse_status": null,
+      "raw_excerpt": null
+    },
+    "plan": {
+      "review_type": "plan",
+      "status": "completed",
+      "findings_count": 8,
+      "findings": [
+        {
+          "severity": "medium",
+          "category": "edge-case /",
+          "file": null,
+          "line": null,
+          "finding": "The per-IP rate limit on the service's pull zone may count the site pull zone's egress IP, not the visitor's. When the site zone's edge rule forwards `/api/address` to the service's Bunny hostname, Bunny-to-Bunny traffic can present a Bunny edge IP to the second zone's Shield rule — in which case the \"per-visitor\" counter becomes a global counter: one visitor hitting 50 requests in 10 s blocks all visitors for 60 s. The probe step does test \"real client IP counted by Shield,\" but the plan has no stated fallback if that check fails.",
+          "suggestion": "Define the fallback explicitly before the probe: if the client IP isn't preserved through the Bunny→Bunny hop (e.g., via `X-Forwarded-For`), skip the Shield rule on the service's zone for this PR (the site zone still enforces the per-visitor limit, which is what AC3 tests) and rely on the shared-secret header from the already-planned follow-up. A mis-counted global 429 is worse than no second line.",
+          "source": "external-review"
+        },
+        {
+          "severity": "low",
+          "category": "edge-case /",
+          "file": null,
+          "line": null,
+          "finding": "The deploy smoke test \"checks 429 after the limit\" by making 51+ requests from the deployer's machine. That triggers the 60-second block on the deployer's IP mid-smoke, which can make a subsequent smoke check (or an immediate re-run after a fix) fail confusingly.",
+          "suggestion": "Run the 429 check last in the smoke sequence, and either wait out the 60 s or note in the deploy output that the blocking IP is the runner's so re-runs aren't misread as a broken deploy.",
+          "source": "external-review"
+        },
+        {
+          "severity": "low",
+          "category": "risk /",
+          "file": null,
+          "line": null,
+          "finding": "Edge rules are matched \"by description so re-runs update instead of duplicating,\" but Bunny edge rules apply in priority order and the plan doesn't state the priorities. The `no-cache`/`never-cache-/api/address` and security-header rules must not be shadowed by the `/assets/` cache rule (or vice versa), and a re-run must preserve ordering, not just existence.",
+          "suggestion": "Assign explicit priorities in the rule definitions and have the desired-vs-actual diff compare priority (and action body), not just presence.",
+          "source": "external-review"
+        },
+        {
+          "severity": "low",
+          "category": "edge-case /",
+          "file": null,
+          "line": null,
+          "finding": "Imported settings overwrite whatever is currently stored on the new origin with no export-first prompt. If the midwife experiments on the new site, saves placeholder values, then imports her real file, that's fine — but a mis-click on \"Einstellungen laden\" over existing data is unrecoverable (no undo).",
+          "suggestion": "Cheap mitigation: in the confirm dialog, offer \"aktuelle Einstellungen vorher sichern\" (a one-click export of current values alongside the import), or note that the pre-import state can be recovered by exporting first. One line of UX, no architecture change.",
+          "source": "external-review"
+        },
+        {
+          "severity": "low",
+          "category": "dependency /",
+          "file": null,
+          "line": null,
+          "finding": "AC1's b-cdn→custom-host permanent redirect depends on the certificate being issued and DNS propagated before the redirect rule sends real traffic; the plan polls the certificate with a timeout, but the redirect rule is \"created last\" only in `setup:site` — a re-run of setup on an already-live site recreates/updates rules while live traffic flows. Find-or-create should make this a no-op, but the desired-vs-actual diff must not delete-and-recreate rules in place.",
+          "suggestion": "Assert in the diff logic that matched rules are updated in place (PUT) and never deleted-then-created; add a unit test for the \"rule exists with slightly different body\" case.",
+          "source": "external-review"
+        },
+        {
+          "severity": "low",
+          "category": "approach /",
+          "file": null,
+          "line": null,
+          "finding": "The settings export \"asks to save first if there are unsaved changes\" adds a stateful interaction to Settings.tsx that the internal review already flagged once (remount/defaults/unsaved edits). The simpler contract that satisfies AC7: export always exports the saved values and the dialog text says so (\"Ungespeicherte Änderungen werden nicht exportiert\"). No save-prompt flow, no new test matrix.",
+          "suggestion": "Replace the ask-to-save-first interaction with a static hint; AC7 only requires that the file contains the four fields and that the next invoice uses them.",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "risk",
+          "file": null,
+          "line": null,
+          "finding": "Step 3 replaces `ALLOWED_ORIGINS` with two production origins, but AC2 explicitly requires Netlify previews to remain allowed. If preview support currently comes from this configuration, publishing the service change will break preview address lookups.",
+          "suggestion": "Preserve the existing preview-origin validation and add the Bunny origin. Include regression checks for Netlify production, a valid preview, and an unrelated origin.",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "edge-case",
+          "file": null,
+          "line": null,
+          "finding": "The deploy smoke test now deliberately triggers the production rate limit. Sending more than 50 successful lookups can consume Swiss Post calls, encounter the service’s total cap before Shield responds, and leave the deploying user’s IP blocked during subsequent smoke checks or manual verification.",
+          "suggestion": "Separate rate-limit verification from routine deployment. During setup verification, use requests rejected before Swiss Post is called, verify the rejection is specifically Shield’s 429, and check recovery after 60 seconds. Keep routine deployment to a small number of successful lookups. Bunny documents that Shield enforcement happens before requests reach the origin. [Bunny rate limiting](https://bunny.net/blog/control-the-chaos-why-legacy-rate-limiting-isnt-enough-anymore/)  The architecture is sound, and the revised setup/deploy split keeps this change reasonably contained. Preserve preview compatibility and make production rate-limit verification safe before proceeding.  SHIPWRIGHT_VERDICT: revise",
+          "source": "external-review"
+        }
+      ],
+      "provider": "openrouter",
+      "completed_at": "2026-10-21T20:04:35.267545+00:00",
+      "disposition": null,
+      "recorded_by": "external-review-json",
+      "parse_status": "structured",
+      "raw_excerpt": "[glm] ## Review Findings\n\n- **Category:** edge-case / **Severity:** medium\n  **Finding:** The per-IP rate limit on the *service's* pull zone may count the *site* pull zone's egress IP, not the visitor's. When the site zone's edge rule forwards `/api/address` to the service's Bunny hostname, Bunny-to-Bunny traffic can present a Bunny edge IP to the second zone's Shield rule — in which case the \"per-visitor\" counter becomes a global counter: one visitor hitting 50 requests in 10 s blocks **all** visitors for 60 s. The probe step does test \"real client IP counted by Shield,\" but the plan has no stated fallback if that check fails.\n  **Suggestion:** Define the fallback explicitly before the probe: if the client IP isn't preserved through the Bunny→Bunny hop (e.g., via `X-Forwarded-For`), skip the Shield rule on the service's zone for this PR (the site zone still enforces the per-visitor limit, which is what AC3 tests) and rely on the shared-secret header from the already-planned follow-up. A mis-counted global 429 is worse than no second line.\n\n- **Category:** edge-case / **Severity:** low\n  **Finding:** The deploy smoke test \"checks 429 after the limit\" by making 51+ requests from the deployer's machine. That triggers the 60-second block on the deployer's IP mid-smoke, which can make a subsequent smoke check (or an immediate re-run after a fix) fail confusingly.\n  **Suggestion:** Run the 429 check last in the smoke sequence, and either wait out the 60 s or note in the deploy output that the blocking IP is the runner's so re-runs aren't misread as a broken deploy.\n\n- **Category:** risk / **Severity:** low\n  **Finding:** Edge rules are matched \"by description so re-runs update instead of duplicating,\" but Bunny edge rules apply in priority order and the plan doesn't state the priorities. The `no-cache`/`never-cache-/api/address` and security-header rules must not be shadowed by the `/assets/*` cache rule (or vice versa), and a re-run must preserve ordering, not ju […truncated]\n\n[openai] 1. **Category:** risk  \n   **Severity:** medium  \n   **Finding:** Step 3 replaces `ALLOWED_ORIGINS` with two production origins, but AC2 explicitly requires Netlify previews to remain allowed. If preview support currently comes from this configuration, publishing the service change will break preview address lookups.  \n   **Suggestion:** Preserve the existing preview-origin validation and add the Bunny origin. Include regression checks for Netlify production, a valid preview, and an unrelated origin.\n\n2. **Category:** edge-case  \n   **Severity:** medium  \n   **Finding:** The deploy smoke test now deliberately triggers the production rate limit. Sending more than 50 successful lookups can consume Swiss Post calls, encounter the service’s total cap before Shield responds, and leave the deploying user’s IP blocked during subsequent smoke checks or manual verification.  \n   **Suggestion:** Separate rate-limit verification from routine deployment. During setup verification, use requests rejected before Swiss Post is called, verify the rejection is specifically Shield’s 429, and check recovery after 60 seconds. Keep routine deployment to a small number of successful lookups. Bunny documents that Shield enforcement happens before requests reach the origin. [Bunny rate limiting](https://bunny.net/blog/control-the-chaos-why-legacy-rate-limiting-isnt-enough-anymore/)\n\nThe architecture is sound, and the revised setup/deploy split keeps this change reasonably contained. Preserve preview compatibility and make production rate-limit verification safe before proceeding.\n\nSHIPWRIGHT_VERDICT: revise",
+      "verdicts": {
+        "openai": "revise",
+        "glm": "approve"
+      }
+    },
+    "code": {
+      "review_type": "code",
+      "status": "completed",
+      "findings_count": 8,
+      "findings": [
+        {
+          "severity": "medium",
+          "category": null,
+          "file": "src/components/SettingsTransfer.tsx",
+          "line": null,
+          "finding": "revokeObjectURL right after click can break Safari download",
+          "suggestion": "fixed",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": null,
+          "file": "src/lib/presetStorage.ts",
+          "line": null,
+          "finding": "getSettings throws on corrupted storage",
+          "suggestion": "fixed",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": null,
+          "file": "scripts/site/deploy-site.mjs",
+          "line": null,
+          "finding": "no origin/main ahead check; VITE_ vars in .env files",
+          "suggestion": "fixed (ahead check + docs note)",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": null,
+          "file": "scripts/site/deploy-site.mjs",
+          "line": null,
+          "finding": "raw ENOENT / unhandled JSON parse",
+          "suggestion": "fixed",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": null,
+          "file": "playwright.config.ts",
+          "line": null,
+          "finding": "no forbidOnly",
+          "suggestion": "fixed",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": null,
+          "file": "src/hooks/useStreetAutocomplete.ts",
+          "line": null,
+          "finding": "stale error shown during typing pause",
+          "suggestion": "fixed",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": null,
+          "file": "e2e/settingsTransfer.spec.ts",
+          "line": null,
+          "finding": "e2e carries only sender block",
+          "suggestion": "declined: other fields covered by unit round-trip tests",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": null,
+          "file": "src/pages/Settings.tsx",
+          "line": null,
+          "finding": "useless fragment",
+          "suggestion": "fixed",
+          "source": "code-reviewer"
+        }
+      ],
+      "provider": null,
+      "completed_at": "2026-10-21T21:18:03.696808+00:00",
+      "disposition": null,
+      "recorded_by": "code-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit",
+      "verdict": "pass"
+    },
+    "doubt": {
+      "review_type": "doubt",
+      "status": "completed",
+      "findings_count": 4,
+      "findings": [
+        {
+          "severity": "high",
+          "category": "boundary & contract",
+          "file": "edge/address-lookup/handler.ts",
+          "line": null,
+          "finding": "Claim under doubt: per-visitor limit cannot be bypassed — /x/api/address matched edge rule */api/address (marker added) but not Shield 'begins with /api/address'; service had no path check",
+          "suggestion": "FIXED: service 404 on other paths + edge rule anchored; re-probed live",
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "medium",
+          "category": "hidden coupling",
+          "file": "docs/bunny-hosting.md",
+          "line": null,
+          "finding": "Claim under doubt: per-IP limit is per-visitor — IPv6 /64 rotation defeats per-IP counting",
+          "suggestion": "ACCEPTED: documented as per-IP with per-instance cap backstop",
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "medium",
+          "category": "reversibility",
+          "file": "src/components/SettingsTransfer.tsx",
+          "line": null,
+          "finding": "Claim under doubt: settings move works — export accepts stored values that import rejects (large/JPEG signature, long text) -> whole file refused without reason",
+          "suggestion": "FIXED: export skips and names invalid fields; import names the failing field",
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "concurrency & ordering",
+          "file": "src/components/StreetLookup.tsx",
+          "line": null,
+          "finding": "Claim under doubt: debounce never selects wrong address — selectedIndex not reset when list changes; Enter picks row of new list",
+          "suggestion": "FIXED: reset on new list, guard Enter",
+          "source": "doubt-reviewer"
+        }
+      ],
+      "provider": null,
+      "completed_at": "2026-10-21T21:23:48.107949+00:00",
+      "disposition": null,
+      "recorded_by": "doubt-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit"
+    },
+    "external_code": {
+      "review_type": "external_code",
+      "status": "completed",
+      "findings_count": 7,
+      "findings": [
+        {
+          "severity": "medium",
+          "category": "bug",
+          "file": "src/components/SettingsTransfer.tsx (~line 60, `handleFile`)",
+          "line": null,
+          "finding": "The hidden `<input type=\"file\">`'s value is only cleared in `handleCancel`. After a successful import (`handleConfirm`), or after an error/cancel without pressing Abbrechen, selecting the same file again fires no `change` event, so the import silently does nothing. A midwife who exports on the old site, then picks the file a second time (e.g. to retry after a mistake, or re-import after editing storage) gets no feedback at all.",
+          "suggestion": "Reset `fileInput.current.value = \"\"` in `handleConfirm` (after success) and at the end of `handleFile`, so every selection is treated as a fresh event.",
+          "source": "external-review"
+        },
+        {
+          "severity": "low",
+          "category": "bug",
+          "file": "src/lib/presetStorage.ts:~50 (`getStoredSettings`)",
+          "line": null,
+          "finding": "Only the placeholder sender block (`DEFAULT_SENDER_INFO`) is stripped, but the default `ortRechnungssteller` (e.g. `'Kanton Zug'`, visible in the unit test where `updateSettings({ senderInfo: 'Anna' })` yields it) is exported as if the user had saved it. The stated goal \"exports only the saved values, without placeholder defaults\" is only half-true, and the test that claims to cover placeholders (`'ignores stored placeholder text'`) only checks `senderInfo`, so it passes despite the gap.",
+          "suggestion": "Strip the default place the same way as the default sender block, and extend the test to assert both.",
+          "source": "external-review"
+        },
+        {
+          "severity": "low",
+          "category": "edge-case",
+          "file": "src/lib/presetStorage.ts:~48 / src/components/SettingsTransfer.tsx (`handleExport`)",
+          "line": null,
+          "finding": "getStoredSettings` does `JSON.parse(stored)` without a try/catch. If `localStorage` ever contains non-JSON under the settings key (manual tampering, prior bug, storage migration), clicking \"Einstellungen sichern\" throws inside the click handler — the button appears dead with no error shown. `getSettings` in the same file guards for this (existing code reads via `JSON.parse` too — worth checking), but the export path is new user-facing surface.",
+          "suggestion": "Wrap in try/catch and fall back to `{}` (or surface the German error message) when the stored value is unparseable.",
+          "source": "external-review"
+        },
+        {
+          "severity": "low",
+          "category": "test",
+          "file": "scripts/site/__tests__/siteFiles.test.ts",
+          "line": 14,
+          "finding": "The upload-order test asserts on the specific sorted output but never asserts the guarantee it's named for in `siteFiles.mjs` — that `index.html` is last even when other files sort after it alphabetically (nothing does in the fixture; `og-image.svg` sorts before `index.html` only incidentally). A regression that, say, sorts everything including index.html would still place it last with this fixture by luck of lexicographic order.",
+          "suggestion": "Add a file name that sorts after `index.html` (e.g. `zz-legacy.txt`) to make the ordering property actually load-bearing.  Everything else checks out well against the spec: origins updated with Netlify retained (AC2), debounce + stale-suggestion suppression with tests (AC3), upload order/content types/secret guard in `deploy:site` (AC4/AC5), the moved notice gated to `.netlify.app` (AC's Netlify fallback), hardened settings-file parser including `__proto__` and PNG-magic checks (AC7), CI e2e job with read-only permissions, built-bundle preview and report upload (AC8), docs (AC9). The Bunny-side items (Shield rules, edge rules, headers, 301) are documented in `docs/bunny-hosting.md` with live-probe evidence, which matches the \"provision once by hand\" decision.  Overall: ship-with-fixes — the work is sound and spec-complete, but the file-input reset (silent no-op on re-import) should be fixed before merge; the other items are small hardening/tests.  SHIPWRIGHT_VERDICT: revise",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "bug",
+          "file": "src/components/SettingsTransfer.tsx:119–122",
+          "line": null,
+          "finding": "The confirmation lists only fields present in the imported file, but `replaceSettings` replaces the entire settings object. Importing `{ senderInfo: \"Anna\" }` therefore also deletes the existing signature, place and invoice date without identifying those changes in the confirmation.",
+          "suggestion": "List all settings that will be replaced or cleared, explicitly marking omitted fields as reset.",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "bug",
+          "file": "src/lib/settingsFile.ts",
+          "line": 38,
+          "finding": "Signature validation checks only a base64-shaped string beginning with the PNG signature. For example, `data:image/png;base64,iVBORw0KGgo` passes despite containing no usable PNG image. Such a file can overwrite a working signature and leave invoice generation with an invalid image.",
+          "suggestion": "Validate the decoded PNG structure before accepting the import, and add a test for truncated PNG data with the correct prefix.",
+          "source": "external-review"
+        },
+        {
+          "severity": "medium",
+          "category": "edge-case",
+          "file": "src/components/SettingsTransfer.tsx:56–63",
+          "line": null,
+          "finding": "Concurrent file reads can update the import confirmation out of order. If the user selects file A and then file B before A finishes reading, A’s later completion can replace B’s preview—or restore a confirmation after B was rejected.",
+          "suggestion": "Track a selection identifier and discard results from older reads, including their errors.  The change broadly implements the revised hosting plan, but the import flow needs these fixes before shipping. The workspace is empty, so this review is based on the supplied diff; tests and live infrastructure were not independently verified.  SHIPWRIGHT_VERDICT: revise",
+          "source": "external-review"
+        }
+      ],
+      "provider": "openrouter",
+      "completed_at": "2026-10-21T21:14:52.006151+00:00",
+      "disposition": "GPT+GLM revise: 6 fixed (import reset wording, complete-PNG check, latest-file-wins, picker reset, unreadable storage, load-bearing upload-order test); 1 declined (default place 'Kanton Zug' is a real value, exporting it is harmless)",
+      "recorded_by": "external-review-json",
+      "parse_status": "structured",
+      "raw_excerpt": "[glm] ## Findings\n\n**Category:** bug\n**Severity:** medium\n**File:** src/components/SettingsTransfer.tsx (~line 60, `handleFile`)\n**Finding:** The hidden `<input type=\"file\">`'s value is only cleared in `handleCancel`. After a successful import (`handleConfirm`), or after an error/cancel without pressing Abbrechen, selecting the *same file again* fires no `change` event, so the import silently does nothing. A midwife who exports on the old site, then picks the file a second time (e.g. to retry after a mistake, or re-import after editing storage) gets no feedback at all.\n**Suggestion:** Reset `fileInput.current.value = \"\"` in `handleConfirm` (after success) and at the end of `handleFile`, so every selection is treated as a fresh event.\n\n**Category:** bug\n**Severity:** low\n**File:** src/lib/presetStorage.ts:~50 (`getStoredSettings`)\n**Finding:** Only the placeholder *sender block* (`DEFAULT_SENDER_INFO`) is stripped, but the default `ortRechnungssteller` (e.g. `'Kanton Zug'`, visible in the unit test where `updateSettings({ senderInfo: 'Anna' })` yields it) is exported as if the user had saved it. The stated goal \"exports only the saved values, without placeholder defaults\" is only half-true, and the test that claims to cover placeholders (`'ignores stored placeholder text'`) only checks `senderInfo`, so it passes despite the gap.\n**Suggestion:** Strip the default place the same way as the default sender block, and extend the test to assert both.\n\n**Category:** edge-case\n**Severity:** low\n**File:** src/lib/presetStorage.ts:~48 / src/components/SettingsTransfer.tsx (`handleExport`)\n**Finding:** `getStoredSettings` does `JSON.parse(stored)` without a try/catch. If `localStorage` ever contains non-JSON under the settings key (manual tampering, prior bug, storage migration), clicking \"Einstellungen sichern\" throws inside the click handler — the button appears dead with no error shown. `getSettings` in the same file guards for this (existing code reads via `JSON.pars […truncated]\n\n[openai] - Category: bug\n- Severity: medium\n- File: src/components/SettingsTransfer.tsx:119–122\n- Finding: The confirmation lists only fields present in the imported file, but `replaceSettings` replaces the entire settings object. Importing `{ senderInfo: \"Anna\" }` therefore also deletes the existing signature, place and invoice date without identifying those changes in the confirmation.\n- Suggestion: List all settings that will be replaced or cleared, explicitly marking omitted fields as reset.\n\n- Category: bug\n- Severity: medium\n- File: src/lib/settingsFile.ts:38\n- Finding: Signature validation checks only a base64-shaped string beginning with the PNG signature. For example, `data:image/png;base64,iVBORw0KGgo` passes despite containing no usable PNG image. Such a file can overwrite a working signature and leave invoice generation with an invalid image.\n- Suggestion: Validate the decoded PNG structure before accepting the import, and add a test for truncated PNG data with the correct prefix.\n\n- Category: edge-case\n- Severity: medium\n- File: src/components/SettingsTransfer.tsx:56–63\n- Finding: Concurrent file reads can update the import confirmation out of order. If the user selects file A and then file B before A finishes reading, A’s later completion can replace B’s preview—or restore a confirmation after B was rejected.\n- Suggestion: Track a selection identifier and discard results from older reads, including their errors.\n\nThe change broadly implements the revised hosting plan, but the import flow needs these fixes before shipping. The workspace is empty, so this review is based on the supplied diff; tests and live infrastructure were not independently verified.\n\nSHIPWRIGHT_VERDICT: revise",
+      "verdicts": {
+        "openai": "revise",
+        "glm": "revise"
+      }
+    },
+    "spec": {
+      "review_type": "spec",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-21T21:15:17.410427+00:00",
+      "disposition": null,
+      "recorded_by": "spec-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit",
+      "verdict": "pass"
+    },
+    "plan_internal": {
+      "review_type": "plan_internal",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-21T20:03:13.693632+00:00",
+      "disposition": null,
+      "recorded_by": "opus-plan-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit"
+    },
+    "architecture_internal": {
+      "review_type": "architecture_internal",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-21T20:01:41.576943+00:00",
+      "disposition": null,
+      "recorded_by": "architecture-internal-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit"
+    }
+  }
+}

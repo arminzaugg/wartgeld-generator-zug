@@ -50,8 +50,10 @@ const Info = () => {
             sind Ihre Einstellungen, die im lokalen Speicher (Local Storage) Ihres Browsers gespeichert werden.
             Für die automatische Vervollständigung der Adresse wird der Text, den Sie ins Adressfeld eingeben (Strasse, Hausnummer,
             PLZ und Ort, soweit eingegeben), über unseren Adressdienst an eine Schnittstelle der Schweizerischen Post gesendet.
-            Die Anfrage läuft dabei über unsere Hosting-Anbieter Netlify und bunny.net, die wie bei jedem Webseitenaufruf Ihre
-            IP-Adresse sehen. Weitere Daten werden nicht übermittelt; der Adressdienst speichert keine Adressen.
+            Die Anfrage läuft dabei über unseren Hosting-Anbieter bunny.net, der wie bei jedem Webseitenaufruf Ihre
+            IP-Adresse sieht (über die alte Adresse wartgeld-generator-zug.netlify.app zusätzlich über Netlify).
+            Weitere Daten werden nicht übermittelt; der Adressdienst speichert keine Adressen.
+            Mit «Einstellungen sichern» erstellen Sie eine Datei, die nur auf Ihrem Gerät gespeichert wird.
           </p>
         </section>
 

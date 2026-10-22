@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach, type MockInstance } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StreetLookup } from '../../StreetLookup';
@@ -95,5 +95,63 @@ describe('StreetLookup when the lookup service fails', () => {
 
     expect(await screen.findByText('Fehler bei der Adresssuche')).toBeInTheDocument();
     expect(screen.queryByRole('option')).toBeNull();
+  });
+});
+
+// @covers FR-01.02
+describe('StreetLookup while typing', () => {
+  let fetchSpy: MockInstance<typeof fetch>;
+
+  beforeEach(() => {
+    fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation(async () => new Response(JSON.stringify({ results: [allenwinden] })));
+  });
+  afterEach(() => vi.restoreAllMocks());
+
+  it('looks up once after a pause instead of once per keystroke', async () => {
+    renderLookup();
+    for (const value of ['Al', 'All', 'Alle', 'Allen', 'Allenw']) {
+      fireEvent.change(screen.getByRole('combobox'), { target: { value } });
+    }
+
+    await screen.findByRole('option');
+
+    expect(fetchSpy, 'one request for the final text').toHaveBeenCalledTimes(1);
+    expect(JSON.parse(String(fetchSpy.mock.calls[0][1]?.body)).searchTerm).toBe('Allenw');
+  });
+
+  it('hides suggestions for the previous text until the new lookup is due', async () => {
+    renderLookup();
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Allenwinden' } });
+    await screen.findByRole('option');
+
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Seestrasse' } });
+
+    expect(screen.queryByRole('option'), 'stale suggestions are not offered').not.toBeInTheDocument();
+  });
+
+  it('does not keep a highlighted row when a new list arrives', async () => {
+    const onChange = renderLookup();
+    const input = screen.getByRole('combobox');
+    fireEvent.change(input, { target: { value: 'Allenwinden' } });
+    await screen.findByRole('option');
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+
+    fireEvent.change(input, { target: { value: 'Allenwinden 1' } });
+    await screen.findByRole('option');
+    fireEvent.keyDown(input, { key: 'Enter' });
+
+    const picked = onChange.mock.calls.filter(([, zipCode]) => zipCode !== undefined);
+    expect(picked, 'Enter picks nothing until a row of the new list is highlighted').toEqual([]);
+  });
+
+  it('hides the error of the previous text once the user types again', async () => {
+    fetchSpy.mockImplementationOnce(async () => new Response('{}', { status: 500 }));
+    renderLookup();
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Allenwinden' } });
+    await screen.findByText('Ein Fehler ist aufgetreten');
+
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Seestrasse' } });
+
+    expect(screen.queryByText('Ein Fehler ist aufgetreten'), 'the old error is not shown for the new text').not.toBeInTheDocument();
   });
 });

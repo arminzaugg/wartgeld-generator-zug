@@ -1,0 +1,38 @@
+{
+ "stage": "doubt",
+ "verdict": "concerns",
+ "doubts": [
+  {
+   "claim_under_doubt": "per-visitor limit cannot be bypassed",
+   "disproof_attempt": "/x/api/address matched edge rule */api/address (marker added) but not Shield 'begins with /api/address'; service had no path check",
+   "severity": "high",
+   "lens": "boundary & contract",
+   "file": "edge/address-lookup/handler.ts",
+   "what_would_resolve_it": "FIXED: service 404 on other paths + edge rule anchored; re-probed live"
+  },
+  {
+   "claim_under_doubt": "per-IP limit is per-visitor",
+   "disproof_attempt": "IPv6 /64 rotation defeats per-IP counting",
+   "severity": "medium",
+   "lens": "hidden coupling",
+   "file": "docs/bunny-hosting.md",
+   "what_would_resolve_it": "ACCEPTED: documented as per-IP with per-instance cap backstop"
+  },
+  {
+   "claim_under_doubt": "settings move works",
+   "disproof_attempt": "export accepts stored values that import rejects (large/JPEG signature, long text) -> whole file refused without reason",
+   "severity": "medium",
+   "lens": "reversibility",
+   "file": "src/components/SettingsTransfer.tsx",
+   "what_would_resolve_it": "FIXED: export skips and names invalid fields; import names the failing field"
+  },
+  {
+   "claim_under_doubt": "debounce never selects wrong address",
+   "disproof_attempt": "selectedIndex not reset when list changes; Enter picks row of new list",
+   "severity": "low",
+   "lens": "concurrency & ordering",
+   "file": "src/components/StreetLookup.tsx",
+   "what_would_resolve_it": "FIXED: reset on new list, guard Enter"
+  }
+ ]
+}

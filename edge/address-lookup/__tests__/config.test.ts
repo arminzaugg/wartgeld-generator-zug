@@ -38,9 +38,9 @@ describe('configFromEnv', () => {
     expect(from(incomplete).post).toBeNull();
   });
 
-  it('defaults to the production site, no previews and 600 requests per minute', () => {
+  it('defaults to the Bunny site and the old Netlify site, no previews and 600 requests per minute', () => {
     expect(from({ MAX_REQUESTS_PER_MINUTE: 'lots' })).toMatchObject({
-      allowedOrigins: ['https://wartgeld-generator-zug.netlify.app'],
+      allowedOrigins: ['https://wartgeld.nidea.ch', 'https://wartgeld-generator-zug.netlify.app'],
       previewSite: undefined,
       maxRequestsPerMinute: 600,
     });

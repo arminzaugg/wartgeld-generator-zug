@@ -1,7 +1,7 @@
 import type { LookupConfig } from './handler';
 import { parseAllowedOrigins } from './request';
 
-const DEFAULT_ORIGINS = 'https://wartgeld-generator-zug.netlify.app';
+const DEFAULT_ORIGINS = 'https://wartgeld.nidea.ch,https://wartgeld-generator-zug.netlify.app';
 const DEFAULT_MAX_PER_MINUTE = 600;
 
 /** Builds the service configuration from Bunny variables/secrets or `.env.local`. */

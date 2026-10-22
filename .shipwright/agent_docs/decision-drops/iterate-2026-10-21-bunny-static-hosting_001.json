@@ -1,0 +1,14 @@
+{
+  "run_id": "iterate-2026-10-21-bunny-static-hosting",
+  "date": "2026-10-21",
+  "section": "Iterate — change: host the app on Bunny at wartgeld.nidea.ch",
+  "title": "Static site on Bunny CDN with an edge-rule route to the lookup service and a Shield per-IP limit",
+  "context": "Step 3 of the hosting migration: the app ran on Netlify while the Swiss Post lookup service already ran on Bunny Edge Scripting. The user wanted the app on nidea.ch, a per-visitor request limit, e2e tests in CI and a budget under 2 EUR/month.",
+  "decision": "Serve the built site from a Bunny storage zone + pull zone at wartgeld.nidea.ch; an exact-URL edge rule forwards /api/address to the lookup service with a secret marker header; Bunny Shield (free) limits 50 lookups/10 s per IP on the site zone and on direct calls to the service (marker exempt). Settings move via a file export/import. Publishing is a manual npm run deploy:site.",
+  "consequences": "One web address and one bill; per-IP limiting at the edge. The limit is per IP, not per person (IPv6 rotation accepted, service cap is the backstop). Bunny resources are hand-configured and documented in docs/bunny-hosting.md. Netlify stays as a fallback until a follow-up forwards it.",
+  "rationale": "The deciding reason was a real per-IP limit: the edge script counts per instance, so only Shield gives a per-visitor limit, and it is free. Edge-rule origin switch was probed live and works on a storage pull zone.",
+  "rejected": "Serving the static files from the edge script (credentials next to the bundle, every page view a script run, no immutable CDN assets); Netlify rate limiting (paid plan); keeping Netlify as the main host.",
+  "commit": "",
+  "architecture_impact": "component",
+  "spec_ref": ".shipwright/planning/iterate/2026-10-21-bunny-static-hosting.md"
+}

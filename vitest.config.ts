@@ -11,7 +11,8 @@ export default defineConfig({
     include: [
       "src/**/__tests__/**/*.{test,spec}.{ts,tsx}",
       "src/**/*.{test,spec}.{ts,tsx}",
-      "edge/**/__tests__/**/*.test.ts"
+      "edge/**/__tests__/**/*.test.ts",
+      "scripts/**/__tests__/**/*.test.ts"
     ],
     coverage: {
       provider: 'v8',
