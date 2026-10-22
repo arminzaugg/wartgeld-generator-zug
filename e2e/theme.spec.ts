@@ -31,7 +31,7 @@ test("dark theme is remembered across a reload and uses the dark palette", { tag
   await expect(generateButton(page)).toHaveCSS("background-color", "rgb(134, 201, 179)");
 });
 
-test("headings use Newsreader and body text Instrument Sans, both actually loaded", async ({ page }) => {
+test("headings use Newsreader and body text Instrument Sans, both actually loaded", { tag: ["@FR-01.09"] }, async ({ page }) => {
   await page.goto("/");
 
   expect(await computed(page, "body", "font-family")).toMatch(/^"?Instrument Sans"?/);
@@ -44,7 +44,7 @@ test("headings use Newsreader and body text Instrument Sans, both actually loade
   expect(loaded).toEqual([true, true]);
 });
 
-test("form controls have the designed sizes", async ({ page }) => {
+test("form controls have the designed sizes", { tag: ["@FR-01.09"] }, async ({ page }) => {
   await page.goto("/");
 
   const input = page.getByLabel("Vorname");
@@ -59,7 +59,7 @@ test("form controls have the designed sizes", async ({ page }) => {
   await expect(page.getByLabel("Zuständige Gemeinde")).toHaveCSS("height", "48px");
 });
 
-test("keyboard focus on the municipality select shows the green border and halo", async ({ page }) => {
+test("keyboard focus on the municipality select shows the green border and halo", { tag: ["@FR-01.09"] }, async ({ page }) => {
   await page.route("**/api/address", route => route.fulfill({ json: { results: [
     { street: "Dorfstrasse", houseNumber: "", houseNumberAddition: "", postcode: "6319", town: "Allenwinden" },
   ] } }));

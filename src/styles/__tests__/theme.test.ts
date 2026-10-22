@@ -88,6 +88,7 @@ describe("Papier & Tanne colour tokens", () => {
   }
 });
 
+// @covers FR-01.09
 describe("Tailwind colour wiring", () => {
   const config = read("tailwind.config.ts");
 
@@ -132,6 +133,7 @@ describe("nothing is loaded from other hosts", () => {
   });
 });
 
+// @covers FR-01.09
 describe("headings", () => {
   // Newsreader ships in weight 500 only; a bold class would make the browser fake a bold face.
   it("no page or form heading asks for a bold weight", () => {
@@ -142,6 +144,7 @@ describe("headings", () => {
   });
 });
 
+// @covers FR-01.09
 describe("focus indicators", () => {
   // --ring is a faint 22% halo; a 2px ring-ring outline built on it is not a visible focus indicator.
   it("no component builds its focus outline from the translucent ring colour", () => {

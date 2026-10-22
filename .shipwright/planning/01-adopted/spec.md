@@ -99,14 +99,14 @@ _Source: enrichment._
 - Given the user opens the information page, then the purpose, usage steps, privacy statement, disclaimer and contact address are shown in German, with a way back to the form.
 - (E) Given the user opens the information page, when she reads the privacy statement, then it says that the text typed into the address field (street, house number, postcode, town) goes via Netlify and bunny.net, which see the IP address, to Swiss Post, and that nothing else is sent (iterate-2026-10-21-bunny-post-proxy).
 - (E) Given the user opens the information page, when she reads the privacy statement, then bunny.net is named as host, Netlify only for the old address, and saved settings files stay on the user's device (iterate-2026-10-21-bunny-static-hosting).
-- (E) Given the user opens any page, then the browser loads no script, stylesheet or font from another host (fonts ship with the app), so the privacy statement's "nothing else is sent" holds (iterate-2026-10-22-redesign-papier-tanne).
+- (E) Given the user opens the app, when the start page has loaded, then the browser has contacted no other website for scripts, styles or fonts (the fonts come with the app), so the privacy statement that nothing else is sent stays true (iterate-2026-10-22-redesign-papier-tanne).
 
 ### FR-01.09 — Light and dark appearance
 
 _Source: enrichment._
 
 - Given the user selects dark mode, when the page is reloaded, then the app is still shown in dark mode.
-- (E) Given light or dark appearance, then the app uses the "Papier & Tanne" palette (paper background, fir-green main action) with Newsreader headings and Instrument Sans text (iterate-2026-10-22-redesign-papier-tanne).
+- (E) Given the user has chosen light or dark appearance, when any page is shown, then it uses the warm paper background with the fir-green main button and the Newsreader headings with Instrument Sans text (iterate-2026-10-22-redesign-papier-tanne).
 
 ### FR-01.10 — Protected address lookup service
 

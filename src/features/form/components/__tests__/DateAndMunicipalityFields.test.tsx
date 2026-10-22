@@ -61,6 +61,7 @@ describe('DateAndMunicipalityFields — municipality', () => {
   });
 });
 
+// @covers FR-01.01
 describe('DateAndMunicipalityFields — birth date', () => {
   it('marks the birth date as invalid when it has an error', () => {
     render(
