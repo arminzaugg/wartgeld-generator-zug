@@ -1,0 +1,56 @@
+{
+  "projectId": "c5c682af-0879-4b6a-9a2c-03db6a805709",
+  "shape": "package",
+  "pkg": "wartgeld-generator-zug",
+  "globalName": "WartgeldUI",
+  "buildCmd": "npx tailwindcss -c .design-sync/tailwind.config.ts -i src/index.css -o .design-sync/.cache/ds.css --minify",
+  "srcDir": "src/components/ui",
+  "tsconfig": "tsconfig.app.json",
+  "cssEntry": ".design-sync/.cache/ds.css",
+  "entry": ".design-sync/entry.ts",
+  "componentSrcMap": {
+    "Alert": "src/components/ui/alert.tsx",
+    "Button": "src/components/ui/button.tsx",
+    "Card": "src/components/ui/card.tsx",
+    "Checkbox": "src/components/ui/checkbox.tsx",
+    "DropdownMenu": "src/components/ui/dropdown-menu.tsx",
+    "Input": "src/components/ui/input.tsx",
+    "Label": "src/components/ui/label.tsx",
+    "ScrollArea": "src/components/ui/scroll-area.tsx",
+    "Textarea": "src/components/ui/textarea.tsx",
+    "Toast": "src/components/ui/toast.tsx",
+    "Tooltip": "src/components/ui/tooltip.tsx"
+  },
+  "guidelinesGlob": [],
+  "dtsPropsFor": {
+    "Button": "variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'; size?: 'default' | 'sm' | 'lg' | 'icon'; asChild?: boolean; type?: 'button' | 'submit' | 'reset'; disabled?: boolean; onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void; className?: string; children?: React.ReactNode",
+    "Alert": "variant?: 'default' | 'destructive'; className?: string; children?: React.ReactNode /* compose with AlertTitle and AlertDescription; an optional lucide icon as first child is auto-positioned */",
+    "Card": "className?: string; children?: React.ReactNode /* compose with CardHeader, CardTitle, CardDescription, CardContent, CardFooter */",
+    "Checkbox": "checked?: boolean | 'indeterminate'; defaultChecked?: boolean; onCheckedChange?: (checked: boolean | 'indeterminate') => void; disabled?: boolean; required?: boolean; id?: string; name?: string; className?: string",
+    "DropdownMenu": "open?: boolean; defaultOpen?: boolean; onOpenChange?: (open: boolean) => void; modal?: boolean; children?: React.ReactNode /* compose with DropdownMenuTrigger (asChild around a Button), DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem, DropdownMenuCheckboxItem, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent */",
+    "Input": "type?: string; value?: string; defaultValue?: string; placeholder?: string; onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void; disabled?: boolean; required?: boolean; id?: string; name?: string; autoComplete?: string; className?: string",
+    "Label": "htmlFor?: string; className?: string; children?: React.ReactNode",
+    "ScrollArea": "className?: string; children?: React.ReactNode; type?: 'auto' | 'always' | 'scroll' | 'hover' /* give it a fixed height via className, e.g. h-48 */",
+    "Textarea": "value?: string; defaultValue?: string; placeholder?: string; rows?: number; onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void; disabled?: boolean; id?: string; name?: string; className?: string",
+    "Toast": "variant?: 'default' | 'destructive'; open?: boolean; defaultOpen?: boolean; onOpenChange?: (open: boolean) => void; duration?: number; className?: string; children?: React.ReactNode /* must render inside ToastProvider with a ToastViewport; compose with ToastTitle, ToastDescription, ToastAction (altText required), ToastClose */",
+    "Tooltip": "open?: boolean; defaultOpen?: boolean; onOpenChange?: (open: boolean) => void; delayDuration?: number; children?: React.ReactNode /* must render inside TooltipProvider; compose with TooltipTrigger (asChild) and TooltipContent */"
+  },
+  "overrides": {
+    "DropdownMenu": {
+      "cardMode": "single",
+      "viewport": "480x280"
+    },
+    "Tooltip": {
+      "cardMode": "single",
+      "viewport": "360x180"
+    },
+    "Toast": {
+      "cardMode": "single",
+      "primaryStory": "Success"
+    },
+    "Checkbox": {
+      "cardMode": "column"
+    }
+  },
+  "readmeHeader": ".design-sync/conventions.md"
+}
