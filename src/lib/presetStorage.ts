@@ -9,7 +9,15 @@ export interface Settings {
 /** Fields to change; `signature: null` removes the stored signature. */
 export type SettingsUpdate = Partial<Omit<Settings, 'signature'>> & { signature?: string | null };
 
-const SETTINGS_KEY = 'form-settings';
+export const SETTINGS_KEY = 'form-settings';
+
+/** Fired on `window` after settings were stored successfully in this tab. */
+export const SETTINGS_CHANGED_EVENT = 'settings-changed';
+
+const writeStored = (settings: Partial<Settings>): void => {
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  window.dispatchEvent(new Event(SETTINGS_CHANGED_EVENT));
+};
 
 const DEFAULT_SENDER_INFO = `Martina Mustermann
 Strasse
@@ -21,10 +29,11 @@ QR IBAN`;
 
 const DEFAULT_ORT = 'Kanton Zug';
 
-/** The parsed stored value; unreadable data counts as nothing saved. */
+/** The parsed stored value; unreadable data, or data that is not a settings object, counts as nothing saved. */
 const readStored = (): Partial<Settings> => {
   try {
-    return JSON.parse(localStorage.getItem(SETTINGS_KEY) ?? '{}') ?? {};
+    const parsed: unknown = JSON.parse(localStorage.getItem(SETTINGS_KEY) ?? '{}');
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
   } catch {
     return {};
   }
@@ -40,16 +49,19 @@ export const getSettings = (): Settings => {
   };
 };
 
-/** Merges `update` into the stored settings; omitted fields keep their current value. */
+/**
+ * Merges `update` into the stored settings; omitted fields keep their current value.
+ * Merges onto what is stored, not onto the defaults, so a partial save never stores a default as if chosen.
+ */
 export const updateSettings = (update: SettingsUpdate): void => {
   const { signature, ...rest } = update;
-  const current = getSettings();
-  const next: Settings = {
+  const current = readStored();
+  const next: Partial<Settings> = {
     ...current,
     ...rest,
     signature: signature === undefined ? current.signature : signature ?? undefined,
   };
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(next));
+  writeStored(next);
 };
 
 /** The settings as saved, without filled-in defaults; the placeholder sender block counts as unsaved. */
@@ -65,5 +77,5 @@ export const getStoredSettings = (): Partial<Settings> => {
 
 /** Replaces all stored settings (import). Throws if the browser refuses to store them. */
 export const replaceSettings = (settings: Partial<Settings>): void => {
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  writeStored(settings);
 };

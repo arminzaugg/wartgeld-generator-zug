@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Settings from '../Settings';
 import { renderWithProviders } from '@/lib/__tests__/test-utils';
@@ -49,7 +49,7 @@ describe('Settings export and import', () => {
 
     expect(exported).toHaveLength(1);
     const file = JSON.parse(await readBlob(exported[0]));
-    expect(file.settings).toEqual({ senderInfo: 'Anna Muster', ortRechnungssteller: 'Zug', rechnungsDatum: '', signature: PNG });
+    expect(file.settings, 'only saved fields, no defaults').toEqual({ senderInfo: 'Anna Muster', ortRechnungssteller: 'Zug', signature: PNG });
   });
 
   it('keeps the download link valid until the browser has started the download', async () => {
@@ -93,8 +93,8 @@ describe('Settings export and import', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Übernehmen' }));
 
-    await waitFor(() => expect(screen.getByLabelText('Angaben Rechnungsstellerin')).toHaveValue('Anna Muster'));
-    expect(screen.getByLabelText('Ort Rechnungsstellerin')).toHaveValue('Baar');
+    await waitFor(() => expect(screen.getByLabelText('Absender')).toHaveValue('Anna Muster'));
+    expect(screen.getByLabelText('Ort der Ausstellung')).toHaveValue('Baar');
     expect(getSettings()).toMatchObject({ senderInfo: 'Anna Muster', ortRechnungssteller: 'Baar', signature: PNG });
   });
 
@@ -105,8 +105,8 @@ describe('Settings export and import', () => {
     await userEvent.upload(screen.getByLabelText('Einstellungsdatei auswählen'),
       settingsFile(serializeSettings({ senderInfo: 'Anna Muster' })));
 
-    expect(await screen.findByText(/werden ersetzt: Angaben Rechnungsstellerin/)).toBeInTheDocument();
-    expect(screen.getByText(/zurückgesetzt: Ort, Rechnungsdatum, Unterschrift/)).toBeInTheDocument();
+    expect(await screen.findByText(/werden ersetzt: Absender/)).toBeInTheDocument();
+    expect(screen.getByText(/zurückgesetzt: Ort der Ausstellung, Rechnungsdatum, Unterschrift/)).toBeInTheDocument();
   });
 
   it('loads the same file again after an import', async () => {
@@ -194,5 +194,94 @@ describe('Settings export and import', () => {
     expect(await screen.findByText(/konnten nicht gespeichert werden/)).toBeInTheDocument();
     vi.mocked(Storage.prototype.setItem).mockRestore();
     expect(getSettings().senderInfo).toBe('Old sender');
+  });
+});
+
+// @covers FR-01.06
+describe('Settings page layout and setup status', () => {
+  beforeEach(() => localStorage.clear());
+
+  it('has the shared top bar, a way back to the invoice and one main heading', () => {
+    renderWithProviders(<Settings />);
+    expect(screen.getByRole('link', { name: 'Einstellungen' })).toHaveAttribute('aria-current', 'page');
+    expect(screen.getByRole('link', { name: 'Zur Rechnung' })).toHaveAttribute('href', '/');
+    expect(screen.getAllByRole('heading', { level: 1 }).map(h => h.textContent)).toEqual(['Einstellungen']);
+  });
+
+  it('shows the four sections in order', () => {
+    renderWithProviders(<Settings />);
+    expect(screen.getAllByRole('heading', { level: 2 }).map(h => h.textContent))
+      .toEqual(['Rechnungsstellerin', 'Ort & Datum', 'Unterschrift', 'Sichern & Laden']);
+  });
+
+  it('starts with empty fields and example placeholders when nothing is saved', () => {
+    renderWithProviders(<Settings />);
+    expect(screen.getByLabelText('Absender')).toHaveValue('');
+    expect(screen.getByLabelText('Absender')).toHaveAttribute('placeholder', expect.stringContaining('Vorname Name, Hebamme'));
+    expect(screen.getByLabelText('Ort der Ausstellung')).toHaveValue('');
+    expect(getSettings().ortRechnungssteller, 'the PDF keeps its fallback').toBe('Kanton Zug');
+  });
+
+  it('lists what is still missing and which items are done', () => {
+    updateSettings({ senderInfo: 'Anna Muster' });
+    renderWithProviders(<Settings />);
+    const status = screen.getByRole('region', { name: /Einrichtung: noch 2 Angaben bis zur ersten Rechnung/ });
+    expect(within(status).getByText('Rechnungsstellerin').closest('li')).toHaveAttribute('data-done', 'true');
+    expect(within(status).getByText('Ort der Ausstellung').closest('li')).toHaveAttribute('data-done', 'false');
+  });
+
+  it('says everything is set once sender, place and signature are saved', () => {
+    updateSettings({ senderInfo: 'Anna Muster', ortRechnungssteller: 'Zug', signature: PNG });
+    renderWithProviders(<Settings />);
+    expect(screen.getByText(/Alles eingerichtet\./)).toBeInTheDocument();
+    expect(screen.queryByText(/bis zur ersten Rechnung/)).toBeNull();
+  });
+
+  it('updates the status right after saving, without reloading the page', async () => {
+    renderWithProviders(<Settings />);
+    await userEvent.type(screen.getByLabelText('Ort der Ausstellung'), 'Zug');
+    await userEvent.click(within(screen.getByRole('region', { name: 'Ort & Datum' })).getByRole('button', { name: 'Speichern' }));
+    expect(screen.getByRole('region', { name: /noch 2 Angaben/ })).toBeInTheDocument();
+  });
+
+  it('updates the status after uploading a signature image', async () => {
+    updateSettings({ senderInfo: 'Anna Muster', ortRechnungssteller: 'Zug' });
+    renderWithProviders(<Settings />);
+    const png = new File([Uint8Array.from(atob(PNG.split(',')[1]), c => c.charCodeAt(0))], 'u.png', { type: 'image/png' });
+    await userEvent.upload(screen.getByLabelText('Oder PNG-Datei hochladen'), png);
+    expect(await screen.findByText(/Alles eingerichtet\./)).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: 'Gespeicherte Unterschrift' })).toBeInTheDocument();
+  });
+
+  it('does not claim a signature is saved when the browser refuses to store it', async () => {
+    renderWithProviders(<Settings />);
+    const png = new File([Uint8Array.from(atob(PNG.split(',')[1]), c => c.charCodeAt(0))], 'u.png', { type: 'image/png' });
+    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('full', 'QuotaExceededError');
+    });
+    await userEvent.upload(screen.getByLabelText('Oder PNG-Datei hochladen'), png);
+    expect(await screen.findAllByText('Unterschrift nicht gespeichert')).not.toHaveLength(0);
+    setItem.mockRestore();
+    expect(screen.queryByRole('img', { name: 'Gespeicherte Unterschrift' })).not.toBeInTheDocument();
+    expect(screen.getByText('Noch keine Unterschrift gespeichert.')).toBeInTheDocument();
+  });
+
+  it('says when no signature is saved yet', () => {
+    renderWithProviders(<Settings />);
+    expect(screen.getByText('Noch keine Unterschrift gespeichert.')).toBeInTheDocument();
+  });
+
+  it('saves sender, place and date together from either Speichern button, as before', async () => {
+    renderWithProviders(<Settings />);
+    await userEvent.type(screen.getByLabelText('Absender'), 'Anna Muster');
+    await userEvent.type(screen.getByLabelText('Ort der Ausstellung'), 'Baar');
+    await userEvent.click(within(screen.getByRole('region', { name: 'Rechnungsstellerin' })).getByRole('button', { name: 'Speichern' }));
+    expect(getSettings()).toMatchObject({ senderInfo: 'Anna Muster', ortRechnungssteller: 'Baar' });
+    expect(await screen.findAllByText('Gespeichert')).not.toHaveLength(0);
+  });
+
+  it('keeps the date hint tied to the date field', () => {
+    renderWithProviders(<Settings />);
+    expect(screen.getByLabelText(/Rechnungsdatum/)).toHaveAccessibleDescription('Leer lassen, um jeweils das aktuelle Datum zu verwenden.');
   });
 });

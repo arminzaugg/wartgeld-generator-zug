@@ -1,0 +1,240 @@
+{
+  "schema_version": 1,
+  "run_id": "iterate-2026-10-22-redesign-settings-info",
+  "reviews": {
+    "self": {
+      "review_type": "self",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-22T19:06:48.296681+00:00",
+      "disposition": null,
+      "recorded_by": "self-review",
+      "parse_status": null,
+      "raw_excerpt": null
+    },
+    "plan": {
+      "review_type": "plan",
+      "status": "completed",
+      "findings_count": 2,
+      "findings": [
+        {
+          "severity": "medium",
+          "category": "edge-case",
+          "file": null,
+          "line": null,
+          "finding": "Wrapping the entire startup theme script in `try/catch` can leave dark-system users with a light first paint when `localStorage.getItem()` throws. If the catch simply exits, the script never resolves the system preference, violating AC11.",
+          "suggestion": "Catch storage access separately, then resolve and apply the theme even when storage is unavailable. Ensure React uses the same resolution rules for absent, invalid, and inaccessible stored values. Cover these cases in the no-flash tests.",
+          "source": "external-review"
+        },
+        {
+          "severity": "low",
+          "category": "edge-case",
+          "file": null,
+          "line": null,
+          "finding": "The setup rules require distinguishing missing stored values from PDF defaults, but the plan does not specify whether the storage reader returns raw values or values with defaults applied. Using a default-populating reader could incorrectly mark an unsaved place as complete or populate fields that should start empty.",
+          "suggestion": "Explicitly use raw persisted values for setup status and initial form values, retaining fallback application in the existing PDF path. Test absent settings, whitespace-only values, and the stored example sender.  The approach is focused and preserves the existing save and transfer boundaries. Address the startup-script failure path before implementation; no broader architectural changes are needed. Repository files were unavailable in the supplied workspace, so this assessment is based on the specification and plan.  SHIPWRIGHT_VERDICT: revise",
+          "source": "external-review"
+        }
+      ],
+      "provider": "codex",
+      "completed_at": "2026-10-22T18:49:50.780215+00:00",
+      "disposition": null,
+      "recorded_by": "external-review-json",
+      "parse_status": "partial",
+      "raw_excerpt": "[glm] <no review returned: openai package not installed>\n\n[openai] 1. **Category:** edge-case  \n   **Severity:** medium  \n   **Finding:** Wrapping the entire startup theme script in `try/catch` can leave dark-system users with a light first paint when `localStorage.getItem()` throws. If the catch simply exits, the script never resolves the system preference, violating AC11.  \n   **Suggestion:** Catch storage access separately, then resolve and apply the theme even when storage is unavailable. Ensure React uses the same resolution rules for absent, invalid, and inaccessible stored values. Cover these cases in the no-flash tests.\n\n2. **Category:** edge-case  \n   **Severity:** low  \n   **Finding:** The setup rules require distinguishing missing stored values from PDF defaults, but the plan does not specify whether the storage reader returns raw values or values with defaults applied. Using a default-populating reader could incorrectly mark an unsaved place as complete or populate fields that should start empty.  \n   **Suggestion:** Explicitly use raw persisted values for setup status and initial form values, retaining fallback application in the existing PDF path. Test absent settings, whitespace-only values, and the stored example sender.\n\nThe approach is focused and preserves the existing save and transfer boundaries. Address the startup-script failure path before implementation; no broader architectural changes are needed. Repository files were unavailable in the supplied workspace, so this assessment is based on the specification and plan.\n\nSHIPWRIGHT_VERDICT: revise",
+      "verdicts": {
+        "glm": "unavailable",
+        "openai": "revise"
+      },
+      "contradiction_resolution": "single reviewer (glm unavailable); openai revise findings both integrated"
+    },
+    "code": {
+      "review_type": "code",
+      "status": "completed",
+      "findings_count": 6,
+      "findings": [
+        {
+          "severity": "low",
+          "category": "correctness",
+          "file": "src/lib/__tests__/setupStatus.test.ts",
+          "line": 24,
+          "finding": "describe('setup wording') had no @covers tag.",
+          "suggestion": "Add // @covers FR-01.06.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "performance",
+          "file": "src/hooks/useSetupStatus.ts",
+          "line": 18,
+          "finding": "getSnapshot JSON-parsed the whole stored settings (incl. signature data URL) on every render of AppHeader/SetupNotice, i.e. on each invoice-form keystroke.",
+          "suggestion": "Recompute only when the raw stored string changes.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "readability",
+          "file": "src/components/ui/__tests__/toaster.test.tsx",
+          "line": 12,
+          "finding": "Toast icon tests checked Tailwind classes and were tagged FR-01.09.",
+          "suggestion": "Check which icon renders; re-tag to the owning FR.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "readability",
+          "file": "src/hooks/__tests__/useSetupStatus.test.tsx",
+          "line": 49,
+          "finding": "Unmount test hard-coded the event name and spied on removeEventListener.",
+          "suggestion": "Import the constant; assert no re-render after unmount.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": null,
+          "category": "readability",
+          "file": "src/pages/Info.tsx",
+          "line": 36,
+          "finding": "Mixed useId and hard-coded heading ids.",
+          "suggestion": "Optional consistency.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": null,
+          "category": "accessibility",
+          "file": "src/pages/Settings.tsx",
+          "line": 41,
+          "finding": "Status change after a signature upload is not announced; upload has no toast (unchanged from before).",
+          "suggestion": "Optional live region or upload toast.",
+          "source": "code-reviewer"
+        }
+      ],
+      "provider": null,
+      "completed_at": "2026-10-22T19:10:52.594857+00:00",
+      "disposition": null,
+      "recorded_by": "code-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit"
+    },
+    "doubt": {
+      "review_type": "doubt",
+      "status": "completed",
+      "findings_count": 4,
+      "findings": [
+        {
+          "severity": "medium",
+          "category": "reversibility",
+          "file": "src/components/SignaturePad.tsx",
+          "line": 48,
+          "finding": "Claim under doubt: The signature card truthfully reports what is saved — SignaturePad set the preview before onSave; a refused localStorage write (large PNG, quota) left the card saying 'Gespeicherte Unterschrift' while nothing was stored and the status still listed Unterschrift as missing.",
+          "suggestion": "Store first, show preview only on success, report failure.",
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "concurrency & ordering",
+          "file": "src/pages/Settings.tsx",
+          "line": 68,
+          "finding": "Claim under doubt: The settings page shows a consistent picture of the stored settings — Status box follows other tabs live while form fields keep their initial values; saving overwrites the other tab's values (pre-existing).",
+          "suggestion": "Document or refresh the form on cross-tab changes.",
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "boundary & contract",
+          "file": "src/lib/presetStorage.ts",
+          "line": 33,
+          "finding": "Claim under doubt: updateSettings merging onto the raw stored record is safe for any stored value — Valid non-object JSON would be spread into junk keys and persisted.",
+          "suggestion": "readStored returns {} unless a plain object.",
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "hidden coupling & blast radius",
+          "file": "src/hooks/useSetupStatus.ts",
+          "line": 30,
+          "finding": "Claim under doubt: useSetupStatus is cheap to call on every render — Each render still reads and compares the raw stored string (includes signature data URL).",
+          "suggestion": "Accept with note or cache raw in memory.",
+          "source": "doubt-reviewer"
+        }
+      ],
+      "provider": null,
+      "completed_at": "2026-10-22T19:14:05.223195+00:00",
+      "disposition": null,
+      "recorded_by": "doubt-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit"
+    },
+    "external_code": {
+      "review_type": "external_code",
+      "status": "completed",
+      "findings_count": 1,
+      "findings": [
+        {
+          "severity": "medium",
+          "category": "bug",
+          "file": "src/components/SignaturePad.tsx",
+          "line": 101,
+          "finding": "The signature status row cannot fit at 320px. Its fixed 160px preview, 16px gap and padding leave roughly 26px for the text. The empty-state text overflows, and the saved-state text breaks beyond its narrow column; the enclosing card’s `overflow-hidden` clips the content. The document-width test can pass despite this clipping.",
+          "suggestion": "Stack the preview and text on narrow screens, switching to a horizontal row when space permits. Verify both saved and empty states at 320px.  Overall assessment: ship-with-fixes. The diff substantially implements the specification, but the signature status row needs a responsive layout fix before shipping.  SHIPWRIGHT_VERDICT: revise",
+          "source": "external-review"
+        }
+      ],
+      "provider": null,
+      "completed_at": "2026-10-22T19:08:11.956773+00:00",
+      "disposition": null,
+      "recorded_by": "external-review-json",
+      "parse_status": "partial",
+      "raw_excerpt": "[glm] <no review returned: openai package not installed>\n\n[openai] - Category: bug\n- Severity: medium\n- File: src/components/SignaturePad.tsx:101\n- Finding: The signature status row cannot fit at 320px. Its fixed 160px preview, 16px gap and padding leave roughly 26px for the text. The empty-state text overflows, and the saved-state text breaks beyond its narrow column; the enclosing card’s `overflow-hidden` clips the content. The document-width test can pass despite this clipping.\n- Suggestion: Stack the preview and text on narrow screens, switching to a horizontal row when space permits. Verify both saved and empty states at 320px.\n\nOverall assessment: ship-with-fixes. The diff substantially implements the specification, but the signature status row needs a responsive layout fix before shipping.\n\nSHIPWRIGHT_VERDICT: revise",
+      "verdicts": {
+        "glm": "unavailable",
+        "openai": "revise"
+      },
+      "contradiction_resolution": "single reviewer (glm unavailable); openai revise: signature status row squeezed at 320px — fixed (row wraps, text min 10rem) with a new 320px e2e check"
+    },
+    "spec": {
+      "review_type": "spec",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-22T19:08:38.735234+00:00",
+      "disposition": null,
+      "recorded_by": "spec-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit"
+    },
+    "plan_internal": {
+      "review_type": "plan_internal",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-22T18:49:50.836602+00:00",
+      "disposition": null,
+      "recorded_by": "external-prose",
+      "parse_status": "unstructured",
+      "raw_excerpt": "opus-plan-reviewer: approve-with-changes. 17 findings (1 high, 9 medium, 7 low); 15 fixed in spec, 2 confirmed. See spec section Internal Plan Review.\n",
+      "transport": "agent",
+      "verdict": "pass"
+    },
+    "architecture_internal": {
+      "review_type": "architecture_internal",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-22T18:49:50.895322+00:00",
+      "disposition": null,
+      "recorded_by": "external-prose",
+      "parse_status": "unstructured",
+      "raw_excerpt": "architecture-internal-reviewer: build-with-changes, option A. 5 findings; 3 fixed, 1 disclosed, 1 accepted. See spec section Internal Architecture Review.\n",
+      "transport": "agent",
+      "verdict": "pass"
+    }
+  }
+}

@@ -93,12 +93,14 @@ _Source: enrichment._
 - Given the midwife saved sender details and a fixed invoice date on the settings page, when she generates an invoice, then the PDF shows those sender details and that date; when the date is cleared, the PDF shows today's date.
 - (E) Given the midwife saved her settings to a file on one web address, when she loads that file on another and confirms, then her next invoice there shows the same sender details and signature (iterate-2026-10-21-bunny-static-hosting).
 - (E) Given a file that is not a settings file, is over 1 MB, has unknown fields or values of the wrong form, when she loads it, then a German message explains it and the stored settings stay unchanged (iterate-2026-10-21-bunny-static-hosting).
+- (E) Given sender details, place or signature are not yet saved, when the midwife opens the invoice page, then a note names what is missing and links to the settings, the Einstellungen link carries a dot, and the settings page lists the missing items; once all three are saved, note, dot and list give way to «Alles eingerichtet.» (iterate-2026-10-22-redesign-settings-info).
 
 ### FR-01.07 — Handwritten signature
 
 _Source: enrichment._
 
 - Given a signature was saved, when the midwife changes and saves her sender details, then the signature is still present on the next generated invoice; when she clears the signature, the next invoice has none.
+- (E) Given the midwife uploads a PNG signature on the settings page, when it is stored, then it is shown as «Gespeicherte Unterschrift» on a white background and counts as done in the setup status (iterate-2026-10-22-redesign-settings-info).
 
 ### FR-01.08 — About, privacy and contact information
 
@@ -109,6 +111,7 @@ _Source: enrichment._
 - (E) Given the user opens the information page, when she reads the privacy statement, then bunny.net is named as host, Netlify only for the old address, and saved settings files stay on the user's device (iterate-2026-10-21-bunny-static-hosting).
 - (E) Given the user opens the app, when the start page has loaded, then the browser has contacted no other website for scripts, styles or fonts (the fonts come with the app), so the privacy statement that nothing else is sent stays true (iterate-2026-10-22-redesign-papier-tanne).
 - (E) Given the user opens the invoice page, when she reads the note at the top, then it says patient data stays in the browser and only the entered address goes via the app's own address service to Swiss Post, with `Mehr erfahren` leading to the information page (iterate-2026-10-22-redesign-invoice-page).
+- (E) Given the user opens the information page, when she reads it, then the municipality is described as proposed from the postcode, no payment slip is promised, the disclaimer text is unchanged and the contact link opens a mail to armin.zaugg@traintown.solutions (iterate-2026-10-22-redesign-settings-info).
 
 ### FR-01.09 — Light and dark appearance
 
@@ -116,6 +119,7 @@ _Source: enrichment._
 
 - Given the user selects dark mode, when the page is reloaded, then the app is still shown in dark mode.
 - (E) Given the user has chosen light or dark appearance, when any page is shown, then it uses the warm paper background with the fir-green main button and the Newsreader headings with Instrument Sans text (iterate-2026-10-22-redesign-papier-tanne).
+- (E) Given the user picks «System» in the «Darstellung» menu (Hell, Dunkel, System), when the operating system switches between light and dark, then the app follows without a reload; a stored choice is applied by `index.html` before the app's scripts run, so there is no light flash (iterate-2026-10-22-redesign-settings-info).
 
 ### FR-01.10 — Protected address lookup service
 

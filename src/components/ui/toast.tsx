@@ -28,8 +28,8 @@ const toastVariants = cva(
     variants: {
       variant: {
         default: "border bg-popover text-popover-foreground",
-        destructive:
-          "destructive group border-transparent bg-destructive-soft text-destructive-foreground",
+        // Same surface as a confirmation; the danger colour sits in the icon circle (design).
+        destructive: "destructive group border bg-popover text-popover-foreground",
       },
     },
     defaultVariants: {
@@ -75,7 +75,7 @@ const ToastClose = React.forwardRef<
   <ToastPrimitives.Close
     ref={ref}
     className={cn(
-      "absolute right-2 top-2 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity hover:text-foreground focus:opacity-100 focus:outline-none focus-visible:shadow-[0_0_0_2px_hsl(var(--background)),0_0_0_4px_hsl(var(--primary))] group-hover:opacity-100 group-[.destructive]:text-destructive-foreground/60 group-[.destructive]:hover:text-destructive-foreground",
+      "absolute right-2 top-2 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity hover:text-foreground focus:opacity-100 focus:outline-none focus-visible:shadow-[0_0_0_2px_hsl(var(--background)),0_0_0_4px_hsl(var(--primary))] group-hover:opacity-100",
       className
     )}
     toast-close=""
