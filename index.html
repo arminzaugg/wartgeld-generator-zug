@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 
 <head>
   <meta charset="UTF-8" />
@@ -7,6 +7,19 @@
   <title>Hebammenwartgeld Kanton Zug</title>
   <meta name="description" content="Rechnung für das Hebammenwartgeld im Kanton Zug erstellen" />
   <meta property="og:image" content="/og-image.svg" />
+  <!-- Applies the stored theme before the app loads, so dark mode does not flash light.
+       Same rules as ThemeProvider. A future Content-Security-Policy needs this script's hash. -->
+  <script>
+    (function () {
+      var theme = null;
+      try { theme = localStorage.getItem("app-theme"); } catch (e) {}
+      if (theme !== "light" && theme !== "dark") {
+        theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      }
+      document.documentElement.classList.remove("light", "dark");
+      document.documentElement.classList.add(theme);
+    })();
+  </script>
 </head>
 
 <body>

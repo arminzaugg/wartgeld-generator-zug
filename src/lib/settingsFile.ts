@@ -51,8 +51,8 @@ const FIELDS: Record<keyof Settings, FieldCheck> = {
 };
 
 export const FIELD_LABELS: Record<keyof Settings, string> = {
-  senderInfo: 'Angaben Rechnungsstellerin',
-  ortRechnungssteller: 'Ort',
+  senderInfo: 'Absender',
+  ortRechnungssteller: 'Ort der Ausstellung',
   rechnungsDatum: 'Rechnungsdatum',
   signature: 'Unterschrift',
 };

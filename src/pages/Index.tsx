@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AppHeader } from "@/components/AppHeader";
 import { PrivacyNote } from "@/components/PrivacyNote";
+import { SetupNotice } from "@/components/SetupNotice";
 import { PreviewPanel } from "@/components/PreviewPanel";
 import { PdfSheet } from "@/components/PdfSheet";
 import { FormContainer } from "@/features/form/components/FormContainer";
@@ -105,6 +106,7 @@ const Index = () => {
               Angaben zur Wöchnerin erfassen, Leistungen wählen, fertig. Die Rechnung geht an die Wohngemeinde.
             </p>
           </div>
+          <SetupNotice />
           <PrivacyNote compact={isPhone} />
           <FormContainer
             values={formData}

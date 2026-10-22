@@ -5,14 +5,14 @@ const generateButton = (page: Page) => page.getByRole("button", { name: "Rechnun
 const computed = (page: Page, selector: string, property: string) =>
   page.locator(selector).first().evaluate((el, prop) => getComputedStyle(el).getPropertyValue(prop), property);
 
-const chooseTheme = async (page: Page, label: "Light" | "Dark") => {
-  await page.getByRole("button", { name: "Toggle theme" }).click();
-  await page.getByRole("menuitem", { name: label }).click();
+const chooseTheme = async (page: Page, label: "Hell" | "Dunkel" | "System") => {
+  await page.getByRole("button", { name: "Darstellung" }).click();
+  await page.getByRole("menuitemradio", { name: label }).click();
 };
 
 test("light theme uses the paper background and the fir-green main button", { tag: ["@FR-01.09"] }, async ({ page }) => {
   await page.goto("/");
-  await chooseTheme(page, "Light");
+  await chooseTheme(page, "Hell");
   await page.mouse.move(0, 0);
 
   expect(await computed(page, "body", "background-color")).toBe("rgb(246, 243, 236)");
@@ -22,7 +22,7 @@ test("light theme uses the paper background and the fir-green main button", { ta
 
 test("dark theme is remembered across a reload and uses the dark palette", { tag: ["@FR-01.09"] }, async ({ page }) => {
   await page.goto("/");
-  await chooseTheme(page, "Dark");
+  await chooseTheme(page, "Dunkel");
   await page.reload();
   await page.mouse.move(0, 0);
 
@@ -66,7 +66,7 @@ test("keyboard focus on the municipality select shows the green border and halo"
     { street: "Dorfstrasse", houseNumber: "", houseNumberAddition: "", postcode: "6319", town: "Allenwinden" },
   ] } }));
   await page.goto("/");
-  await chooseTheme(page, "Light");
+  await chooseTheme(page, "Hell");
   await page.getByPlaceholder("Strasse und Hausnummer").fill("Dorfstrasse 3");
   await page.getByRole("option", { name: /Dorfstrasse/ }).click();
 

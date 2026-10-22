@@ -136,10 +136,14 @@ describe("nothing is loaded from other hosts", () => {
 // @covers FR-01.09
 describe("headings", () => {
   // Newsreader ships in weight 500 only; a bold class would make the browser fake a bold face.
-  it("no page or form heading asks for a bold weight", () => {
-    const files = ["src/pages/Index.tsx", "src/pages/Info.tsx", "src/pages/Settings.tsx", "src/features/form/components/FormContainer.tsx"];
+  // A heading that switches to the sans face (which ships 600) may be semibold.
+  it("no serif page or form heading asks for a bold weight", () => {
+    const files = [
+      "src/pages/Index.tsx", "src/pages/Info.tsx", "src/pages/Settings.tsx", "src/features/form/components/FormContainer.tsx",
+      "src/components/SettingsSection.tsx",
+    ];
     for (const file of files) {
-      expect(read(file).match(/<h[12][^>]*font-(bold|semibold)/g), file).toBeNull();
+      expect(read(file).match(/<h[12](?![^>]*font-sans)[^>]*font-(bold|semibold)/g), file).toBeNull();
     }
   });
 });
@@ -170,5 +174,26 @@ describe("invoice page colours", () => {
     for (const file of files) {
       expect(read(file).match(fixed), file).toBeNull();
     }
+  });
+});
+
+// @covers FR-01.06 FR-01.07 FR-01.08
+describe("settings and information page colours", () => {
+  // The signature field and its preview stay white like the paper; each such line carries a comment saying so.
+  it("no settings or information component uses a fixed colour", () => {
+    const files = [
+      "src/pages/Settings.tsx", "src/pages/Info.tsx", "src/components/SignaturePad.tsx", "src/components/SettingsTransfer.tsx",
+      "src/components/SettingsSection.tsx", "src/components/SetupNotice.tsx", "src/components/ui/toaster.tsx",
+      "src/components/ThemeToggle.tsx",
+    ];
+    const fixed = /\b(?:text|bg|border|ring|fill|stroke)-(?:(?:gray|red|blue|yellow|slate|green|amber)-\d{2,3}|white|black)\b/g;
+    for (const file of files) {
+      const source = file === "src/components/SignaturePad.tsx" ? read(file).replace(/\bbg-white\b/g, "") : read(file);
+      expect(source.match(fixed), file).toBeNull();
+    }
+  });
+
+  it("the information page draws no icon by hand", () => {
+    expect(read("src/pages/Info.tsx")).not.toMatch(/<svg/);
   });
 });

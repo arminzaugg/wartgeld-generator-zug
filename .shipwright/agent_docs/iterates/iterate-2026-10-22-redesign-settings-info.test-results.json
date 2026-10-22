@@ -1,0 +1,140 @@
+{
+  "iterate_latest": {
+    "run_id": "iterate-2026-10-22-redesign-settings-info",
+    "date": "2026-10-22",
+    "unit": {
+      "status": "passed",
+      "passed": 364,
+      "total": 364
+    },
+    "integration": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "pgtap": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "e2e": {
+      "status": "passed",
+      "passed": 25,
+      "total": 25
+    },
+    "design_fidelity": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "smoke": {
+      "status": "skipped"
+    },
+    "degraded": [],
+    "surface_verification": {
+      "surface": "web",
+      "runner": "npx playwright test",
+      "exit_code": 0,
+      "tests_run": 25,
+      "evidence_path": "/Users/openclaw/Engineering/nidea-invoice/.worktrees/redesign-settings-info/.shipwright/runs/iterate-2026-10-22-redesign-settings-info/surface_verification.log",
+      "timestamp": "2026-10-22T19:15:28.745Z"
+    },
+    "test_completeness": {
+      "status": "complete",
+      "behaviors": [
+        {
+          "behavior": "AC1 setup rules: sender/place/signature missing incl. blank and stored example sender; stored-only reads",
+          "disposition": "tested",
+          "evidence": "src/lib/__tests__/setupStatus.test.ts::counts whitespace-only text and an empty signature as missing PASSED; src/hooks/__tests__/useSetupStatus.test.tsx::reports the missing items from the stored settings, ignoring the stored example sender PASSED; src/lib/__tests__/presetStorage.unit.test.ts::saving only a signature stores neither the example sender nor the default place PASSED"
+        },
+        {
+          "behavior": "AC1 status updates on saves in this tab and other tabs; notification only after a successful write",
+          "disposition": "tested",
+          "evidence": "src/hooks/__tests__/useSetupStatus.test.tsx::updates as soon as this tab saves a setting PASSED; src/hooks/__tests__/useSetupStatus.test.tsx::updates when another tab changes the settings PASSED; src/lib/__tests__/presetStorage.unit.test.ts::stays silent when the browser refuses to store the settings PASSED"
+        },
+        {
+          "behavior": "AC1 unreadable or non-object stored data counts as nothing saved",
+          "disposition": "tested",
+          "evidence": "src/lib/__tests__/presetStorage.unit.test.ts::treats stored data that is not a settings object as nothing saved PASSED; src/hooks/__tests__/useSetupStatus.test.tsx::treats unreadable stored settings as nothing saved PASSED"
+        },
+        {
+          "behavior": "AC2 setup hint on the invoice page with count, items and link; gone when complete",
+          "disposition": "tested",
+          "evidence": "src/components/__tests__/SetupNotice.test.tsx::names the number and the items still missing, with a way to the settings PASSED; src/components/__tests__/SetupNotice.test.tsx::disappears once everything is saved PASSED; e2e/settings-info.spec.ts::a new user is led through the setup until the invoice page is ready PASSED"
+        },
+        {
+          "behavior": "AC3 header dot and description, name unchanged",
+          "disposition": "tested",
+          "evidence": "src/components/__tests__/SetupNotice.test.tsx::marks \"Einstellungen\" as incomplete without changing its name PASSED; src/components/__tests__/SetupNotice.test.tsx::shows no dot and no description once setup is complete PASSED"
+        },
+        {
+          "behavior": "AC4 settings layout: top bar, back link, one h1, status box, four sections",
+          "disposition": "tested",
+          "evidence": "src/pages/__tests__/Settings.test.tsx::has the shared top bar, a way back to the invoice and one main heading PASSED; src/pages/__tests__/Settings.test.tsx::shows the four sections in order PASSED; src/pages/__tests__/Settings.test.tsx::lists what is still missing and which items are done PASSED; src/pages/__tests__/Settings.test.tsx::says everything is set once sender, place and signature are saved PASSED"
+        },
+        {
+          "behavior": "AC5/AC6 fields start from stored values with placeholders; both Speichern save all fields; date hint",
+          "disposition": "tested",
+          "evidence": "src/pages/__tests__/Settings.test.tsx::starts with empty fields and example placeholders when nothing is saved PASSED; src/pages/__tests__/Settings.test.tsx::saves sender, place and date together from either Speichern button, as before PASSED; src/pages/__tests__/Settings.test.tsx::keeps the date hint tied to the date field PASSED; src/pages/__tests__/Settings.test.tsx::updates the status right after saving, without reloading the page PASSED"
+        },
+        {
+          "behavior": "AC7 signature card: upload stored and shown; empty state; refused save not claimed; readable at 320px",
+          "disposition": "tested",
+          "evidence": "src/pages/__tests__/Settings.test.tsx::updates the status after uploading a signature image PASSED; src/pages/__tests__/Settings.test.tsx::says when no signature is saved yet PASSED; src/pages/__tests__/Settings.test.tsx::does not claim a signature is saved when the browser refuses to store it PASSED; e2e/settings-info.spec.ts::the signature status row keeps its text readable on a 320px phone PASSED"
+        },
+        {
+          "behavior": "AC8 settings transfer unchanged with new labels",
+          "disposition": "tested",
+          "evidence": "src/pages/__tests__/Settings.test.tsx::asks before replacing and then shows the imported values PASSED; src/pages/__tests__/Settings.test.tsx::names the settings that the import clears PASSED; e2e/settingsTransfer.spec.ts::settings saved to a file are used for invoices after loading them elsewhere PASSED"
+        },
+        {
+          "behavior": "AC9 information page: layout, facts kept, proposed municipality, no payment slip, disclaimer, contact",
+          "disposition": "tested",
+          "evidence": "src/pages/__tests__/Info.test.tsx::names the typed address text as the only data sent, and to whom PASSED; src/pages/__tests__/Info.test.tsx::names bunny.net as host that forwards the lookup and sees the IP address PASSED; src/pages/__tests__/Info.test.tsx::mentions Netlify only for the old address PASSED; src/pages/__tests__/Info.test.tsx::says the municipality is proposed, not decided PASSED; src/pages/__tests__/Info.test.tsx::promises no payment slip on the invoice PASSED; src/pages/__tests__/Info.test.tsx::keeps the service disclaimer word for word PASSED; src/pages/__tests__/Info.test.tsx::links to the real contact address PASSED; src/styles/__tests__/theme.test.ts::the information page draws no icon by hand PASSED"
+        },
+        {
+          "behavior": "AC10 theme menu Hell/Dunkel/System; System follows the OS live; stored under app-theme",
+          "disposition": "tested",
+          "evidence": "src/components/__tests__/ThemeToggle.test.tsx::offers Hell, Dunkel and System under \"Darstellung\", with the current choice checked PASSED; src/components/__tests__/ThemeToggle.test.tsx::with System, follows the operating system, also when it changes while open PASSED; e2e/settings-info.spec.ts::the theme menu offers Hell, Dunkel and System, and System follows the operating system PASSED"
+        },
+        {
+          "behavior": "AC11 no flash and lang=de: inline script, same key, storage failure",
+          "disposition": "tested",
+          "evidence": "src/__tests__/themeInit.test.ts::reads the same storage key as the theme provider in App.tsx PASSED; src/__tests__/themeInit.test.ts::still follows the system when storage cannot be read PASSED; src/__tests__/themeInit.test.ts::marks the page as German PASSED; e2e/settings-info.spec.ts::the stored dark theme is applied before the app's scripts run PASSED"
+        },
+        {
+          "behavior": "AC12 visible keyboard focus in menus",
+          "disposition": "tested",
+          "evidence": "e2e/settings-info.spec.ts::keyboard focus in the theme menu is shown with a green outline PASSED"
+        },
+        {
+          "behavior": "AC13 toast icons by variant",
+          "disposition": "tested",
+          "evidence": "src/components/ui/__tests__/toaster.test.tsx::shows a check in an accent circle for a confirmation PASSED; src/components/ui/__tests__/toaster.test.tsx::shows an alert icon in a soft danger circle for an error PASSED"
+        },
+        {
+          "behavior": "AC14 no functional change: storage shape, transfer, tokens only, 320px widths, suites green",
+          "disposition": "tested",
+          "evidence": "src/lib/__tests__/presetStorage.unit.test.ts::keeps reading settings stored by older versions PASSED; src/styles/__tests__/theme.test.ts::no settings or information component uses a fixed colour PASSED; e2e/settings-info.spec.ts::/#/settings fits a 320px wide phone without sideways scrolling PASSED; e2e/settings-info.spec.ts::/#/info fits a 320px wide phone without sideways scrolling PASSED; vitest 364/364, playwright 25/25 (dev + built), lint/typecheck/build green"
+        }
+      ],
+      "counts": {
+        "testable": 15,
+        "tested": 15,
+        "untestable": 0,
+        "untested_testable": 0
+      },
+      "enumeration_basis": {
+        "acs": 14,
+        "covered_acs": 14
+      }
+    }
+  },
+  "source_state": {
+    "run_id": "iterate-2026-10-22-redesign-settings-info",
+    "commit": "0105c55b9827f201b621f7cb8979bac61346b452",
+    "dirty": true,
+    "base": null,
+    "release": null
+  }
+}

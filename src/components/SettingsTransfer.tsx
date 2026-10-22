@@ -111,8 +111,8 @@ export const SettingsTransfer = ({ onImported }: SettingsTransferProps) => {
   };
 
   return (
-    <div className="space-y-4">
-      <p className="text-sm text-muted-foreground">
+    <div className="flex flex-col gap-4">
+      <p className="text-sm leading-[21px] text-foreground-secondary">
         Sichern Sie Ihre Einstellungen in einer Datei, um sie auf einem anderen Gerät oder unter einer neuen
         Adresse wieder zu laden. Die Datei enthält Ihre Bankverbindung und Unterschrift – bewahren Sie sie sicher
         auf. Ungespeicherte Änderungen werden nicht mitgesichert.
@@ -141,8 +141,8 @@ export const SettingsTransfer = ({ onImported }: SettingsTransferProps) => {
       )}
 
       {pending && (
-        <div className="rounded-md border p-4 space-y-3">
-          <p className="text-sm">{describeImport(pending)} Tipp: Sichern Sie vorher Ihre aktuellen Einstellungen.</p>
+        <div className="flex flex-col gap-3 rounded-lg border bg-background p-4">
+          <p className="text-sm leading-[21px]">{describeImport(pending)} Tipp: Sichern Sie vorher Ihre aktuellen Einstellungen.</p>
           <div className="flex gap-2">
             <Button type="button" onClick={handleConfirm}>
               Übernehmen

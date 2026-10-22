@@ -59,6 +59,15 @@ describe('Index', () => {
     expect(screen.getByRole('link', { name: 'Einstellungen' })).toHaveAttribute('href', '/settings');
   });
 
+  // @covers FR-01.06
+  it('reminds a new midwife to complete her settings, between the intro and the privacy note', () => {
+    renderWithProviders(<Index />);
+    const notice = screen.getByText('Noch 3 Angaben bis zur ersten Rechnung');
+    const privacy = screen.getByText('Patientendaten bleiben in diesem Browser.');
+    expect(notice.compareDocumentPosition(privacy) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Rechnung generieren' }), 'never blocks generating').toBeEnabled();
+  });
+
   // @covers FR-01.08
   it('says patient data stays in the browser and only the address goes to the Post via the own service', () => {
     renderWithProviders(<Index />);

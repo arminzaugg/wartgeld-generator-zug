@@ -4,8 +4,8 @@ import { test, expect } from "@playwright/test";
 test("settings saved to a file are used for invoices after loading them elsewhere", { tag: ["@FR-01.06"] }, async ({ browser }) => {
   const oldSite = await browser.newPage();
   await oldSite.goto("/#/settings");
-  await oldSite.getByLabel("Angaben Rechnungsstellerin").fill("Anna Hebamme\nSeestrasse 1\n6300 Zug");
-  await oldSite.getByRole("button", { name: "Speichern" }).first().click();
+  await oldSite.getByLabel("Absender").fill("Anna Hebamme\nSeestrasse 1\n6300 Zug");
+  await oldSite.getByRole("button", { name: "Speichern", exact: true }).first().click();
 
   const downloading = oldSite.waitForEvent("download");
   await oldSite.getByRole("button", { name: "Einstellungen sichern" }).click();
@@ -19,11 +19,11 @@ test("settings saved to a file are used for invoices after loading them elsewher
     json: { results: [{ street: "Dorfstrasse", houseNumber: "", houseNumberAddition: "", postcode: "6319", town: "Allenwinden" }] },
   }));
   await newSite.goto("/#/settings");
-  await expect(newSite.getByLabel("Angaben Rechnungsstellerin")).not.toHaveValue(/Anna Hebamme/);
+  await expect(newSite.getByLabel("Absender")).not.toHaveValue(/Anna Hebamme/);
 
   await newSite.getByLabel("Einstellungsdatei auswählen").setInputFiles(file);
   await newSite.getByRole("button", { name: "Übernehmen" }).click();
-  await expect(newSite.getByLabel("Angaben Rechnungsstellerin")).toHaveValue(/Anna Hebamme/);
+  await expect(newSite.getByLabel("Absender")).toHaveValue(/Anna Hebamme/);
 
   await newSite.goto("/#/");
   await newSite.getByLabel("Vorname").fill("Lea");
