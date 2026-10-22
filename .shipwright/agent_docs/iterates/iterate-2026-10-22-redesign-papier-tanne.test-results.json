@@ -1,0 +1,125 @@
+{
+  "iterate_latest": {
+    "run_id": "iterate-2026-10-22-redesign-papier-tanne",
+    "date": "2026-10-22",
+    "unit": {
+      "status": "passed",
+      "passed": 249,
+      "total": 249
+    },
+    "integration": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "pgtap": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "e2e": {
+      "status": "passed",
+      "passed": 9,
+      "total": 9
+    },
+    "design_fidelity": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "smoke": {
+      "status": "skipped"
+    },
+    "degraded": [],
+    "surface_verification": {
+      "surface": "web",
+      "runner": "npx playwright test",
+      "exit_code": 0,
+      "tests_run": 9,
+      "evidence_path": "/Users/openclaw/Engineering/nidea-invoice/.worktrees/redesign-papier-tanne/.shipwright/runs/iterate-2026-10-22-redesign-papier-tanne/surface_verification.log",
+      "timestamp": "2026-10-22T14:15:51.240Z"
+    },
+    "test_completeness": {
+      "status": "complete",
+      "behaviors": [
+        {
+          "behavior": "AC1 light palette on background and main button",
+          "disposition": "tested",
+          "evidence": "e2e/theme.spec.ts::light theme uses the paper background and the fir-green main button PASSED"
+        },
+        {
+          "behavior": "AC2 dark palette persisted across reload",
+          "disposition": "tested",
+          "evidence": "e2e/theme.spec.ts::dark theme is remembered across a reload and uses the dark palette PASSED"
+        },
+        {
+          "behavior": "AC3 colour tokens equal the design sheet (light/dark, open tokens)",
+          "disposition": "tested",
+          "evidence": "src/styles/__tests__/theme.test.ts::Papier & Tanne colour tokens (4 tests) PASSED"
+        },
+        {
+          "behavior": "AC3 tailwind config has no hex, channel vs var() wiring",
+          "disposition": "tested",
+          "evidence": "src/styles/__tests__/theme.test.ts::Tailwind colour wiring (3 tests) PASSED"
+        },
+        {
+          "behavior": "AC4 fonts bundled and actually loaded; headings Newsreader, body Instrument Sans",
+          "disposition": "tested",
+          "evidence": "src/styles/__tests__/theme.test.ts::the brand fonts are bundled with the app PASSED; e2e/theme.spec.ts::headings use Newsreader and body text Instrument Sans, both actually loaded PASSED"
+        },
+        {
+          "behavior": "AC5 input/button/card/checkbox/select sizes",
+          "disposition": "tested",
+          "evidence": "e2e/theme.spec.ts::form controls have the designed sizes PASSED"
+        },
+        {
+          "behavior": "AC6 index.html loads nothing from other hosts",
+          "disposition": "tested",
+          "evidence": "src/styles/__tests__/theme.test.ts::index.html loads no script, stylesheet or font from another host PASSED"
+        },
+        {
+          "behavior": "AC6 start page contacts only the app origin",
+          "disposition": "tested",
+          "evidence": "e2e/theme.spec.ts::the start page contacts no host other than the app PASSED"
+        },
+        {
+          "behavior": "AC7 existing unit and e2e suites unchanged and green",
+          "disposition": "tested",
+          "evidence": "vitest 249/249 PASSED; playwright municipality.spec.ts + settingsTransfer.spec.ts PASSED; lint + build(typecheck) green"
+        },
+        {
+          "behavior": "Headings never request a faked bold weight",
+          "disposition": "tested",
+          "evidence": "src/styles/__tests__/theme.test.ts::no page or form heading asks for a bold weight PASSED"
+        },
+        {
+          "behavior": "Visible keyboard focus on fields (no translucent ring outline)",
+          "disposition": "tested",
+          "evidence": "src/styles/__tests__/theme.test.ts::no component builds its focus outline from the translucent ring colour PASSED; e2e/theme.spec.ts::keyboard focus on the municipality select shows the green border and halo PASSED"
+        },
+        {
+          "behavior": "Error fields expose aria-invalid (error styling while focused)",
+          "disposition": "tested",
+          "evidence": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::marks the address field as invalid ... PASSED; src/features/form/components/__tests__/DateAndMunicipalityFields.test.tsx::marks the birth date as invalid when it has an error PASSED"
+        }
+      ],
+      "counts": {
+        "testable": 12,
+        "tested": 12,
+        "untestable": 0,
+        "untested_testable": 0
+      },
+      "enumeration_basis": {
+        "acs": 7,
+        "covered_acs": 7
+      }
+    }
+  },
+  "source_state": {
+    "run_id": "iterate-2026-10-22-redesign-papier-tanne",
+    "commit": "eba7cef1127dd67c4becac91223255dfb6776e8f",
+    "dirty": true,
+    "base": null,
+    "release": null
+  }
+}

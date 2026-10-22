@@ -1,0 +1,16 @@
+{"section":"iterate-2026-10-22-redesign-papier-tanne","verdict":"PASS","review":[
+{"severity":"high","category":"correctness","file":"src/features/form/components/DateAndMunicipalityFields.tsx","line":21,"finding":"Select focus ring built on translucent --ring became near-invisible; select 40px.","suggestion":"Shared field classes.","disposition":"fixed (field-styles.ts, guard test, e2e focus test)"},
+{"severity":"medium","category":"correctness","file":"src/components/ui/input.tsx","line":14,"finding":"Focused error fields showed green border; errors not exposed via aria-invalid.","suggestion":"aria-invalid on error fields.","disposition":"fixed (unit tests)"},
+{"severity":"medium","category":"correctness","file":"src/index.css","line":34,"finding":"Checkbox border token below 3:1 (WCAG 1.4.11); matches design sheet.","suggestion":"Raise with design.","disposition":"disclosed — design decision, raised with user"},
+{"severity":"low","category":"readability","file":"src/components/ui/toast.tsx","line":78,"finding":"ToastClose blue default ring.","suggestion":"focus-visible shadow.","disposition":"fixed"},
+{"severity":"low","category":"correctness","file":"src/components/ThemeToggle.tsx","line":17,"finding":"h-10 w-10 override defeats 44px icon size.","suggestion":"Remove override.","disposition":"fixed"},
+{"severity":"low","category":"correctness","file":"e2e/theme.spec.ts","line":61,"finding":"Fragile div.grid selector.","suggestion":"data-testid.","disposition":"fixed"},
+{"severity":"low","category":"architecture","file":"src/lib/utils.ts","line":5,"finding":"twMerge does not know custom shadow names.","suggestion":"extendTailwindMerge.","disposition":"disclosed — no caller overrides shadows today"},
+{"severity":"low","category":"correctness","file":"src/components/ui/button.tsx","line":15,"finding":"Dark destructive button white text low contrast.","suggestion":"dark text.","disposition":"fixed"},
+{"severity":"low","category":"correctness","file":"src/components/ui/dropdown-menu.tsx","line":84,"finding":"Dark dropdown focus bg faint.","suggestion":"Stronger focus.","disposition":"disclosed — part 3 theme menu"},
+{"severity":"low","category":"readability","file":"src/index.css","line":47,"finding":"Unused --radius.","suggestion":"Remove.","disposition":"fixed"},
+{"severity":"low","category":"readability","file":"src/components/ui/textarea.tsx","line":13,"finding":"py-3 placement.","suggestion":"Move.","disposition":"fixed"},
+{"severity":"low","category":"correctness","file":"src/styles/__tests__/theme.test.ts","line":87,"finding":"Normaliser strips non-leading zeros.","suggestion":"Lookbehind.","disposition":"fixed"},
+{"severity":"low","category":"correctness","file":"src/styles/__tests__/theme.test.ts","line":1036,"finding":"ring-ring guard used git ls-files.","suggestion":"readdirSync.","disposition":"fixed"},
+{"severity":"low","category":"architecture","file":"src/components/ui/input.tsx","line":6,"finding":"Non-component export in component module.","suggestion":"field-styles.ts.","disposition":"fixed"}
+]}

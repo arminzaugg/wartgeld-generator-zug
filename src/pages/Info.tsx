@@ -11,20 +11,20 @@ const Info = () => {
             <ArrowLeft className="h-4 w-4" />
           </Button>
         </Link>
-        <h1 className="text-3xl font-bold">Informationen</h1>
+        <h1 className="text-3xl">Informationen</h1>
         <div className="w-16"></div> {/* Spacer to center the title */}
       </div>
       
       <div className="prose prose-slate max-w-2xl space-y-6">
         <section>
-          <h2 className="text-2xl font-semibold mb-4">Über diese Anwendung</h2>
+          <h2 className="text-2xl mb-4">Über diese Anwendung</h2>
           <p className="text-muted-foreground leading-relaxed">
             Diese Anwendung ermöglicht es Hebammen, Rechnungen für das Hebammenwartgeld im Kanton Zug zu erstellen.
           </p>
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold mb-4">Funktionen</h2>
+          <h2 className="text-2xl mb-4">Funktionen</h2>
           <ul className="list-disc pl-5 space-y-2 text-muted-foreground">
             <li>Einfache Erfassung von Patientendaten</li>
             <li>Automatische Generierung von Rechnungen im PDF-Format</li>
@@ -34,7 +34,7 @@ const Info = () => {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold mb-4">Verwendung</h2>
+          <h2 className="text-2xl mb-4">Verwendung</h2>
           <ol className="list-decimal pl-5 space-y-2 text-muted-foreground">
             <li>Erfassen Sie zuerst Ihre Daten als Rechnungsstellerin in den Einstellungen</li>
             <li>Füllen Sie das Formular mit den Patientendaten aus</li>
@@ -44,7 +44,7 @@ const Info = () => {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold mb-4">Datenschutz</h2>
+          <h2 className="text-2xl mb-4">Datenschutz</h2>
           <p className="text-muted-foreground leading-relaxed">
             Diese Anwendung speichert alle Daten ausschliesslich lokal in Ihrem Browser. Die einzigen gespeicherten Informationen
             sind Ihre Einstellungen, die im lokalen Speicher (Local Storage) Ihres Browsers gespeichert werden.
@@ -58,7 +58,7 @@ const Info = () => {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold mb-4">Service-Disclaimer</h2>
+          <h2 className="text-2xl mb-4">Service-Disclaimer</h2>
           <p className="text-muted-foreground leading-relaxed">
             Dieser Service wird auf Best-Effort-Basis bereitgestellt. Der Anbieter garantiert keine ununterbrochene Verfügbarkeit, 
             Fehlerfreiheit oder vollständige Funktionalität der Anwendung. Die Nutzung erfolgt auf eigenes Risiko.
@@ -66,7 +66,7 @@ const Info = () => {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold mb-4">Kontakt</h2>
+          <h2 className="text-2xl mb-4">Kontakt</h2>
           <p className="text-muted-foreground leading-relaxed">
             Armin Zaugg<br />
             <a href="mailto:armin.zaugg@traintown.solutions" className="text-blue-600 hover:underline inline-flex items-center gap-1">

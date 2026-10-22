@@ -77,7 +77,7 @@ export const FormContainer = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       <div className="space-y-6">
-        <h2 className="text-2xl font-semibold tracking-tight">Angaben</h2>
+        <h2 className="text-2xl tracking-tight">Angaben</h2>
 
         <div className="grid gap-8">
           <PersonalInfoFields

@@ -85,13 +85,13 @@ export const FormActions = ({
           <Button 
             variant="outline" 
             onClick={onClear}
-            className="w-full sm:w-1/2 h-11"
+            className="w-full sm:w-1/2"
             type="button"
           >
             Formular Zurücksetzen
           </Button>
           <Button 
-            className="w-full sm:w-1/2 h-11"
+            className="w-full sm:w-1/2"
             type="submit"
             disabled={isSubmitting}
           >
@@ -102,7 +102,7 @@ export const FormActions = ({
           <div className="flex flex-col sm:flex-row gap-3">
             <Button
               variant="secondary"
-              className="w-full sm:w-1/2 h-11"
+              className="w-full sm:w-1/2"
               type="button"
               onClick={handlePrint}
               disabled={isSubmitting}
@@ -111,7 +111,7 @@ export const FormActions = ({
             </Button>
             <Button
               variant="secondary"
-              className="w-full sm:w-1/2 h-11"
+              className="w-full sm:w-1/2"
               type="button"
               onClick={handleDownload}
               disabled={isSubmitting}

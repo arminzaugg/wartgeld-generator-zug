@@ -60,3 +60,16 @@ describe('DateAndMunicipalityFields — municipality', () => {
     expect(screen.getByText('Diese PLZ liegt nicht im Kanton Zug')).toBeInTheDocument();
   });
 });
+
+describe('DateAndMunicipalityFields — birth date', () => {
+  it('marks the birth date as invalid when it has an error', () => {
+    render(
+      <DateAndMunicipalityFields
+        values={{ geburtsdatum: '', plz: '', ort: '', gemeindeBfs: '' }}
+        errors={{ geburtsdatum: 'Bitte geben Sie das Geburtsdatum ein' }}
+        onChange={vi.fn()}
+      />
+    );
+    expect(screen.getByLabelText('Datum der Geburt')).toHaveAttribute('aria-invalid', 'true');
+  });
+});
