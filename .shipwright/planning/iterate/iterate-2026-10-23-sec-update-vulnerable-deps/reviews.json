@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "run_id": "iterate-2026-10-23-sec-update-vulnerable-deps",
+  "reviews": {
+    "self": {
+      "review_type": "self",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-23T08:34:17.119529+00:00",
+      "disposition": null,
+      "recorded_by": "self-review",
+      "parse_status": null,
+      "raw_excerpt": null
+    },
+    "plan": {
+      "review_type": "plan",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-23T08:35:21.458974+00:00",
+      "disposition": "small complexity: the phase matrix runs this review only at medium and above",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "complexity-below-threshold"
+    },
+    "code": {
+      "review_type": "code",
+      "status": "completed",
+      "findings_count": 1,
+      "findings": [
+        {
+          "severity": "low",
+          "category": "correctness",
+          "file": "src/App.tsx",
+          "line": 23,
+          "finding": "react-router-dom 6.27.0 -> 6.30.6: since 6.28 a router without a `future` prop logs one-time dev-only console warnings (v7_startTransition, v7_relativeSplatPath) for <HashRouter> in App.tsx and <BrowserRouter> in test-utils.tsx. Production builds do not log them; no test asserts on console output.",
+          "suggestion": "Non-blocking. Opt into the flags in a separate iterate, or note the warnings next to the deferred react-router v7 upgrade.",
+          "source": "code-reviewer"
+        }
+      ],
+      "provider": null,
+      "completed_at": "2026-10-23T08:35:12.941441+00:00",
+      "disposition": null,
+      "recorded_by": "code-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit",
+      "verdict": "pass",
+      "reviewed_commit": "b47b0e533480f969267676c5f2c64a6e79e6c207"
+    },
+    "doubt": {
+      "review_type": "doubt",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-23T08:35:21.403345+00:00",
+      "disposition": "Stage 3 is for migrations, async/concurrency, cross-plugin imports or irreversible ops; this diff is a lockfile-only dependency update",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "diff-below-threshold"
+    },
+    "external_code": {
+      "review_type": "external_code",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-23T08:35:21.626275+00:00",
+      "disposition": "small complexity: the phase matrix runs this review only at medium and above",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "complexity-below-threshold"
+    },
+    "spec": {
+      "review_type": "spec",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-23T08:34:59.296139+00:00",
+      "disposition": null,
+      "recorded_by": "spec-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit",
+      "verdict": "pass",
+      "reviewed_commit": "b47b0e533480f969267676c5f2c64a6e79e6c207"
+    },
+    "plan_internal": {
+      "review_type": "plan_internal",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-23T08:35:21.513874+00:00",
+      "disposition": "small complexity: the phase matrix runs this review only at medium and above",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "complexity-below-threshold"
+    },
+    "architecture_internal": {
+      "review_type": "architecture_internal",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-23T08:35:21.571022+00:00",
+      "disposition": "small complexity: the phase matrix runs this review only at medium and above",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "complexity-below-threshold"
+    }
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "iterate_latest": {
+    "run_id": "iterate-2026-10-23-sec-update-vulnerable-deps",
+    "date": "2026-10-23",
+    "unit": {
+      "status": "passed",
+      "passed": 377,
+      "total": 377
+    },
+    "integration": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "pgtap": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "e2e": {
+      "status": "passed",
+      "passed": 26,
+      "total": 26
+    },
+    "design_fidelity": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "smoke": {
+      "status": "skipped"
+    },
+    "degraded": [],
+    "surface_verification": {
+      "surface": "web",
+      "runner": "env PLAYWRIGHT_JSON_OUTPUT_NAME=.shipwright/runs/iterate-2026-10-23-sec-update-vulnerable-deps/reports/playwright.json npx playwright test --reporter=list,json",
+      "exit_code": 0,
+      "tests_run": 26,
+      "evidence_path": "/Users/openclaw/Engineering/nidea-invoice/.worktrees/sec-update-vulnerable-deps/.shipwright/runs/iterate-2026-10-23-sec-update-vulnerable-deps/surface_verification.log",
+      "timestamp": "2026-10-23T08:35:39.773Z"
+    },
+    "test_completeness": {
+      "status": "complete",
+      "behaviors": [
+        {
+          "behavior": "AC1 package.json unchanged",
+          "disposition": "tested",
+          "evidence": "git diff --stat: only package-lock.json changed"
+        },
+        {
+          "behavior": "AC2 in-range advisories resolved",
+          "disposition": "tested",
+          "evidence": "npm audit 40 -> 13 (critical 4->2, high 28->5, low 2->0); remaining 13 all need major upgrades (vitest, react-router, tailwindcss)"
+        },
+        {
+          "behavior": "AC3 no direct dependency changes major version",
+          "disposition": "tested",
+          "evidence": "npm ls --depth=0 checked against package.json ranges; spec-reviewer verified all 46 direct deps in range"
+        },
+        {
+          "behavior": "AC4 no unrelated packages added",
+          "disposition": "tested",
+          "evidence": "diffed new node_modules/ keys vs HEAD lockfile: only known transitive deps (es-* helpers, rollup platform binaries, typescript-eslint split packages); @napi-rs/lzma-linux-x64-gnu verified as rollup@4.65.0's own optional dep"
+        },
+        {
+          "behavior": "App behaviour unchanged after router/vite/eslint updates",
+          "disposition": "tested",
+          "evidence": "vitest 377/377, Playwright 26/26, tsc, eslint, npm run build all green"
+        }
+      ],
+      "counts": {
+        "testable": 5,
+        "tested": 5,
+        "untestable": 0,
+        "untested_testable": 0
+      },
+      "enumeration_basis": {
+        "acs": 4,
+        "covered_acs": 4
+      }
+    }
+  },
+  "source_state": {
+    "run_id": "iterate-2026-10-23-sec-update-vulnerable-deps",
+    "commit": "b47b0e533480f969267676c5f2c64a6e79e6c207",
+    "dirty": true,
+    "base": null,
+    "release": null
+  }
+}
