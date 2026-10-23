@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "run_id": "iterate-2026-10-23-sec-ci-hardening",
+  "reviews": {
+    "self": {
+      "review_type": "self",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-23T20:15:50.033038+00:00",
+      "disposition": null,
+      "recorded_by": "self-review",
+      "parse_status": null,
+      "raw_excerpt": null
+    },
+    "plan": {
+      "review_type": "plan",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-23T20:17:33.468539+00:00",
+      "disposition": "small complexity: the phase matrix runs this review only at medium and above",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "complexity-below-threshold"
+    },
+    "code": {
+      "review_type": "code",
+      "status": "completed",
+      "findings_count": 3,
+      "findings": [
+        {
+          "severity": "low",
+          "category": "correctness",
+          "file": ".github/workflows/security.yml",
+          "line": 27,
+          "finding": "The pinning edit also rewrote the permission comment to `# actions/checkout@<sha>  # v4.4.0` — noise inside a Shipwright-managed file.",
+          "suggestion": "Restore the plain note. [Implementer: restored to `# actions/checkout@v4` before recording.]",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "readability",
+          "file": ".github/workflows/security.yml",
+          "line": 28,
+          "finding": "Comment still says `upload-sarif@v3` while the step uses v4 (pre-existing, predates this change).",
+          "suggestion": "Drop the version from the comment. [Implementer: left as-is, out of this iterate's scope per spec review.]",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": null,
+          "category": "correctness",
+          "file": ".github/dependabot.yml",
+          "line": 20,
+          "finding": "Removing the duplicate npm entry is correct (duplicate ecosystem+directory fails validation); security-update PRs now get the `dependencies` label/`deps` prefix instead of `security`. Whether security updates are enabled is a repo setting.",
+          "suggestion": "Accept as-is unless something filters on the `security` label.",
+          "source": "code-reviewer"
+        }
+      ],
+      "provider": null,
+      "completed_at": "2026-10-23T20:17:33.348724+00:00",
+      "disposition": null,
+      "recorded_by": "code-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit",
+      "verdict": "pass",
+      "reviewed_commit": "0d0a5c9d3d4ae61ca65aac3c7b293195bd5e37a3"
+    },
+    "doubt": {
+      "review_type": "doubt",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-23T20:17:33.409273+00:00",
+      "disposition": "Stage 3 is for migrations, async/concurrency, cross-plugin imports or irreversible ops; this diff pins CI refs and edits config comments",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "diff-below-threshold"
+    },
+    "external_code": {
+      "review_type": "external_code",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-23T20:17:33.647510+00:00",
+      "disposition": "small complexity: the phase matrix runs this review only at medium and above",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "complexity-below-threshold"
+    },
+    "spec": {
+      "review_type": "spec",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-23T20:17:33.282075+00:00",
+      "disposition": null,
+      "recorded_by": "spec-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit",
+      "verdict": "pass",
+      "reviewed_commit": "0d0a5c9d3d4ae61ca65aac3c7b293195bd5e37a3"
+    },
+    "plan_internal": {
+      "review_type": "plan_internal",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-23T20:17:33.528387+00:00",
+      "disposition": "small complexity: the phase matrix runs this review only at medium and above",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "complexity-below-threshold"
+    },
+    "architecture_internal": {
+      "review_type": "architecture_internal",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-23T20:17:33.588628+00:00",
+      "disposition": "small complexity: the phase matrix runs this review only at medium and above",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "complexity-below-threshold"
+    }
+  }
+}

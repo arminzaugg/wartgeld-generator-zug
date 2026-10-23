@@ -5,6 +5,8 @@ export const highlightMatches = (text: string, searchTerms: string[]) => {
   const terms = searchTerms.filter(term => term.length >= 2).map(escapeRegExp);
   if (terms.length === 0) return <span>{text}</span>;
 
+  // Every term went through escapeRegExp above, so the pattern is a plain alternation of literals (see highlightMatches.test.tsx).
+  // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
   const matcher = new RegExp(`(${terms.join("|")})`, "gi");
   // split() with a capturing group puts the matches at odd indexes.
   return (

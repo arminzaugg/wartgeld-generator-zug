@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "run_id": "iterate-2026-10-23-sec-ci-hardening",
+  "ci_supplychain_ack": {
+    "run_id": "iterate-2026-10-23-sec-ci-hardening",
+    "paths_fingerprint": "9e110c71a56e07af971a33f9e84eb8f1153d896e82a3052b56f4dcaa6f1641b9",
+    "consistent_with": "iterate-2026-10-23-sec-ci-hardening",
+    "statement": "Pins every GitHub Action (GitHub-owned and third-party) to the full commit SHA its previous tag pointed at, adds Dependabot github-actions updates to keep the pins current, and a 7-day Dependabot cooldown; per the operator's 2026-10-23 decision recorded in this run's decision drop. No permissions, triggers or steps changed.",
+    "ci_paths": [
+      ".github/dependabot.yml",
+      ".github/workflows/codeql.yml",
+      ".github/workflows/security.yml",
+      ".github/workflows/test.yml"
+    ],
+    "provenance": "worktree",
+    "provenance_ref": null
+  }
+}

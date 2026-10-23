@@ -1,0 +1,67 @@
+{
+  "run_id": "iterate-2026-10-23-sec-ci-hardening",
+  "date": "2026-10-23T20:18:18.061267Z",
+  "event_at": "2026-10-23T08:35:57.163684+00:00",
+  "type": "change",
+  "complexity": "small",
+  "prior_source": "history",
+  "branch": "iterate/sec-ci-hardening",
+  "spec": null,
+  "tests_passed": true,
+  "adr": "iterate-2026-10-23-sec-ci-hardening",
+  "test_completeness": {
+    "status": "complete",
+    "behaviors": [
+      {
+        "behavior": "AC1 every workflow action pinned to the commit its previous tag pointed at",
+        "disposition": "tested",
+        "evidence": "grep uses: shows 15/15 '@<40-hex>  # vX.Y.Z'; each SHA resolved via gh api from the old tag and matched to the full release tag; git diff -U0 shows only uses: lines changed; spec-reviewer round 2 PASS"
+      },
+      {
+        "behavior": "AC1 workflows remain valid and runnable",
+        "disposition": "tested",
+        "evidence": "YAML parse of all workflows OK; test.yml (test, e2e) and codeql.yml run on this PR's CI"
+      },
+      {
+        "behavior": "AC2 dependabot.yml valid with 7-day cooldown for npm and github-actions",
+        "disposition": "tested",
+        "evidence": "YAML parses; code-reviewer confirmed cooldown.default-days valid for both ecosystems and all keys in schema"
+      },
+      {
+        "behavior": "AC3 semgrep false positive suppressed without behaviour change",
+        "disposition": "tested",
+        "evidence": "semgrep --config auto on .github + highlightMatches.tsx: 0 findings (was 14); highlightMatches.test.tsx 'treats regex characters in the input literally' PASSED; Playwright 26/26"
+      },
+      {
+        "behavior": "AC4 Supabase JWT finding resolved",
+        "disposition": "tested",
+        "evidence": "src/integrations absent on main; no eyJ token in src"
+      }
+    ],
+    "counts": {
+      "testable": 5,
+      "tested": 5,
+      "untestable": 0,
+      "untested_testable": 0
+    },
+    "enumeration_basis": {
+      "acs": 4,
+      "covered_acs": 4
+    }
+  },
+  "surface_verification": {
+    "surface": "web",
+    "runner": "env PLAYWRIGHT_JSON_OUTPUT_NAME=.shipwright/runs/iterate-2026-10-23-sec-ci-hardening/reports/playwright.json npx playwright test --reporter=list,json",
+    "exit_code": 0,
+    "tests_run": 26,
+    "evidence_path": "/Users/openclaw/Engineering/nidea-invoice/.worktrees/sec-ci-hardening/.shipwright/runs/iterate-2026-10-23-sec-ci-hardening/surface_verification.log",
+    "timestamp": "2026-10-23T20:17:59.157Z"
+  },
+  "exemptions": {
+    "count": 0,
+    "items": []
+  },
+  "risk_flags": [
+    "touches_ci_supplychain"
+  ]
+}
