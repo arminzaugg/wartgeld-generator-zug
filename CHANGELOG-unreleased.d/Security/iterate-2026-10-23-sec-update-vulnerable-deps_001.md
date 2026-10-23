@@ -1,0 +1,1 @@
+Updated vulnerable libraries within their current major versions (React Router 6.30.6, Vite 6.4.5, PostCSS, ESLint and build tooling), reducing known vulnerabilities from 40 to 13; the app behaves the same.

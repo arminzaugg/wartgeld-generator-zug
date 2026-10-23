@@ -1,0 +1,10 @@
+{"items":[
+{"name":"Spec Compliance","verdict":"pass","note":"Lockfile-only update via npm audit fix + npm update eslint @eslint/js; package.json unchanged. npm audit 40 -> 13 findings (critical 4->2, high 28->5). Remaining 13 need major upgrades (vitest 4/5, react-router 7, tailwindcss 4) and are deliberately out of scope."},
+{"name":"Error Handling","verdict":"n/a","note":"No source code changed."},
+{"name":"Security Basics","verdict":"pass","note":"Closes the in-range CVEs in react-router 6.27->6.30.6, @remix-run/router, postcss, vite 6.4.5, rollup, ws, nanoid, glob, minimatch, picomatch, brace-expansion (mostly), form-data, js-yaml, lodash, source-map-js, typescript-eslint, eslint plugin-kit. All resolved URLs from registry.npmjs.org."},
+{"name":"Test Quality","verdict":"pass","note":"No new behavior; existing 377 vitest + 26 Playwright tests (routing, form, PDF, settings, theme) are the regression net and all pass."},
+{"name":"Performance Basics","verdict":"pass","note":"Main bundle 307.60 -> 307.58 kB; jspdf chunk unchanged."},
+{"name":"Naming & Structure","verdict":"n/a","note":"No source or test files changed."},
+{"name":"Affected Boundaries","verdict":"n/a","note":"No serialized format changed."},
+{"name":"Test Hygiene Probe","verdict":"pass","note":"scan_test_hygiene.py --diff: no findings."}
+]}
