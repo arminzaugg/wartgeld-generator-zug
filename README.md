@@ -38,12 +38,14 @@ the app has moved; it is the fallback until it forwards to the new address.
 
 ## Local development
 
+Requires Node 22.12 or newer (`.nvmrc`).
+
 ```sh
 npm ci
 npm run dev        # http://localhost:8080
 npm run lint       # ESLint, fails on warnings
 npm run build      # typecheck + production build
-npm test           # Vitest with coverage
+npm test           # Vitest with coverage, fails below 80%
 ```
 
 ## Address lookup service (`/api/address`)

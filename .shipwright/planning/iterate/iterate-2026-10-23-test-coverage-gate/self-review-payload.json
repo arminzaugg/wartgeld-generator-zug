@@ -1,0 +1,10 @@
+{"items":[
+{"name":"Spec Compliance","verdict":"pass","note":"Per operator go-ahead (2026-10-23): the 80% coverage thresholds are now enforced (flattened out of the Jest-style 'global' key, which vitest read as a glob matching nothing). The Node minimum is stated in .nvmrc (22) and package.json engines (>=22.12), and the README names both."},
+{"name":"Error Handling","verdict":"n/a","note":"No app code changed."},
+{"name":"Security Basics","verdict":"n/a","note":"No dependency, secret or CI workflow changed; the lockfile diff is only the engines field."},
+{"name":"Test Quality","verdict":"pass","note":"Red/green proof: with the old nested key at 99%, vitest --coverage exited 0 (gate ignored). With the flat key at 99% it exits 1 ('branches 87.66% does not meet global threshold 99%'). At the real 80% it exits 0. Current coverage: 92.2% statements, 87.7% branches, 89.7% functions, 92.9% lines."},
+{"name":"Performance Basics","verdict":"n/a","note":"No runtime change."},
+{"name":"Naming & Structure","verdict":"pass","note":"Matches the vitest documented thresholds shape."},
+{"name":"Affected Boundaries","verdict":"pass","note":".nvmrc is also read by Netlify's build image, so the Netlify fallback build now uses Node 22, the same as CI."},
+{"name":"Test Hygiene Probe","verdict":"pass","note":"scan_test_hygiene.py --diff: no findings."}
+]}
