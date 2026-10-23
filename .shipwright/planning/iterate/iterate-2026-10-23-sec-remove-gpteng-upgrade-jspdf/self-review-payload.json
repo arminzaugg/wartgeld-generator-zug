@@ -1,0 +1,10 @@
+{"items":[
+{"name":"Spec Compliance","verdict":"pass","note":"jspdf upgraded 3.0.1 -> ^4.2.1 (dompurify 3.2.4 -> 3.4.17); FR-01.03 output unchanged (pixel-identical render vs 3.0.1); no feature changes. Script removal (scope item 1) already landed on main in #178, so nothing to do."},
+{"name":"Error Handling","verdict":"n/a","note":"No production code changed; generatePDF call sites and API usage (text/setFont/addImage/output) are unchanged in 4.x."},
+{"name":"Security Basics","verdict":"pass","note":"Removes 2 critical + 7 high jspdf CVEs and all 20 dompurify findings (trivy re-scan: 0 left for both). 4.0 breaking change only restricts fs access in the Node build; the app uses the browser build."},
+{"name":"Test Quality","verdict":"pass","note":"New integration test asserts the signature is embedded as an image XObject and that none is embedded without a signature (outcome-level, real jsPDF, presetStorage mocked as before). 376 unit + 26 Playwright tests green."},
+{"name":"Performance Basics","verdict":"pass","note":"jspdf stays lazy-loaded; min bundle 352,061 -> 343,605 bytes; built chunk 390.6 kB / 127.3 kB gzip."},
+{"name":"Naming & Structure","verdict":"pass","note":"Test follows existing file style; mutable settings via vi.hoisted; file stays under 60 lines."},
+{"name":"Affected Boundaries","verdict":"n/a","note":"No serialized format changed; the PDF output is the only boundary and it renders pixel-identical to 3.0.1."},
+{"name":"Test Hygiene Probe","verdict":"pass","note":"scan_test_hygiene.py --diff: no findings."}
+]}

@@ -1,0 +1,14 @@
+{
+  "run_id": "iterate-2026-10-23-sec-remove-gpteng-upgrade-jspdf",
+  "date": "2026-10-23",
+  "section": "Iterate — change: upgrade jspdf to 4.x (security)",
+  "title": "Upgrade jspdf 3.0.1 to 4.2.1 to close critical PDF-library CVEs",
+  "context": "The 2026-10-23 OSS scan found 2 critical and 7 high CVEs in jspdf 3.0.1 plus 20 findings in its dompurify 3.2.4 dependency. jspdf builds every invoice PDF (FR-01.03, FR-01.07).",
+  "decision": "Bump jspdf to ^4.2.1 (dompurify 3.4.17). No source change: 4.0's only breaking change restricts file-system access in the Node build, which the browser app never uses. A regression test now pins that the stored signature is embedded.",
+  "consequences": "All jspdf/dompurify findings cleared; invoice output is pixel-identical to 3.0.1; bundle slightly smaller. Adds fast-png/pako as transitive deps; drops atob/btoa.",
+  "rationale": "Smallest change that removes the critical findings; verified by rendering the same invoice with both versions.",
+  "rejected": "Staying on 3.x with overrides for dompurify: leaves the jspdf CVEs themselves open.",
+  "commit": "",
+  "architecture_impact": "none",
+  "spec_ref": ""
+}
