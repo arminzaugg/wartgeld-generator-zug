@@ -1,0 +1,50 @@
+{
+  "run_id": "iterate-2026-10-23-sec-semgrep-false-positives",
+  "date": "2026-10-23T20:30:00.581236Z",
+  "event_at": "2026-10-23T20:18:18.136547+00:00",
+  "type": "change",
+  "complexity": "small",
+  "prior_source": "history",
+  "branch": "iterate/sec-semgrep-false-positives",
+  "spec": null,
+  "tests_passed": true,
+  "adr": "iterate-2026-10-23-sec-semgrep-false-positives",
+  "test_completeness": {
+    "status": "complete",
+    "behaviors": [
+      {
+        "behavior": "AC1 origin-regex finding suppressed with a true justification, no behaviour change",
+        "disposition": "tested",
+        "evidence": "semgrep --config auto repo-wide: 0 findings (was 2); request.test.ts lookalike-origin cases pass; spec and code reviews confirmed the justification"
+      },
+      {
+        "behavior": "AC2 themeInit test-assertion findings suppressed, assertions unchanged",
+        "disposition": "tested",
+        "evidence": "semgrep 0 findings; themeInit.test.ts passes; vitest 377/377; Playwright 26/26"
+      }
+    ],
+    "counts": {
+      "testable": 2,
+      "tested": 2,
+      "untestable": 0,
+      "untested_testable": 0
+    },
+    "enumeration_basis": {
+      "acs": 3,
+      "covered_acs": 3
+    }
+  },
+  "surface_verification": {
+    "surface": "web",
+    "runner": "env PLAYWRIGHT_JSON_OUTPUT_NAME=.shipwright/runs/iterate-2026-10-23-sec-semgrep-false-positives/reports/playwright.json npx playwright test --reporter=list,json",
+    "exit_code": 0,
+    "tests_run": 26,
+    "evidence_path": "/Users/openclaw/Engineering/nidea-invoice/.worktrees/sec-semgrep-false-positives/.shipwright/runs/iterate-2026-10-23-sec-semgrep-false-positives/surface_verification.log",
+    "timestamp": "2026-10-23T20:29:35.891Z"
+  },
+  "exemptions": {
+    "count": 0,
+    "items": []
+  },
+  "risk_flags": []
+}

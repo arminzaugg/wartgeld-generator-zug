@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "run_id": "iterate-2026-10-23-sec-semgrep-false-positives",
+  "reviews": {
+    "self": {
+      "review_type": "self",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-23T20:30:14.283766+00:00",
+      "disposition": null,
+      "recorded_by": "self-review",
+      "parse_status": null,
+      "raw_excerpt": null
+    },
+    "plan": {
+      "review_type": "plan",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-23T20:29:59.988188+00:00",
+      "disposition": "small complexity: the phase matrix runs this review only at medium and above",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "complexity-below-threshold"
+    },
+    "code": {
+      "review_type": "code",
+      "status": "completed",
+      "findings_count": 2,
+      "findings": [
+        {
+          "severity": null,
+          "category": "readability",
+          "file": "src/__tests__/themeInit.test.ts",
+          "line": 31,
+          "finding": "The second nosemgrep has no justification line of its own; the comment at line 28 covers both assertions in the same block.",
+          "suggestion": "Accept as-is.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": null,
+          "category": "architecture",
+          "file": "edge/address-lookup/request.ts",
+          "line": 58,
+          "finding": "Out of scope: Netlify deploy-preview origins stay allowed while PREVIEW_SITE is set, which is intended for as long as the Netlify fallback exists.",
+          "suggestion": "Revisit when the Netlify site is retired.",
+          "source": "code-reviewer"
+        }
+      ],
+      "provider": null,
+      "completed_at": "2026-10-23T20:29:59.873788+00:00",
+      "disposition": null,
+      "recorded_by": "code-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit",
+      "verdict": "pass",
+      "reviewed_commit": "6c1697ef6f73a80bdcb0e26d2d6164191f682fa1"
+    },
+    "doubt": {
+      "review_type": "doubt",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-23T20:29:59.929818+00:00",
+      "disposition": "Stage 3 covers migrations, async/concurrency, cross-plugin imports and irreversible operations; this diff adds five comment lines",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "diff-below-threshold"
+    },
+    "external_code": {
+      "review_type": "external_code",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-23T20:30:00.170363+00:00",
+      "disposition": "small complexity: the phase matrix runs this review only at medium and above",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "complexity-below-threshold"
+    },
+    "spec": {
+      "review_type": "spec",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-23T20:29:59.809939+00:00",
+      "disposition": null,
+      "recorded_by": "spec-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit",
+      "verdict": "pass",
+      "reviewed_commit": "6c1697ef6f73a80bdcb0e26d2d6164191f682fa1"
+    },
+    "plan_internal": {
+      "review_type": "plan_internal",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-23T20:30:00.046796+00:00",
+      "disposition": "small complexity: the phase matrix runs this review only at medium and above",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "complexity-below-threshold"
+    },
+    "architecture_internal": {
+      "review_type": "architecture_internal",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-10-23T20:30:00.112786+00:00",
+      "disposition": "small complexity: the phase matrix runs this review only at medium and above",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "complexity-below-threshold"
+    }
+  }
+}

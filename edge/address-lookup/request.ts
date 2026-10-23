@@ -56,6 +56,8 @@ export const isAllowedOrigin = (origin: string | null, policy: OriginPolicy): bo
   if (!origin) return false;
   if (origin === policy.ownOrigin || policy.allowed.includes(origin)) return true;
   if (!policy.previewSite) return false;
+  // previewSite is deployment config (PREVIEW_SITE) and goes through escapeRegExp; lookalike origins are refused in __tests__/request.test.ts.
+  // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
   const preview = new RegExp(`^https://deploy-preview-\\d+--${escapeRegExp(policy.previewSite)}\\.netlify\\.app$`);
   return preview.test(origin);
 };

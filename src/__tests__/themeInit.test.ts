@@ -25,7 +25,10 @@ describe('theme applied before the app loads', () => {
 
   it('is a classic inline script in the head, before the app module', () => {
     const head = html.slice(0, html.indexOf('</head>'));
+    // Assertion on the static index.html text; nothing is rendered or injected.
+    // nosemgrep: javascript.lang.security.audit.unknown-value-with-script-tag.unknown-value-with-script-tag
     expect(head, 'render-blocking, so it runs before first paint').toContain('<script>');
+    // nosemgrep: javascript.lang.security.audit.unknown-value-with-script-tag.unknown-value-with-script-tag
     expect(html.indexOf('<script>')).toBeLessThan(html.indexOf('type="module"'));
   });
 

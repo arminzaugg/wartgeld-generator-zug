@@ -1,0 +1,10 @@
+{"items":[
+{"name":"Spec Compliance","verdict":"pass","note":"Per operator approval (2026-10-23): the two remaining semgrep findings are marked as false positives with a justification line plus a nosemgrep line directly above each matched line. themeInit.test.ts needed two markers: once the first match was suppressed, semgrep reported the same rule on the next assertion (html.indexOf('<script>'))."},
+{"name":"Error Handling","verdict":"n/a","note":"Comments only; no code path changed."},
+{"name":"Security Basics","verdict":"pass","note":"request.ts: previewSite is deployment config (PREVIEW_SITE), escaped by escapeRegExp; the pattern is anchored ^...$ and lookalike, prefix, suffix, extra-label, port and http origins are refused by existing tests in edge/address-lookup/__tests__/request.test.ts. themeInit.test.ts: assertions on the static index.html text, nothing rendered."},
+{"name":"Test Quality","verdict":"pass","note":"semgrep --config auto on the whole repo: 0 findings (was 2). vitest themeInit + edge/address-lookup: 78/78 passed. eslint and tsc clean."},
+{"name":"Performance Basics","verdict":"n/a","note":"No runtime change."},
+{"name":"Naming & Structure","verdict":"pass","note":"Same justification-then-nosemgrep layout as the existing suppression in highlightMatches.tsx."},
+{"name":"Affected Boundaries","verdict":"n/a","note":"No serialized format changed."},
+{"name":"Test Hygiene Probe","verdict":"pass","note":"scan_test_hygiene.py --diff: no findings."}
+]}
