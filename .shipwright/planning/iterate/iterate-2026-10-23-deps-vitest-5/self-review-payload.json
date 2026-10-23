@@ -1,0 +1,10 @@
+{"items":[
+{"name":"Spec Compliance","verdict":"pass","note":"Per operator approval (2026-10-23): vitest and @vitest/coverage-v8 3.2 -> 5.0.5, which clears both critical npm audit findings (vitest, tinypool); npm audit now reports 0 critical, 0 high, 5 moderate (react-router 6 and tailwind 3 chains, out of scope). Changes the upgrade forced: CI Node 20 -> 22 (vitest 5 requires ^22.12; Node 20 is end-of-life); jest-dom imported via its /vitest entry so matcher types attach to vitest 5's Assertion; RequestInfo in the dev middleware typed from fetch because vitest 5 no longer supplies DOM types to tsconfig.node."},
+{"name":"Error Handling","verdict":"n/a","note":"No runtime app code changed; the dev middleware edit is type-only."},
+{"name":"Security Basics","verdict":"pass","note":"Lockfile diff only removes packages or adds @vitest/istanbul-lib-coverage, @vitest/istanbul-lib-report and obug, all from the vitest org or its documented dependencies. vitest 5.0.5 was published 2026-10-15, outside the 7-day cooldown. Workflow change touches only node-version; uses: pins are unchanged."},
+{"name":"Test Quality","verdict":"pass","note":"vitest 377/377 on 5.0.5; coverage report produced (92.2% statements, 87.7% branches); tsc app/edge/node configs pass; eslint passes; build passes with all 7 dist secret rules."},
+{"name":"Performance Basics","verdict":"n/a","note":"Dev tooling only; the shipped bundle is unaffected."},
+{"name":"Naming & Structure","verdict":"pass","note":"Minimal edits; no config restructuring."},
+{"name":"Affected Boundaries","verdict":"n/a","note":"No serialized app format changed."},
+{"name":"Test Hygiene Probe","verdict":"pass","note":"scan_test_hygiene.py --diff: no findings."}
+]}

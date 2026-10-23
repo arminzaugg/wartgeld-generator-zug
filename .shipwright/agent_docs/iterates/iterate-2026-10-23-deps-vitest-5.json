@@ -1,0 +1,73 @@
+{
+  "run_id": "iterate-2026-10-23-deps-vitest-5",
+  "date": "2026-10-23T20:38:10.226400Z",
+  "event_at": "2026-10-23T20:30:00.656597+00:00",
+  "type": "change",
+  "complexity": "small",
+  "prior_source": "history",
+  "branch": "iterate/deps-vitest-5",
+  "spec": null,
+  "tests_passed": true,
+  "adr": "iterate-2026-10-23-deps-vitest-5",
+  "test_completeness": {
+    "status": "complete",
+    "behaviors": [
+      {
+        "behavior": "AC1 vitest and coverage-v8 on 5.0.5 clear the critical audit findings",
+        "disposition": "tested",
+        "evidence": "npm ls: vitest, @vitest/coverage-v8 and @vitest/mocker all 5.0.5, tinypool gone; npm audit 0 critical / 0 high / 5 moderate (was 13 including 2 critical)"
+      },
+      {
+        "behavior": "AC1 the whole unit suite and coverage still run on vitest 5",
+        "disposition": "tested",
+        "evidence": "vitest 377/377 with json, junit and lcov reporters; coverage 92.2% statements"
+      },
+      {
+        "behavior": "AC2 CI runs on a Node version vitest 5 supports",
+        "disposition": "tested",
+        "evidence": "test.yml node-version 22 in both jobs (vitest engines ^22.12); local run on Node 24; PR CI runs test and e2e on 22"
+      },
+      {
+        "behavior": "AC3 jest-dom matcher types resolve on vitest 5",
+        "disposition": "tested",
+        "evidence": "tsc -p tsconfig.app.json passes (it failed with ~120 TS2339 errors before the /vitest import)"
+      },
+      {
+        "behavior": "AC4 the dev middleware typechecks without DOM lib",
+        "disposition": "tested",
+        "evidence": "tsc -p tsconfig.node.json passes; code-reviewer confirmed the type is equivalent"
+      },
+      {
+        "behavior": "AC5 app behaviour unchanged",
+        "disposition": "tested",
+        "evidence": "build passes with 7 dist secret rules; Playwright 26/26"
+      }
+    ],
+    "counts": {
+      "testable": 6,
+      "tested": 6,
+      "untestable": 0,
+      "untested_testable": 0
+    },
+    "enumeration_basis": {
+      "acs": 5,
+      "covered_acs": 5
+    }
+  },
+  "surface_verification": {
+    "surface": "web",
+    "runner": "env PLAYWRIGHT_JSON_OUTPUT_NAME=.shipwright/runs/iterate-2026-10-23-deps-vitest-5/reports/playwright.json npx playwright test --reporter=list,json",
+    "exit_code": 0,
+    "tests_run": 26,
+    "evidence_path": "/Users/openclaw/Engineering/nidea-invoice/.worktrees/deps-vitest-5/.shipwright/runs/iterate-2026-10-23-deps-vitest-5/surface_verification.log",
+    "timestamp": "2026-10-23T20:37:53.367Z"
+  },
+  "exemptions": {
+    "count": 0,
+    "items": []
+  },
+  "risk_flags": [
+    "touches_build",
+    "touches_ci_supplychain"
+  ]
+}

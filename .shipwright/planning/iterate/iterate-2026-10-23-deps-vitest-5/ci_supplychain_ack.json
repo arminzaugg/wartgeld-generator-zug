@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "run_id": "iterate-2026-10-23-deps-vitest-5",
+  "ci_supplychain_ack": {
+    "run_id": "iterate-2026-10-23-deps-vitest-5",
+    "paths_fingerprint": "97981f2ade33356c7226cfa6016d8004644b0d69356fd690bf8e957c7a811b30",
+    "consistent_with": "iterate-2026-10-23-sec-ci-hardening",
+    "statement": "Changes only node-version 20 -> 22 in both test.yml jobs (vitest 5 requires Node ^22.12; Node 20 is end-of-life). Every uses: stays pinned to the same full commit SHA per the pin-everything convention of iterate-2026-10-23-sec-ci-hardening; permissions, triggers and steps unchanged.",
+    "ci_paths": [
+      ".github/workflows/test.yml"
+    ],
+    "provenance": "worktree",
+    "provenance_ref": null
+  }
+}

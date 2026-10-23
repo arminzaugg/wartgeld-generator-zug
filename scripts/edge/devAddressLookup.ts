@@ -10,7 +10,7 @@ const loadHandler = async (server: ViteDevServer, env: Record<string, string>): 
     server.ssrLoadModule("/edge/address-lookup/config.ts"),
   ]);
   return createAddressHandler(configFromEnv((name: string) => env[name]), {
-    fetch: (input: RequestInfo | URL, init?: RequestInit) => fetch(input, init),
+    fetch: (input: Parameters<typeof fetch>[0], init?: RequestInit) => fetch(input, init),
     now: () => Date.now(),
     log: (line: string) => server.config.logger.info(line),
   });
