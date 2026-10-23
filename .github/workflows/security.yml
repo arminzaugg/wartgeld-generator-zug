@@ -38,7 +38,7 @@ jobs:
     name: Shipwright Security Scan
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
         with:
           # Working-tree checkout only. No scanner in this workflow reads git
           # history: Gitleaks runs `--no-git` (filesystem), Semgrep scans `.`
@@ -118,7 +118,7 @@ jobs:
         #   no-GHAS repo still gets the value of the scan; only the
         #   Security-tab integration is missing.
         # - v4 of the action (v3 deprecation lands 2026-12).
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370  # v4.39.1
         continue-on-error: true
         with:
           sarif_file: sarif
@@ -151,7 +151,7 @@ jobs:
         # Third-party action pinned to a full commit SHA (supply-chain
         # hardening); trailing comment records the human-readable tag.
         # Mirrors the monorepo's own .github/workflows/security.yml.
-        uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043  # v4
+        uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043  # v4.0.0
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body-path: pr-comment.md
@@ -224,7 +224,7 @@ jobs:
 
       - name: Upload scan artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
         with:
           name: security-scan-results
           path: |

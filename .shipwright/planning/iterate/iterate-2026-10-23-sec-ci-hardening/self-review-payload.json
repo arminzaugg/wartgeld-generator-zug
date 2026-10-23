@@ -1,0 +1,10 @@
+{"items":[
+{"name":"Spec Compliance","verdict":"pass","note":"Per operator decision (2026-10-23): all 15 action references across codeql.yml, security.yml and test.yml pinned to full commit SHAs with version comments; Dependabot cooldown 7 days; github-actions ecosystem added so pins stay current; one semgrep false positive suppressed with justification. The Supabase JWT finding no longer exists on main (client removed)."},
+{"name":"Error Handling","verdict":"n/a","note":"No runtime code paths changed; the highlightMatches change is a comment only."},
+{"name":"Security Basics","verdict":"pass","note":"Each SHA resolved via the GitHub API from the exact tag the workflow already used (v4/v0.3.1) and cross-checked against the full release tag pointing at the same commit. dependabot.yml: removed the duplicate npm entry (same ecosystem+directory is invalid) and the unsupported auto-merge key."},
+{"name":"Test Quality","verdict":"pass","note":"Suppression justification is backed by the existing test 'treats regex characters in the input literally instead of throwing'. semgrep --config auto on the changed files: 0 findings (was 14). YAML for all workflows and dependabot.yml parses."},
+{"name":"Performance Basics","verdict":"n/a","note":"No runtime change."},
+{"name":"Naming & Structure","verdict":"pass","note":"Pin format '<owner/repo>@<sha>  # vX.Y.Z' matches the existing peter-evans pin in security.yml."},
+{"name":"Affected Boundaries","verdict":"n/a","note":"No serialized app format changed; CI config only."},
+{"name":"Test Hygiene Probe","verdict":"pass","note":"scan_test_hygiene.py --diff: no findings."}
+]}

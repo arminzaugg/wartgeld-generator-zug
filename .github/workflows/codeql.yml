@@ -44,16 +44,16 @@ jobs:
         language: [javascript-typescript]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
+        uses: github/codeql-action/init@9b3254085494b55a0f7c4c2b3d2d52cc712ce370  # v4.39.1
         with:
           languages: ${{ matrix.language }}
           queries: security-and-quality
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v4
+        uses: github/codeql-action/autobuild@9b3254085494b55a0f7c4c2b3d2d52cc712ce370  # v4.39.1
 
       - name: Perform analysis
         # continue-on-error: a private repo without GitHub Advanced Security
@@ -62,7 +62,7 @@ jobs:
         # it can serve as a branch-protection Required Check. Once the repo is
         # public, code scanning is free and this step succeeds normally.
         # Mirrors the guard security.yml carries on its upload-sarif step.
-        uses: github/codeql-action/analyze@v4
+        uses: github/codeql-action/analyze@9b3254085494b55a0f7c4c2b3d2d52cc712ce370  # v4.39.1
         continue-on-error: true
         with:
           category: "/language:${{ matrix.language }}"

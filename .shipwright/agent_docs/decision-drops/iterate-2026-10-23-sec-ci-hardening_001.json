@@ -1,0 +1,14 @@
+{
+  "run_id": "iterate-2026-10-23-sec-ci-hardening",
+  "date": "2026-10-23",
+  "section": "Iterate — change: pin GitHub Actions and add Dependabot cooldown",
+  "title": "Pin all GitHub Actions to commit SHAs; 7-day Dependabot cooldown",
+  "context": "The 2026-10-23 scan flagged 11 mutable action tags and a Dependabot config without cooldown. The project had no recorded posture on action pinning.",
+  "decision": "Operator decision (2026-10-23): pin every action, GitHub-owned included, to a full commit SHA with a version comment; Dependabot github-actions updates keep pins current. Dependabot waits 7 days before proposing new npm and action versions.",
+  "consequences": "A retagged or hijacked action release can no longer change CI silently; upstream action fixes now arrive via Dependabot PRs after the cooldown. dependabot.yml also lost an invalid duplicate npm entry and an unsupported auto-merge key.",
+  "rationale": "Pinning everything clears all scanner findings and closes the retag attack path; Dependabot removes the maintenance cost of stale pins.",
+  "rejected": "Pinning third-party actions only (Shipwright default): leaves GitHub-owned actions mutable and needs a standing semgrep suppression.",
+  "commit": "",
+  "architecture_impact": "convention",
+  "spec_ref": ""
+}

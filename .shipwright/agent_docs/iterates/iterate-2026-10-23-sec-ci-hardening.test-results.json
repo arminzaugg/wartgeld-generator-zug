@@ -1,0 +1,90 @@
+{
+  "iterate_latest": {
+    "run_id": "iterate-2026-10-23-sec-ci-hardening",
+    "date": "2026-10-23",
+    "unit": {
+      "status": "passed",
+      "passed": 377,
+      "total": 377
+    },
+    "integration": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "pgtap": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "e2e": {
+      "status": "passed",
+      "passed": 26,
+      "total": 26
+    },
+    "design_fidelity": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "smoke": {
+      "status": "skipped"
+    },
+    "degraded": [],
+    "surface_verification": {
+      "surface": "web",
+      "runner": "env PLAYWRIGHT_JSON_OUTPUT_NAME=.shipwright/runs/iterate-2026-10-23-sec-ci-hardening/reports/playwright.json npx playwright test --reporter=list,json",
+      "exit_code": 0,
+      "tests_run": 26,
+      "evidence_path": "/Users/openclaw/Engineering/nidea-invoice/.worktrees/sec-ci-hardening/.shipwright/runs/iterate-2026-10-23-sec-ci-hardening/surface_verification.log",
+      "timestamp": "2026-10-23T20:17:59.157Z"
+    },
+    "test_completeness": {
+      "status": "complete",
+      "behaviors": [
+        {
+          "behavior": "AC1 every workflow action pinned to the commit its previous tag pointed at",
+          "disposition": "tested",
+          "evidence": "grep uses: shows 15/15 '@<40-hex>  # vX.Y.Z'; each SHA resolved via gh api from the old tag and matched to the full release tag; git diff -U0 shows only uses: lines changed; spec-reviewer round 2 PASS"
+        },
+        {
+          "behavior": "AC1 workflows remain valid and runnable",
+          "disposition": "tested",
+          "evidence": "YAML parse of all workflows OK; test.yml (test, e2e) and codeql.yml run on this PR's CI"
+        },
+        {
+          "behavior": "AC2 dependabot.yml valid with 7-day cooldown for npm and github-actions",
+          "disposition": "tested",
+          "evidence": "YAML parses; code-reviewer confirmed cooldown.default-days valid for both ecosystems and all keys in schema"
+        },
+        {
+          "behavior": "AC3 semgrep false positive suppressed without behaviour change",
+          "disposition": "tested",
+          "evidence": "semgrep --config auto on .github + highlightMatches.tsx: 0 findings (was 14); highlightMatches.test.tsx 'treats regex characters in the input literally' PASSED; Playwright 26/26"
+        },
+        {
+          "behavior": "AC4 Supabase JWT finding resolved",
+          "disposition": "tested",
+          "evidence": "src/integrations absent on main; no eyJ token in src"
+        }
+      ],
+      "counts": {
+        "testable": 5,
+        "tested": 5,
+        "untestable": 0,
+        "untested_testable": 0
+      },
+      "enumeration_basis": {
+        "acs": 4,
+        "covered_acs": 4
+      }
+    }
+  },
+  "source_state": {
+    "run_id": "iterate-2026-10-23-sec-ci-hardening",
+    "commit": "0d0a5c9d3d4ae61ca65aac3c7b293195bd5e37a3",
+    "dirty": true,
+    "base": null,
+    "release": null
+  }
+}
