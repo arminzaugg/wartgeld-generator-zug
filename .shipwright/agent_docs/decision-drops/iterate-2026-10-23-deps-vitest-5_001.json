@@ -1,0 +1,14 @@
+{
+  "run_id": "iterate-2026-10-23-deps-vitest-5",
+  "date": "2026-10-23",
+  "section": "Iterate — change: upgrade vitest 3 to 5",
+  "title": "Upgrade vitest to 5 and run CI on Node 22",
+  "context": "npm audit reported two critical findings (vitest and its tinypool dependency), and both are fixed only in vitest 5. Vitest 5 requires Node ^22.12, while CI was pinned to Node 20, which is end-of-life.",
+  "decision": "Move vitest and @vitest/coverage-v8 to ^5.0.5 and raise the vite floor to its peer minimum of ^6.4.0. CI moves to Node 22. jest-dom is imported through its vitest entry, and the dev middleware's fetch parameter is typed from fetch itself.",
+  "consequences": "No critical or high audit findings remain. Local development needs Node 22.12 or newer. Since v4, restoreAllMocks no longer resets vi.fn mocks, and review found no test that depends on the old behaviour.",
+  "rationale": "This is the only upgrade path that fixes the critical findings. Every other edit is one the upgrade forces.",
+  "rejected": "Merging the Dependabot PRs #191/#192/#193 as-is: they keep CI on Node 20 and do not fix the type errors.",
+  "commit": "",
+  "architecture_impact": "none",
+  "spec_ref": ""
+}
