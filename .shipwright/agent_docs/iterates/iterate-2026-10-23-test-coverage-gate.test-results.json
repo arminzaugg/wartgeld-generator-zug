@@ -1,0 +1,85 @@
+{
+  "iterate_latest": {
+    "run_id": "iterate-2026-10-23-test-coverage-gate",
+    "date": "2026-10-23",
+    "unit": {
+      "status": "passed",
+      "passed": 377,
+      "total": 377
+    },
+    "integration": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "pgtap": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "e2e": {
+      "status": "passed",
+      "passed": 26,
+      "total": 26
+    },
+    "design_fidelity": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "smoke": {
+      "status": "skipped"
+    },
+    "degraded": [],
+    "surface_verification": {
+      "surface": "web",
+      "runner": "env PLAYWRIGHT_JSON_OUTPUT_NAME=.shipwright/runs/iterate-2026-10-23-test-coverage-gate/reports/playwright.json npx playwright test --reporter=list,json",
+      "exit_code": 0,
+      "tests_run": 26,
+      "evidence_path": "/Users/openclaw/Engineering/nidea-invoice/.worktrees/test-coverage-gate/.shipwright/runs/iterate-2026-10-23-test-coverage-gate/surface_verification.log",
+      "timestamp": "2026-10-23T21:35:27.478Z"
+    },
+    "test_completeness": {
+      "status": "complete",
+      "behaviors": [
+        {
+          "behavior": "AC1 npm test fails when coverage drops below the minimum",
+          "disposition": "tested",
+          "evidence": "red/green: old nested key at 99% -> exit 0 (gate ignored); flat key at 99% -> exit 1 'branches 87.66% does not meet global threshold 99%'"
+        },
+        {
+          "behavior": "AC1 npm test passes at the real 80% minimum with current coverage",
+          "disposition": "tested",
+          "evidence": "vitest run --coverage exit 0, 377/377; tightest margin branches 87.66%"
+        },
+        {
+          "behavior": "AC2 Node minimum declared and installs still work",
+          "disposition": "tested",
+          "evidence": ".nvmrc 22, engines >=22.12; npm ci succeeds on Node 24; build passes"
+        },
+        {
+          "behavior": "AC3 README documents both",
+          "disposition": "tested",
+          "evidence": "spec-reviewer confirmed README.md:41 and :48"
+        }
+      ],
+      "counts": {
+        "testable": 4,
+        "tested": 4,
+        "untestable": 0,
+        "untested_testable": 0
+      },
+      "enumeration_basis": {
+        "acs": 4,
+        "covered_acs": 4
+      }
+    }
+  },
+  "source_state": {
+    "run_id": "iterate-2026-10-23-test-coverage-gate",
+    "commit": "26df12ef6b7affdfbb06b98c550548dc267414ab",
+    "dirty": true,
+    "base": null,
+    "release": null
+  }
+}
