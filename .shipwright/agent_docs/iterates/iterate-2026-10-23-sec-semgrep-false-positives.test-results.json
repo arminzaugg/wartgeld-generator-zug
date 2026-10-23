@@ -1,0 +1,75 @@
+{
+  "iterate_latest": {
+    "run_id": "iterate-2026-10-23-sec-semgrep-false-positives",
+    "date": "2026-10-23",
+    "unit": {
+      "status": "passed",
+      "passed": 377,
+      "total": 377
+    },
+    "integration": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "pgtap": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "e2e": {
+      "status": "passed",
+      "passed": 26,
+      "total": 26
+    },
+    "design_fidelity": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "smoke": {
+      "status": "skipped"
+    },
+    "degraded": [],
+    "surface_verification": {
+      "surface": "web",
+      "runner": "env PLAYWRIGHT_JSON_OUTPUT_NAME=.shipwright/runs/iterate-2026-10-23-sec-semgrep-false-positives/reports/playwright.json npx playwright test --reporter=list,json",
+      "exit_code": 0,
+      "tests_run": 26,
+      "evidence_path": "/Users/openclaw/Engineering/nidea-invoice/.worktrees/sec-semgrep-false-positives/.shipwright/runs/iterate-2026-10-23-sec-semgrep-false-positives/surface_verification.log",
+      "timestamp": "2026-10-23T20:29:35.891Z"
+    },
+    "test_completeness": {
+      "status": "complete",
+      "behaviors": [
+        {
+          "behavior": "AC1 origin-regex finding suppressed with a true justification, no behaviour change",
+          "disposition": "tested",
+          "evidence": "semgrep --config auto repo-wide: 0 findings (was 2); request.test.ts lookalike-origin cases pass; spec and code reviews confirmed the justification"
+        },
+        {
+          "behavior": "AC2 themeInit test-assertion findings suppressed, assertions unchanged",
+          "disposition": "tested",
+          "evidence": "semgrep 0 findings; themeInit.test.ts passes; vitest 377/377; Playwright 26/26"
+        }
+      ],
+      "counts": {
+        "testable": 2,
+        "tested": 2,
+        "untestable": 0,
+        "untested_testable": 0
+      },
+      "enumeration_basis": {
+        "acs": 3,
+        "covered_acs": 3
+      }
+    }
+  },
+  "source_state": {
+    "run_id": "iterate-2026-10-23-sec-semgrep-false-positives",
+    "commit": "6c1697ef6f73a80bdcb0e26d2d6164191f682fa1",
+    "dirty": true,
+    "base": null,
+    "release": null
+  }
+}
