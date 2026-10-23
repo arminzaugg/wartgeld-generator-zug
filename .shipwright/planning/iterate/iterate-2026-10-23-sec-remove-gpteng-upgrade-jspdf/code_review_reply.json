@@ -1,0 +1,16 @@
+{
+  "section": "iterate-2026-10-23-sec-remove-gpteng-upgrade-jspdf",
+  "review_type": "full-review",
+  "verdict": "PASS",
+  "review": [
+    {
+      "severity": "low",
+      "category": "readability",
+      "file": "src/lib/__tests__/pdfGenerator.integration.test.ts",
+      "line": 44,
+      "finding": "The 'no image without a stored signature' check is appended to the existing 'renders the given administration and form data' test, so that test now covers two behaviours; tests.md asks for one behaviour per test.",
+      "suggestion": "Optional, non-blocking: move it into its own test, e.g. it('embeds no image when no signature is stored @FR-01.07', ...)."
+    }
+  ],
+  "notes": "Lockfile: all resolved URLs registry.npmjs.org with sha512 integrity; jspdf 4.2.1; removed atob/btoa; added fast-png 6.4.0 (+iobuffer 5.4.0, pako 2.2.0, @types/pako 2.0.4); regenerator-runtime nested under canvg; dompurify 3.4.17. API usage in pdfGenerator.ts compatible with 4.x; 4.0 breaking change is Node fs only. Test quality good. Could not confirm pako 2.2.0 from memory; suggests npm view."
+}

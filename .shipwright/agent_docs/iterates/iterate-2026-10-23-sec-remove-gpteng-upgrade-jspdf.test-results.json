@@ -1,0 +1,90 @@
+{
+  "iterate_latest": {
+    "run_id": "iterate-2026-10-23-sec-remove-gpteng-upgrade-jspdf",
+    "date": "2026-10-23",
+    "unit": {
+      "status": "passed",
+      "passed": 377,
+      "total": 377
+    },
+    "integration": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "pgtap": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "e2e": {
+      "status": "passed",
+      "passed": 26,
+      "total": 26
+    },
+    "design_fidelity": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "smoke": {
+      "status": "skipped"
+    },
+    "degraded": [],
+    "surface_verification": {
+      "surface": "web",
+      "runner": "env PLAYWRIGHT_JSON_OUTPUT_NAME=.shipwright/runs/iterate-2026-10-23-sec-remove-gpteng-upgrade-jspdf/reports/playwright.json npx playwright test --reporter=list,json",
+      "exit_code": 0,
+      "tests_run": 26,
+      "evidence_path": "/Users/openclaw/Engineering/nidea-invoice/.worktrees/sec-remove-gpteng-upgrade-jspdf/.shipwright/runs/iterate-2026-10-23-sec-remove-gpteng-upgrade-jspdf/surface_verification.log",
+      "timestamp": "2026-10-23T08:25:44.973Z"
+    },
+    "test_completeness": {
+      "status": "complete",
+      "behaviors": [
+        {
+          "behavior": "AC1 jspdf resolves to 4.2.1 and dompurify to a non-vulnerable version",
+          "disposition": "tested",
+          "evidence": "npm ls jspdf dompurify -> jspdf@4.2.1, dompurify@3.4.17; trivy fs package-lock.json: 0 jspdf/dompurify vulns"
+        },
+        {
+          "behavior": "AC2 PDF still contains recipient, mother's data and place/date",
+          "disposition": "tested",
+          "evidence": "pdfGenerator.integration.test.ts::renders the given administration and form data PASSED"
+        },
+        {
+          "behavior": "AC3 stored signature is embedded as an image",
+          "disposition": "tested",
+          "evidence": "pdfGenerator.integration.test.ts::embeds the stored signature as an image @FR-01.07 PASSED"
+        },
+        {
+          "behavior": "no image embedded without a stored signature",
+          "disposition": "tested",
+          "evidence": "pdfGenerator.integration.test.ts::embeds no image when no signature is stored @FR-01.07 PASSED"
+        },
+        {
+          "behavior": "AC4 invoice layout unchanged vs jspdf 3.0.1",
+          "disposition": "tested",
+          "evidence": "same invoice rendered with 3.0.1 and 4.2.1, rasterised with sips: pixel-identical; Playwright invoice-page suite 26/26 passed"
+        }
+      ],
+      "counts": {
+        "testable": 5,
+        "tested": 5,
+        "untestable": 0,
+        "untested_testable": 0
+      },
+      "enumeration_basis": {
+        "acs": 4,
+        "covered_acs": 4
+      }
+    }
+  },
+  "source_state": {
+    "run_id": "iterate-2026-10-23-sec-remove-gpteng-upgrade-jspdf",
+    "commit": "e0f20addf32335343245193866e08b734da78816",
+    "dirty": true,
+    "base": null,
+    "release": null
+  }
+}
