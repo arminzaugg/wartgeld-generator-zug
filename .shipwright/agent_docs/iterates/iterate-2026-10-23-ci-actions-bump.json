@@ -1,0 +1,62 @@
+{
+  "run_id": "iterate-2026-10-23-ci-actions-bump",
+  "date": "2026-10-24T08:27:49.416168Z",
+  "event_at": "2026-10-23T21:35:47.456048+00:00",
+  "type": "change",
+  "complexity": "small",
+  "prior_source": "history",
+  "branch": "iterate/ci-actions-bump",
+  "spec": null,
+  "tests_passed": true,
+  "adr": "iterate-2026-10-23-ci-actions-bump",
+  "test_completeness": {
+    "status": "complete",
+    "behaviors": [
+      {
+        "behavior": "AC1 every bumped action pinned to the SHA of its release tag",
+        "disposition": "tested",
+        "evidence": "SHAs resolved independently via gh api (annotated tags dereferenced), matching Dependabot #195-#199; spec-reviewer confirmed all 11 lines"
+      },
+      {
+        "behavior": "test.yml runs on the new checkout/setup-node/upload-artifact/lcov-reporter",
+        "disposition": "tested",
+        "evidence": "PR CI test + e2e jobs"
+      },
+      {
+        "behavior": "codeql.yml runs on checkout v7",
+        "disposition": "tested",
+        "evidence": "dispatched run 40077974080: success, checkout@3d3c42e5 step success"
+      },
+      {
+        "behavior": "security.yml runs on checkout v7 and upload-artifact v7",
+        "disposition": "tested",
+        "evidence": "dispatched run 40077975885: success, checkout and 'Upload scan artifacts' steps success"
+      }
+    ],
+    "counts": {
+      "testable": 4,
+      "tested": 4,
+      "untestable": 0,
+      "untested_testable": 0
+    },
+    "enumeration_basis": {
+      "acs": 3,
+      "covered_acs": 3
+    }
+  },
+  "surface_verification": {
+    "surface": "web",
+    "runner": "env PLAYWRIGHT_JSON_OUTPUT_NAME=.shipwright/runs/iterate-2026-10-23-ci-actions-bump/reports/playwright.json npx playwright test --reporter=list,json",
+    "exit_code": 0,
+    "tests_run": 26,
+    "evidence_path": "/Users/openclaw/Engineering/nidea-invoice/.worktrees/ci-actions-bump/.shipwright/runs/iterate-2026-10-23-ci-actions-bump/surface_verification.log",
+    "timestamp": "2026-10-24T08:27:26.755Z"
+  },
+  "exemptions": {
+    "count": 0,
+    "items": []
+  },
+  "risk_flags": [
+    "touches_ci_supplychain"
+  ]
+}
