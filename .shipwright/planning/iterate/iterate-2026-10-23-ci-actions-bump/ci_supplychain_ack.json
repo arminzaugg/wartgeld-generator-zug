@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "run_id": "iterate-2026-10-23-ci-actions-bump",
+  "ci_supplychain_ack": {
+    "run_id": "iterate-2026-10-23-ci-actions-bump",
+    "paths_fingerprint": "a6523853e1812f9152d3341a2ff06c92a3505ba64b039c1f2f1cb262cf9cd960",
+    "consistent_with": "iterate-2026-10-23-sec-ci-hardening",
+    "statement": "Moves five already-pinned actions to newer releases (checkout v7.0.1, setup-node v7.1.0, upload-artifact v7.0.2, create-or-update-comment v5.0.0, lcov-reporter-action v0.4.0). Each stays pinned to a full commit SHA, independently resolved from its release tag, with a version comment, per the pin-everything convention of iterate-2026-10-23-sec-ci-hardening. Permissions, triggers and steps are unchanged.",
+    "ci_paths": [
+      ".github/workflows/codeql.yml",
+      ".github/workflows/security.yml",
+      ".github/workflows/test.yml"
+    ],
+    "provenance": "worktree",
+    "provenance_ref": null
+  }
+}
