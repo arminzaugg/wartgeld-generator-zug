@@ -1,14 +1,14 @@
 {
   "schema_version": 4,
   "collector_version": "test_links/1.0.0",
-  "generated_at": "(no events)",
-  "source_commit": "49c0ddaa837e1a13c067188022b8db4f627aa448",
-  "spec_hash": "sha256:d3347d5130a8633f6f0071870d5f999188ea087020a5e5706019cd2b0ffeb2bf",
+  "generated_at": "2026-10-24T08:27:49.492073+00:00",
+  "source_commit": "d4cdc705631a0c7eefd92fbeda368aae70a39bc3",
+  "spec_hash": "sha256:74ee44da0084f7f87b6d11d147e13f885847ef20994fd0fed999ff99b257b141",
   "requirements": {
     "01::FR-01.01": {
       "id": "FR-01.01",
       "spec_path": ".shipwright/planning/01-adopted/spec.md",
-      "title": "The midwife enters the mother's first and last name, home address, date of birth, and which reimbursable services were provided. Missing or too-short entries are flagged before an invoice can be produced, and the address must be chosen from the suggestion list so that the postcode is known.",
+      "title": "The midwife enters the mother's first and last name, home address, date of birth, and which reimbursable services were provided. Missing or too-short entries are flagged before an invoice can be produced, the address must be chosen from the suggestion list so that the postcode is known, and the municipality responsible for the address must be chosen — the app proposes it when the locality clearly belongs to one municipality, points out localities shared by several municipalities or partly outside the canton, and refuses postcodes outside the Canton of Zug as well as border villages lying more than 90 % outside it.",
       "priority": "Must",
       "status": "active",
       "required_layers": [
@@ -16,7 +16,684 @@
         "e2e"
       ],
       "required_layers_source": "inferred_legacy",
-      "tests": {},
+      "tests": {
+        "unit": [
+          {
+            "id": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::clears postcode and town when a different address is typed over the pick",
+            "path": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::clears postcode and town when a different address is typed over the pick",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::keeps postcode and town when the picked street is typed with a house number",
+            "path": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::keeps postcode and town when the picked street is typed with a house number",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::passes a changed house number on to the form",
+            "path": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::passes a changed house number on to the form",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::uses the house number of the clicked suggestion over a different typed one",
+            "path": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::uses the house number of the clicked suggestion over a different typed one",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::clears postcode and town when a longer street name is typed over the pick",
+            "path": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::clears postcode and town when a longer street name is typed over the pick",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/__tests__/addressChange.test.ts::proposes the municipality when an address is picked",
+            "path": "src/features/form/__tests__/addressChange.test.ts::proposes the municipality when an address is picked",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/__tests__/addressChange.test.ts::leaves the municipality empty for a split locality",
+            "path": "src/features/form/__tests__/addressChange.test.ts::leaves the municipality empty for a split locality",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/__tests__/addressChange.test.ts::keeps a hand-picked municipality while postcode and town stay the same",
+            "path": "src/features/form/__tests__/addressChange.test.ts::keeps a hand-picked municipality while postcode and town stay the same",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/__tests__/addressChange.test.ts::keeps a hand-picked municipality when the postcode differs only by spaces",
+            "path": "src/features/form/__tests__/addressChange.test.ts::keeps a hand-picked municipality when the postcode differs only by spaces",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/__tests__/addressChange.test.ts::replaces a hand-picked municipality when a different locality is picked",
+            "path": "src/features/form/__tests__/addressChange.test.ts::replaces a hand-picked municipality when a different locality is picked",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/__tests__/addressChange.test.ts::clears postcode, town and municipality when the address is typed instead of picked",
+            "path": "src/features/form/__tests__/addressChange.test.ts::clears postcode, town and municipality when the address is typed instead of picked",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/DateAndMunicipalityFields.test.tsx::shows the proposed municipality without a hint for 6300 Zug",
+            "path": "src/features/form/components/__tests__/DateAndMunicipalityFields.test.tsx::shows the proposed municipality without a hint for 6300 Zug",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/DateAndMunicipalityFields.test.tsx::lists the locality\\",
+            "path": "src/features/form/components/__tests__/DateAndMunicipalityFields.test.tsx::lists the locality\\",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/DateAndMunicipalityFields.test.tsx::keeps the shared hint visible after a municipality is chosen",
+            "path": "src/features/form/components/__tests__/DateAndMunicipalityFields.test.tsx::keeps the shared hint visible after a municipality is chosen",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/DateAndMunicipalityFields.test.tsx::warns for 6340 Sihlbrugg that the locality lies partly outside canton Zug",
+            "path": "src/features/form/components/__tests__/DateAndMunicipalityFields.test.tsx::warns for 6340 Sihlbrugg that the locality lies partly outside canton Zug",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/DateAndMunicipalityFields.test.tsx::reports the chosen municipality to the form",
+            "path": "src/features/form/components/__tests__/DateAndMunicipalityFields.test.tsx::reports the chosen municipality to the form",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/DateAndMunicipalityFields.test.tsx::is disabled until an address is picked",
+            "path": "src/features/form/components/__tests__/DateAndMunicipalityFields.test.tsx::is disabled until an address is picked",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/DateAndMunicipalityFields.test.tsx::is disabled and explains why for a postcode outside canton Zug",
+            "path": "src/features/form/components/__tests__/DateAndMunicipalityFields.test.tsx::is disabled and explains why for a postcode outside canton Zug",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/DateAndMunicipalityFields.test.tsx::marks the birth date as invalid when it has an error",
+            "path": "src/features/form/components/__tests__/DateAndMunicipalityFields.test.tsx::marks the birth date as invalid when it has an error",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/ErrorSummary.test.tsx::counts a single problem in the singular",
+            "path": "src/features/form/components/__tests__/ErrorSummary.test.tsx::counts a single problem in the singular",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/ErrorSummary.test.tsx::lists problems in field order, each with its field name",
+            "path": "src/features/form/components/__tests__/ErrorSummary.test.tsx::lists problems in field order, each with its field name",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/ErrorSummary.test.tsx::moves focus to the field without changing the address bar",
+            "path": "src/features/form/components/__tests__/ErrorSummary.test.tsx::moves focus to the field without changing the address bar",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/ErrorSummary.test.tsx::sends postcode problems to the address field",
+            "path": "src/features/form/components/__tests__/ErrorSummary.test.tsx::sends postcode problems to the address field",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/ErrorSummary.test.tsx::shows nothing without errors",
+            "path": "src/features/form/components/__tests__/ErrorSummary.test.tsx::shows nothing without errors",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/FormContainer.test.tsx::calls onSubmit exactly once and does not generate a PDF itself",
+            "path": "src/features/form/components/__tests__/FormContainer.test.tsx::calls onSubmit exactly once and does not generate a PDF itself",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/FormContainer.test.tsx::does not submit invalid values",
+            "path": "src/features/form/components/__tests__/FormContainer.test.tsx::does not submit invalid values",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/FormContainer.test.tsx::does not submit until the responsible municipality is chosen",
+            "path": "src/features/form/components/__tests__/FormContainer.test.tsx::does not submit until the responsible municipality is chosen",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/FormContainer.test.tsx::drops the municipality error once a different address is picked",
+            "path": "src/features/form/components/__tests__/FormContainer.test.tsx::drops the municipality error once a different address is picked",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/FormContainer.test.tsx::does not show the problem summary while the midwife is still typing",
+            "path": "src/features/form/components/__tests__/FormContainer.test.tsx::does not show the problem summary while the midwife is still typing",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/FormContainer.test.tsx::shows and focuses the problem summary after a failed submit",
+            "path": "src/features/form/components/__tests__/FormContainer.test.tsx::shows and focuses the problem summary after a failed submit",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/FormContainer.test.tsx::shows an address problem under the address field",
+            "path": "src/features/form/components/__tests__/FormContainer.test.tsx::shows an address problem under the address field",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/FormContainer.test.tsx::labels the address field \"Adresse\" and explains how to fill it",
+            "path": "src/features/form/components/__tests__/FormContainer.test.tsx::labels the address field \"Adresse\" and explains how to fill it",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/FormContainer.test.tsx::labels the birth date field \"Geburtsdatum\"",
+            "path": "src/features/form/components/__tests__/FormContainer.test.tsx::labels the birth date field \"Geburtsdatum\"",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/FormContainer.test.tsx::offers a single generate button and shows the busy state while the invoice is made",
+            "path": "src/features/form/components/__tests__/FormContainer.test.tsx::offers a single generate button and shows the busy state while the invoice is made",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/FormContainer.test.tsx::keeps reset available while the invoice is made, so a stalled generation never locks the form",
+            "path": "src/features/form/components/__tests__/FormContainer.test.tsx::keeps reset available while the invoice is made, so a stalled generation never locks the form",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/FormContainer.test.tsx::keeps reporting an address problem when the address is typed over without picking a suggestion",
+            "path": "src/features/form/components/__tests__/FormContainer.test.tsx::keeps reporting an address problem when the address is typed over without picking a suggestion",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/FormContainer.test.tsx::drops \"Adresse ist erforderlich\" once an address is entered",
+            "path": "src/features/form/components/__tests__/FormContainer.test.tsx::drops \"Adresse ist erforderlich\" once an address is entered",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/FormContainer.test.tsx::hides the problem summary after a successful submit",
+            "path": "src/features/form/components/__tests__/FormContainer.test.tsx::hides the problem summary after a successful submit",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/RecipientSummary.test.tsx::shows where the invoice goes once a municipality is chosen",
+            "path": "src/features/form/components/__tests__/RecipientSummary.test.tsx::shows where the invoice goes once a municipality is chosen",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/RecipientSummary.test.tsx::shows nothing while no municipality is chosen",
+            "path": "src/features/form/components/__tests__/RecipientSummary.test.tsx::shows nothing while no municipality is chosen",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/RecipientSummary.test.tsx::puts nothing focusable between the municipality select and the services",
+            "path": "src/features/form/components/__tests__/RecipientSummary.test.tsx::puts nothing focusable between the municipality select and the services",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/ServiceSelectionFields.test.tsx::ticks a service when its row text is clicked",
+            "path": "src/features/form/components/__tests__/ServiceSelectionFields.test.tsx::ticks a service when its row text is clicked",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/ServiceSelectionFields.test.tsx::ticks a service when its price is clicked",
+            "path": "src/features/form/components/__tests__/ServiceSelectionFields.test.tsx::ticks a service when its price is clicked",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/ServiceSelectionFields.test.tsx::unticks a ticked service from its checkbox",
+            "path": "src/features/form/components/__tests__/ServiceSelectionFields.test.tsx::unticks a ticked service from its checkbox",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/features/form/components/__tests__/ServiceSelectionFields.test.tsx::shows the total for the ticked services (%s, %s → %s)",
+            "path": "src/features/form/components/__tests__/ServiceSelectionFields.test.tsx::shows the total for the ticked services (%s, %s → %s)",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/invoiceTotal.test.ts::charges CHF 400 per ticked service (geburt=$betreuungGeburt, wochenbett=$betreuungWochenbett)",
+            "path": "src/lib/__tests__/invoiceTotal.test.ts::charges CHF 400 per ticked service (geburt=$betreuungGeburt, wochenbett=$betreuungWochenbett)",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/invoiceTotal.test.ts::formats %i as %s",
+            "path": "src/lib/__tests__/invoiceTotal.test.ts::formats %i as %s",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/invoiceTotal.test.ts::shows the same total as the PDF invoice (geburt=$betreuungGeburt, wochenbett=$betreuungWochenbett)",
+            "path": "src/lib/__tests__/invoiceTotal.test.ts::shows the same total as the PDF invoice (geburt=$betreuungGeburt, wochenbett=$betreuungWochenbett)",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/municipality.test.ts::pre-selects Baar for 6319 Allenwinden without any hint",
+            "path": "src/lib/__tests__/municipality.test.ts::pre-selects Baar for 6319 Allenwinden without any hint",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/municipality.test.ts::pre-selects Zug for 6300 Zug although 0.48 % of it lies in Baar",
+            "path": "src/lib/__tests__/municipality.test.ts::pre-selects Zug for 6300 Zug although 0.48 % of it lies in Baar",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/municipality.test.ts::leaves 6314 Neuägeri unselected and lists its four municipalities first",
+            "path": "src/lib/__tests__/municipality.test.ts::leaves 6314 Neuägeri unselected and lists its four municipalities first",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/municipality.test.ts::treats %s %s, which lies more than 90 %% outside canton Zug, as unknown",
+            "path": "src/lib/__tests__/municipality.test.ts::treats %s %s, which lies more than 90 %% outside canton Zug, as unknown",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/municipality.test.ts::treats a mostly-outside postcode as unknown also when the town is misspelled",
+            "path": "src/lib/__tests__/municipality.test.ts::treats a mostly-outside postcode as unknown also when the town is misspelled",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/municipality.test.ts::offers 6340 Sihlbrugg (67.5 % outside) and flags it as partly outside canton Zug",
+            "path": "src/lib/__tests__/municipality.test.ts::offers 6340 Sihlbrugg (67.5 % outside) and flags it as partly outside canton Zug",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/municipality.test.ts::matches the town regardless of case, surrounding spaces and Unicode composition",
+            "path": "src/lib/__tests__/municipality.test.ts::matches the town regardless of case, surrounding spaces and Unicode composition",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/municipality.test.ts::ignores spaces around the postcode",
+            "path": "src/lib/__tests__/municipality.test.ts::ignores spaces around the postcode",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/municipality.test.ts::combines all localities of the postcode when the town matches none, without pre-selecting",
+            "path": "src/lib/__tests__/municipality.test.ts::combines all localities of the postcode when the town matches none, without pre-selecting",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/municipality.test.ts::pre-selects and still shows the shared hint when the leader has 80 % or more",
+            "path": "src/lib/__tests__/municipality.test.ts::pre-selects and still shows the shared hint when the leader has 80 % or more",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/municipality.test.ts::reports a postcode without any Zug locality as unknown",
+            "path": "src/lib/__tests__/municipality.test.ts::reports a postcode without any Zug locality as unknown",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/recipient.test.ts::names the recipient by its title when the title already names the municipality",
+            "path": "src/lib/__tests__/recipient.test.ts::names the recipient by its title when the title already names the municipality",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/recipient.test.ts::adds the municipality name to a generic title",
+            "path": "src/lib/__tests__/recipient.test.ts::adds the municipality name to a generic title",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/recipient.test.ts::names no recipient for an unknown municipality",
+            "path": "src/lib/__tests__/recipient.test.ts::names no recipient for an unknown municipality",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Index.test.tsx::titles the page \"Neue Rechnung\" as its only main heading",
+            "path": "src/pages/__tests__/Index.test.tsx::titles the page \"Neue Rechnung\" as its only main heading",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Index.test.tsx::links to information and settings from the top bar",
+            "path": "src/pages/__tests__/Index.test.tsx::links to information and settings from the top bar",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Index.test.tsx::shows a notice with a link to change a fixed invoice date",
+            "path": "src/pages/__tests__/Index.test.tsx::shows a notice with a link to change a fixed invoice date",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Index.test.tsx::shows no notice when the invoice date is today",
+            "path": "src/pages/__tests__/Index.test.tsx::shows no notice when the invoice date is today",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Index.test.tsx::shows where the invoice goes once the address is picked",
+            "path": "src/pages/__tests__/Index.test.tsx::shows where the invoice goes once the address is picked",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/services/form/__tests__/formValidationService.test.ts::rejects a border village that lies mostly outside canton Zug @FR-01.01",
+            "path": "src/services/form/__tests__/formValidationService.test.ts::rejects a border village that lies mostly outside canton Zug @FR-01.01",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "title_suffix"
+          },
+          {
+            "id": "src/services/form/__tests__/formValidationService.test.ts::should validate vorname field",
+            "path": "src/services/form/__tests__/formValidationService.test.ts::should validate vorname field",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/services/form/__tests__/formValidationService.test.ts::should validate nachname field",
+            "path": "src/services/form/__tests__/formValidationService.test.ts::should validate nachname field",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/services/form/__tests__/formValidationService.test.ts::should validate geburtsdatum field",
+            "path": "src/services/form/__tests__/formValidationService.test.ts::should validate geburtsdatum field",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/services/form/__tests__/formValidationService.test.ts::should return errors for invalid form",
+            "path": "src/services/form/__tests__/formValidationService.test.ts::should return errors for invalid form",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/services/form/__tests__/formValidationService.test.ts::should return no errors for valid form",
+            "path": "src/services/form/__tests__/formValidationService.test.ts::should return no errors for valid form",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/services/form/__tests__/formValidationService.test.ts::requires a 4-digit PLZ once an address is entered",
+            "path": "src/services/form/__tests__/formValidationService.test.ts::requires a 4-digit PLZ once an address is entered",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/services/form/__tests__/formValidationService.test.ts::requires a municipality once a Zug address is picked",
+            "path": "src/services/form/__tests__/formValidationService.test.ts::requires a municipality once a Zug address is picked",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/services/form/__tests__/formValidationService.test.ts::rejects a postcode outside canton Zug",
+            "path": "src/services/form/__tests__/formValidationService.test.ts::rejects a postcode outside canton Zug",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/services/form/__tests__/formValidationService.test.ts::clears the municipality error once one is selected",
+            "path": "src/services/form/__tests__/formValidationService.test.ts::clears the municipality error once one is selected",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/services/form/__tests__/formValidationService.test.ts::reports only the missing address when it is empty",
+            "path": "src/services/form/__tests__/formValidationService.test.ts::reports only the missing address when it is empty",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/styles/__tests__/theme.test.ts::no invoice-page component uses a fixed grey, red, blue, yellow or white colour",
+            "path": "src/styles/__tests__/theme.test.ts::no invoice-page component uses a fixed grey, red, blue, yellow or white colour",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          }
+        ],
+        "e2e": [
+          {
+            "id": "e2e/invoice-page.spec.ts::each service row toggles once, wherever it is clicked, and the total follows",
+            "path": "e2e/invoice-page.spec.ts::each service row toggles once, wherever it is clicked, and the total follows",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          },
+          {
+            "id": "e2e/invoice-page.spec.ts::the problem summary jumps to a field without leaving the page",
+            "path": "e2e/invoice-page.spec.ts::the problem summary jumps to a field without leaving the page",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          },
+          {
+            "id": "e2e/invoice-page.spec.ts::messages appear at the top of the screen",
+            "path": "e2e/invoice-page.spec.ts::messages appear at the top of the screen",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          },
+          {
+            "id": "e2e/municipality.spec.ts::proposes Baar for an Allenwinden address",
+            "path": "e2e/municipality.spec.ts::proposes Baar for an Allenwinden address",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          },
+          {
+            "id": "e2e/municipality.spec.ts::a Neuägeri invoice goes to the municipality the midwife chose, without leaving the app",
+            "path": "e2e/municipality.spec.ts::a Neuägeri invoice goes to the municipality the midwife chose, without leaving the app",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          }
+        ]
+      },
       "coverage": {
         "unit": "MISSING",
         "e2e": "MISSING"
@@ -25,7 +702,7 @@
     "01::FR-01.02": {
       "id": "FR-01.02",
       "spec_path": ".shipwright/planning/01-adopted/spec.md",
-      "title": "While the midwife types a street, matching addresses are suggested, limited to postcodes in the Canton of Zug and ranked so the closest street-name matches come first. Choosing a suggestion fills in street, house number, postcode and town. If the lookup fails, the midwife is told to try again later.",
+      "title": "While the midwife types a street, matching addresses are suggested by the Swiss Post address API through the project's own lookup service (`/api/address`), limited to offered Zug localities (not the border villages Bennau, Sattel, Rothenthurm and Mühlau) and ranked so exact house-number matches and the closest street-name matches come first; parcel pickup points are left out. Choosing a suggestion fills in street, house number, postcode and town. The lookup starts once she pauses typing for ¼ second. If the lookup fails, the midwife is told to try again later.",
       "priority": "Must",
       "status": "active",
       "required_layers": [
@@ -33,7 +710,162 @@
         "e2e"
       ],
       "required_layers_source": "inferred_legacy",
-      "tests": {},
+      "tests": {
+        "unit": [
+          {
+            "id": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::tells the midwife the address search failed and shows no suggestion",
+            "path": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::tells the midwife the address search failed and shows no suggestion",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::marks the address field as invalid so its error styling also shows while focused",
+            "path": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::marks the address field as invalid so its error styling also shows while focused",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::looks up once after a pause instead of once per keystroke",
+            "path": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::looks up once after a pause instead of once per keystroke",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::hides suggestions for the previous text until the new lookup is due",
+            "path": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::hides suggestions for the previous text until the new lookup is due",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::does not keep a highlighted row when a new list arrives",
+            "path": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::does not keep a highlighted row when a new list arrives",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::hides the error of the previous text once the user types again",
+            "path": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::hides the error of the previous text once the user types again",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::closes the suggestions",
+            "path": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::closes the suggestions",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::closes the \"no address found\" message",
+            "path": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::closes the \"no address found\" message",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::leaves Escape alone when no list is open",
+            "path": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::leaves Escape alone when no list is open",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::credits the Swiss Post below the suggestions, outside the list itself",
+            "path": "src/components/StreetLookup/__tests__/StreetLookup.test.tsx::credits the Swiss Post below the suggestions, outside the list itself",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/municipality.test.ts::offers Zug localities including Sihlbrugg",
+            "path": "src/lib/__tests__/municipality.test.ts::offers Zug localities including Sihlbrugg",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/municipality.test.ts::does not offer border villages that lie more than 90 % outside canton Zug",
+            "path": "src/lib/__tests__/municipality.test.ts::does not offer border villages that lie more than 90 % outside canton Zug",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/municipality.test.ts::does not offer a town that is not a Zug locality of that postcode",
+            "path": "src/lib/__tests__/municipality.test.ts::does not offer a town that is not a Zug locality of that postcode",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/services/api/__tests__/addressService.test.ts::asks the own-origin lookup service and maps its suggestions",
+            "path": "src/services/api/__tests__/addressService.test.ts::asks the own-origin lookup service and maps its suggestions",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/services/api/__tests__/addressService.test.ts::fails when the lookup service answers with an error",
+            "path": "src/services/api/__tests__/addressService.test.ts::fails when the lookup service answers with an error",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/services/api/__tests__/addressService.test.ts::does not ask for fewer than two characters",
+            "path": "src/services/api/__tests__/addressService.test.ts::does not ask for fewer than two characters",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/utils/__tests__/addressParser.test.ts::splits street, house number with addition, postcode and town",
+            "path": "src/utils/__tests__/addressParser.test.ts::splits street, house number with addition, postcode and town",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/utils/__tests__/addressParser.test.ts::reads a postcode typed after a comma before the town is typed",
+            "path": "src/utils/__tests__/addressParser.test.ts::reads a postcode typed after a comma before the town is typed",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/utils/__tests__/addressParser.test.ts::keeps a four-digit number without a comma as the house number",
+            "path": "src/utils/__tests__/addressParser.test.ts::keeps a four-digit number without a comma as the house number",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          }
+        ]
+      },
       "coverage": {
         "unit": "MISSING",
         "e2e": "MISSING"
@@ -42,7 +874,7 @@
     "01::FR-01.03": {
       "id": "FR-01.03",
       "spec_path": ".shipwright/planning/01-adopted/spec.md",
-      "title": "From valid form data the app produces a one-page PDF invoice addressed to the administration of the municipality responsible for the mother's postcode. It contains the midwife's sender details, the legal basis, the mother's details, the ticked services at CHF 400 each with the total, place and date, the stored signature, and payment terms. If no municipality is known for the postcode, the midwife is told to check the address instead of getting a wrong invoice.",
+      "title": "From valid form data the app produces a one-page PDF invoice addressed to the administration of the municipality chosen on the form, using recipient addresses shipped with the app, without contacting any server. It contains the midwife's sender details, the legal basis, the mother's details, the ticked services at CHF 400 each with the total, place and date, the stored signature, and payment terms. If no municipality is known for the postcode, the midwife is told to check the address instead of getting a wrong invoice.",
       "priority": "Must",
       "status": "active",
       "required_layers": [
@@ -50,9 +882,145 @@
         "e2e"
       ],
       "required_layers_source": "inferred_legacy",
-      "tests": {},
+      "tests": {
+        "unit": [
+          {
+            "id": "src/data/__tests__/zugMunicipalityData.test.ts::has exactly one recipient for each of the 11 Zug municipalities",
+            "path": "src/data/__tests__/zugMunicipalityData.test.ts::has exactly one recipient for each of the 11 Zug municipalities",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/data/__tests__/zugMunicipalityData.test.ts::maps every Zug locality only to municipalities that have a recipient",
+            "path": "src/data/__tests__/zugMunicipalityData.test.ts::maps every Zug locality only to municipalities that have a recipient",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/data/__tests__/zugMunicipalityData.test.ts::prints the same recipient lines as the Supabase export of 2026-10-21",
+            "path": "src/data/__tests__/zugMunicipalityData.test.ts::prints the same recipient lines as the Supabase export of 2026-10-21",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/data/__tests__/zugMunicipalityData.test.ts::assigns 6319 Allenwinden entirely to Baar",
+            "path": "src/data/__tests__/zugMunicipalityData.test.ts::assigns 6319 Allenwinden entirely to Baar",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/data/__tests__/zugMunicipalityData.test.ts::splits 6314 Neuägeri across four municipalities, largest share first, ties by BFS number",
+            "path": "src/data/__tests__/zugMunicipalityData.test.ts::splits 6314 Neuägeri across four municipalities, largest share first, ties by BFS number",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/data/__tests__/zugMunicipalityData.test.ts::keeps the share of 8836 Bennau that lies outside canton Zug",
+            "path": "src/data/__tests__/zugMunicipalityData.test.ts::keeps the share of 8836 Bennau that lies outside canton Zug",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/municipality.test.ts::returns the invoice recipient for a BFS number",
+            "path": "src/lib/__tests__/municipality.test.ts::returns the invoice recipient for a BFS number",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/municipality.test.ts::returns undefined for a number outside canton Zug",
+            "path": "src/lib/__tests__/municipality.test.ts::returns undefined for a number outside canton Zug",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/services/pdf/__tests__/pdfGenerationService.test.ts::addresses the invoice for $municipality exactly as before",
+            "path": "src/services/pdf/__tests__/pdfGenerationService.test.ts::addresses the invoice for $municipality exactly as before",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/services/pdf/__tests__/pdfGenerationService.test.ts::addresses a Neuägeri invoice to Menzingen when the midwife chose Menzingen",
+            "path": "src/services/pdf/__tests__/pdfGenerationService.test.ts::addresses a Neuägeri invoice to Menzingen when the midwife chose Menzingen",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/services/pdf/__tests__/pdfGenerationService.test.ts::generates the invoice without contacting any server",
+            "path": "src/services/pdf/__tests__/pdfGenerationService.test.ts::generates the invoice without contacting any server",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/services/pdf/__tests__/pdfGenerationService.test.ts::refuses to generate an invoice without a known municipality",
+            "path": "src/services/pdf/__tests__/pdfGenerationService.test.ts::refuses to generate an invoice without a known municipality",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          }
+        ],
+        "integration": [
+          {
+            "id": "src/lib/__tests__/pdfGenerator.integration.test.ts::renders the given administration and form data",
+            "path": "src/lib/__tests__/pdfGenerator.integration.test.ts::renders the given administration and form data",
+            "layer": "integration",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/pdfGenerator.integration.test.ts::embeds no image when no signature is stored @FR-01.07",
+            "path": "src/lib/__tests__/pdfGenerator.integration.test.ts::embeds no image when no signature is stored @FR-01.07",
+            "layer": "integration",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/pdfGenerator.integration.test.ts::embeds the stored signature as an image @FR-01.07",
+            "path": "src/lib/__tests__/pdfGenerator.integration.test.ts::embeds the stored signature as an image @FR-01.07",
+            "layer": "integration",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          }
+        ],
+        "e2e": [
+          {
+            "id": "e2e/municipality.spec.ts::a Neuägeri invoice goes to the municipality the midwife chose, without leaving the app",
+            "path": "e2e/municipality.spec.ts::a Neuägeri invoice goes to the municipality the midwife chose, without leaving the app",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          }
+        ]
+      },
       "coverage": {
         "unit": "MISSING",
+        "integration": "MISSING",
         "e2e": "MISSING"
       }
     },
@@ -67,7 +1035,252 @@
         "e2e"
       ],
       "required_layers_source": "inferred_legacy",
-      "tests": {},
+      "tests": {
+        "unit": [
+          {
+            "id": "src/components/__tests__/PdfActionButtons.test.tsx::offers no download while the mother\\",
+            "path": "src/components/__tests__/PdfActionButtons.test.tsx::offers no download while the mother\\",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/__tests__/PdfActionButtons.test.tsx::tells the user to save instead when an iPhone can neither share nor open the invoice",
+            "path": "src/components/__tests__/PdfActionButtons.test.tsx::tells the user to save instead when an iPhone can neither share nor open the invoice",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/pdfActions.test.ts::names the saved file after the mother",
+            "path": "src/lib/__tests__/pdfActions.test.ts::names the saved file after the mother",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/pdfActions.test.ts::gives no file name while a name is missing",
+            "path": "src/lib/__tests__/pdfActions.test.ts::gives no file name while a name is missing",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/pdfActions.test.ts::downloads the PDF under the given file name",
+            "path": "src/lib/__tests__/pdfActions.test.ts::downloads the PDF under the given file name",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/pdfActions.test.ts::opens the share menu with the invoice as a PDF named after the mother, instead of printing a blank frame",
+            "path": "src/lib/__tests__/pdfActions.test.ts::opens the share menu with the invoice as a PDF named after the mother, instead of printing a blank frame",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/pdfActions.test.ts::treats an iPad, which reports itself as a Mac with touch, like an iPhone",
+            "path": "src/lib/__tests__/pdfActions.test.ts::treats an iPad, which reports itself as a Mac with touch, like an iPhone",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/pdfActions.test.ts::uses a neutral file name while the mother\\",
+            "path": "src/lib/__tests__/pdfActions.test.ts::uses a neutral file name while the mother\\",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/pdfActions.test.ts::does nothing more when the share menu is closed without choosing",
+            "path": "src/lib/__tests__/pdfActions.test.ts::does nothing more when the share menu is closed without choosing",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/pdfActions.test.ts::ignores a second tap while the share menu is still opening",
+            "path": "src/lib/__tests__/pdfActions.test.ts::ignores a second tap while the share menu is still opening",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/pdfActions.test.ts::opens the invoice in a new tab when the share menu fails",
+            "path": "src/lib/__tests__/pdfActions.test.ts::opens the invoice in a new tab when the share menu fails",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/pdfActions.test.ts::reports the failure when Safari also blocks the new tab",
+            "path": "src/lib/__tests__/pdfActions.test.ts::reports the failure when Safari also blocks the new tab",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/pdfActions.test.ts::opens the invoice in a new tab when the share menu cannot take PDF files",
+            "path": "src/lib/__tests__/pdfActions.test.ts::opens the invoice in a new tab when the share menu cannot take PDF files",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/pdfActions.test.ts::opens the invoice in a new tab on iPhones that cannot share files",
+            "path": "src/lib/__tests__/pdfActions.test.ts::opens the invoice in a new tab on iPhones that cannot share files",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/pdfActions.test.ts::still prints through a hidden frame and never opens the share menu",
+            "path": "src/lib/__tests__/pdfActions.test.ts::still prints through a hidden frame and never opens the share menu",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Index.test.tsx::shows an empty preview before an invoice is generated",
+            "path": "src/pages/__tests__/Index.test.tsx::shows an empty preview before an invoice is generated",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Index.test.tsx::shows the busy state while the invoice is made, then the finished PDF with print and save",
+            "path": "src/pages/__tests__/Index.test.tsx::shows the busy state while the invoice is made, then the finished PDF with print and save",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Index.test.tsx::keeps describing the generated invoice when the form is edited afterwards",
+            "path": "src/pages/__tests__/Index.test.tsx::keeps describing the generated invoice when the form is edited afterwards",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Index.test.tsx::on a phone, opens the finished invoice in a panel that can be closed and reopened",
+            "path": "src/pages/__tests__/Index.test.tsx::on a phone, opens the finished invoice in a panel that can be closed and reopened",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Index.test.tsx::on a phone, focuses the close button when the panel opens and returns focus to \"Rechnung anzeigen\" when it closes",
+            "path": "src/pages/__tests__/Index.test.tsx::on a phone, focuses the close button when the panel opens and returns focus to \"Rechnung anzeigen\" when it closes",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Index.test.tsx::closes the panel and shows the preview when the screen grows past phone width",
+            "path": "src/pages/__tests__/Index.test.tsx::closes the panel and shows the preview when the screen grows past phone width",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Index.test.tsx::a reset while the invoice is being made clears the form and drops that invoice",
+            "path": "src/pages/__tests__/Index.test.tsx::a reset while the invoice is being made clears the form and drops that invoice",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Index.test.tsx::drops an invoice still being made when the address changes meanwhile",
+            "path": "src/pages/__tests__/Index.test.tsx::drops an invoice still being made when the address changes meanwhile",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Index.test.tsx::on a desktop, shows the invoice in the page instead of a panel",
+            "path": "src/pages/__tests__/Index.test.tsx::on a desktop, shows the invoice in the page instead of a panel",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          }
+        ],
+        "e2e": [
+          {
+            "id": "e2e/invoice-page.spec.ts::form and preview sit side by side, the preview stays in view",
+            "path": "e2e/invoice-page.spec.ts::form and preview sit side by side, the preview stays in view",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          },
+          {
+            "id": "e2e/invoice-page.spec.ts::shows the finished invoice with print and save, saved under the mother's name",
+            "path": "e2e/invoice-page.spec.ts::shows the finished invoice with print and save, saved under the mother's name",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          },
+          {
+            "id": "e2e/invoice-page.spec.ts::the action bar stays at the bottom without covering the form",
+            "path": "e2e/invoice-page.spec.ts::the action bar stays at the bottom without covering the form",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          },
+          {
+            "id": "e2e/invoice-page.spec.ts::the finished invoice opens in a panel that closes and reopens, keeping the form",
+            "path": "e2e/invoice-page.spec.ts::the finished invoice opens in a panel that closes and reopens, keeping the form",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          },
+          {
+            "id": "e2e/invoice-page.spec.ts::the bottom bar fits the ${width}px screen and covers no content",
+            "path": "e2e/invoice-page.spec.ts::the bottom bar fits the ${width}px screen and covers no content",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          },
+          {
+            "id": "e2e/invoice-page.spec.ts::«Drucken» hands the invoice to the share menu instead of printing a blank page",
+            "path": "e2e/invoice-page.spec.ts::«Drucken» hands the invoice to the share menu instead of printing a blank page",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          }
+        ]
+      },
       "coverage": {
         "unit": "MISSING",
         "e2e": "MISSING"
@@ -93,7 +1306,7 @@
     "01::FR-01.06": {
       "id": "FR-01.06",
       "spec_path": ".shipwright/planning/01-adopted/spec.md",
-      "title": "The midwife stores her sender details (name, address, contact, IBAN), the place shown on the invoice, and optionally a fixed invoice date; left empty, each invoice carries the current date. The details are kept in the browser and reused for every invoice, and the form page shows when a fixed date is in effect.",
+      "title": "The midwife stores her sender details (name, address, contact, IBAN), the place shown on the invoice, and optionally a fixed invoice date; left empty, each invoice carries the current date. The details are kept in the browser and reused for every invoice, and the form page shows when a fixed date is in effect. She can save these settings (including the signature) to a file and load them again, e.g. on a new web address; an invalid file is refused and changes nothing.",
       "priority": "Must",
       "status": "active",
       "required_layers": [
@@ -101,7 +1314,572 @@
         "e2e"
       ],
       "required_layers_source": "inferred_legacy",
-      "tests": {},
+      "tests": {
+        "unit": [
+          {
+            "id": "src/components/__tests__/MovedNotice.test.tsx::tells users on the old address to save their settings and move",
+            "path": "src/components/__tests__/MovedNotice.test.tsx::tells users on the old address to save their settings and move",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/__tests__/MovedNotice.test.tsx::stays hidden on %s",
+            "path": "src/components/__tests__/MovedNotice.test.tsx::stays hidden on %s",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/__tests__/SetupNotice.test.tsx::names the number and the items still missing, with a way to the settings",
+            "path": "src/components/__tests__/SetupNotice.test.tsx::names the number and the items still missing, with a way to the settings",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/__tests__/SetupNotice.test.tsx::uses the singular when one item is left",
+            "path": "src/components/__tests__/SetupNotice.test.tsx::uses the singular when one item is left",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/__tests__/SetupNotice.test.tsx::disappears once everything is saved",
+            "path": "src/components/__tests__/SetupNotice.test.tsx::disappears once everything is saved",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/__tests__/SetupNotice.test.tsx::marks \"Einstellungen\" as incomplete without changing its name",
+            "path": "src/components/__tests__/SetupNotice.test.tsx::marks \"Einstellungen\" as incomplete without changing its name",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/__tests__/SetupNotice.test.tsx::shows no dot and no description once setup is complete",
+            "path": "src/components/__tests__/SetupNotice.test.tsx::shows no dot and no description once setup is complete",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/ui/__tests__/toaster.test.tsx::shows a check in an accent circle for a confirmation",
+            "path": "src/components/ui/__tests__/toaster.test.tsx::shows a check in an accent circle for a confirmation",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/ui/__tests__/toaster.test.tsx::shows an alert icon in a soft danger circle for an error",
+            "path": "src/components/ui/__tests__/toaster.test.tsx::shows an alert icon in a soft danger circle for an error",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/hooks/__tests__/useSetupStatus.test.tsx::reports the missing items from the stored settings, ignoring the stored example sender",
+            "path": "src/hooks/__tests__/useSetupStatus.test.tsx::reports the missing items from the stored settings, ignoring the stored example sender",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/hooks/__tests__/useSetupStatus.test.tsx::treats unreadable stored settings as nothing saved",
+            "path": "src/hooks/__tests__/useSetupStatus.test.tsx::treats unreadable stored settings as nothing saved",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/hooks/__tests__/useSetupStatus.test.tsx::updates as soon as this tab saves a setting",
+            "path": "src/hooks/__tests__/useSetupStatus.test.tsx::updates as soon as this tab saves a setting",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/hooks/__tests__/useSetupStatus.test.tsx::updates when another tab changes the settings",
+            "path": "src/hooks/__tests__/useSetupStatus.test.tsx::updates when another tab changes the settings",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/hooks/__tests__/useSetupStatus.test.tsx::keeps the same answer between unrelated renders",
+            "path": "src/hooks/__tests__/useSetupStatus.test.tsx::keeps the same answer between unrelated renders",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/hooks/__tests__/useSetupStatus.test.tsx::stops listening when unmounted",
+            "path": "src/hooks/__tests__/useSetupStatus.test.tsx::stops listening when unmounted",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/hooks/__tests__/useSetupStatus.test.tsx::notices a change even when the stored text is read again without an event",
+            "path": "src/hooks/__tests__/useSetupStatus.test.tsx::notices a change even when the stored text is read again without an event",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/presetStorage.unit.test.ts::returns only what the user saved, without placeholder defaults",
+            "path": "src/lib/__tests__/presetStorage.unit.test.ts::returns only what the user saved, without placeholder defaults",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/presetStorage.unit.test.ts::saving only a signature stores neither the example sender nor the default place",
+            "path": "src/lib/__tests__/presetStorage.unit.test.ts::saving only a signature stores neither the example sender nor the default place",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/presetStorage.unit.test.ts::ignores stored placeholder text so it is never exported as real data",
+            "path": "src/lib/__tests__/presetStorage.unit.test.ts::ignores stored placeholder text so it is never exported as real data",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/presetStorage.unit.test.ts::falls back to the defaults when the stored settings are unreadable",
+            "path": "src/lib/__tests__/presetStorage.unit.test.ts::falls back to the defaults when the stored settings are unreadable",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/presetStorage.unit.test.ts::treats unreadable stored settings as nothing saved",
+            "path": "src/lib/__tests__/presetStorage.unit.test.ts::treats unreadable stored settings as nothing saved",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/presetStorage.unit.test.ts::treats stored data that is not a settings object as nothing saved",
+            "path": "src/lib/__tests__/presetStorage.unit.test.ts::treats stored data that is not a settings object as nothing saved",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/presetStorage.unit.test.ts::replaces all stored settings with the imported ones",
+            "path": "src/lib/__tests__/presetStorage.unit.test.ts::replaces all stored settings with the imported ones",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/presetStorage.unit.test.ts::leaves the stored settings unchanged when the browser refuses to store them",
+            "path": "src/lib/__tests__/presetStorage.unit.test.ts::leaves the stored settings unchanged when the browser refuses to store them",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/presetStorage.unit.test.ts::announces a successful save and a successful import",
+            "path": "src/lib/__tests__/presetStorage.unit.test.ts::announces a successful save and a successful import",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/presetStorage.unit.test.ts::stays silent when the browser refuses to store the settings",
+            "path": "src/lib/__tests__/presetStorage.unit.test.ts::stays silent when the browser refuses to store the settings",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/settingsFile.test.ts::reads back exactly what was exported",
+            "path": "src/lib/__tests__/settingsFile.test.ts::reads back exactly what was exported",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/settingsFile.test.ts::exports only the fields that are stored",
+            "path": "src/lib/__tests__/settingsFile.test.ts::exports only the fields that are stored",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/settingsFile.test.ts::accepts an empty invoice date (means \"today\")",
+            "path": "src/lib/__tests__/settingsFile.test.ts::accepts an empty invoice date (means \"today\")",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/settingsFile.test.ts::rejects %s",
+            "path": "src/lib/__tests__/settingsFile.test.ts::rejects %s",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/settingsFile.test.ts::names the field that makes a file invalid",
+            "path": "src/lib/__tests__/settingsFile.test.ts::names the field that makes a file invalid",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/settingsFile.test.ts::finds the stored fields an import would refuse, so export can name them",
+            "path": "src/lib/__tests__/settingsFile.test.ts::finds the stored fields an import would refuse, so export can name them",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/settingsFile.test.ts::rejects a file larger than the limit before parsing it",
+            "path": "src/lib/__tests__/settingsFile.test.ts::rejects a file larger than the limit before parsing it",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/settingsFile.test.ts::refuses a __proto__ payload without touching Object.prototype",
+            "path": "src/lib/__tests__/settingsFile.test.ts::refuses a __proto__ payload without touching Object.prototype",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/settingsFile.test.ts::returns a plain object holding only the known fields",
+            "path": "src/lib/__tests__/settingsFile.test.ts::returns a plain object holding only the known fields",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/setupStatus.test.ts::lists all three items when nothing is saved",
+            "path": "src/lib/__tests__/setupStatus.test.ts::lists all three items when nothing is saved",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/setupStatus.test.ts::lists nothing once sender, place and signature are saved",
+            "path": "src/lib/__tests__/setupStatus.test.ts::lists nothing once sender, place and signature are saved",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/setupStatus.test.ts::counts whitespace-only text and an empty signature as missing",
+            "path": "src/lib/__tests__/setupStatus.test.ts::counts whitespace-only text and an empty signature as missing",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/setupStatus.test.ts::ignores the fixed invoice date, which is optional",
+            "path": "src/lib/__tests__/setupStatus.test.ts::ignores the fixed invoice date, which is optional",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/setupStatus.test.ts::joins one, two or three items in German",
+            "path": "src/lib/__tests__/setupStatus.test.ts::joins one, two or three items in German",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/setupStatus.test.ts::uses the singular for one remaining item",
+            "path": "src/lib/__tests__/setupStatus.test.ts::uses the singular for one remaining item",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Index.test.tsx::reminds a new midwife to complete her settings, between the intro and the privacy note",
+            "path": "src/pages/__tests__/Index.test.tsx::reminds a new midwife to complete her settings, between the intro and the privacy note",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Settings.test.tsx::downloads the saved settings as a file",
+            "path": "src/pages/__tests__/Settings.test.tsx::downloads the saved settings as a file",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Settings.test.tsx::keeps the download link valid until the browser has started the download",
+            "path": "src/pages/__tests__/Settings.test.tsx::keeps the download link valid until the browser has started the download",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Settings.test.tsx::leaves out and names a stored signature that a settings file would refuse",
+            "path": "src/pages/__tests__/Settings.test.tsx::leaves out and names a stored signature that a settings file would refuse",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Settings.test.tsx::warns that the file holds bank details and signature",
+            "path": "src/pages/__tests__/Settings.test.tsx::warns that the file holds bank details and signature",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Settings.test.tsx::asks before replacing and then shows the imported values",
+            "path": "src/pages/__tests__/Settings.test.tsx::asks before replacing and then shows the imported values",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Settings.test.tsx::names the settings that the import clears",
+            "path": "src/pages/__tests__/Settings.test.tsx::names the settings that the import clears",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Settings.test.tsx::loads the same file again after an import",
+            "path": "src/pages/__tests__/Settings.test.tsx::loads the same file again after an import",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Settings.test.tsx::shows only the result of the most recently chosen file",
+            "path": "src/pages/__tests__/Settings.test.tsx::shows only the result of the most recently chosen file",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Settings.test.tsx::keeps the current settings when the import is cancelled",
+            "path": "src/pages/__tests__/Settings.test.tsx::keeps the current settings when the import is cancelled",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Settings.test.tsx::rejects an invalid file with a message and changes nothing",
+            "path": "src/pages/__tests__/Settings.test.tsx::rejects an invalid file with a message and changes nothing",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Settings.test.tsx::rejects a file over 1 MB without reading it",
+            "path": "src/pages/__tests__/Settings.test.tsx::rejects a file over 1 MB without reading it",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Settings.test.tsx::reports when the browser cannot store the imported settings",
+            "path": "src/pages/__tests__/Settings.test.tsx::reports when the browser cannot store the imported settings",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Settings.test.tsx::has the shared top bar, a way back to the invoice and one main heading",
+            "path": "src/pages/__tests__/Settings.test.tsx::has the shared top bar, a way back to the invoice and one main heading",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Settings.test.tsx::shows the four sections in order",
+            "path": "src/pages/__tests__/Settings.test.tsx::shows the four sections in order",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Settings.test.tsx::starts with empty fields and example placeholders when nothing is saved",
+            "path": "src/pages/__tests__/Settings.test.tsx::starts with empty fields and example placeholders when nothing is saved",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Settings.test.tsx::lists what is still missing and which items are done",
+            "path": "src/pages/__tests__/Settings.test.tsx::lists what is still missing and which items are done",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Settings.test.tsx::says everything is set once sender, place and signature are saved",
+            "path": "src/pages/__tests__/Settings.test.tsx::says everything is set once sender, place and signature are saved",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Settings.test.tsx::updates the status right after saving, without reloading the page",
+            "path": "src/pages/__tests__/Settings.test.tsx::updates the status right after saving, without reloading the page",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Settings.test.tsx::updates the status after uploading a signature image",
+            "path": "src/pages/__tests__/Settings.test.tsx::updates the status after uploading a signature image",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Settings.test.tsx::does not claim a signature is saved when the browser refuses to store it",
+            "path": "src/pages/__tests__/Settings.test.tsx::does not claim a signature is saved when the browser refuses to store it",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Settings.test.tsx::says when no signature is saved yet",
+            "path": "src/pages/__tests__/Settings.test.tsx::says when no signature is saved yet",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Settings.test.tsx::saves sender, place and date together from either Speichern button, as before",
+            "path": "src/pages/__tests__/Settings.test.tsx::saves sender, place and date together from either Speichern button, as before",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Settings.test.tsx::keeps the date hint tied to the date field",
+            "path": "src/pages/__tests__/Settings.test.tsx::keeps the date hint tied to the date field",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/styles/__tests__/theme.test.ts::no settings or information component uses a fixed colour",
+            "path": "src/styles/__tests__/theme.test.ts::no settings or information component uses a fixed colour",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/styles/__tests__/theme.test.ts::the information page draws no icon by hand",
+            "path": "src/styles/__tests__/theme.test.ts::the information page draws no icon by hand",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          }
+        ],
+        "e2e": [
+          {
+            "id": "e2e/settings-info.spec.ts::a new user is led through the setup until the invoice page is ready",
+            "path": "e2e/settings-info.spec.ts::a new user is led through the setup until the invoice page is ready",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          },
+          {
+            "id": "e2e/settings-info.spec.ts::${path} fits a 320px wide phone without sideways scrolling",
+            "path": "e2e/settings-info.spec.ts::${path} fits a 320px wide phone without sideways scrolling",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          },
+          {
+            "id": "e2e/settingsTransfer.spec.ts::settings saved to a file are used for invoices after loading them elsewhere",
+            "path": "e2e/settingsTransfer.spec.ts::settings saved to a file are used for invoices after loading them elsewhere",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          }
+        ]
+      },
       "coverage": {
         "unit": "MISSING",
         "e2e": "MISSING"
@@ -118,16 +1896,72 @@
         "e2e"
       ],
       "required_layers_source": "inferred_legacy",
-      "tests": {},
+      "tests": {
+        "unit": [
+          {
+            "id": "src/styles/__tests__/theme.test.ts::no settings or information component uses a fixed colour",
+            "path": "src/styles/__tests__/theme.test.ts::no settings or information component uses a fixed colour",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/styles/__tests__/theme.test.ts::the information page draws no icon by hand",
+            "path": "src/styles/__tests__/theme.test.ts::the information page draws no icon by hand",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          }
+        ],
+        "integration": [
+          {
+            "id": "src/lib/__tests__/pdfGenerator.integration.test.ts::embeds no image when no signature is stored @FR-01.07",
+            "path": "src/lib/__tests__/pdfGenerator.integration.test.ts::embeds no image when no signature is stored @FR-01.07",
+            "layer": "integration",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "title_suffix"
+          },
+          {
+            "id": "src/lib/__tests__/pdfGenerator.integration.test.ts::embeds the stored signature as an image @FR-01.07",
+            "path": "src/lib/__tests__/pdfGenerator.integration.test.ts::embeds the stored signature as an image @FR-01.07",
+            "layer": "integration",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "title_suffix"
+          }
+        ],
+        "e2e": [
+          {
+            "id": "e2e/settings-info.spec.ts::a new user is led through the setup until the invoice page is ready",
+            "path": "e2e/settings-info.spec.ts::a new user is led through the setup until the invoice page is ready",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          },
+          {
+            "id": "e2e/settings-info.spec.ts::the signature status row keeps its text readable on a 320px phone",
+            "path": "e2e/settings-info.spec.ts::the signature status row keeps its text readable on a 320px phone",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          }
+        ]
+      },
       "coverage": {
         "unit": "MISSING",
+        "integration": "MISSING",
         "e2e": "MISSING"
       }
     },
     "01::FR-01.08": {
       "id": "FR-01.08",
       "spec_path": ".shipwright/planning/01-adopted/spec.md",
-      "title": "Explains what the app does, how to use it, what data leaves the browser (only the typed street text, for address suggestions), the best-effort service disclaimer, and whom to contact.",
+      "title": "Explains what the app does, how to use it, what data leaves the browser (only the text typed into the address field, sent via the hosting provider bunny.net — and Netlify for the old address — to Swiss Post for address suggestions), the best-effort service disclaimer, and whom to contact.",
       "priority": "Must",
       "status": "active",
       "required_layers": [
@@ -135,7 +1969,164 @@
         "e2e"
       ],
       "required_layers_source": "inferred_legacy",
-      "tests": {},
+      "tests": {
+        "unit": [
+          {
+            "id": "src/pages/__tests__/Index.test.tsx::says patient data stays in the browser and only the address goes to the Post via the own service",
+            "path": "src/pages/__tests__/Index.test.tsx::says patient data stays in the browser and only the address goes to the Post via the own service",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Info.test.tsx::names the typed address text as the only data sent, and to whom",
+            "path": "src/pages/__tests__/Info.test.tsx::names the typed address text as the only data sent, and to whom",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Info.test.tsx::names bunny.net as host that forwards the lookup and sees the IP address",
+            "path": "src/pages/__tests__/Info.test.tsx::names bunny.net as host that forwards the lookup and sees the IP address",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Info.test.tsx::mentions Netlify only for the old address",
+            "path": "src/pages/__tests__/Info.test.tsx::mentions Netlify only for the old address",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Info.test.tsx::says that saved settings files stay with the user",
+            "path": "src/pages/__tests__/Info.test.tsx::says that saved settings files stay with the user",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Info.test.tsx::no longer claims that only the street name is sent",
+            "path": "src/pages/__tests__/Info.test.tsx::no longer claims that only the street name is sent",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Info.test.tsx::splits what stays in the browser from what goes to the Swiss Post",
+            "path": "src/pages/__tests__/Info.test.tsx::splits what stays in the browser from what goes to the Swiss Post",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Info.test.tsx::shows the shared top bar with Information as the current page and one h1",
+            "path": "src/pages/__tests__/Info.test.tsx::shows the shared top bar with Information as the current page and one h1",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Info.test.tsx::says the municipality is proposed, not decided",
+            "path": "src/pages/__tests__/Info.test.tsx::says the municipality is proposed, not decided",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Info.test.tsx::lists three functions and four numbered steps",
+            "path": "src/pages/__tests__/Info.test.tsx::lists three functions and four numbered steps",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Info.test.tsx::promises no payment slip on the invoice",
+            "path": "src/pages/__tests__/Info.test.tsx::promises no payment slip on the invoice",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Info.test.tsx::keeps the service disclaimer word for word",
+            "path": "src/pages/__tests__/Info.test.tsx::keeps the service disclaimer word for word",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/pages/__tests__/Info.test.tsx::links to the real contact address",
+            "path": "src/pages/__tests__/Info.test.tsx::links to the real contact address",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/styles/__tests__/theme.test.ts::index.html loads no script, stylesheet or font from another host",
+            "path": "src/styles/__tests__/theme.test.ts::index.html loads no script, stylesheet or font from another host",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/styles/__tests__/theme.test.ts::the brand fonts are bundled with the app",
+            "path": "src/styles/__tests__/theme.test.ts::the brand fonts are bundled with the app",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/styles/__tests__/theme.test.ts::no settings or information component uses a fixed colour",
+            "path": "src/styles/__tests__/theme.test.ts::no settings or information component uses a fixed colour",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/styles/__tests__/theme.test.ts::the information page draws no icon by hand",
+            "path": "src/styles/__tests__/theme.test.ts::the information page draws no icon by hand",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          }
+        ],
+        "e2e": [
+          {
+            "id": "e2e/settings-info.spec.ts::${path} fits a 320px wide phone without sideways scrolling",
+            "path": "e2e/settings-info.spec.ts::${path} fits a 320px wide phone without sideways scrolling",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          },
+          {
+            "id": "e2e/theme.spec.ts::the start page contacts no host other than the app",
+            "path": "e2e/theme.spec.ts::the start page contacts no host other than the app",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          }
+        ]
+      },
       "coverage": {
         "unit": "MISSING",
         "e2e": "MISSING"
@@ -152,7 +2143,268 @@
         "e2e"
       ],
       "required_layers_source": "inferred_legacy",
-      "tests": {},
+      "tests": {
+        "unit": [
+          {
+            "id": "src/__tests__/themeInit.test.ts::is a classic inline script in the head, before the app module",
+            "path": "src/__tests__/themeInit.test.ts::is a classic inline script in the head, before the app module",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/__tests__/themeInit.test.ts::reads the same storage key as the theme provider in App.tsx",
+            "path": "src/__tests__/themeInit.test.ts::reads the same storage key as the theme provider in App.tsx",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/__tests__/themeInit.test.ts::applies a stored light or dark choice",
+            "path": "src/__tests__/themeInit.test.ts::applies a stored light or dark choice",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/__tests__/themeInit.test.ts::follows the system for \"system\", nothing stored or an unknown value",
+            "path": "src/__tests__/themeInit.test.ts::follows the system for \"system\", nothing stored or an unknown value",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/__tests__/themeInit.test.ts::still follows the system when storage cannot be read",
+            "path": "src/__tests__/themeInit.test.ts::still follows the system when storage cannot be read",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/__tests__/themeInit.test.ts::marks the page as German",
+            "path": "src/__tests__/themeInit.test.ts::marks the page as German",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/__tests__/ThemeToggle.test.tsx::offers Hell, Dunkel and System under \"Darstellung\", with the current choice checked",
+            "path": "src/components/__tests__/ThemeToggle.test.tsx::offers Hell, Dunkel and System under \"Darstellung\", with the current choice checked",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/__tests__/ThemeToggle.test.tsx::switches to dark and remembers the choice",
+            "path": "src/components/__tests__/ThemeToggle.test.tsx::switches to dark and remembers the choice",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/__tests__/ThemeToggle.test.tsx::with System, follows the operating system, also when it changes while open",
+            "path": "src/components/__tests__/ThemeToggle.test.tsx::with System, follows the operating system, also when it changes while open",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/__tests__/ThemeToggle.test.tsx::stops following the operating system after choosing Hell",
+            "path": "src/components/__tests__/ThemeToggle.test.tsx::stops following the operating system after choosing Hell",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/__tests__/ThemeToggle.test.tsx::treats an unknown stored value as System instead of adding it as a class",
+            "path": "src/components/__tests__/ThemeToggle.test.tsx::treats an unknown stored value as System instead of adding it as a class",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/components/__tests__/ThemeToggle.test.tsx::still opens when storage cannot be read",
+            "path": "src/components/__tests__/ThemeToggle.test.tsx::still opens when storage cannot be read",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/styles/__tests__/theme.test.ts::${name} colour tokens equal the design token sheet",
+            "path": "src/styles/__tests__/theme.test.ts::${name} colour tokens equal the design token sheet",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/styles/__tests__/theme.test.ts::${name} translucent tokens are full colour values from the sheet",
+            "path": "src/styles/__tests__/theme.test.ts::${name} translucent tokens are full colour values from the sheet",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/styles/__tests__/theme.test.ts::contains no hard-coded hex colour",
+            "path": "src/styles/__tests__/theme.test.ts::contains no hard-coded hex colour",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/styles/__tests__/theme.test.ts::resolves primary and secondary through their tokens",
+            "path": "src/styles/__tests__/theme.test.ts::resolves primary and secondary through their tokens",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/styles/__tests__/theme.test.ts::uses full-value tokens directly, never inside hsl()",
+            "path": "src/styles/__tests__/theme.test.ts::uses full-value tokens directly, never inside hsl()",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/styles/__tests__/theme.test.ts::index.html loads no script, stylesheet or font from another host",
+            "path": "src/styles/__tests__/theme.test.ts::index.html loads no script, stylesheet or font from another host",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/styles/__tests__/theme.test.ts::the brand fonts are bundled with the app",
+            "path": "src/styles/__tests__/theme.test.ts::the brand fonts are bundled with the app",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/styles/__tests__/theme.test.ts::no serif page or form heading asks for a bold weight",
+            "path": "src/styles/__tests__/theme.test.ts::no serif page or form heading asks for a bold weight",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/styles/__tests__/theme.test.ts::no component builds its focus outline from the translucent ring colour",
+            "path": "src/styles/__tests__/theme.test.ts::no component builds its focus outline from the translucent ring colour",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/styles/__tests__/theme.test.ts::no invoice-page component uses a fixed grey, red, blue, yellow or white colour",
+            "path": "src/styles/__tests__/theme.test.ts::no invoice-page component uses a fixed grey, red, blue, yellow or white colour",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/styles/__tests__/theme.test.ts::no settings or information component uses a fixed colour",
+            "path": "src/styles/__tests__/theme.test.ts::no settings or information component uses a fixed colour",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/styles/__tests__/theme.test.ts::the information page draws no icon by hand",
+            "path": "src/styles/__tests__/theme.test.ts::the information page draws no icon by hand",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          }
+        ],
+        "e2e": [
+          {
+            "id": "e2e/settings-info.spec.ts::the theme menu offers Hell, Dunkel and System, and System follows the operating system",
+            "path": "e2e/settings-info.spec.ts::the theme menu offers Hell, Dunkel and System, and System follows the operating system",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          },
+          {
+            "id": "e2e/settings-info.spec.ts::the stored dark theme is applied before the app's scripts run",
+            "path": "e2e/settings-info.spec.ts::the stored dark theme is applied before the app's scripts run",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          },
+          {
+            "id": "e2e/settings-info.spec.ts::keyboard focus in the theme menu is shown with a green outline",
+            "path": "e2e/settings-info.spec.ts::keyboard focus in the theme menu is shown with a green outline",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          },
+          {
+            "id": "e2e/theme.spec.ts::light theme uses the paper background and the fir-green main button",
+            "path": "e2e/theme.spec.ts::light theme uses the paper background and the fir-green main button",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          },
+          {
+            "id": "e2e/theme.spec.ts::dark theme is remembered across a reload and uses the dark palette",
+            "path": "e2e/theme.spec.ts::dark theme is remembered across a reload and uses the dark palette",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          },
+          {
+            "id": "e2e/theme.spec.ts::headings use Newsreader and body text Instrument Sans, both actually loaded",
+            "path": "e2e/theme.spec.ts::headings use Newsreader and body text Instrument Sans, both actually loaded",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          },
+          {
+            "id": "e2e/theme.spec.ts::form controls have the designed sizes",
+            "path": "e2e/theme.spec.ts::form controls have the designed sizes",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          },
+          {
+            "id": "e2e/theme.spec.ts::keyboard focus on the municipality select shows the green border and halo",
+            "path": "e2e/theme.spec.ts::keyboard focus on the municipality select shows the green border and halo",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          }
+        ]
+      },
       "coverage": {
         "unit": "MISSING",
         "e2e": "MISSING"
@@ -161,7 +2413,7 @@
     "01::FR-01.10": {
       "id": "FR-01.10",
       "spec_path": ".shipwright/planning/01-adopted/spec.md",
-      "title": "The address lookup service only answers the app's own web origins, rejects malformed or oversized requests, and limits how often a single client and all clients together may call it, so the Swiss Post quota cannot be used up by others. It never logs the addresses it handles.",
+      "title": "The address lookup service (Bunny Edge Scripting) holds the Swiss Post credentials, only answers the app's own web origins (wartgeld.nidea.ch, the old Netlify site and its deploy previews, itself), rejects malformed or oversized requests, caps the total number of lookups per minute per instance (best effort), and Bunny Shield limits each visitor to 50 lookups in 10 seconds, so the Swiss Post quota cannot easily be used up by others. It never logs the addresses it handles.",
       "priority": "Must",
       "status": "active",
       "required_layers": [
@@ -176,7 +2428,7 @@
     "01::FR-01.11": {
       "id": "FR-01.11",
       "spec_path": ".shipwright/planning/01-adopted/spec.md",
-      "title": "CI pipeline (github-actions) must pass on pull requests.",
+      "title": "CI pipeline (github-actions) must pass on pull requests: lint, typecheck, build, unit tests, and the Playwright browser tests against the built site.",
       "priority": "Must",
       "status": "active",
       "required_layers": [
@@ -211,26 +2463,12 @@
     "src/components/StreetLookup/__tests__/highlightMatches.test.tsx::does not interpret HTML in the text",
     "src/components/StreetLookup/__tests__/highlightMatches.test.tsx::marks every matching term case-insensitively",
     "src/components/StreetLookup/__tests__/highlightMatches.test.tsx::treats regex characters in the input literally instead of throwing",
-    "src/features/form/components/__tests__/FormContainer.test.tsx::calls onSubmit exactly once and does not generate a PDF itself",
-    "src/features/form/components/__tests__/FormContainer.test.tsx::does not submit invalid values",
     "src/lib/__tests__/date.test.ts::formats ISO dates as DD.MM.YYYY without time-zone shifts",
     "src/lib/__tests__/date.test.ts::returns the local date for today",
-    "src/lib/__tests__/pdfGenerator.integration.test.ts::renders the given administration and form data",
     "src/lib/__tests__/presetStorage.unit.test.ts::keeps reading settings stored by older versions",
     "src/lib/__tests__/presetStorage.unit.test.ts::preserves existing fields when updating others",
     "src/lib/__tests__/presetStorage.unit.test.ts::provides default settings when none exist",
     "src/lib/__tests__/presetStorage.unit.test.ts::removes the signature when null is passed",
-    "src/lib/__tests__/presetStorage.unit.test.ts::stores all settings fields",
-    "src/pages/__tests__/Index.test.tsx::renders the main heading",
-    "src/pages/__tests__/Index.test.tsx::shows a notice when a fixed invoice date is configured",
-    "src/pages/__tests__/Index.test.tsx::shows no notice when the invoice date is today",
-    "src/pages/__tests__/Index.test.tsx::shows preview placeholder when no PDF is generated",
-    "src/services/form/__tests__/formValidationService.test.ts::reports only the missing address when it is empty",
-    "src/services/form/__tests__/formValidationService.test.ts::requires a 4-digit PLZ once an address is entered",
-    "src/services/form/__tests__/formValidationService.test.ts::should return errors for invalid form",
-    "src/services/form/__tests__/formValidationService.test.ts::should return no errors for valid form",
-    "src/services/form/__tests__/formValidationService.test.ts::should validate geburtsdatum field",
-    "src/services/form/__tests__/formValidationService.test.ts::should validate nachname field",
-    "src/services/form/__tests__/formValidationService.test.ts::should validate vorname field"
+    "src/lib/__tests__/presetStorage.unit.test.ts::stores all settings fields"
   ]
 }

@@ -1,1 +1,0 @@
-New "Papier & Tanne" look: warm paper background, fir-green main action, a designed dark mode, Newsreader headings and Instrument Sans text; fields, buttons, cards and checkboxes restyled with clearer keyboard focus

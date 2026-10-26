@@ -1,19 +1,22 @@
 # Commit Change Log
 
-Generated: (no events)
-Source-State: run=(unknown) base=49c0ddaa837e
+Generated: 2026-10-24T08:27:49.492073+00:00
+Source-State: run=iterate-2026-10-23-ci-actions-bump base=d4cdc705631a release=v1.5.0
 Consistency-audit: never run
-Total commits: 466
+Total commits: 482
 
 ## Commit Distribution
 
 ```mermaid
 pie title Commit Types
     "other" : 457
+    "feat" : 8
+    "fix" : 5
+    "chore" : 4
+    "ci" : 3
     "docs" : 2
-    "feat" : 2
-    "fix" : 2
-    "chore" : 2
+    "test" : 1
+    "build" : 1
     "refactor" : 1
 ```
 
@@ -481,6 +484,46 @@ pie title Commit Types
 | 2024-11-08 | — | Add form data collection feature | 896da239ab4d |
 | 2024-11-08 | — | Use tech stack vite_react_shadcn_ts [skip gpt_engineer] | 3e012665e8ff |
 
+### Features (feat) — 8 commits
+
+| Date | Scope | Description | Commit |
+|------|-------|-------------|--------|
+| 2026-10-22 | ui | redesign settings and information pages with setup status and German theme menu (#180) | 8b2f1e8c5183 |
+| 2026-10-22 | ui | redesign the invoice page with preview panel and phone sheet (#179) | c2f57f214883 |
+| 2026-10-22 | ui | adopt the Papier & Tanne theme with bundled fonts (#178) | ec3e7726e987 |
+| 2026-10-22 | hosting | serve the app from Bunny at wartgeld.nidea.ch (#177) | 6a848e01c530 |
+| 2026-10-21 | address | Swiss Post APIM lookup via Bunny edge service, drop Supabase (#176) | 476d9e96f2d6 |
+| 2026-10-21 | invoice | propose the responsible Zug municipality from bundled official data (#175) | d8e67a46633d |
+| 2026-09-28 | security | lock down the address-lookup edge function | 79119f0994a7 |
+| 2026-09-28 | — | PLZ validation, working invoice date setting, German UI text | b7c5285402be |
+
+### Fixes (fix) — 5 commits
+
+| Date | Scope | Description | Commit |
+|------|-------|-------------|--------|
+| 2026-10-23 | deps | apply in-range security updates to npm dependencies (#184) | 7148cd0337f9 |
+| 2026-10-23 | deps | upgrade jspdf to 4.2.1 to close critical CVEs (#183) | b47b0e533480 |
+| 2026-10-22 | print | print on iPhone and iPad through the share menu (#182) | dc58674f5ae3 |
+| 2026-09-28 | — | generate the PDF once per submit and fix address result ordering | ad8bd9ac683e |
+| 2026-09-28 | — | green lint, typecheck and tests; enforce them in CI | ded85ba21fd6 |
+
+### Chores (chore) — 4 commits
+
+| Date | Scope | Description | Commit |
+|------|-------|-------------|--------|
+| 2026-10-23 | security | mark the two remaining Semgrep findings as false positives (#200) | f54c211c2f33 |
+| 2026-10-20 | shipwright | adopt repository into Shipwright SDLC | e951e7b4f021 |
+| 2026-09-28 | — | remove dead code, unused UI components and dependencies | 22f7d69c5230 |
+| 2026-01-18 | — | upgrade supabase postgres version and update gitignore | 87e26ff8a3b2 |
+
+### CI/CD (ci) — 3 commits
+
+| Date | Scope | Description | Commit |
+|------|-------|-------------|--------|
+| 2026-10-24 | — | bump pinned GitHub Actions to current majors (#203) | d4cdc705631a |
+| 2026-10-23 | security | pin GitHub Actions to commit SHAs and add Dependabot cooldown (#194) | 6c1697ef6f73 |
+| 2026-10-21 | — | allow the coverage step to comment on pull requests | 73ea2567585c |
+
 ### Documentation (docs) — 2 commits
 
 | Date | Scope | Description | Commit |
@@ -488,26 +531,17 @@ pie title Commit Types
 | 2026-09-28 | — | record implementation status of the improvement plan | 9b51cbd98fbc |
 | 2026-09-28 | — | add improvement plan for review findings 1-5 | b0e35115fba7 |
 
-### Features (feat) — 2 commits
+### Tests (test) — 1 commits
 
 | Date | Scope | Description | Commit |
 |------|-------|-------------|--------|
-| 2026-09-28 | security | lock down the address-lookup edge function | 79119f0994a7 |
-| 2026-09-28 | — | PLZ validation, working invoice date setting, German UI text | b7c5285402be |
+| 2026-10-23 | — | enforce the 80% coverage minimum and declare Node >=22.12 (#202) | 28330284dc17 |
 
-### Fixes (fix) — 2 commits
-
-| Date | Scope | Description | Commit |
-|------|-------|-------------|--------|
-| 2026-09-28 | — | generate the PDF once per submit and fix address result ordering | ad8bd9ac683e |
-| 2026-09-28 | — | green lint, typecheck and tests; enforce them in CI | ded85ba21fd6 |
-
-### Chores (chore) — 2 commits
+### Build (build) — 1 commits
 
 | Date | Scope | Description | Commit |
 |------|-------|-------------|--------|
-| 2026-09-28 | — | remove dead code, unused UI components and dependencies | 22f7d69c5230 |
-| 2026-01-18 | — | upgrade supabase postgres version and update gitignore | 87e26ff8a3b2 |
+| 2026-10-23 | deps | upgrade vitest to 5.0.5 and run CI on Node 22 (#201) | efbe3cb45406 |
 
 ### Refactoring (refactor) — 1 commits
 
@@ -519,7 +553,7 @@ pie title Commit Types
 
 | Metric | Value |
 |--------|-------|
-| Total commits | 466 |
+| Total commits | 482 |
 | AI-assisted commits | 8 |
-| Human-authored commits | 458 |
+| Human-authored commits | 474 |
 
