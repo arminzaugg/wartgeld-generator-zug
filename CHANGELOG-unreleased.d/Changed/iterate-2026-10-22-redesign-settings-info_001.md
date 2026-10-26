@@ -1,1 +1,0 @@
-Settings page redesigned in sections with a setup status, empty fields with examples instead of placeholder values, and a clearer signature card; information page redesigned with the same privacy facts

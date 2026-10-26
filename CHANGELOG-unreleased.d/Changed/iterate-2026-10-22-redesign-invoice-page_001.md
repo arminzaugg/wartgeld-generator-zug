@@ -1,1 +1,0 @@
-Invoice page redesigned: form and live preview side by side on wide screens, the running CHF total and the receiving municipality shown before generating, a problem summary that jumps to each field, and on phones a fixed action bar with the finished invoice opening in a bottom panel
