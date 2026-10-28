@@ -1,0 +1,91 @@
+{
+  "iterate_latest": {
+    "run_id": "iterate-2026-10-28-campaign-compliance-f-to-b",
+    "date": "2026-10-28",
+    "unit": {
+      "status": "passed",
+      "passed": 377,
+      "total": 377
+    },
+    "integration": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "pgtap": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "e2e": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "design_fidelity": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "smoke": {
+      "status": "skipped"
+    },
+    "degraded": [
+      "touches_build performance layer not run: lockfile license metadata only, installed dependency tree and bundle inputs unchanged (npm ci identical versions); vite build passes",
+      "main health unknown at cb788da (no monitored push-to-main run returned)"
+    ],
+    "test_completeness": {
+      "status": "complete",
+      "behaviors": [
+        {
+          "behavior": "SBOM collector resolves a license for all 46 direct dependencies (was 40/46)",
+          "disposition": "tested",
+          "evidence": "detect_npm_license over package.json deps: 46 resolved, unknown=[]"
+        },
+        {
+          "behavior": "Lockfile stays npm-normalized (npm round-trip does not strip/reorder the license fields)",
+          "disposition": "tested",
+          "evidence": "npm 11.19 install --package-lock-only on edited file -> diff vs original = exactly 6 added license lines"
+        },
+        {
+          "behavior": "Installs unchanged: npm ci accepts the lockfile with identical versions/integrity",
+          "disposition": "tested",
+          "evidence": "npm ci --ignore-scripts exit 0; git diff shows no version/resolved/integrity change"
+        },
+        {
+          "behavior": "No product behavior change",
+          "disposition": "tested",
+          "evidence": "behavior_snapshot verify green->green (vitest 40 files / 377 tests); lint, typecheck, build pass"
+        }
+      ],
+      "counts": {
+        "testable": 4,
+        "tested": 4,
+        "untestable": 0,
+        "untested_testable": 0
+      },
+      "enumeration_basis": {
+        "acs": 4,
+        "covered_acs": 4
+      }
+    },
+    "surface_verification": {
+      "surface": "none",
+      "runner": "",
+      "exit_code": 0,
+      "tests_run": 0,
+      "evidence_path": "",
+      "timestamp": "2026-10-28T21:45:46.989Z",
+      "attempts": 0,
+      "justification": "Only package-lock.json license metadata changed; no version/resolved/integrity change, installed tree identical, nothing a user or caller can observe.",
+      "reason_code": "build-config-only"
+    }
+  },
+  "source_state": {
+    "run_id": "iterate-2026-10-28-campaign-compliance-f-to-b",
+    "commit": "cc84c720378576e5778d91b52c70c8e141b112e5",
+    "dirty": true,
+    "base": null,
+    "release": null
+  }
+}

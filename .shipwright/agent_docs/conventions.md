@@ -32,3 +32,4 @@ TypeScript in strict mode (tsconfig.app.json) with React 18 function components 
 
 - (2026-10-21) iterate — Swiss Post town names equal the official locality names, but Post's canton field differs at the border (8836 Bennau = SZ): filter Zug addresses by the locality snapshot, not by Post's canton. [→ ADR iterate-2026-10-21-zug-municipality-data]
 - (2026-10-21) iterate — Swiss Post APIM `/autocomplete` lists parcel points as streets (`PickMup …`, `MP …`) even with DOMICILE filtering; Bunny returns script hostnames with `https://` and presents `no-store` as `no-cache`. [→ ADR iterate-2026-10-21-bunny-post-proxy]
+- (2026-10-28) iterate — Lockfile entries written by an older npm can lack `license`; the SBOM reads the lockfile first and reports them `unknown`. npm 11 never backfills them, but it keeps a hand-added field (byte-stable round-trip), so add it from `npm view <pkg>@<locked> license`. [→ ADR iterate-2026-10-28-campaign-compliance-f-to-b]
