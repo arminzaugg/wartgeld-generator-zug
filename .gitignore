@@ -75,6 +75,8 @@ coverage
 /.shipwright/agent_docs/iterates/*.test-results.json.*.tmp
 /.shipwright/agent_docs/*.tmp
 /.shipwright/agent_docs/*.log.lock
+!/.shipwright/profiles/
+/.shipwright/profiles/*.tmp
 # === END Shipwright canonical .shipwright artifact-ignore (managed) ===
 
 # Triage Inbox (shipwright)

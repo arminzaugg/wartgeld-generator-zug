@@ -1,0 +1,10 @@
+{"items":[
+{"name":"Spec compliance","verdict":"pass","note":"Goal: SBOM resolves every dependency license. All 46 direct deps now resolve via detect_npm_license (was 40/46). No FR changes; Spec Impact NONE (dependency metadata only)."},
+{"name":"Error handling","verdict":"n/a","note":"No code change."},
+{"name":"Security basics","verdict":"pass","note":"No version, resolved URL or integrity hash changed; only 6 license string fields added, values taken from `npm view <pkg>@<locked version> license` (MIT x4, ISC, Apache-2.0). No copyleft introduced."},
+{"name":"Test quality","verdict":"pass","note":"No new behavior to test; behavior_snapshot verify green->green (40 files / 377 tests)."},
+{"name":"Performance basics","verdict":"n/a","note":"Lockfile metadata does not affect the bundle; installed tree identical (npm ci succeeded with same versions)."},
+{"name":"Naming & structure","verdict":"pass","note":"File is npm-normalized: npm install --package-lock-only round-trips it byte-identically, so future installs will not strip or reorder the fields."},
+{"name":"Affected boundaries","verdict":"pass","note":"Boundary: package-lock.json consumed by npm ci (CI + local) and the Shipwright SBOM collector. Both verified: npm ci ok, collector resolves 46/46."},
+{"name":"Test hygiene probe","verdict":"n/a","note":"No tests added or edited."}
+]}
