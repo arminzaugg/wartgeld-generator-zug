@@ -1,9 +1,9 @@
 # Commit Change Log
 
-Generated: 2026-10-24T08:27:49.492073+00:00
-Source-State: run=iterate-2026-10-23-ci-actions-bump base=d4cdc705631a release=v1.5.0
+Generated: 2026-10-31T12:55:10.900230+00:00
+Source-State: run=iterate-2026-10-31-envelope-window-address base=d5ce52b3f3ac release=v1.5.1
 Consistency-audit: never run
-Total commits: 482
+Total commits: 485
 
 ## Commit Distribution
 
@@ -11,8 +11,8 @@ Total commits: 482
 pie title Commit Types
     "other" : 457
     "feat" : 8
-    "fix" : 5
-    "chore" : 4
+    "fix" : 6
+    "chore" : 6
     "ci" : 3
     "docs" : 2
     "test" : 1
@@ -497,20 +497,23 @@ pie title Commit Types
 | 2026-09-28 | security | lock down the address-lookup edge function | 79119f0994a7 |
 | 2026-09-28 | — | PLZ validation, working invoice date setting, German UI text | b7c5285402be |
 
-### Fixes (fix) — 5 commits
+### Fixes (fix) — 6 commits
 
 | Date | Scope | Description | Commit |
 |------|-------|-------------|--------|
+| 2026-10-31 | pdf | fit the invoice recipient address into the envelope window (#206) | d5ce52b3f3ac |
 | 2026-10-23 | deps | apply in-range security updates to npm dependencies (#184) | 7148cd0337f9 |
 | 2026-10-23 | deps | upgrade jspdf to 4.2.1 to close critical CVEs (#183) | b47b0e533480 |
 | 2026-10-22 | print | print on iPhone and iPad through the share menu (#182) | dc58674f5ae3 |
 | 2026-09-28 | — | generate the PDF once per submit and fix address result ordering | ad8bd9ac683e |
 | 2026-09-28 | — | green lint, typecheck and tests; enforce them in CI | ded85ba21fd6 |
 
-### Chores (chore) — 4 commits
+### Chores (chore) — 6 commits
 
 | Date | Scope | Description | Commit |
 |------|-------|-------------|--------|
+| 2026-10-28 | deps | backfill missing license fields in package-lock.json (#205) | 033f5a61cd58 |
+| 2026-10-26 | release | v1.5.0 (#204) | cb788da56475 |
 | 2026-10-23 | security | mark the two remaining Semgrep findings as false positives (#200) | f54c211c2f33 |
 | 2026-10-20 | shipwright | adopt repository into Shipwright SDLC | e951e7b4f021 |
 | 2026-09-28 | — | remove dead code, unused UI components and dependencies | 22f7d69c5230 |
@@ -553,7 +556,7 @@ pie title Commit Types
 
 | Metric | Value |
 |--------|-------|
-| Total commits | 482 |
+| Total commits | 485 |
 | AI-assisted commits | 8 |
-| Human-authored commits | 474 |
+| Human-authored commits | 477 |
 

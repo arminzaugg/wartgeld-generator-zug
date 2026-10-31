@@ -226,3 +226,29 @@ Initial JS dropped to about 520 kB with no chunk over 500 kB, and vendor chunks 
 - **Rationale:** The 80% minimum was always intended. Coverage already clears it, so enforcing it is safe.
 - **Consequences:** npm test and CI now fail if global statements, branches, functions or lines coverage drops below 80%. The current tightest margin is branches at 87.66%. Netlify's fallback build also picks up Node 22 from .nvmrc.
 - **Rejected:** Per-file thresholds: several small UI files are below 80%, and that would be a new policy rather than the intended one.
+
+---
+
+### ADR-017: Backfill missing license fields in package-lock.json for SBOM completeness
+- **Date:** 2026-10-28
+- **Section:** Iterate — change: backfill lockfile license metadata
+- **Run-ID:** iterate-2026-10-28-campaign-compliance-f-to-b
+- **Context:** The SBOM reported 6 of 46 direct dependencies as license unknown. Their package-lock.json entries were written by an older npm without a license field, and the collector reads the lockfile first.
+- **Decision:** Add the registry-published license of each exact locked version (MIT x4, ISC, Apache-2.0) to the 6 lockfile entries, using the file as npm 11 rewrites it, so later installs keep the fields.
+- **Commit:** (assigned post-merge)
+- **Rationale:** Smallest change that fixes the root cause at the data source; durable under the npm version CI uses.
+- **Consequences:** SBOM resolves 46/46 licenses, still 0 copyleft. No version, integrity or install change. An old npm (pre-v9) regenerating the lockfile could drop the fields again; the SBOM would then show unknown again.
+- **Rejected:** Regenerating the whole lockfile (moves dependency versions); a per-project license override (Shipwright has no such mechanism).
+
+---
+
+### ADR-018: Place the invoice recipient block for a C5 right-window envelope
+- **Date:** 2026-10-31
+- **Section:** Iterate — bug: invoice address fits the envelope window
+- **Run-ID:** iterate-2026-10-31-envelope-window-address
+- **Context:** A printed invoice to Stadtverwaltung Zug, folded in half in a C5 right-window envelope, hid the postcode/town line below the window: the recipient block sat at baselines 65-80 mm and the sheet slides ~13 mm inside the envelope.
+- **Decision:** Move the recipient block up 11 mm to baselines 54/59/64/69 mm (x=120 mm, 5 mm pitch), printing non-empty lines consecutively. Tests read real line positions from the PDF and require the 48-72 mm window band.
+- **Commit:** (assigned post-merge)
+- **Rationale:** Measured on the user's envelope: window ~53 mm from the top, ~45 mm tall; text appeared ~20 mm lower than its PDF position. 54-69 mm centres the block in the band visible at every slide position.
+- **Consequences:** All four recipient lines stay visible across the sheet's play in the envelope; the gap to the invoice title grows. Real-envelope fit still needs one physical test print.
+- **Rejected:** Moving it 15 mm (start 50 mm) risked clipping the first line when the sheet sits at the top of the envelope; changing recipient data (splitting 'Postfach') was out of scope.

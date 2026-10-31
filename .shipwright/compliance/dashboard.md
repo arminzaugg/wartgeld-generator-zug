@@ -1,7 +1,7 @@
 # Compliance Dashboard
 
-Generated: 2026-10-24T08:27:49.492073+00:00
-Source-State: run=iterate-2026-10-23-ci-actions-bump base=d4cdc705631a release=v1.5.0
+Generated: 2026-10-31T12:55:10.900230+00:00
+Source-State: run=iterate-2026-10-31-envelope-window-address base=d5ce52b3f3ac release=v1.5.1
 Consistency-audit: never run
 Profile: generic
 Scope: full_app
@@ -14,17 +14,17 @@ Scope: full_app
 
 | | Dimension | Signal | Anchor |
 |---|-----------|--------|--------|
-| ✅ | Requirement traceability | 12/12 FRs covered; 14/15 changes traced (FR-linked or classified no-FR) | requirement-to-work traceability (ISO/IEC/IEEE 29148) |
-| ✅ | Test health | latest full suite 403/403 (2026-10-24) | automated tests pass (OpenSSF Scorecard) |
-| ✅ | Change traceability | 14/15 changes linked to a commit, ADR or test run | change provenance (SLSA) |
+| ✅ | Requirement traceability | 12/12 FRs covered; 16/17 changes traced (FR-linked or classified no-FR) | requirement-to-work traceability (ISO/IEC/IEEE 29148) |
+| ✅ | Test health | latest full suite 379/379 (2026-10-31) | automated tests pass (OpenSSF Scorecard) |
+| ✅ | Change traceability | 16/17 changes linked to a commit, ADR or test run | change provenance (SLSA) |
 | ✅ | Change reconciliation | 0/11 behavior-touched FRs not re-verified | re-verify changed requirements (ISO/IEC/IEEE 12207) |
 | n/a | Security | no trustworthy local scan (see CI security gate) | no open high/critical vulns (NIST SSDF) |
 | ✅ | Size / maintainability discipline | ratchet delta +0 lines (net growth) | no unchecked code-size growth (ISO/IEC 25010) |
-| ⚠️ | Dependency hygiene | 6 unresolved / 46 licenses; 0 copyleft | dependency license & risk (OWASP) |
+| ✅ | Dependency hygiene | 0 unresolved / 46 licenses; 0 copyleft | dependency license & risk (OWASP) |
 
 > 📊 **Test-Health · diff-coverage (Control-Grade input · target ≥80%):** not measured this session — per-PR signal; see the CI "Diff coverage" artifact.
 
-Verified from: `shipwright_events.jsonl (15 events,  → 2026-10-24)`
+Verified from: `shipwright_events.jsonl (17 events,  → 2026-10-31)`
 
 _Grade = importance-weighted average over the measurable dimensions (n/a excluded from the denominator), modeled on OpenSSF Scorecard. Age is neutral; only unreconciled change and net growth are control failures. Each Anchor names the open standard the dimension follows — see the guide's Control-Grade dimensions table._
 
@@ -37,22 +37,22 @@ _CI security results not yet ingested. Run `refresh_ci_security.py` (auto-run by
 | Metric | Value | Status | Why warn? |
 |--------|-------|--------|-----------|
 | Pipeline phases completed | n/a (adopted) | INFO |  |
-| Work events (iterate) | 14 changes | INFO |  |
-| Recent changes traced to an FR | 14/14 (100%) | INFO | feature vs. maintenance mix — informational, does not affect the Control Grade |
-| All unit tests passing | 403/403 | PASS |  |
-| Architecture decisions | 16 ADRs | INFO |  |
-| Iterate tests passing | 14/14 testable changes tested | PASS |  |
+| Work events (iterate) | 16 changes | INFO |  |
+| Recent changes traced to an FR | 15/16 (94%) | INFO | feature vs. maintenance mix — informational, does not affect the Control Grade |
+| All unit tests passing | 379/379 | PASS |  |
+| Architecture decisions | 18 ADRs | INFO |  |
+| Iterate tests passing | 15/15 testable changes tested | PASS |  |
 | Dependencies | 46 packages | INFO |  |
 | Copyleft risk | 0 | PASS |  |
-| Triage open | 143 open | WARN | 143 actionable item(s) — see ../agent_docs/triage_inbox.md |
+| Triage open | 148 open | WARN | 148 actionable item(s) — see ../agent_docs/triage_inbox.md |
 | Bloat over-limit (grandfathered) | 0 | INFO |  |
 | Bloat in allowlist | 0 entries | INFO |  |
 | Bloat ratchet delta | +0 lines | PASS |  |
 
 ## Project Velocity
 
-- Iterate: 14 changes (2026-10-21 → 2026-10-24)
-- Last activity: 2026-10-24
+- Iterate: 16 changes (2026-10-21 → 2026-10-31)
+- Last activity: 2026-10-31
 
 ## External LLM Review Evidence
 

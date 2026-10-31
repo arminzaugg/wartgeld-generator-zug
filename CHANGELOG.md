@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.5.1] - 2026-10-31
+
+### Changed
+
+- Dependency list now records the license of every direct dependency (6 were missing), so the software bill of materials shows all 46 licenses; no dependency versions changed
+
+### Fixed
+
+- The recipient address on the invoice now sits higher, so all lines, including postcode and town, show through the window of a C5 window envelope when the sheet is folded in half.
+
 ## [1.5.0] - 2026-10-26
 
 ### Added

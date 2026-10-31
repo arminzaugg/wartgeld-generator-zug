@@ -25,3 +25,5 @@ _Regenerate:_ `uv run {shared_root}/scripts/tools/rebuild_decision_log_index.py 
 - [ADR-014 — Suppress the remaining two Semgrep findings as false positives](decision_log.md#adr-014-suppress-the-remaining-two-semgrep-findings-as-false-positives)
 - [ADR-015 — Apply in-range npm security updates; defer vitest, react-router and tailwind majors](decision_log.md#adr-015-apply-in-range-npm-security-updates-defer-vitest-react-router-and-tailwind-majors)
 - [ADR-016 — Enforce the 80% unit-test coverage minimum; declare Node >=22.12](decision_log.md#adr-016-enforce-the-80-unit-test-coverage-minimum-declare-node-2212)
+- [ADR-017 — Backfill missing license fields in package-lock.json for SBOM completeness](decision_log.md#adr-017-backfill-missing-license-fields-in-package-lockjson-for-sbom-completeness)
+- [ADR-018 — Place the invoice recipient block for a C5 right-window envelope](decision_log.md#adr-018-place-the-invoice-recipient-block-for-a-c5-right-window-envelope)

@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix
 
-Generated: 2026-10-24T08:27:49.492073+00:00
-Source-State: run=iterate-2026-10-23-ci-actions-bump base=d4cdc705631a release=v1.5.0
+Generated: 2026-10-31T12:55:10.900230+00:00
+Source-State: run=iterate-2026-10-31-envelope-window-address base=d5ce52b3f3ac release=v1.5.1
 Consistency-audit: never run
 
 ## Requirements Coverage
@@ -10,7 +10,7 @@ Consistency-audit: never run
 |-------------|-------|----------|-------------|-------|-------------|-------------|--------|------|-------------|-----|
 | [FR-01.01](../../.shipwright/planning/01-adopted/spec.md#fr-0101)<a id="rtm-fr-0101"></a> | The midwife enters the mother's first and last name, home address, date of birth, and which reimbursable services were provided. Missing or too-short entries are flagged before an invoice can be produced, the address must be chosen from the suggestion list so that the postcode is known, and the municipality responsible for the address must be chosen — the app proposes it when the locality clearly belongs to one municipality, points out localities shared by several municipalities or partly outside the canton, and refuses postcodes outside the Canton of Zug as well as border villages lying more than 90 % outside it. | Must | [evt-aced1b25](#evt-aced1b25), [evt-aff36dee](#evt-aff36dee), [evt-55f0e977](#evt-55f0e977) | 96/96 → 325/325 | 2026-10-22 ([iter](#evt-55f0e977)) | ✅ | FAIL → [trg-9e70266a](../agent_docs/triage_inbox.md#trg-9e70266a), FAIL → [trg-fdb6f4ea](../agent_docs/triage_inbox.md#trg-fdb6f4ea) | MISSING | — | MISSING |
 | [FR-01.02](../../.shipwright/planning/01-adopted/spec.md#fr-0102)<a id="rtm-fr-0102"></a> | While the midwife types a street, matching addresses are suggested by the Swiss Post address API through the project's own lookup service (`/api/address`), limited to offered Zug localities (not the border villages Bennau, Sattel, Rothenthurm and Mühlau) and ranked so exact house-number matches and the closest street-name matches come first; parcel pickup points are left out. Choosing a suggestion fills in street, house number, postcode and town. The lookup starts once she pauses typing for ¼ second. If the lookup fails, the midwife is told to try again later. | Must | [evt-aff36dee](#evt-aff36dee), [evt-dbcc3545](#evt-dbcc3545), [evt-55f0e977](#evt-55f0e977) | 166/166 → 325/325 | 2026-10-22 ([iter](#evt-55f0e977)) | ✅ | COVERED | MISSING | — | MISSING |
-| [FR-01.03](../../.shipwright/planning/01-adopted/spec.md#fr-0103)<a id="rtm-fr-0103"></a> | From valid form data the app produces a one-page PDF invoice addressed to the administration of the municipality chosen on the form, using recipient addresses shipped with the app, without contacting any server. It contains the midwife's sender details, the legal basis, the mother's details, the ticked services at CHF 400 each with the total, place and date, the stored signature, and payment terms. If no municipality is known for the postcode, the midwife is told to check the address instead of getting a wrong invoice. | Must | [evt-aced1b25](#evt-aced1b25), [evt-dffc8190](#evt-dffc8190) | 96/96 → 403/403 | 2026-10-23 ([iter](#evt-dffc8190)) | ✅ | COVERED | MISSING | MISSING | MISSING |
+| [FR-01.03](../../.shipwright/planning/01-adopted/spec.md#fr-0103)<a id="rtm-fr-0103"></a> | From valid form data the app produces a one-page PDF invoice addressed to the administration of the municipality chosen on the form, using recipient addresses shipped with the app, without contacting any server. It contains the midwife's sender details, the legal basis, the mother's details, the ticked services at CHF 400 each with the total, place and date, the stored signature, and payment terms. If no municipality is known for the postcode, the midwife is told to check the address instead of getting a wrong invoice. | Must | [evt-aced1b25](#evt-aced1b25), [evt-dffc8190](#evt-dffc8190), [evt-edd13b0b](#evt-edd13b0b) | 96/96 → 379/379 | 2026-10-31 ([iter](#evt-edd13b0b)) | ✅ | COVERED | MISSING | MISSING | MISSING |
 | [FR-01.04](../../.shipwright/planning/01-adopted/spec.md#fr-0104)<a id="rtm-fr-0104"></a> | Once an invoice has been generated, the midwife can print it directly or save it as a PDF file named after the mother. | Must | [evt-55f0e977](#evt-55f0e977), [evt-c236d5f0](#evt-c236d5f0) | 325/325 → 401/401 | 2026-10-22 ([iter](#evt-c236d5f0)) | ✅ | COVERED | MISSING | — | MISSING |
 | [FR-01.05](../../.shipwright/planning/01-adopted/spec.md#fr-0105)<a id="rtm-fr-0105"></a> | The midwife can clear all entered patient data and the generated invoice in one step to start the next invoice. | Must | [evt-55f0e977](#evt-55f0e977) | 325/325 | 2026-10-22 ([iter](#evt-55f0e977)) | ✅ | COVERED | MISSING | — | MISSING |
 | [FR-01.06](../../.shipwright/planning/01-adopted/spec.md#fr-0106)<a id="rtm-fr-0106"></a> | The midwife stores her sender details (name, address, contact, IBAN), the place shown on the invoice, and optionally a fixed invoice date; left empty, each invoice carries the current date. The details are kept in the browser and reused for every invoice, and the form page shows when a fixed date is in effect. She can save these settings (including the signature) to a file and load them again, e.g. on a new web address; an invalid file is refused and changes nothing. | Must | [evt-dbcc3545](#evt-dbcc3545), [evt-c8801a80](#evt-c8801a80) | 239/239 → 389/389 | 2026-10-22 ([iter](#evt-c8801a80)) | ✅ | COVERED | MISSING | — | MISSING |
@@ -27,6 +27,8 @@ Consistency-audit: never run
 
 | Event | Source | Type | FRs | Tests | Commit | Date |
 |-------|--------|------|-----|-------|--------|------|
+| <a id="evt-edd13b0b"></a>Move the invoice recipient block up so the postcode line shows in a C5 right-window envelope | iterate | bug | [FR-01.03](#rtm-fr-0103) | 379/379 | — | 2026-10-31 |
+| <a id="evt-3dc0b4f0"></a>The dependency list now names the license of every package the app uses, so the compliance report no longer shows 6 as unknown. | iterate | change |  | 377/377 | — | 2026-10-28 |
 | <a id="evt-d073d089"></a>The automated build tools were updated to their current versions; the app is unchanged. | iterate | change | [FR-01.11](#rtm-fr-0111) | 403/403 | — | 2026-10-24 |
 | <a id="evt-5b95ca53"></a>The test suite now enforces the intended 80% coverage minimum, and the required Node version is written down. | iterate | change | [FR-01.11](#rtm-fr-0111) | 403/403 | — | 2026-10-23 |
 | <a id="evt-4daa9e00"></a>The test tooling is now on a version without known critical security issues; the app itself is unchanged. | iterate | change | [FR-01.11](#rtm-fr-0111) | 403/403 | — | 2026-10-23 |
@@ -49,7 +51,7 @@ Consistency-audit: never run
 |--------|-------|
 | Total splits built | 0 |
 | Build sections | 0 |
-| Iterate changes | 14 |
+| Iterate changes | 16 |
 | Requirements total | 12 |
 | Requirements verified | 12/12 |
 | Must-have verified | 12/12 |
