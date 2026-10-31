@@ -1,0 +1,10 @@
+{"items":[
+{"name":"Spec Compliance","verdict":"pass","note":"Recipient block moved from baselines 65-80 mm to 54-69 mm (4 lines) so the postcode line stays inside a C5 right-window envelope with A4 folded in half; recipient data unchanged."},
+{"name":"Error Handling","verdict":"pass","note":"No new failure paths; empty recipient fields are skipped (previously only department was), which only matters for empty data that does not exist in MUNICIPALITIES."},
+{"name":"Security Basics","verdict":"pass","note":"Pure layout change; no input handling, network or storage touched."},
+{"name":"Test Quality","verdict":"pass","note":"Two new tests read real line positions from the generated PDF stream (no internal mocks): all four recipient lines inside the 48-72 mm window band (red before the fix: address at 75 mm), and 3-line recipients close the gap."},
+{"name":"Performance Basics","verdict":"pass","note":"No change in work done."},
+{"name":"Naming & Structure","verdict":"pass","note":"Mirrors the existing sender-block loop (lines.forEach with index * 5); file stays at 105 LOC."},
+{"name":"Affected Boundaries","verdict":"n/a","note":"No I/O boundary; output PDF layout only."},
+{"name":"Test Hygiene Probe","verdict":"pass","note":"No skip/only/quarantine added; lint, typecheck and full suite (379 tests) green."}
+]}

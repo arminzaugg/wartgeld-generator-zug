@@ -1,0 +1,51 @@
+{
+  "run_id": "iterate-2026-10-31-envelope-window-address",
+  "date": "2026-10-31T12:55:10.792551Z",
+  "event_at": "2026-10-28T21:46:34.088249+00:00",
+  "type": "bug",
+  "complexity": "small",
+  "prior_source": "history",
+  "branch": "iterate/envelope-window-address",
+  "spec": null,
+  "tests_passed": true,
+  "adr": "iterate-2026-10-31-envelope-window-address",
+  "test_completeness": {
+    "status": "complete",
+    "behaviors": [
+      {
+        "behavior": "All four recipient lines are printed with baselines inside the 48-72 mm envelope window band",
+        "disposition": "tested",
+        "evidence": "src/lib/__tests__/pdfGenerator.integration.test.ts > keeps all four recipient lines inside the envelope window band PASSED (fails with old 65 mm start)"
+      },
+      {
+        "behavior": "A recipient without a department line prints address and postcode directly below the title, without a gap",
+        "disposition": "tested",
+        "evidence": "src/lib/__tests__/pdfGenerator.integration.test.ts > closes the gap when the recipient has no department line PASSED"
+      },
+      {
+        "behavior": "Printed letter shows the full address through a real C5 right-window envelope",
+        "disposition": "untestable",
+        "reason_code": "requires-physical-device",
+        "reason": "needs a printer, paper and a physical envelope; the user is asked to test-print"
+      }
+    ],
+    "counts": {
+      "testable": 2,
+      "tested": 2,
+      "untestable": 1,
+      "untested_testable": 0
+    },
+    "enumeration_basis": {
+      "acs": 2,
+      "covered_acs": 2
+    }
+  },
+  "exemptions": {
+    "count": 0,
+    "items": []
+  },
+  "risk_flags": [
+    "touches_billing",
+    "touches_shared_infra"
+  ]
+}
