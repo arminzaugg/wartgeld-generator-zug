@@ -1,8 +1,8 @@
 {
   "schema_version": 4,
   "collector_version": "test_links/1.0.0",
-  "generated_at": "2026-10-24T08:27:49.492073+00:00",
-  "source_commit": "d4cdc705631a0c7eefd92fbeda368aae70a39bc3",
+  "generated_at": "2026-10-31T12:55:10.900230+00:00",
+  "source_commit": "d5ce52b3f3ac61d9bada466d26ab0463aff7c367",
   "spec_hash": "sha256:74ee44da0084f7f87b6d11d147e13f885847ef20994fd0fed999ff99b257b141",
   "requirements": {
     "01::FR-01.01": {
@@ -985,6 +985,22 @@
           {
             "id": "src/lib/__tests__/pdfGenerator.integration.test.ts::renders the given administration and form data",
             "path": "src/lib/__tests__/pdfGenerator.integration.test.ts::renders the given administration and form data",
+            "layer": "integration",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/pdfGenerator.integration.test.ts::keeps all four recipient lines inside the envelope window band",
+            "path": "src/lib/__tests__/pdfGenerator.integration.test.ts::keeps all four recipient lines inside the envelope window band",
+            "layer": "integration",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/pdfGenerator.integration.test.ts::closes the gap when the recipient has no department line",
+            "path": "src/lib/__tests__/pdfGenerator.integration.test.ts::closes the gap when the recipient has no department line",
             "layer": "integration",
             "status": "enabled",
             "executed": "not_run",
