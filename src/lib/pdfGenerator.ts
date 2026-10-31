@@ -16,17 +16,15 @@ export const generatePDF = async (data: FormValues, recipient: MunicipalityRecip
     doc.text(line, 25, 25 + (index * 5));
   });
   
-  // Add recipient information (municipal administration)
-  doc.text(recipient.title, 120, 65);
-  // Dynamically calculate y-positions to avoid empty lines
-  let recipientY = 70;
-  if (recipient.department) {
-    doc.text(recipient.department, 120, recipientY);
-    recipientY += 5;
-  }
-  doc.text(recipient.address, 120, recipientY);
-  recipientY += 5;
-  doc.text(`${recipient.city}`, 120, recipientY);
+  // Add recipient information (municipal administration). Positioned for the
+  // window of a C5 right-window envelope with the sheet folded in half: the
+  // sheet can slide ~13 mm inside, so the block sits high enough that the
+  // postcode line stays visible. Empty lines are skipped.
+  const recipientLines = [recipient.title, recipient.department, recipient.address, recipient.city]
+    .filter(Boolean);
+  recipientLines.forEach((line, index) => {
+    doc.text(line, 120, 54 + (index * 5));
+  });
   
   // Add invoice title with larger font and bold
   doc.setFontSize(18);

@@ -1,0 +1,33 @@
+{
+ "stage": "spec",
+ "verdict": "PASS",
+ "summary": "PASS. Notes: 11 mm shift is at lower edge of range (worth a physical print check); Td/Tj parser assumes a newline between them (fragile).",
+ "requirements_checked": [
+  {
+   "requirement": "Move recipient block up ~11-15 mm from baselines 65/70/75/80 mm (x=120 mm)",
+   "evidence": "src/lib/pdfGenerator.ts: doc.text(line, 120, 54 + (index * 5)) -> baselines 54/59/64/69 mm, 11 mm up; x and pitch unchanged.",
+   "status": "met"
+  },
+  {
+   "requirement": "All four lines stay inside the window wherever the sheet slides (~13 mm play)",
+   "evidence": "Postcode line now at 69 mm (was 80 mm, the hidden position). Test band 48-72 mm contains all four new baselines and excludes the old 80 mm.",
+   "status": "met"
+  },
+  {
+   "requirement": "Recipient data unchanged",
+   "evidence": "Diff touches only pdfGenerator.ts and its test; no src/data changes.",
+   "status": "met"
+  },
+  {
+   "requirement": "Keep skipping an empty department line without a gap",
+   "evidence": "filter(Boolean) + consecutive index; new test checks address +5 mm and postcode +10 mm below title. Side-effect: empty title/address/city also skipped; all are required strings in MunicipalityRecipient.",
+   "status": "met"
+  },
+  {
+   "requirement": "Add a test asserting recipient line positions stay inside the window band",
+   "evidence": "New test 'keeps all four recipient lines inside the envelope window band' parses Td/Tj pairs from the PDF, tagged via describe-level @covers FR-01.03.",
+   "status": "met"
+  }
+ ],
+ "spec_citations": []
+}
