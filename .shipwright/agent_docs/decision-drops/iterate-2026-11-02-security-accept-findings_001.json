@@ -1,0 +1,14 @@
+{
+  "run_id": "iterate-2026-11-02-security-accept-findings",
+  "date": "2026-11-02",
+  "section": "Iterate — change: accept 5 security scan findings with written reasons",
+  "title": "Record accepted-risk entries for the security scan in .gitleaksignore and .trivyignore",
+  "context": "First trustworthy local OSS scan found a historical Supabase anon-key JWT and 4 medium CVEs (react-router x2, glob, minimatch). Each fix needs a major upgrade; the operator reviewed reachability and chose to accept.",
+  "decision": "Suppress each finding by exact identifier with a written reachability statement: gitleaks by full fingerprint, Trivy by CVE id with exp:2027-05-01 in the flat .trivyignore that both the local scan and CI load. No workflow change.",
+  "consequences": "Local scan reports 0 findings with all classes covered, so the Security dimension becomes measurable. The entries resurface on 2027-05-01. Trivy matches by id across packages, so reviewers must recheck which package an id hits.",
+  "rationale": "No finding is reachable in this client-only SPA; the upgrades (react-router 7, glob 14, minimatch 11) carry more risk than the issues.",
+  "rejected": "Major upgrades now; .trivyignore.yaml with package scoping (CI would need a workflow change to load it); leaving findings open.",
+  "commit": "",
+  "architecture_impact": "none",
+  "spec_ref": ""
+}

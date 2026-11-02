@@ -1,0 +1,97 @@
+{
+  "scan_date": "2026-11-02T21:54:49Z",
+  "scan_id": "scan-20261102-215812-5d0c76",
+  "repo": "arminzaugg/wartgeld-generator-zug",
+  "scanner": "oss",
+  "total_findings": 0,
+  "by_severity": {},
+  "coverage": [
+    {
+      "class": "sast",
+      "tool": "semgrep",
+      "status": "covered",
+      "detail": null
+    },
+    {
+      "class": "sca",
+      "tool": "trivy",
+      "status": "covered",
+      "detail": null
+    },
+    {
+      "class": "secrets",
+      "tool": "gitleaks",
+      "status": "covered",
+      "detail": null
+    }
+  ],
+  "pre_acceptance": {
+    "scan_ids": [
+      "scan-20261028-215303-e3eab1",
+      "scan-20261102 (pre-register)"
+    ],
+    "total_findings": 5,
+    "by_severity": {
+      "critical": 1,
+      "medium": 4
+    }
+  },
+  "remediation": {
+    "fixed": 0,
+    "accepted": 5,
+    "declined": 0,
+    "deferred": 0,
+    "open": 0
+  },
+  "findings": [
+    {
+      "id": "gitleaks:60aefe3c:src/integrations/supabase/client.ts:jwt:6",
+      "severity": "critical",
+      "type": "secret_detection",
+      "status": "accepted",
+      "register": ".gitleaksignore",
+      "reason": "Supabase anon key (public by design), history-only; file deleted in #176. Follow-up: retire/rotate project kdyultegduvfggjovban."
+    },
+    {
+      "id": "CVE-2026-53669",
+      "severity": "medium",
+      "type": "sca",
+      "package": "react-router@6.30.6",
+      "status": "accepted",
+      "register": ".trivyignore",
+      "expires": "2027-05-01",
+      "reason": "Not reachable: all Link targets are fixed literal paths."
+    },
+    {
+      "id": "CVE-2026-53666",
+      "severity": "medium",
+      "type": "sca",
+      "package": "react-router@6.30.6",
+      "status": "accepted",
+      "register": ".trivyignore",
+      "expires": "2027-05-01",
+      "reason": "Not reachable: client-only HashRouter SPA, no SSR hydration."
+    },
+    {
+      "id": "CVE-2026-118773",
+      "severity": "medium",
+      "type": "sca",
+      "package": "glob@10.5.0",
+      "status": "accepted",
+      "register": ".trivyignore",
+      "expires": "2027-05-01",
+      "reason": "Build-time only (tailwindcss>sucrase); patterns are developer-authored."
+    },
+    {
+      "id": "CVE-2026-118764",
+      "severity": "medium",
+      "type": "sca",
+      "package": "minimatch@9.0.9",
+      "status": "accepted",
+      "register": ".trivyignore",
+      "expires": "2027-05-01",
+      "reason": "Build-time only (tailwindcss>sucrase>glob); patterns are developer-authored."
+    }
+  ],
+  "session_id": "0f61cf1e-505e-433d-b45e-b5348e3a20d6"
+}

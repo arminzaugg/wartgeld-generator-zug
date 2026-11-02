@@ -1,0 +1,35 @@
+# Accepted-risk register for Trivy dependency findings.
+# Each entry expires (exp:) so it comes back up for review instead of being
+# silenced for good. Flat format on purpose: CI runs `trivy fs` without
+# --ignorefile, which loads `.trivyignore` by default (not `.trivyignore.yaml`).
+# Matching is by vulnerability id across every package and path, not per
+# package: when reviewing, check each id still hits only the package named
+# below (verified for all four on 2026-11-02).
+# Accepted 2026-11-02 (security scan, reachability reviewed in the iterate
+# iterate-2026-11-02-security-accept-findings).
+
+# react-router 6.30.6: open redirect via backslashes in <Link>/useNavigate.
+# Not reachable: every navigation target is a fixed literal path
+# ("/", "/info", "/settings"); no link is built from user input.
+# Fix needs react-router 7 (major upgrade).
+CVE-2026-53669 exp:2027-05-01
+
+# react-router 6.30.6: constructor injection in deserializeErrors() during SSR
+# hydration. Not reachable: client-only SPA (HashRouter), no server rendering.
+# Fix needs react-router 7 (major upgrade).
+CVE-2026-53666 exp:2027-05-01
+
+# glob and minimatch below are listed as production packages in
+# package-lock.json only because tailwindcss-animate (a dependency) declares
+# tailwindcss (a devDependency) as a peer; nothing in src/ imports them.
+
+# glob 10.5.0 (tailwindcss > sucrase > glob): DoS via incomplete traversal
+# cancellation. Build-time only, never shipped to the browser; the patterns it
+# walks come from our own Tailwind config. Fix needs glob 14 (major, unsupported
+# by sucrase).
+CVE-2026-118773 exp:2027-05-01
+
+# minimatch 9.0.9 (tailwindcss > sucrase > glob > minimatch): DoS via crafted
+# glob pattern expansion. Build-time only; patterns are developer-authored, not
+# attacker-controlled. Fix needs minimatch 11 (major, unsupported upstream).
+CVE-2026-118764 exp:2027-05-01

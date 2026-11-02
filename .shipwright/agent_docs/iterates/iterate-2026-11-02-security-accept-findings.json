@@ -1,0 +1,67 @@
+{
+  "run_id": "iterate-2026-11-02-security-accept-findings",
+  "date": "2026-11-02T21:58:28.977847Z",
+  "event_at": "2026-10-31T15:26:03.798304+00:00",
+  "type": "change",
+  "complexity": "small",
+  "branch": "iterate/security-accept-findings",
+  "spec": "none (small; spec impact none)",
+  "tests_passed": true,
+  "adr": "iterate-2026-11-02-security-accept-findings",
+  "test_completeness": {
+    "status": "complete",
+    "behaviors": [
+      {
+        "behavior": "Historical anon-key JWT finding no longer reported by a history scan",
+        "disposition": "tested",
+        "evidence": "gitleaks detect -s . (git history) -> no leaks found"
+      },
+      {
+        "behavior": "Accepted CVEs suppressed in CI-style scan without workflow change",
+        "disposition": "tested",
+        "evidence": "trivy fs --scanners vuln . (cwd repo root, default ignorefile) -> 0 vulnerabilities"
+      },
+      {
+        "behavior": "Shipwright local scan clean with full class coverage",
+        "disposition": "tested",
+        "evidence": "run_scan_and_report scan-20261102-215449-f678cd -> 0 findings; sast/sca/secrets covered"
+      },
+      {
+        "behavior": "Acceptances expire and resurface after exp date",
+        "disposition": "tested",
+        "evidence": "trivy with copy dated exp:2026-01-01 -> CVE-2026-53669 reported again"
+      },
+      {
+        "behavior": "Suppressions are narrow (exact ids only)",
+        "disposition": "tested",
+        "evidence": "spec-reviewer AC5: 5 exact entries, no wildcards/path/rule-wide ignores"
+      },
+      {
+        "behavior": "No product behavior change",
+        "disposition": "tested",
+        "evidence": "behavior_snapshot verify green->green (379 tests); lint and build pass"
+      }
+    ],
+    "counts": {
+      "testable": 6,
+      "tested": 6,
+      "untestable": 0,
+      "untested_testable": 0
+    },
+    "enumeration_basis": {
+      "acs": 5,
+      "covered_acs": 5
+    }
+  },
+  "surface_verification": {
+    "surface": "none",
+    "runner": "",
+    "exit_code": 0,
+    "tests_run": 0,
+    "evidence_path": "",
+    "timestamp": "2026-11-02T21:56:49.602Z",
+    "attempts": 0,
+    "justification": "Only scanner accepted-risk registers (.gitleaksignore, .trivyignore) and the security scan record changed; no runtime, build output or user-visible path changes.",
+    "reason_code": "build-config-only"
+  }
+}

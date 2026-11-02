@@ -1,0 +1,101 @@
+{
+  "iterate_latest": {
+    "run_id": "iterate-2026-11-02-security-accept-findings",
+    "date": "2026-11-02",
+    "unit": {
+      "status": "passed",
+      "passed": 379,
+      "total": 379
+    },
+    "integration": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "pgtap": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "e2e": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "design_fidelity": {
+      "status": "skipped",
+      "passed": 0,
+      "total": 0
+    },
+    "smoke": {
+      "status": "skipped"
+    },
+    "degraded": [
+      "main health unknown at 5af3680 (no monitored push-to-main run returned)",
+      "security Step 7.5 compliance-snapshot commit skipped: iterate branches must not carry derived snapshots; F5b regenerates them locally"
+    ],
+    "test_completeness": {
+      "status": "complete",
+      "behaviors": [
+        {
+          "behavior": "Historical anon-key JWT finding no longer reported by a history scan",
+          "disposition": "tested",
+          "evidence": "gitleaks detect -s . (git history) -> no leaks found"
+        },
+        {
+          "behavior": "Accepted CVEs suppressed in CI-style scan without workflow change",
+          "disposition": "tested",
+          "evidence": "trivy fs --scanners vuln . (cwd repo root, default ignorefile) -> 0 vulnerabilities"
+        },
+        {
+          "behavior": "Shipwright local scan clean with full class coverage",
+          "disposition": "tested",
+          "evidence": "run_scan_and_report scan-20261102-215449-f678cd -> 0 findings; sast/sca/secrets covered"
+        },
+        {
+          "behavior": "Acceptances expire and resurface after exp date",
+          "disposition": "tested",
+          "evidence": "trivy with copy dated exp:2026-01-01 -> CVE-2026-53669 reported again"
+        },
+        {
+          "behavior": "Suppressions are narrow (exact ids only)",
+          "disposition": "tested",
+          "evidence": "spec-reviewer AC5: 5 exact entries, no wildcards/path/rule-wide ignores"
+        },
+        {
+          "behavior": "No product behavior change",
+          "disposition": "tested",
+          "evidence": "behavior_snapshot verify green->green (379 tests); lint and build pass"
+        }
+      ],
+      "counts": {
+        "testable": 6,
+        "tested": 6,
+        "untestable": 0,
+        "untested_testable": 0
+      },
+      "enumeration_basis": {
+        "acs": 5,
+        "covered_acs": 5
+      }
+    },
+    "surface_verification": {
+      "surface": "none",
+      "runner": "",
+      "exit_code": 0,
+      "tests_run": 0,
+      "evidence_path": "",
+      "timestamp": "2026-11-02T21:56:49.602Z",
+      "attempts": 0,
+      "justification": "Only scanner accepted-risk registers (.gitleaksignore, .trivyignore) and the security scan record changed; no runtime, build output or user-visible path changes.",
+      "reason_code": "build-config-only"
+    }
+  },
+  "source_state": {
+    "run_id": "iterate-2026-11-02-security-accept-findings",
+    "commit": "261ac7d058d77b28914a89d2e77240b569add75f",
+    "dirty": true,
+    "base": null,
+    "release": null
+  }
+}

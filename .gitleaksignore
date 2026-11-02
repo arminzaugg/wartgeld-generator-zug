@@ -1,0 +1,11 @@
+# Accepted gitleaks findings (one fingerprint per line: commit:file:rule:line).
+#
+# 60aefe3c…:src/integrations/supabase/client.ts:jwt:6
+#   Supabase *anon* key (JWT claims: role "anon") committed 2024-11-21. The anon
+#   key is public by design: it shipped in the browser bundle. The file was
+#   deleted in #176 (2026-10-21) when the app stopped using Supabase, so the
+#   finding exists only in git history (so this applies to history scans; CI's
+#   `--no-git` scan never sees the deleted file). Accepted 2026-11-02 (security scan
+#   scan-20261028-215303-e3eab1). Follow-up: retire or rotate Supabase project
+#   kdyultegduvfggjovban once it is no longer needed.
+60aefe3c776184d91bf4092380cf8fb1d18fff6a:src/integrations/supabase/client.ts:jwt:6

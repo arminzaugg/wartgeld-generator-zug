@@ -1,0 +1,1 @@
+Security scan findings are now reviewed and recorded: a leftover public key in old history and four library issues that cannot be triggered in this app are accepted with written reasons, and come up for review again on 2027-05-01
