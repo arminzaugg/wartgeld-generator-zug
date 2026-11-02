@@ -1,0 +1,10 @@
+{"items":[
+{"name":"Spec compliance","verdict":"pass","note":"Operator chose 'Accept + note' for all three decisions (old anon key, 2 react-router CVEs, 2 build-time glob/minimatch CVEs). Each finding is suppressed by an exact identifier with a written reachability statement; plugin scan now 0 findings with all 3 classes covered."},
+{"name":"Error handling","verdict":"n/a","note":"Scanner config files only."},
+{"name":"Security basics","verdict":"pass","note":"Suppressions are narrow: gitleaks by full fingerprint (commit:file:rule:line), so a new JWT anywhere else still fails; trivy by exact CVE id with exp:2027-05-01, verified an expired entry resurfaces. No secret value is written in either file (fingerprint only). Reachability checked in code: all Link targets literal, HashRouter SPA without SSR, glob/minimatch only via tailwindcss>sucrase at build time."},
+{"name":"Test quality","verdict":"pass","note":"Verified empirically: CI-style `trivy fs .` -> 0 vulns; gitleaks with history -> no leaks; plugin run_scan_and_report -> 0 findings; expiry probe resurfaces CVE. Unit suite unchanged (behavior snapshot)."},
+{"name":"Performance basics","verdict":"n/a","note":"No runtime change."},
+{"name":"Naming & structure","verdict":"pass","note":"Flat .trivyignore chosen over .trivyignore.yaml because CI runs plain `trivy fs .` (v0.74 default ignorefile is .trivyignore only); plugin also reads it. .gitleaksignore is gitleaks' auto-loaded file."},
+{"name":"Affected boundaries","verdict":"pass","note":"Consumers: local OSS scan (plugin passes --ignorefile / gitleaks -s root) and CI security.yml (trivy fs . from root; gitleaks --no-git, where the history-only JWT never appears). Both verified."},
+{"name":"Test hygiene probe","verdict":"n/a","note":"No tests added or edited."}
+]}
