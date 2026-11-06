@@ -1,0 +1,14 @@
+{
+  "run_id": "iterate-2026-11-06-c5-window-address",
+  "date": "2026-11-06",
+  "section": "Iterate — change: measured C5 window layout",
+  "title": "Derive recipient placement from measured C5 geometry (supersedes ADR-018)",
+  "context": "The supplied envelope is 229 × 162 mm with a 100 × 45 mm right window at x120/y52. The earlier estimated band did not allow 5 mm clearance for every sheet position.",
+  "decision": "Use recipient x125 and baselines61/66/71/76 mm at10.5pt; skip empty lines. Wrap sender to70mm and proportionally fit unusually tall blocks above90mm, keeping normal11pt/5mm spacing.",
+  "consequences": "All11 municipality addresses remain intact with >=5mm window clearance across19 × 13.5mm sheet play. Print actual-size A4, fold horizontally, upper printed half facing out/fold down. Physical test print remains required.",
+  "rationale": "Intersecting all sheet offsets gives x120–201/y52–83.5; 5mm inset leaves x125–196/y57–78.5. Real-PDF bounds and browser download checks pass; review caught sender/title overlap and its regression is now fixed.",
+  "rejected": "Centred-sheet-only positioning can hide address lines when paper slides. Unbounded sender wrapping overlaps the title; bounding sender height preserves content and fixed body layout.",
+  "commit": "",
+  "architecture_impact": "none",
+  "spec_ref": ""
+}

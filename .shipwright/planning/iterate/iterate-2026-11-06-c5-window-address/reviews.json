@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "run_id": "iterate-2026-11-06-c5-window-address",
+  "reviews": {
+    "self": {
+      "review_type": "self",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-11-06T13:41:42.155917+00:00",
+      "disposition": null,
+      "recorded_by": "self-review",
+      "parse_status": null,
+      "raw_excerpt": null
+    },
+    "plan": {
+      "review_type": "plan",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-11-06T13:40:50.809984+00:00",
+      "disposition": "closed by reason_code complexity-below-threshold",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "complexity-below-threshold"
+    },
+    "code": {
+      "review_type": "code",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-11-06T13:54:01.096406+00:00",
+      "disposition": null,
+      "recorded_by": "code-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit",
+      "verdict": "pass"
+    },
+    "doubt": {
+      "review_type": "doubt",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-11-06T13:53:09.547340+00:00",
+      "disposition": "Sender-height regression reproduced RED; fixed proportional font/pitch; original objection retained in doubt_initial.json; re-review PASS.",
+      "recorded_by": "doubt-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit",
+      "verdict": "pass"
+    },
+    "external_code": {
+      "review_type": "external_code",
+      "status": "completed",
+      "findings_count": 3,
+      "findings": [
+        {
+          "severity": "low",
+          "category": "test",
+          "file": "line — `src/lib/__tests__/pdfEnvelope.test.ts:13-15",
+          "line": null,
+          "finding": "The `textBounds` regex expects one `x y Td (…) Tj ET` per text block, with unsigned numbers. Text drawn in one `doc.text(array)` call (several `Tj`/`T` in one block, or negative relative `Td`) won't match the expected way. Those lines are silently dropped, or picked up with the next block's font. The second test's \"nothing else overlaps the window area\" check would then skip them without failing. The `> 30` count check only partly covers this.",
+          "suggestion": "Count the `Tj` operators in the PDF and assert the parser returned the same number of bounds, so any text it can't parse makes the test fail.",
+          "source": "external-review"
+        },
+        {
+          "severity": "low",
+          "category": "test",
+          "file": "line — `src/lib/__tests__/pdfEnvelope.test.ts:37-41",
+          "line": null,
+          "finding": "AC2 requires that a missing department leaves no blank line. The test ledger lists a dedicated regression test for this, but the diff doesn't include one. It is only covered if one of the 11 municipalities happens to have no department.",
+          "suggestion": "Add one case that passes a recipient with `department: ''`. Assert that three lines are printed with baselines at 61, 66 and 71 mm.",
+          "source": "external-review"
+        },
+        {
+          "severity": "low",
+          "category": "edge-case",
+          "file": "line — `src/lib/pdfGenerator.ts:13-17",
+          "line": null,
+          "finding": "Wrapping the sender at 70 mm can add lines, and each one moves the block down 5 mm (seven input lines became about nine or ten in the test). Nothing checks that the sender block stays above the invoice title, date and body. A long sender text could now overlap the body.",
+          "suggestion": "Assert that the last sender line's bottom is above the title's top. Alternatively, cap the line count or start the following content below the sender block.  Overall: The geometry, the PDF layout and the tests match the spec. Every finding above improves test coverage or covers a rare case, and none blocks the change. Ship as is, or add the parser-count and missing-department checks first.  SHIPWRIGHT_VERDICT: approve",
+          "source": "external-review"
+        }
+      ],
+      "provider": "claude_cli",
+      "completed_at": "2026-11-06T13:48:23.065097+00:00",
+      "disposition": "Approve; low observations: add fail-closed PDF text parser count; missing department explicitly tested in pdfGenerator.integration.test.ts:80; unbounded sender/body overflow pre-exists, general pagination outside measured-window scope.",
+      "recorded_by": "external-review-json",
+      "parse_status": "partial",
+      "raw_excerpt": "[glm] <no review returned: No OPENROUTER_API_KEY set>\n\n[opus] **Review: C5 right-window address layout**\n\nI checked the geometry against the spec. The sheet offsets run x 0–19 and y 0–13.5 mm. The window area visible at every offset is paper x 120–201 and y 52–83.5. With the 5 mm inset, that leaves x 125–196 and y 57–78.5, and the code and tests match it:\n\n- **Vertical fit:** The top line at 61 mm minus one em (3.70 mm at 10.5 pt) gives 57.3 mm. The bottom line at 76 mm plus a quarter em gives about 76.9 mm. Both are inside the band.\n- **Width fit:** I worked out the width of \"Fachstelle Alter und Gesundheit Stadt Zug\" from Helvetica's published character widths. At 10.5 pt it is about 69.8 mm, under the 71 mm available.\n- **Sender wrap:** Wrapping the sender at 70 mm keeps it at x 25–95 mm, left of the 101 mm limit.\n- **Clearance tests:** The `dx`/`dy` loops in `pdfEnvelope.test.ts` add the offsets in the right direction. The worst cases fall at the correct extremes, so the 5 mm checks are real.\n\n**Findings**\n\n- Category: test\n- Severity: low\n- File:line — `src/lib/__tests__/pdfEnvelope.test.ts:13-15`\n- Finding: The `textBounds` regex expects one `x y Td (…) Tj ET` per text block, with unsigned numbers. Text drawn in one `doc.text(array)` call (several `Tj`/`T*` in one block, or negative relative `Td`) won't match the expected way. Those lines are silently dropped, or picked up with the next block's font. The second test's \"nothing else overlaps the window area\" check would then skip them without failing. The `> 30` count check only partly covers this.\n- Suggestion: Count the `Tj` operators in the PDF and assert the parser returned the same number of bounds, so any text it can't parse makes the test fail.\n\n- Category: test\n- Severity: low\n- File:line — `src/lib/__tests__/pdfEnvelope.test.ts:37-41`\n- Finding: AC2 requires that a missing department leaves no blank line. The test ledger lists a dedicated regression test for this, but the diff doesn't include one. It is only covered if one of the 11 municipalities ha […truncated]",
+      "verdicts": {
+        "glm": "unavailable",
+        "opus": "approve"
+      }
+    },
+    "spec": {
+      "review_type": "spec",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-11-06T13:44:38.777606+00:00",
+      "disposition": null,
+      "recorded_by": "spec-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit",
+      "verdict": "pass"
+    },
+    "plan_internal": {
+      "review_type": "plan_internal",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-11-06T13:40:50.881901+00:00",
+      "disposition": "closed by reason_code complexity-below-threshold",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "complexity-below-threshold"
+    },
+    "architecture_internal": {
+      "review_type": "architecture_internal",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-11-06T13:40:50.950071+00:00",
+      "disposition": "closed by reason_code complexity-below-threshold",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "complexity-below-threshold"
+    }
+  }
+}

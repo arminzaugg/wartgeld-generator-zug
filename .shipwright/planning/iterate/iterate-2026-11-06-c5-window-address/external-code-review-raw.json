@@ -1,0 +1,42 @@
+{
+  "review_schema": 2,
+  "success": true,
+  "provider": "claude_cli",
+  "degraded": false,
+  "reviews_succeeded": 1,
+  "reviewed": true,
+  "reviews": {
+    "glm": {
+      "status": "skipped",
+      "reason": "No OPENROUTER_API_KEY set"
+    },
+    "opus": {
+      "feedback": "**Review: C5 right-window address layout**\n\nI checked the geometry against the spec. The sheet offsets run x 0\u201319 and y 0\u201313.5 mm. The window area visible at every offset is paper x 120\u2013201 and y 52\u201383.5. With the 5 mm inset, that leaves x 125\u2013196 and y 57\u201378.5, and the code and tests match it:\n\n- **Vertical fit:** The top line at 61 mm minus one em (3.70 mm at 10.5 pt) gives 57.3 mm. The bottom line at 76 mm plus a quarter em gives about 76.9 mm. Both are inside the band.\n- **Width fit:** I worked out the width of \"Fachstelle Alter und Gesundheit Stadt Zug\" from Helvetica's published character widths. At 10.5 pt it is about 69.8 mm, under the 71 mm available.\n- **Sender wrap:** Wrapping the sender at 70 mm keeps it at x 25\u201395 mm, left of the 101 mm limit.\n- **Clearance tests:** The `dx`/`dy` loops in `pdfEnvelope.test.ts` add the offsets in the right direction. The worst cases fall at the correct extremes, so the 5 mm checks are real.\n\n**Findings**\n\n- Category: test\n- Severity: low\n- File:line \u2014 `src/lib/__tests__/pdfEnvelope.test.ts:13-15`\n- Finding: The `textBounds` regex expects one `x y Td (\u2026) Tj ET` per text block, with unsigned numbers. Text drawn in one `doc.text(array)` call (several `Tj`/`T*` in one block, or negative relative `Td`) won't match the expected way. Those lines are silently dropped, or picked up with the next block's font. The second test's \"nothing else overlaps the window area\" check would then skip them without failing. The `> 30` count check only partly covers this.\n- Suggestion: Count the `Tj` operators in the PDF and assert the parser returned the same number of bounds, so any text it can't parse makes the test fail.\n\n- Category: test\n- Severity: low\n- File:line \u2014 `src/lib/__tests__/pdfEnvelope.test.ts:37-41`\n- Finding: AC2 requires that a missing department leaves no blank line. The test ledger lists a dedicated regression test for this, but the diff doesn't include one. It is only covered if one of the 11 municipalities happens to have no department.\n- Suggestion: Add one case that passes a recipient with `department: ''`. Assert that three lines are printed with baselines at 61, 66 and 71 mm.\n\n- Category: edge-case\n- Severity: low\n- File:line \u2014 `src/lib/pdfGenerator.ts:13-17`\n- Finding: Wrapping the sender at 70 mm can add lines, and each one moves the block down 5 mm (seven input lines became about nine or ten in the test). Nothing checks that the sender block stays above the invoice title, date and body. A long sender text could now overlap the body.\n- Suggestion: Assert that the last sender line's bottom is above the title's top. Alternatively, cap the line count or start the following content below the sender block.\n\n**Overall:** The geometry, the PDF layout and the tests match the spec. Every finding above improves test coverage or covers a rare case, and none blocks the change. Ship as is, or add the parser-count and missing-department checks first.\n\nSHIPWRIGHT_VERDICT: approve",
+      "via": "claude_cli",
+      "status": "success"
+    }
+  },
+  "driver": "codex",
+  "driver_requested": "claude",
+  "codextender_active": true,
+  "driver_enforced_reason": "CODEXTENDER_ACTIVE is set: the diff was authored by a GPT-family model, so --driver claude was coerced to codex (roster glm + opus) to keep the external review cross-vendor",
+  "mode": "code",
+  "capture": {
+    "run_id": "iterate-2026-11-06-c5-window-address",
+    "at": "2026-11-06T13:43:59.135763+00:00"
+  },
+  "verdicts": {
+    "glm": "unavailable",
+    "opus": "approve"
+  },
+  "statuses": {
+    "glm": "skipped",
+    "opus": "success"
+  },
+  "contradiction": {
+    "detected": false,
+    "comparable": false,
+    "requires_resolution": true,
+    "reason": "only one reviewer answered \u2014 glm did not (glm=unavailable, opus=approve)"
+  }
+}

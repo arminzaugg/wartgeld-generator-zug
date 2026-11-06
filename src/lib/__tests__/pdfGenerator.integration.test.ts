@@ -29,7 +29,7 @@ const decode = (dataUri: string) => atob(dataUri.split(',')[1]);
 
 const PT_PER_MM = 72 / 25.4;
 const A4_HEIGHT_MM = 297;
-const RECIPIENT_X_MM = 120;
+const RECIPIENT_X_MM = 125;
 
 /**
  * Baseline of each text line in the recipient column, in mm from the top edge
@@ -44,11 +44,9 @@ const recipientBaselines = (pdf: string): Map<string, number> => {
   return lines;
 };
 
-// Band of the page that stays visible through the window of a C5 right-window
-// envelope with the A4 sheet folded in half, wherever the sheet slides inside
-// the envelope (about 13 mm of play). Measured on a real envelope: with the old
-// layout (baselines 65–80 mm) the postcode line was hidden below the window.
-const WINDOW_BAND_MM = { top: 48, bottom: 72 };
+// Text bounds (not just baselines) at all extremes are checked in pdfEnvelope.
+// Measured C5 window y=52–97, allowing 13.5 mm play and 5 mm clearance.
+const WINDOW_BAND_MM = { top: 57, bottom: 78.5 };
 
 // @covers FR-01.03
 describe('pdfGenerator', () => {
