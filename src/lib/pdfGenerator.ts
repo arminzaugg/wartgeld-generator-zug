@@ -8,22 +8,27 @@ export const generatePDF = async (data: FormValues, recipient: MunicipalityRecip
   const { default: jsPDF } = await import('jspdf');
   const doc = new jsPDF();
   const settings = getSettings();
-  const senderInfo = settings.senderInfo.split('\n');
-  
-  // Add sender information (top left)
+  // Keep even long contact lines left of the window at every sheet position.
   doc.setFontSize(11);
+  const senderInfo: string[] = doc.splitTextToSize(settings.senderInfo, 70);
+
+  // Keep wrapped sender baselines within 25–90 mm, above the fixed title.
+  // Normal senders retain 11 pt / 5 mm pitch; unusually tall blocks shrink.
+  const senderPitch = Math.min(5, 65 / Math.max(1, senderInfo.length - 1));
+  doc.setFontSize(11 * senderPitch / 5);
   senderInfo.forEach((line, index) => {
-    doc.text(line, 25, 25 + (index * 5));
+    doc.text(line, 25, 25 + (index * senderPitch));
   });
   
-  // Add recipient information (municipal administration). Positioned for the
-  // window of a C5 right-window envelope with the sheet folded in half: the
-  // sheet can slide ~13 mm inside, so the block sits high enough that the
-  // postcode line stays visible. Empty lines are skipped.
+  // C5 229 × 162 mm, window x=120/y=52, 100 × 45 mm (flap up).
+  // A4 folded at 148.5 mm, upper printed half facing out, fold down; print 100%.
+  // Allowing 19 mm horizontal / 13.5 mm vertical play and 5 mm clearance leaves
+  // paper bounds x=125–196, y=57–78.5. 10.5 pt fits even Zug's longest line.
+  doc.setFontSize(10.5);
   const recipientLines = [recipient.title, recipient.department, recipient.address, recipient.city]
     .filter(Boolean);
   recipientLines.forEach((line, index) => {
-    doc.text(line, 120, 54 + (index * 5));
+    doc.text(line, 125, 61 + (index * 5));
   });
   
   // Add invoice title with larger font and bold

@@ -1,0 +1,109 @@
+{
+  "iterate_latest": {
+    "run_id": "iterate-2026-11-06-c5-window-address",
+    "date": "2026-11-06",
+    "unit": {
+      "status": "passed",
+      "passed": 392,
+      "skipped": 0,
+      "total": 392
+    },
+    "integration": {
+      "status": "not_run",
+      "passed": 0,
+      "skipped": 0,
+      "total": 0,
+      "reason": "No database or CRUD operation; real jsPDF output tests run in unit suite."
+    },
+    "pgtap": {
+      "status": "not_run",
+      "passed": 0,
+      "skipped": 0,
+      "total": 0,
+      "reason": "No database, RLS or migration changes."
+    },
+    "e2e": {
+      "status": "passed",
+      "passed": 27,
+      "skipped": 0,
+      "total": 27
+    },
+    "design_fidelity": {
+      "status": "passed",
+      "passed": 1,
+      "total": 1,
+      "evidence": "Browser screenshot and rendered downloaded invoice visually inspected; measured PDF bounds checked automatically."
+    },
+    "smoke": {
+      "status": "passed",
+      "reason": "Built site served during all 27 Playwright tests."
+    },
+    "coverage": {
+      "statements": 92.21,
+      "branches": 87.77,
+      "functions": 89.71,
+      "lines": 92.86
+    },
+    "surface_verification": {
+      "surface": "web",
+      "runner": "env E2E_PREVIEW=1 npx playwright test",
+      "exit_code": 0,
+      "tests_run": 27,
+      "evidence_path": ".shipwright/runs/iterate-2026-11-06-c5-window-address/surface_verification.log",
+      "timestamp": "2026-11-06T13:51:59.942Z",
+      "attempts": 1
+    },
+    "test_completeness": {
+      "status": "complete",
+      "behaviors": [
+        {
+          "behavior": "All 11 municipality recipient blocks remain intact, 5 mm inside window across all four sheet offsets; one-page actual-size A4",
+          "disposition": "tested",
+          "evidence": "src/lib/__tests__/pdfEnvelope.test.ts: 11 municipality cases PASSED"
+        },
+        {
+          "behavior": "Empty department closes vertical gap",
+          "disposition": "tested",
+          "evidence": "src/lib/__tests__/pdfGenerator.integration.test.ts: closes the gap when recipient has no department PASSED"
+        },
+        {
+          "behavior": "Long sender, date and body outside window; tall wrapped sender clears title without character loss",
+          "disposition": "tested",
+          "evidence": "src/lib/__tests__/pdfEnvelope.test.ts: two sender cases PASSED; original 225-M counterexample reproduced RED then GREEN"
+        },
+        {
+          "behavior": "Live browser generates, previews and saves identical PDF with measured address position and no runtime errors",
+          "disposition": "tested",
+          "evidence": "e2e/envelope.spec.ts PASSED in 27/27 full Playwright suite"
+        },
+        {
+          "behavior": "Actual printer, paper fold and physical envelope fit",
+          "disposition": "untestable",
+          "reason_code": "requires-physical-device",
+          "reason": "No physical printer or envelope; documented 100% A4 and insertion orientation for first test print."
+        }
+      ],
+      "counts": {
+        "testable": 4,
+        "tested": 4,
+        "untestable": 1,
+        "untested_testable": 0
+      },
+      "enumeration_basis": {
+        "acs": 3,
+        "covered_acs": 3
+      }
+    },
+    "degraded": [
+      "Base health unknown: configured workflow names do not match repository; this run's tests green.",
+      "Optional GLM external reviewer unavailable (no API key); configured cross-vendor CLI external reviewer completed approve."
+    ]
+  },
+  "source_state": {
+    "run_id": "iterate-2026-11-06-c5-window-address",
+    "commit": "cf2e3b7c55d38a1d56654dd547249ef402839928",
+    "dirty": true,
+    "base": null,
+    "release": null
+  }
+}

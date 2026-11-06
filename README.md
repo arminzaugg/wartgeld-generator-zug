@@ -32,6 +32,16 @@ rules, the per-visitor limit and a re-create checklist are in
 The old Netlify site (wartgeld-generator-zug.netlify.app) still works and shows a notice that
 the app has moved; it is the fallback until it forwards to the new address.
 
+## Rechnung im C5-Fenstercouvert
+
+Die Empfängeradresse ist auf ein C5-Couvert (229 × 162 mm) mit rechtem Fenster
+(100 × 45 mm, linke Kante 120 mm und obere Kante 52 mm vom Couvertrand,
+Vorderseite mit Lasche oben) abgestimmt. Auf **A4 bei 100 % / tatsächlicher Grösse**
+drucken, ohne «An Seite anpassen». Das Blatt einmal quer bei 148,5 mm falten,
+die bedruckte obere Hälfte zum Fenster und den Falz nach unten einlegen.
+Die Adresse hat auch bei seitlichem und senkrechtem Spiel rechnerisch mindestens
+5 mm Abstand zu den Fensterkanten. Ein erster Probeausdruck prüft Drucker und Couvert.
+
 ## Future ideas
 
 [x] use Swiss Post API to lookup addresses.

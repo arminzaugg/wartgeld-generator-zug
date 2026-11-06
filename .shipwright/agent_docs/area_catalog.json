@@ -115,7 +115,9 @@
       ],
       "planned_paths": [],
       "priority": 0,
-      "realized_paths": [],
+      "realized_paths": [
+        "src/lib/pdfGenerator.ts"
+      ],
       "requirements": [],
       "source": "deterministic",
       "status": "active"
@@ -186,11 +188,12 @@
       "status": "active"
     }
   ],
-  "catalogue_version": 1,
-  "path_fingerprint": "b777e3a0a212b1a19c333ffa97357a7a61514424e455d78e42658eb35d1b35d8",
+  "catalogue_version": 2,
+  "path_fingerprint": "c2b5a3b683f0876230416a2450a9e65d2bb7300a7231858e1800f3387fb74c67",
   "producer": "shared/scripts/tools/area_catalog.py",
   "schema_version": 1,
   "sources": [
-    "adopt"
+    "adopt",
+    "iterate"
   ]
 }
