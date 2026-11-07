@@ -1,0 +1,26 @@
+{
+  "checked_at": "2026-11-07T17:18:21.764Z",
+  "credential_free": true,
+  "production_script_untouched": true,
+  "cleanup": "deleted-script-and-linked-pull-zones",
+  "probe": {
+    "credential_free": true,
+    "probes": [
+      {
+        "target": "post-token",
+        "error": "timeout",
+        "elapsed_ms": 12003
+      },
+      {
+        "target": "post-autocomplete",
+        "error": "timeout",
+        "elapsed_ms": 12002
+      },
+      {
+        "target": "control",
+        "status": 200,
+        "elapsed_ms": 18
+      }
+    ]
+  }
+}
