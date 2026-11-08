@@ -1,19 +1,19 @@
 # Commit Change Log
 
-Generated: 2026-10-31T12:55:10.900230+00:00
-Source-State: run=iterate-2026-10-31-envelope-window-address base=d5ce52b3f3ac release=v1.5.1
+Generated: 2026-11-08T09:00:55.369715+00:00
+Source-State: run=iterate-2026-11-08-security-weekly-schedule base=2e3ba3d44d3c
 Consistency-audit: never run
-Total commits: 485
+Total commits: 489
 
 ## Commit Distribution
 
 ```mermaid
 pie title Commit Types
     "other" : 457
+    "chore" : 8
     "feat" : 8
-    "fix" : 6
-    "chore" : 6
-    "ci" : 3
+    "fix" : 7
+    "ci" : 4
     "docs" : 2
     "test" : 1
     "build" : 1
@@ -484,6 +484,19 @@ pie title Commit Types
 | 2024-11-08 | — | Add form data collection feature | 896da239ab4d |
 | 2024-11-08 | — | Use tech stack vite_react_shadcn_ts [skip gpt_engineer] | 3e012665e8ff |
 
+### Chores (chore) — 8 commits
+
+| Date | Scope | Description | Commit |
+|------|-------|-------------|--------|
+| 2026-11-02 | security | record accepted risks for 5 scan findings (#208) | 0f8012537e03 |
+| 2026-10-31 | release | v1.5.1 (#207) | 5af36801e840 |
+| 2026-10-28 | deps | backfill missing license fields in package-lock.json (#205) | 033f5a61cd58 |
+| 2026-10-26 | release | v1.5.0 (#204) | cb788da56475 |
+| 2026-10-23 | security | mark the two remaining Semgrep findings as false positives (#200) | f54c211c2f33 |
+| 2026-10-20 | shipwright | adopt repository into Shipwright SDLC | e951e7b4f021 |
+| 2026-09-28 | — | remove dead code, unused UI components and dependencies | 22f7d69c5230 |
+| 2026-01-18 | — | upgrade supabase postgres version and update gitignore | 87e26ff8a3b2 |
+
 ### Features (feat) — 8 commits
 
 | Date | Scope | Description | Commit |
@@ -497,10 +510,11 @@ pie title Commit Types
 | 2026-09-28 | security | lock down the address-lookup edge function | 79119f0994a7 |
 | 2026-09-28 | — | PLZ validation, working invoice date setting, German UI text | b7c5285402be |
 
-### Fixes (fix) — 6 commits
+### Fixes (fix) — 7 commits
 
 | Date | Scope | Description | Commit |
 |------|-------|-------------|--------|
+| 2026-11-06 | pdf | fit recipient to measured C5 right-window envelope (#209) | 3cbffdcfaa38 |
 | 2026-10-31 | pdf | fit the invoice recipient address into the envelope window (#206) | d5ce52b3f3ac |
 | 2026-10-23 | deps | apply in-range security updates to npm dependencies (#184) | 7148cd0337f9 |
 | 2026-10-23 | deps | upgrade jspdf to 4.2.1 to close critical CVEs (#183) | b47b0e533480 |
@@ -508,21 +522,11 @@ pie title Commit Types
 | 2026-09-28 | — | generate the PDF once per submit and fix address result ordering | ad8bd9ac683e |
 | 2026-09-28 | — | green lint, typecheck and tests; enforce them in CI | ded85ba21fd6 |
 
-### Chores (chore) — 6 commits
+### CI/CD (ci) — 4 commits
 
 | Date | Scope | Description | Commit |
 |------|-------|-------------|--------|
-| 2026-10-28 | deps | backfill missing license fields in package-lock.json (#205) | 033f5a61cd58 |
-| 2026-10-26 | release | v1.5.0 (#204) | cb788da56475 |
-| 2026-10-23 | security | mark the two remaining Semgrep findings as false positives (#200) | f54c211c2f33 |
-| 2026-10-20 | shipwright | adopt repository into Shipwright SDLC | e951e7b4f021 |
-| 2026-09-28 | — | remove dead code, unused UI components and dependencies | 22f7d69c5230 |
-| 2026-01-18 | — | upgrade supabase postgres version and update gitignore | 87e26ff8a3b2 |
-
-### CI/CD (ci) — 3 commits
-
-| Date | Scope | Description | Commit |
-|------|-------|-------------|--------|
+| 2026-11-08 | security | run the security scan weekly and fail closed per scanner (#211) | 2e3ba3d44d3c |
 | 2026-10-24 | — | bump pinned GitHub Actions to current majors (#203) | d4cdc705631a |
 | 2026-10-23 | security | pin GitHub Actions to commit SHAs and add Dependabot cooldown (#194) | 6c1697ef6f73 |
 | 2026-10-21 | — | allow the coverage step to comment on pull requests | 73ea2567585c |
@@ -556,7 +560,7 @@ pie title Commit Types
 
 | Metric | Value |
 |--------|-------|
-| Total commits | 485 |
+| Total commits | 489 |
 | AI-assisted commits | 8 |
-| Human-authored commits | 477 |
+| Human-authored commits | 481 |
 

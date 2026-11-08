@@ -1,7 +1,7 @@
 # Software Bill of Materials (SBOM)
 
-Generated: 2026-10-31T12:55:10.900230+00:00
-Source-State: run=iterate-2026-10-31-envelope-window-address base=d5ce52b3f3ac release=v1.5.1
+Generated: 2026-11-08T09:00:55.369715+00:00
+Source-State: run=iterate-2026-11-08-security-weekly-schedule base=2e3ba3d44d3c
 Consistency-audit: never run
 
 ## Summary
