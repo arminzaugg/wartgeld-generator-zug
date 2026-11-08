@@ -1,0 +1,1 @@
+{"stage":"spec-compliance","verdict":"REJECT","summary":"AC1/AC2/AC4 pass. AC3 reject: header says a scheduled run fails 'only' on CVSS>=9.0 or a leaked secret, but the gate also fails closed on empty/invalid SARIF and the three scanner install steps have no continue-on-error. Also state plainly that sub-9.0 findings (incl. expired accepted risks) do not notify."}

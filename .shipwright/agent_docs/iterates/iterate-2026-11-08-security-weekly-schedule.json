@@ -1,0 +1,67 @@
+{
+  "run_id": "iterate-2026-11-08-security-weekly-schedule",
+  "date": "2026-11-08T09:00:48.395267Z",
+  "event_at": "2026-11-06T13:58:09.573617+00:00",
+  "type": "change",
+  "complexity": "small",
+  "branch": "iterate/security-weekly-schedule",
+  "spec": "none (small; spec impact none)",
+  "tests_passed": true,
+  "adr": "iterate-2026-11-08-security-weekly-schedule",
+  "test_completeness": {
+    "status": "complete",
+    "behaviors": [
+      {
+        "behavior": "Weekly schedule trigger active; workflow_dispatch kept; pull_request off",
+        "disposition": "tested",
+        "evidence": "YAML parse -> on={schedule:[cron '0 6 * * 1'], workflow_dispatch}; actionlint clean"
+      },
+      {
+        "behavior": "Gate fails closed when any scanner's SARIF is missing or invalid",
+        "disposition": "tested",
+        "evidence": "gate script extracted from the workflow, run locally: all 3 reports exit 0; trivy missing exit 1; none exit 1; invalid trivy exit 1"
+      },
+      {
+        "behavior": "Workflow runs green on GitHub with persist-credentials false and the new gate",
+        "disposition": "tested",
+        "evidence": "security.yml run 42464998999 attempt 2 on probe branch: success, 0 critical, 0 secrets, SARIF uploaded (attempt 1 failed on transient Gitleaks download, confirming install failure fails the run)"
+      },
+      {
+        "behavior": "Scheduled runs feed the compliance security summary",
+        "disposition": "tested",
+        "evidence": "github_api.latest_security_workflow_run queries branch=main&status=success regardless of event (code-read verified by reviewers)"
+      },
+      {
+        "behavior": "Cron actually fires on Monday 06:00 UTC",
+        "disposition": "untestable",
+        "reason_code": "requires-external-nondeterministic-service"
+      },
+      {
+        "behavior": "No product behavior change",
+        "disposition": "tested",
+        "evidence": "npm run lint, build pass; 392/392 unit tests green"
+      }
+    ],
+    "counts": {
+      "testable": 5,
+      "tested": 5,
+      "untestable": 1,
+      "untested_testable": 0
+    },
+    "enumeration_basis": {
+      "acs": 4,
+      "covered_acs": 4
+    }
+  },
+  "surface_verification": {
+    "surface": "none",
+    "runner": "",
+    "exit_code": 0,
+    "tests_run": 0,
+    "evidence_path": "",
+    "timestamp": "2026-11-08T09:00:30.914Z",
+    "attempts": 0,
+    "justification": "Only the CI security workflow changed (trigger, checkout credential setting, gate fail-closed check, comments); no app runtime, build output or user-visible path changes. The workflow itself was exercised on GitHub (run 42464998999).",
+    "reason_code": "build-config-only"
+  }
+}

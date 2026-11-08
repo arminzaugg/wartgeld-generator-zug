@@ -1,21 +1,31 @@
 name: Security Scan
 
-# DORMANT: Auto-triggers are disabled. /shipwright-adopt scaffolds this
-# workflow with workflow_dispatch only, so the user can verify Phase B
-# prerequisites (Code Scanning enabled, secrets configured, fork-PR
-# behavior reviewed) before turning auto-scans on.
+# Triggers: a weekly scheduled scan of main plus manual runs
+# (workflow_dispatch). The schedule keeps the CI security result that feeds
+# the compliance grade current, and re-applies the accepted risks in
+# .trivyignore: once an entry's exp: date passes, its finding is reported
+# again in the next weekly scan.
 #
-# To activate (Phase B / Go-Live):
-#   1. Verify Code Scanning is enabled (repo Settings → Code security).
-#   2. Uncomment the `pull_request:` and `schedule:` blocks below.
-#   3. Commit on a feature branch and review one PR run before merging.
+# A scheduled run fails when the critical gate below finds a CVSS >= 9.0
+# finding or a leaked secret, when the gate fails closed (a scanner's SARIF
+# report is missing or invalid), or when a scanner install step fails. For
+# scheduled runs GitHub sends the failure notification only to the user who
+# last edited the cron line (if their Actions notifications are on).
+# Findings below 9.0 do NOT fail the run. An accepted risk that returns
+# after its exp: date therefore fails the run only if it scores CVSS >= 9.0;
+# otherwise it appears only in Code Scanning (category shipwright-security),
+# the SARIF artifact and the next compliance refresh.
 #
-# See docs/security-ci-setup.md for full activation guidance.
+# pull_request stays off on purpose: only the weekly schedule was asked for.
+# See iterate-2026-11-08-security-weekly-schedule.
+#
+# GitHub pauses scheduled workflows in public repositories after 60 days
+# without repository activity; re-enable it under Actions if that happens.
 on:
   # pull_request:
   #   branches: [main]
-  # schedule:
-  #   - cron: '0 6 * * 1'  # Monday 06:00 UTC — weekly full scan
+  schedule:
+    - cron: '0 6 * * 1'  # Monday 06:00 UTC — weekly full scan of main
   workflow_dispatch:
 
 # IMPORTANT: explicit permissions block — once any key is set, GitHub
@@ -46,8 +56,14 @@ jobs:
           # full-history fetch (fetch-depth: 0) is unnecessary here and has
           # correlated with a stale-merge-ref Gitleaks false positive.
           fetch-depth: 1
+          # No later step needs git credentials; do not persist the
+          # GITHUB_TOKEN into the checkout's git config.
+          persist-credentials: false
 
-      # --- OSS scanner installation (pinned per-tool versions) ---
+      # --- OSS scanner installation ---
+      # Only Gitleaks is pinned and checksum-verified. Semgrep (pip) and Trivy
+      # (apt) install the newest upstream release on every run; pinning them
+      # is a recorded follow-up (see iterate-2026-11-08-security-weekly-schedule).
 
       - name: Install Semgrep
         run: pip install semgrep
@@ -185,6 +201,16 @@ jobs:
             echo "::error::No SARIF files in sarif/ — every scanner crashed or produced no output. Failing closed."
             exit 1
           fi
+          # Each scanner must have reported. Semgrep and Trivy run with
+          # continue-on-error, so without this a single crashed scanner (e.g. a
+          # rate-limited Trivy DB download) would leave a green run that the
+          # compliance tooling counts as a complete, current scan.
+          for tool in semgrep trivy gitleaks; do
+            if [ ! -f "sarif/${tool}.sarif" ]; then
+              echo "::error::sarif/${tool}.sarif is missing — ${tool} crashed or produced no output. Failing closed."
+              exit 1
+            fi
+          done
           critical=0
           secrets=0
           for f in "${files[@]}"; do

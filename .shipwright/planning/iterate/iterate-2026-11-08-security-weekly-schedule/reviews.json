@@ -1,0 +1,194 @@
+{
+  "schema_version": 1,
+  "run_id": "iterate-2026-11-08-security-weekly-schedule",
+  "reviews": {
+    "self": {
+      "review_type": "self",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-11-08T08:49:36.042426+00:00",
+      "disposition": null,
+      "recorded_by": "self-review",
+      "parse_status": null,
+      "raw_excerpt": null
+    },
+    "plan": {
+      "review_type": "plan",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-11-08T08:49:36.106480+00:00",
+      "disposition": "closed by reason_code complexity-below-threshold",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "complexity-below-threshold"
+    },
+    "code": {
+      "review_type": "code",
+      "status": "completed",
+      "findings_count": 6,
+      "findings": [
+        {
+          "severity": "medium",
+          "category": "security",
+          "file": ".github/workflows/security.yml",
+          "line": 61,
+          "finding": "Semgrep (pip) and Trivy (apt) install unpinned latest versions, now unattended weekly; comment claimed 'pinned per-tool versions'; checkout persists the GITHUB_TOKEN in .git/config.",
+          "suggestion": "persist-credentials: false; pin Semgrep/Trivy with checksums; fix comment; mention in ack.",
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "correctness",
+          "file": ".github/workflows/security.yml",
+          "line": 13,
+          "finding": "Header: an expired accepted risk would notify if it scored CVSS>=9.0; a Trivy crash alone is silent.",
+          "suggestion": null,
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "correctness",
+          "file": ".github/workflows/security.yml",
+          "line": 41,
+          "finding": "Shared concurrency group may cancel a scheduled run; collector might read a cancelled run.",
+          "suggestion": null,
+          "source": "code-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": "security",
+          "file": ".github/workflows/security.yml",
+          "line": 39,
+          "finding": "pull-requests: write granted while pull_request is off.",
+          "suggestion": null,
+          "source": "code-reviewer"
+        },
+        {
+          "severity": null,
+          "category": "readability",
+          "file": ".github/workflows/security.yml",
+          "line": 230,
+          "finding": "'blocking merge' wording on non-PR runs.",
+          "suggestion": null,
+          "source": "code-reviewer"
+        },
+        {
+          "severity": null,
+          "category": "correctness",
+          "file": ".github/workflows/security.yml",
+          "line": 26,
+          "finding": "Schedule-event behavior verified correct.",
+          "suggestion": null,
+          "source": "code-reviewer"
+        }
+      ],
+      "provider": null,
+      "completed_at": "2026-11-08T08:53:17.915116+00:00",
+      "disposition": null,
+      "recorded_by": "code-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit",
+      "verdict": "pass"
+    },
+    "doubt": {
+      "review_type": "doubt",
+      "status": "completed",
+      "findings_count": 3,
+      "findings": [
+        {
+          "severity": "medium",
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "Claim under doubt: A crashed Semgrep/Trivy leaves a green run that the collector counts as a complete current scan. — fixed: critical gate now fails closed unless semgrep.sarif, trivy.sarif and gitleaks.sarif all exist (all events). Verified locally: all three -> exit 0; trivy missing -> exit 1; none -> exit 1; invalid trivy -> exit 1. Run 41533640028 artifact confirms a normal run emits all three.",
+          "suggestion": null,
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "Claim under doubt: Scheduled-run failure notifications go only to the user who last edited the cron line. — fixed: header reworded",
+          "suggestion": null,
+          "source": "doubt-reviewer"
+        },
+        {
+          "severity": "low",
+          "category": null,
+          "file": null,
+          "line": null,
+          "finding": "Claim under doubt: Checkout comment mechanism outdated (checkout v6+ persists via includeIf file). — fixed: comment reworded; no step breaks (verified by reviewer)",
+          "suggestion": null,
+          "source": "doubt-reviewer"
+        }
+      ],
+      "provider": null,
+      "completed_at": "2026-11-08T08:55:40.532490+00:00",
+      "disposition": null,
+      "recorded_by": "doubt-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit"
+    },
+    "external_code": {
+      "review_type": "external_code",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-11-08T08:49:36.297838+00:00",
+      "disposition": "closed by reason_code complexity-below-threshold",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "complexity-below-threshold"
+    },
+    "spec": {
+      "review_type": "spec",
+      "status": "completed",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-11-08T08:51:11.617223+00:00",
+      "disposition": null,
+      "recorded_by": "spec-reviewer",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "model_tier": "inherit",
+      "verdict": "pass"
+    },
+    "plan_internal": {
+      "review_type": "plan_internal",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-11-08T08:49:36.172286+00:00",
+      "disposition": "closed by reason_code complexity-below-threshold",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "complexity-below-threshold"
+    },
+    "architecture_internal": {
+      "review_type": "architecture_internal",
+      "status": "not_applicable",
+      "findings_count": 0,
+      "findings": [],
+      "provider": null,
+      "completed_at": "2026-11-08T08:49:36.235286+00:00",
+      "disposition": "closed by reason_code complexity-below-threshold",
+      "recorded_by": "none",
+      "parse_status": null,
+      "raw_excerpt": null,
+      "reason_code": "complexity-below-threshold"
+    }
+  }
+}

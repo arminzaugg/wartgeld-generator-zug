@@ -1,0 +1,14 @@
+{
+  "run_id": "iterate-2026-11-08-security-weekly-schedule",
+  "date": "2026-11-08",
+  "section": "Iterate — change: run the security scan weekly",
+  "title": "Run security.yml weekly on a schedule and fail closed when a scanner does not report",
+  "context": "The compliance grade's Security dimension reads only the latest successful security.yml run on main, and the workflow was manual-only, so the result went stale and the 2027-05-01 accepted-risk expiry would go unnoticed.",
+  "decision": "Activate a Monday 06:00 UTC schedule (pull_request stays off), require all three scanner SARIF reports in the critical gate, and stop persisting the checkout token.",
+  "consequences": "A green weekly run now means a complete scan; a scanner crash or failed install fails the run and emails whoever last edited the cron line. Sub-9.0 findings, including expired accepted risks, do not fail a run. Semgrep and Trivy installs remain unpinned (follow-up card).",
+  "rationale": "Without the per-scanner check, a rate-limited Trivy download would leave a green run the compliance tooling counts as a complete current scan.",
+  "rejected": "Also turning on pull_request scans (not requested); pinning Semgrep/Trivy in this change (separate follow-up).",
+  "commit": "",
+  "architecture_impact": "none",
+  "spec_ref": ""
+}
