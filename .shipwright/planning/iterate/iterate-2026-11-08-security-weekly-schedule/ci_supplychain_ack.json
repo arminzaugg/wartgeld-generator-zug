@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "run_id": "iterate-2026-11-08-security-weekly-schedule",
+  "ci_supplychain_ack": {
+    "run_id": "iterate-2026-11-08-security-weekly-schedule",
+    "paths_fingerprint": "257b52e51f2e783028f58add3f0958760e6c2af9554ea9842026b2924cd329f6",
+    "consistent_with": "ADR-012",
+    "statement": "Adds a weekly schedule trigger (Monday 06:00 UTC) to security.yml; sets persist-credentials: false on checkout; makes the critical gate fail closed unless all three scanner SARIF reports exist; rewrites header and install comments. No action added, removed or re-pinned; permissions unchanged; pull_request stays off. Known gap now run weekly: Semgrep (pip) and Trivy (apt) install unpinned latest versions; pinning them is a recorded follow-up triage card. Third-party actions stay SHA-pinned per ADR-012.",
+    "ci_paths": [
+      ".github/workflows/security.yml"
+    ],
+    "provenance": "worktree",
+    "provenance_ref": null
+  }
+}

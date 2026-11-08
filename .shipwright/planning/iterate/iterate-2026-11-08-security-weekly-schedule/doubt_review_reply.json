@@ -1,0 +1,23 @@
+{
+ "verdict": "OBJECTIONS",
+ "doubts": [
+  {
+   "severity": "medium",
+   "disposition": "fixed: critical gate now fails closed unless semgrep.sarif, trivy.sarif and gitleaks.sarif all exist (all events). Verified locally: all three -> exit 0; trivy missing -> exit 1; none -> exit 1; invalid trivy -> exit 1. Run 41533640028 artifact confirms a normal run emits all three.",
+   "claim_under_doubt": "A crashed Semgrep/Trivy leaves a green run that the collector counts as a complete current scan.",
+   "disproof_attempt": "fixed: critical gate now fails closed unless semgrep.sarif, trivy.sarif and gitleaks.sarif all exist (all events). Verified locally: all three -> exit 0; trivy missing -> exit 1; none -> exit 1; invalid trivy -> exit 1. Run 41533640028 artifact confirms a normal run emits all three."
+  },
+  {
+   "severity": "low",
+   "disposition": "fixed: header reworded",
+   "claim_under_doubt": "Scheduled-run failure notifications go only to the user who last edited the cron line.",
+   "disproof_attempt": "fixed: header reworded"
+  },
+  {
+   "severity": "low",
+   "disposition": "fixed: comment reworded; no step breaks (verified by reviewer)",
+   "claim_under_doubt": "Checkout comment mechanism outdated (checkout v6+ persists via includeIf file).",
+   "disproof_attempt": "fixed: comment reworded; no step breaks (verified by reviewer)"
+  }
+ ]
+}

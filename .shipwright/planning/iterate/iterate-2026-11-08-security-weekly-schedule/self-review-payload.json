@@ -1,0 +1,10 @@
+{"items":[
+{"name":"Spec compliance","verdict":"pass","note":"Operator asked to act on the open item 'turn on the weekly schedule'. schedule cron '0 6 * * 1' is active, workflow_dispatch kept, pull_request kept commented out, DORMANT header replaced with an accurate description."},
+{"name":"Error handling","verdict":"n/a","note":"Trigger change only; the critical gate and fail-closed logic are untouched."},
+{"name":"Security basics","verdict":"pass","note":"No action added or re-pinned, permissions block unchanged. Scheduled runs skip the PR-comment steps (guarded on event_name == pull_request) and upload SARIF as workflow_dispatch already does. Repo is public, so Code Scanning upload works."},
+{"name":"Test quality","verdict":"pass","note":"actionlint clean; YAML parses to on={schedule:[cron '0 6 * * 1'], workflow_dispatch}; lint/build/392 unit tests green. A workflow_dispatch run on the branch will confirm GitHub accepts the file."},
+{"name":"Performance basics","verdict":"n/a","note":"One ~1 min CI run per week."},
+{"name":"Naming & structure","verdict":"pass","note":"Header comment corrected during self-review: it first claimed an expired .trivyignore entry fails the run; the gate only blocks CVSS>=9.0 or secrets, so the comment now says the finding is reported again. Removed the pointer to the nonexistent docs/security-ci-setup.md."},
+{"name":"Affected boundaries","verdict":"pass","note":"Consumer: refresh_ci_security.py reads the latest security.yml run regardless of trigger, so scheduled runs feed the compliance security summary."},
+{"name":"Test hygiene probe","verdict":"n/a","note":"No tests added or edited."}
+]}
