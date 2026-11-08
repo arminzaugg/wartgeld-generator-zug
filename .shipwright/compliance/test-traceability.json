@@ -1,9 +1,9 @@
 {
   "schema_version": 4,
   "collector_version": "test_links/1.0.0",
-  "generated_at": "2026-10-31T12:55:10.900230+00:00",
-  "source_commit": "d5ce52b3f3ac61d9bada466d26ab0463aff7c367",
-  "spec_hash": "sha256:74ee44da0084f7f87b6d11d147e13f885847ef20994fd0fed999ff99b257b141",
+  "generated_at": "2026-11-08T09:00:55.369715+00:00",
+  "source_commit": "2e3ba3d44d3c9f4c586b6e9a4a8de1462f85bd0b",
+  "spec_hash": "sha256:4d5f50dfcfd88d56eff3a99367ead0527e6a643d6268dba3627c54b5526fe024",
   "requirements": {
     "01::FR-01.01": {
       "id": "FR-01.01",
@@ -1025,6 +1025,14 @@
         ],
         "e2e": [
           {
+            "id": "e2e/envelope.spec.ts::preview and saved invoice use the measured C5 address layout",
+            "path": "e2e/envelope.spec.ts::preview and saved invoice use the measured C5 address layout",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          },
+          {
             "id": "e2e/municipality.spec.ts::a Neuägeri invoice goes to the municipality the midwife chose, without leaving the app",
             "path": "e2e/municipality.spec.ts::a Neuägeri invoice goes to the municipality the midwife chose, without leaving the app",
             "layer": "e2e",
@@ -1248,6 +1256,14 @@
         ],
         "e2e": [
           {
+            "id": "e2e/envelope.spec.ts::preview and saved invoice use the measured C5 address layout",
+            "path": "e2e/envelope.spec.ts::preview and saved invoice use the measured C5 address layout",
+            "layer": "e2e",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "native_tag"
+          },
+          {
             "id": "e2e/invoice-page.spec.ts::form and preview sit side by side, the preview stays in view",
             "path": "e2e/invoice-page.spec.ts::form and preview sit side by side, the preview stays in view",
             "layer": "e2e",
@@ -1455,6 +1471,30 @@
           {
             "id": "src/hooks/__tests__/useSetupStatus.test.tsx::notices a change even when the stored text is read again without an event",
             "path": "src/hooks/__tests__/useSetupStatus.test.tsx::notices a change even when the stored text is read again without an event",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/pdfEnvelope.test.ts::keeps every $name address line 5 mm inside the window at every extreme sheet position",
+            "path": "src/lib/__tests__/pdfEnvelope.test.ts::keeps every $name address line 5 mm inside the window at every extreme sheet position",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/pdfEnvelope.test.ts::keeps an extensively wrapped sender above the invoice title without losing text",
+            "path": "src/lib/__tests__/pdfEnvelope.test.ts::keeps an extensively wrapped sender above the invoice title without losing text",
+            "layer": "unit",
+            "status": "enabled",
+            "executed": "not_run",
+            "tag_source": "covers_comment"
+          },
+          {
+            "id": "src/lib/__tests__/pdfEnvelope.test.ts::keeps long sender lines, date and all other text outside every possible window position",
+            "path": "src/lib/__tests__/pdfEnvelope.test.ts::keeps long sender lines, date and all other text outside every possible window position",
             "layer": "unit",
             "status": "enabled",
             "executed": "not_run",
